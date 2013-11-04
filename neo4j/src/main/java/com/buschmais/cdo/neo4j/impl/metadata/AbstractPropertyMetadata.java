@@ -2,13 +2,13 @@ package com.buschmais.cdo.neo4j.impl.metadata;
 
 public abstract class AbstractPropertyMetadata {
 
-    private NodeMetadataProvider.BeanProperty beanProperty;
+    private BeanProperty beanProperty;
 
-    protected AbstractPropertyMetadata(NodeMetadataProvider.BeanProperty beanProperty) {
+    protected AbstractPropertyMetadata(BeanProperty beanProperty) {
         this.beanProperty = beanProperty;
     }
 
-    public NodeMetadataProvider.BeanProperty getBeanProperty() {
+    public BeanProperty getBeanProperty() {
         return beanProperty;
     }
 

@@ -4,7 +4,7 @@ import org.neo4j.graphdb.RelationshipType;
 
 public class ReferencePropertyMetadata extends AbstractRelationshipPropertyMetadata {
 
-    public ReferencePropertyMetadata(NodeMetadataProvider.BeanProperty beanProperty, RelationshipType relationshipType) {
+    public ReferencePropertyMetadata(BeanProperty beanProperty, RelationshipType relationshipType) {
         super(beanProperty, relationshipType);
     }
 

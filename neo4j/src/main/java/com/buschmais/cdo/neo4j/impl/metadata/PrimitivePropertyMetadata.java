@@ -4,7 +4,7 @@ public class PrimitivePropertyMetadata extends AbstractPropertyMetadata {
 
     private String propertyName;
 
-    protected PrimitivePropertyMetadata(NodeMetadataProvider.BeanProperty beanProperty, String propertyName) {
+    protected PrimitivePropertyMetadata(BeanProperty beanProperty, String propertyName) {
         super(beanProperty);
         this.propertyName = propertyName;
     }

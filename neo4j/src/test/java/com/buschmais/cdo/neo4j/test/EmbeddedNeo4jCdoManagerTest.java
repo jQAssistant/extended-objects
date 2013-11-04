@@ -3,6 +3,9 @@ package com.buschmais.cdo.neo4j.test;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.neo4j.impl.EmbeddedNeo4jCdoManagerFactoryImpl;
+import com.buschmais.cdo.neo4j.test.composite.A;
+import com.buschmais.cdo.neo4j.test.composite.B;
+import com.buschmais.cdo.neo4j.test.composite.C;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -97,6 +100,8 @@ public class EmbeddedNeo4jCdoManagerTest {
         assertThat(setOfB.add(b), equalTo(true));
         assertThat(setOfB.add(b), equalTo(false));
         assertThat(setOfB.size(), equalTo(1));
+        cdoManager.commit();
+        cdoManager.begin();
         assertThat(setOfB.remove(b), equalTo(true));
         assertThat(setOfB.remove(b), equalTo(false));
         cdoManager.commit();

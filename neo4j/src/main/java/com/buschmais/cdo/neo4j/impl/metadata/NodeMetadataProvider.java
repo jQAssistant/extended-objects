@@ -79,17 +79,17 @@ public class NodeMetadataProvider {
         PrimitivePropertyMetadata indexedProperty = null;
         for (BeanProperty beanProperty : beanProperties.values()) {
             AbstractPropertyMetadata propertyMetadata;
-            if (Collection.class.isAssignableFrom(beanProperty.type)) {
+            if (Collection.class.isAssignableFrom(beanProperty.getType())) {
                 ParameterizedType parameterizedType = (ParameterizedType) beanProperty.getGenericType();
                 Type elementType = parameterizedType.getActualTypeArguments()[0];
                 propertyMetadata = new CollectionPropertyMetadata(beanProperty, getRelationshipType(beanProperty));
             } else if (types.contains(beanProperty.getType())) {
                 propertyMetadata = new ReferencePropertyMetadata(beanProperty, getRelationshipType(beanProperty));
             } else {
-                Property property = beanProperty.getter.getAnnotation(Property.class);
-                String propertyName = property != null ? property.value() : beanProperty.name;
+                Property property = beanProperty.getGetter().getAnnotation(Property.class);
+                String propertyName = property != null ? property.value() : beanProperty.getName();
                 propertyMetadata = new PrimitivePropertyMetadata(beanProperty, propertyName);
-                if (beanProperty.getter.isAnnotationPresent(Indexed.class)) {
+                if (beanProperty.getGetter().isAnnotationPresent(Indexed.class)) {
                     indexedProperty = (PrimitivePropertyMetadata) propertyMetadata;
                 }
             }
@@ -120,8 +120,8 @@ public class NodeMetadataProvider {
     }
 
     private RelationshipType getRelationshipType(BeanProperty beanProperty) {
-        Relation relation = beanProperty.getter.getAnnotation(Relation.class);
-        String name = relation != null ? relation.value() : beanProperty.name;
+        Relation relation = beanProperty.getGetter().getAnnotation(Relation.class);
+        String name = relation != null ? relation.value() : beanProperty.getName();
         return DynamicRelationshipType.withName(name);
     }
 
@@ -142,20 +142,11 @@ public class NodeMetadataProvider {
             Class<?>[] parameterTypes = method.getParameterTypes();
             Type[] genericParameterTypes = method.getGenericParameterTypes();
             if (methodName.startsWith("get") && genericParameterTypes.length == 0 && !void.class.equals(genericReturnType)) {
-                getBeanProperty(beanProperties, methodName, returnType, genericReturnType).getter = method;
+                getBeanProperty(beanProperties, methodName, returnType, genericReturnType).setGetter(method);
             } else if (methodName.startsWith("set") && genericParameterTypes.length == 1 && void.class.equals(genericReturnType)) {
-                getBeanProperty(beanProperties, methodName, parameterTypes[0], genericParameterTypes[0]).setter = method;
+                getBeanProperty(beanProperties, methodName, parameterTypes[0], genericParameterTypes[0]).setSetter(method);
             } else {
                 throw new CdoManagerException("Method " + method.toGenericString() + " is neither Getter nor Setter.");
-            }
-        }
-        for (Map.Entry<String, BeanProperty> beanPropertyEntry : beanProperties.entrySet()) {
-            String name = beanPropertyEntry.getKey();
-            BeanProperty beanProperty = beanPropertyEntry.getValue();
-            if (beanProperty.getter == null) {
-                throw new CdoManagerException("No getter defined for bean property " + name + "  in genericType " + interfaceType);
-            } else if (beanProperty.setter == null) {
-                throw new CdoManagerException("No setter defined for bean property " + name + "  in genericType " + interfaceType);
             }
         }
     }
@@ -170,37 +161,4 @@ public class NodeMetadataProvider {
         return beanProperty;
     }
 
-    public static class BeanProperty {
-        private String name = null;
-        private Class<?> type = null;
-        private Type genericType = null;
-        private Method getter = null;
-        private Method setter = null;
-
-        public BeanProperty(String name, Class<?> type, Type genericType) {
-            this.name = name;
-            this.type = type;
-            this.genericType = genericType;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Class<?> getType() {
-            return type;
-        }
-
-        public Type getGenericType() {
-            return genericType;
-        }
-
-        public Method getGetter() {
-            return getter;
-        }
-
-        public Method getSetter() {
-            return setter;
-        }
-    }
 }

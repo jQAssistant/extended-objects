@@ -6,7 +6,7 @@ public abstract class AbstractRelationshipPropertyMetadata extends AbstractPrope
 
     private RelationshipType relationshipType;
 
-    public AbstractRelationshipPropertyMetadata(NodeMetadataProvider.BeanProperty beanProperty, RelationshipType relationshipType) {
+    public AbstractRelationshipPropertyMetadata(BeanProperty beanProperty, RelationshipType relationshipType) {
         super(beanProperty);
         this.relationshipType = relationshipType;
     }

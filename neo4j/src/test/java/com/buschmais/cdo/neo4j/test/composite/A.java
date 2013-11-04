@@ -1,7 +1,9 @@
-package com.buschmais.cdo.neo4j.test;
+package com.buschmais.cdo.neo4j.test.composite;
 
 import com.buschmais.cdo.neo4j.annotation.Indexed;
 import com.buschmais.cdo.neo4j.annotation.Label;
+import com.buschmais.cdo.neo4j.annotation.Property;
+import com.buschmais.cdo.neo4j.annotation.Relation;
 
 import java.util.Set;
 
@@ -22,7 +24,5 @@ public interface A extends Version {
     void setB(B b);
 
     Set<B> getSetOfB();
-
-    void setSetOfB(Set<B> setOfB);
 
 }

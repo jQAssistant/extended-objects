@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.test;
+package com.buschmais.cdo.neo4j.test.composite;
 
 public interface Version {
 
