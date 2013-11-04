@@ -1,8 +1,8 @@
 package com.buschmais.cdo.neo4j.impl;
 
-import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerException;
 import com.buschmais.cdo.api.QueryResult;
+import com.buschmais.cdo.neo4j.EmbeddedNeo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMetadata;
@@ -15,7 +15,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
 
-public class CdoManagerImpl implements CdoManager {
+public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
 
     private final NodeMetadataProvider nodeMetadataProvider;
     private final InstanceManager instanceManager;
@@ -23,7 +23,7 @@ public class CdoManagerImpl implements CdoManager {
     private final ExecutionEngine executionEngine;
     private Transaction transaction;
 
-    public CdoManagerImpl(NodeMetadataProvider nodeMetadataProvider, GraphDatabaseService database, InstanceManager instanceManager) {
+    public EmbeddedNeo4jCdoManagerImpl(NodeMetadataProvider nodeMetadataProvider, GraphDatabaseService database, InstanceManager instanceManager) {
         this.nodeMetadataProvider = nodeMetadataProvider;
         this.database = database;
         this.instanceManager = instanceManager;
@@ -113,6 +113,11 @@ public class CdoManagerImpl implements CdoManager {
 
     @Override
     public void close() {
+    }
+
+    @Override
+    public GraphDatabaseService getGraphDatabaseService() {
+        return database;
     }
 
     private final class RowIterable implements Iterable<QueryResult.Row>, Closeable {
