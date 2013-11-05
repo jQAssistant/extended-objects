@@ -1,9 +1,7 @@
-package com.buschmais.cdo.neo4j.test.composite;
+package com.buschmais.cdo.neo4j.test.composite.basic;
 
 import com.buschmais.cdo.neo4j.annotation.Indexed;
 import com.buschmais.cdo.neo4j.annotation.Label;
-import com.buschmais.cdo.neo4j.annotation.Property;
-import com.buschmais.cdo.neo4j.annotation.Relation;
 
 import java.util.Set;
 

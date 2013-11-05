@@ -1,9 +1,10 @@
 package com.buschmais.cdo.api;
 
+import java.io.Closeable;
 import java.util.List;
 import java.util.Map;
 
-public interface QueryResult {
+public interface QueryResult extends Closeable {
 
     /**
      * A row of a query result containing named columns and their values.
@@ -29,6 +30,4 @@ public interface QueryResult {
     List<String> getColumns();
 
     Iterable<QueryResult.Row> getRows();
-
-    void close();
 }

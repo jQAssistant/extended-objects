@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.test.composite;
+package com.buschmais.cdo.neo4j.test.composite.basic;
 
 import com.buschmais.cdo.neo4j.annotation.Label;
 

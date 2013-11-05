@@ -9,6 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.RelationshipType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -16,6 +18,8 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 public class NodeMetadataProvider {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeMetadata.class);
 
     private Set<org.neo4j.graphdb.Label> allLabels = new HashSet<>();
     private Map<Class<?>, NodeMetadata> nodeMetadataByType = new HashMap<>();
@@ -30,17 +34,16 @@ public class NodeMetadataProvider {
                 }
                 if (o1.isAssignableFrom(o2)) {
                     return -1;
-                } else {
+                } else if (o2.isAssignableFrom(o1)) {
                     return 1;
                 }
+                return o1.getName().compareTo(o2.getName());
             }
         });
         for (Class<?> type : types) {
-            sortedTypes.add(type);
-            for (Class<?> implementedInterface : type.getInterfaces()) {
-                sortedTypes.add(implementedInterface);
-            }
+            addImplementedInterfaces(type, sortedTypes);
         }
+        LOGGER.info("Registering types {}", sortedTypes);
         Map<Class<?>, Map<String, BeanProperty>> typeProperties = new HashMap<>();
         for (Class<?> type : sortedTypes) {
             typeProperties.put(type, getBeanProperties(type));
@@ -74,7 +77,15 @@ public class NodeMetadataProvider {
         return allLabels;
     }
 
+    private void addImplementedInterfaces(Class<?> type, Set<Class<?>> types) {
+        types.add(type);
+        for (Class<?> implementedInterface : type.getInterfaces()) {
+            addImplementedInterfaces(implementedInterface, types);
+        }
+    }
+
     private void createMetadata(Class<?> type, Map<String, BeanProperty> beanProperties, Set<Class<?>> types) {
+        LOGGER.info("Creating node meta for {}", type.getName());
         Map<String, AbstractPropertyMetadata> propertyMetadataMap = new HashMap<>();
         PrimitivePropertyMetadata indexedProperty = null;
         for (BeanProperty beanProperty : beanProperties.values()) {
@@ -141,21 +152,25 @@ public class NodeMetadataProvider {
             Type genericReturnType = method.getGenericReturnType();
             Class<?>[] parameterTypes = method.getParameterTypes();
             Type[] genericParameterTypes = method.getGenericParameterTypes();
-            if (methodName.startsWith("get") && genericParameterTypes.length == 0 && !void.class.equals(genericReturnType)) {
-                getBeanProperty(beanProperties, methodName, returnType, genericReturnType).setGetter(method);
-            } else if (methodName.startsWith("set") && genericParameterTypes.length == 1 && void.class.equals(genericReturnType)) {
-                getBeanProperty(beanProperties, methodName, parameterTypes[0], genericParameterTypes[0]).setSetter(method);
+
+            if (parameterTypes.length == 0 && !void.class.equals(genericReturnType)) {
+                if (methodName.startsWith("get")) {
+                    getBeanProperty(beanProperties, StringUtils.capitalize(methodName.substring(3)), returnType, genericReturnType).setGetter(method);
+                } else if (methodName.startsWith("is")) {
+                    getBeanProperty(beanProperties, StringUtils.capitalize(methodName.substring(2)), returnType, genericReturnType).setGetter(method);
+                }
+            } else if (parameterTypes.length == 1 && void.class.equals(genericReturnType) && methodName.startsWith("set")) {
+                getBeanProperty(beanProperties, StringUtils.capitalize(methodName.substring(3)), parameterTypes[0], genericParameterTypes[0]).setSetter(method);
             } else {
                 throw new CdoManagerException("Method " + method.toGenericString() + " is neither Getter nor Setter.");
             }
         }
     }
 
-    private BeanProperty getBeanProperty(Map<String, BeanProperty> beanProperties, String methodName, Class<?> type, Type genericType) {
-        String name = StringUtils.capitalize(methodName.substring(3));
-        BeanProperty beanProperty = beanProperties.get(name);
+    private BeanProperty getBeanProperty(Map<String, BeanProperty> beanProperties, String propertyName, Class<?> type, Type genericType) {
+        BeanProperty beanProperty = beanProperties.get(propertyName);
         if (beanProperty == null) {
-            beanProperty = new BeanProperty(name, type, genericType);
+            beanProperty = new BeanProperty(propertyName, type, genericType);
             beanProperties.put(beanProperty.getName(), beanProperty);
         }
         return beanProperty;
