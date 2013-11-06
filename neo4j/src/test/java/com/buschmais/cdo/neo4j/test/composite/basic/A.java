@@ -23,4 +23,8 @@ public interface A extends Version {
 
     Set<B> getSetOfB();
 
+    Enumeration getEnumeratedValue();
+
+    void setEnumeratedValue(Enumeration enumeration);
+
 }

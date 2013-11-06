@@ -8,19 +8,30 @@ public class DependencyResolver<T> {
     private Collection<T> elements;
     private DependencyProvider<T> dependencyProvider;
 
-    public DependencyResolver(Collection<T> elements, DependencyProvider<T> dependencyProvider) {
+    private DependencyResolver(Collection<T> elements, DependencyProvider<T> dependencyProvider) {
         this.elements = elements;
         this.dependencyProvider = dependencyProvider;
     }
 
+    public static <T> DependencyResolver<T> newInstance(Collection<T> elements, DependencyProvider<T> dependencyProvider) {
+        return new DependencyResolver<T>(elements, dependencyProvider);
+    }
+
     public List<T> resolve() {
         blockedBy = new HashMap<>();
-        for (T dependent : elements) {
-            Set<T> dependencies = dependencyProvider.getDependencies(dependent);
-            blockedBy.put(dependent, dependencies);
+        LinkedHashSet<T> queue = new LinkedHashSet<>();
+        Set<T> allElements = new HashSet<>();
+        queue.addAll(elements);
+        while (!queue.isEmpty()) {
+            T element = queue.iterator().next();
+            Set<T> dependencies = dependencyProvider.getDependencies(element);
+            queue.addAll(dependencies);
+            blockedBy.put(element, dependencies);
+            queue.remove(element);
+            allElements.add(element);
         }
         List<T> result = new LinkedList<>();
-        for (T element : elements) {
+        for (T element : allElements) {
             resolve(element, result);
         }
         return result;
@@ -33,8 +44,8 @@ public class DependencyResolver<T> {
                 resolve(dependency, result);
             }
             blockedBy.remove(element);
+            result.add(element);
         }
-        result.add(element);
     }
 
     public interface DependencyProvider<T> {

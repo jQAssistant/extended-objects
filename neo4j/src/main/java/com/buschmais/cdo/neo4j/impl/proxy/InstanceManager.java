@@ -30,6 +30,8 @@ public class InstanceManager {
                 if (getter != null) {
                     if (propertyMetadata instanceof PrimitivePropertyMetadata) {
                         addProxyMethod(new PrimitivePropertyGetMethod((PrimitivePropertyMetadata) propertyMetadata, this), getter);
+                    } else if (propertyMetadata instanceof EnumPropertyMetadata) {
+                        addProxyMethod(new EnumPropertyGetMethod((EnumPropertyMetadata) propertyMetadata, this), getter);
                     } else if (propertyMetadata instanceof ReferencePropertyMetadata) {
                         addProxyMethod(new ReferencePropertyGetMethod((ReferencePropertyMetadata) propertyMetadata, this), getter);
                     } else if (propertyMetadata instanceof CollectionPropertyMetadata) {
@@ -40,6 +42,8 @@ public class InstanceManager {
                 if (setter != null) {
                     if (propertyMetadata instanceof PrimitivePropertyMetadata) {
                         addProxyMethod(new PrimitivePropertySetMethod((PrimitivePropertyMetadata) propertyMetadata, this), setter);
+                    } else if (propertyMetadata instanceof EnumPropertyMetadata) {
+                        addProxyMethod(new EnumPropertySetMethod((EnumPropertyMetadata) propertyMetadata, this), setter);
                     } else if (propertyMetadata instanceof ReferencePropertyMetadata) {
                         addProxyMethod(new ReferencePropertySetMethod((ReferencePropertyMetadata) propertyMetadata, this), setter);
                     } else if (propertyMetadata instanceof CollectionPropertyMetadata) {

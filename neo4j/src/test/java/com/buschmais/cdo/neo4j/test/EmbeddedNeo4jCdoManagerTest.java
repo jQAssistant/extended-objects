@@ -6,6 +6,7 @@ import com.buschmais.cdo.neo4j.impl.EmbeddedNeo4jCdoManagerFactoryImpl;
 import com.buschmais.cdo.neo4j.test.composite.basic.A;
 import com.buschmais.cdo.neo4j.test.composite.basic.B;
 import com.buschmais.cdo.neo4j.test.composite.basic.C;
+import com.buschmais.cdo.neo4j.test.composite.basic.Enumeration;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -67,6 +68,25 @@ public class EmbeddedNeo4jCdoManagerTest {
         cdoManager.commit();
         cdoManager.begin();
         assertThat(a.getString(), equalTo(null));
+        cdoManager.commit();
+    }
+
+    @Test
+    public void enumerationProperty() {
+        cdoManager.begin();
+        A a = cdoManager.create(A.class);
+        a.setEnumeratedValue(Enumeration.FIRST);
+        cdoManager.commit();
+        cdoManager.begin();
+        assertThat(a.getEnumeratedValue(), equalTo(Enumeration.FIRST));
+        a.setEnumeratedValue(Enumeration.SECOND);
+        cdoManager.commit();
+        cdoManager.begin();
+        assertThat(a.getEnumeratedValue(), equalTo(Enumeration.SECOND));
+        a.setEnumeratedValue(null);
+        cdoManager.commit();
+        cdoManager.begin();
+        assertThat(a.getEnumeratedValue(), equalTo(null));
         cdoManager.commit();
     }
 

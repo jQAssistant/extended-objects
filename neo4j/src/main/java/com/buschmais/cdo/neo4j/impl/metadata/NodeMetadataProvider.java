@@ -20,36 +20,26 @@ import java.util.*;
 public class NodeMetadataProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeMetadata.class);
-
     private Set<org.neo4j.graphdb.Label> allLabels = new HashSet<>();
     private Map<Class<?>, NodeMetadata> nodeMetadataByType = new HashMap<>();
     private Map<Set<org.neo4j.graphdb.Label>, NodeMetadata> nodeMetadataByAggregatedLabels = new HashMap<>();
 
     public NodeMetadataProvider(Collection<Class<?>> types) {
-        SortedSet<Class<?>> sortedTypes = new TreeSet<>(new Comparator<Class<?>>() {
+        DependencyResolver.DependencyProvider<Class<?>> classDependencyProvider = new DependencyResolver.DependencyProvider<Class<?>>() {
+
             @Override
-            public int compare(Class<?> o1, Class<?> o2) {
-                if (o1.equals(o2)) {
-                    return 0;
-                }
-                if (o1.isAssignableFrom(o2)) {
-                    return -1;
-                } else if (o2.isAssignableFrom(o1)) {
-                    return 1;
-                }
-                return o1.getName().compareTo(o2.getName());
+            public Set<Class<?>> getDependencies(Class<?> dependent) {
+                return new HashSet<>(Arrays.asList(dependent.getInterfaces()));
             }
-        });
-        for (Class<?> type : types) {
-            addImplementedInterfaces(type, sortedTypes);
-        }
+        };
+        List<Class<?>> sortedTypes = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
         LOGGER.info("Registering types {}", sortedTypes);
         Map<Class<?>, Map<String, BeanProperty>> typeProperties = new HashMap<>();
         for (Class<?> type : sortedTypes) {
             typeProperties.put(type, getBeanProperties(type));
         }
         for (Class<?> type : sortedTypes) {
-            createMetadata(type, typeProperties.get(type), sortedTypes);
+            createMetadata(type, typeProperties.get(type), typeProperties.keySet());
         }
     }
 
@@ -96,6 +86,8 @@ public class NodeMetadataProvider {
                 propertyMetadata = new CollectionPropertyMetadata(beanProperty, getRelationshipType(beanProperty));
             } else if (types.contains(beanProperty.getType())) {
                 propertyMetadata = new ReferencePropertyMetadata(beanProperty, getRelationshipType(beanProperty));
+            } else if (Enum.class.isAssignableFrom(beanProperty.getType())) {
+                propertyMetadata = new EnumPropertyMetadata(beanProperty, (Class<? extends Enum<?>>) beanProperty.getType());
             } else {
                 Property property = beanProperty.getGetter().getAnnotation(Property.class);
                 String propertyName = property != null ? property.value() : beanProperty.getName();
