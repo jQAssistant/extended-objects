@@ -1,10 +1,7 @@
 package com.buschmais.cdo.neo4j.impl.metadata;
 
 import com.buschmais.cdo.api.CdoManagerException;
-import com.buschmais.cdo.neo4j.annotation.Indexed;
-import com.buschmais.cdo.neo4j.annotation.Label;
-import com.buschmais.cdo.neo4j.annotation.Property;
-import com.buschmais.cdo.neo4j.annotation.Relation;
+import com.buschmais.cdo.neo4j.annotation.*;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
@@ -67,13 +64,6 @@ public class NodeMetadataProvider {
         return allLabels;
     }
 
-    private void addImplementedInterfaces(Class<?> type, Set<Class<?>> types) {
-        types.add(type);
-        for (Class<?> implementedInterface : type.getInterfaces()) {
-            addImplementedInterfaces(implementedInterface, types);
-        }
-    }
-
     private void createMetadata(Class<?> type, Map<String, BeanProperty> beanProperties, Set<Class<?>> types) {
         LOGGER.info("Creating node meta for {}", type.getName());
         Map<String, AbstractPropertyMetadata> propertyMetadataMap = new HashMap<>();
@@ -98,6 +88,10 @@ public class NodeMetadataProvider {
             }
             propertyMetadataMap.put(propertyMetadata.getBeanProperty().getName(), propertyMetadata);
         }
+        UsingIndexOf usingIndexOfAnnotation = type.getAnnotation(UsingIndexOf.class);
+        if (indexedProperty == null && usingIndexOfAnnotation != null) {
+            indexedProperty = nodeMetadataByType.get(usingIndexOfAnnotation.value()).getIndexedProperty();
+        }
         Label labelAnnotation = type.getAnnotation(Label.class);
         Set<org.neo4j.graphdb.Label> aggregatedLabels = new HashSet<>();
         org.neo4j.graphdb.Label label = null;
@@ -118,7 +112,10 @@ public class NodeMetadataProvider {
         NodeMetadata nodeMetadata = new NodeMetadata(type, superNodeMetadataSet, label, aggregatedLabels, propertyMetadataMap, indexedProperty);
         nodeMetadataByType.put(type, nodeMetadata);
         if (label != null) {
-            nodeMetadataByAggregatedLabels.put(aggregatedLabels, nodeMetadata);
+            NodeMetadata conflictingMetadata = nodeMetadataByAggregatedLabels.put(aggregatedLabels, nodeMetadata);
+            if (conflictingMetadata != null) {
+                throw new CdoManagerException("Types " + nodeMetadata.getType().getName() + " and " + conflictingMetadata.getType().getName() + " use the same set of labels: " + aggregatedLabels);
+            }
         }
     }
 

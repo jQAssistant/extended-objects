@@ -50,12 +50,13 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     @Override
     public <T> Iterable<T> find(Class<T> type, Object value) {
         NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
-        PrimitivePropertyMetadata indexedProperty = nodeMetadata.getIndexedProperty();
-        if (indexedProperty == null) {
-            throw new CdoManagerException("Type " + type.getName() + " has no indexed property.");
-        }
         Label label = nodeMetadata.getLabel();
         if (label == null) {
+            throw new CdoManagerException("Type " + type.getName() + " has label.");
+        }
+        PrimitivePropertyMetadata indexedProperty = nodeMetadata.getIndexedProperty();
+        if (indexedProperty == null) {
+            throw new CdoManagerException("Type " + nodeMetadata.getType().getName() + " has no indexed property.");
         }
         final ResourceIterable<Node> nodesByLabelAndProperty = database.findNodesByLabelAndProperty(label, indexedProperty.getPropertyName(), value);
         return new Iterable<T>() {

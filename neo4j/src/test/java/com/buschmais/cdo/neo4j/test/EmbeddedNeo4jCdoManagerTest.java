@@ -3,10 +3,7 @@ package com.buschmais.cdo.neo4j.test;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.neo4j.impl.EmbeddedNeo4jCdoManagerFactoryImpl;
-import com.buschmais.cdo.neo4j.test.composite.basic.A;
-import com.buschmais.cdo.neo4j.test.composite.basic.B;
-import com.buschmais.cdo.neo4j.test.composite.basic.C;
-import com.buschmais.cdo.neo4j.test.composite.basic.Enumeration;
+import com.buschmais.cdo.neo4j.test.composite.basic.*;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -26,7 +23,7 @@ public class EmbeddedNeo4jCdoManagerTest {
 
     @BeforeClass
     public static void createNodeManagerFactory() throws MalformedURLException {
-        cdoManagerFactory = new EmbeddedNeo4jCdoManagerFactoryImpl(new File("target/neo4j").toURI().toURL(), A.class, B.class, C.class);
+        cdoManagerFactory = new EmbeddedNeo4jCdoManagerFactoryImpl(new File("target/neo4j").toURI().toURL(), A.class, B.class, C.class, D.class);
     }
 
     @AfterClass
@@ -40,15 +37,6 @@ public class EmbeddedNeo4jCdoManagerTest {
         cdoManager.begin();
         cdoManager.executeQuery("MATCH (n)-[r]-(d) DELETE r");
         cdoManager.executeQuery("MATCH (n) DELETE n");
-        cdoManager.commit();
-    }
-
-    @Test
-    public void composite() {
-        cdoManager.begin();
-        A a = cdoManager.create(A.class);
-        B b = cdoManager.create(B.class);
-        C c = cdoManager.create(C.class);
         cdoManager.commit();
     }
 
@@ -143,7 +131,18 @@ public class EmbeddedNeo4jCdoManagerTest {
     }
 
     @Test
-    public void anonymousSuperclass() {
+    public void useIndexOf() {
+        cdoManager.begin();
+        A a1 = cdoManager.create(D.class);
+        a1.setIndex("1");
+        cdoManager.commit();
+        cdoManager.begin();
+        assertThat(cdoManager.find(D.class, "1").iterator().next(), equalTo(a1));
+        cdoManager.commit();
+    }
+
+    @Test
+         public void anonymousSuperclass() {
         cdoManager.begin();
         C c = cdoManager.create(C.class);
         c.setIndex("1");
