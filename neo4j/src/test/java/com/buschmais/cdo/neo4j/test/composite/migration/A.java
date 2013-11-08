@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.test.composite.ambiguous;
+package com.buschmais.cdo.neo4j.test.composite.migration;
 
 import com.buschmais.cdo.neo4j.annotation.Indexed;
 import com.buschmais.cdo.neo4j.annotation.Label;
@@ -10,9 +10,5 @@ public interface A {
     String getIndex();
 
     void setIndex(String index);
-
-    Enumeration getEnumeration();
-
-    void setEnumeration(Enumeration enumeration);
 
 }

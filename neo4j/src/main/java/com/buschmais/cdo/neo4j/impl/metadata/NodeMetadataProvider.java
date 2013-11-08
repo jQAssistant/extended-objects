@@ -47,7 +47,7 @@ public class NodeMetadataProvider {
     public NodeMetadata getNodeMetadata(Class<?> type) {
         NodeMetadata nodeMetadata = nodeMetadataByType.get(type);
         if (nodeMetadata == null) {
-            throw new CdoManagerException("Cannot find metadata for type " + type.getName() + ".");
+            throw new CdoManagerException("Cannot resolve metadata for type " + type.getName() + ".");
         }
         return nodeMetadata;
     }
@@ -55,7 +55,7 @@ public class NodeMetadataProvider {
     public NodeMetadata getNodeMetadata(Set<org.neo4j.graphdb.Label> aggregatedLabels) {
         NodeMetadata nodeMetadata = nodeMetadataByAggregatedLabels.get(aggregatedLabels);
         if (nodeMetadata == null) {
-            throw new CdoManagerException("Cannot find metadata for labels  " + aggregatedLabels + ".");
+            throw new CdoManagerException("Cannot resolve node metadata for labels  " + aggregatedLabels + ".");
         }
         return nodeMetadata;
     }
@@ -65,7 +65,7 @@ public class NodeMetadataProvider {
     }
 
     private void createMetadata(Class<?> type, Map<String, BeanProperty> beanProperties, Set<Class<?>> types) {
-        LOGGER.info("Creating node meta for {}", type.getName());
+        LOGGER.info("Creating node metadata for {}", type.getName());
         Map<String, AbstractPropertyMetadata> propertyMetadataMap = new HashMap<>();
         PrimitivePropertyMetadata indexedProperty = null;
         for (BeanProperty beanProperty : beanProperties.values()) {
