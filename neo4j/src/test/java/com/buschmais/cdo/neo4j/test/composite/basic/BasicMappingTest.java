@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.test;
+package com.buschmais.cdo.neo4j.test.composite.basic;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
@@ -16,7 +16,7 @@ import java.util.Set;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class EmbeddedNeo4jCdoManagerTest {
+public class BasicMappingTest {
 
     private static CdoManagerFactory cdoManagerFactory;
     private CdoManager cdoManager;
@@ -142,7 +142,7 @@ public class EmbeddedNeo4jCdoManagerTest {
     }
 
     @Test
-         public void anonymousSuperclass() {
+    public void anonymousSuperclass() {
         cdoManager.begin();
         C c = cdoManager.create(C.class);
         c.setIndex("1");
