@@ -95,6 +95,31 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     }
 
     @Override
+    public <T, M> M migrate(T instance, Class<M> migrationTarget, MigrationHandler<T, M>... migrationHandlers) {
+        Node node = instanceManager.getNode(instance);
+        Class<T> type = instanceManager.getType(node);
+        NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
+        NodeMetadata targetMetadata = nodeMetadataProvider.getNodeMetadata(migrationTarget);
+        Set<Label> labelsToRemove = new HashSet<>(nodeMetadata.getAggregatedLabels());
+        labelsToRemove.removeAll(targetMetadata.getAggregatedLabels());
+        for (Label label : labelsToRemove) {
+            node.removeLabel(label);
+        }
+        Set<Label> labelsToAdd = new HashSet<>(targetMetadata.getAggregatedLabels());
+        labelsToAdd.removeAll(nodeMetadata.getAggregatedLabels());
+        for (Label label : labelsToAdd) {
+            node.addLabel(label);
+        }
+        instanceManager.removeInstance(instance);
+        M migratedInstance = instanceManager.getInstance(node);
+        for (MigrationHandler<T, M> migrationHandler : migrationHandlers) {
+            migrationHandler.migrate(instance, migratedInstance);
+        }
+        instanceManager.destroyInstance(instance);
+        return migratedInstance;
+    }
+
+    @Override
     public <T> void remove(T instance) {
         Node node = instanceManager.getNode(instance);
         node.delete();
@@ -114,6 +139,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
 
     @Override
     public void close() {
+        instanceManager.close();
     }
 
     @Override

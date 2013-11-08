@@ -16,6 +16,8 @@ public interface CdoManager {
 
     <T> T create(Class<T> type);
 
+    <T, M> M migrate(T instance, Class<M> migrationTarget, MigrationHandler<T, M>... migrationHandlers);
+
     <T> void remove(T instance);
 
     QueryResult executeQuery(String query);
@@ -23,4 +25,8 @@ public interface CdoManager {
     QueryResult executeQuery(String query, Map<String, Object> parameters);
 
     void close();
+
+    interface MigrationHandler<T, M> {
+        void migrate(T instance, M target);
+    }
 }

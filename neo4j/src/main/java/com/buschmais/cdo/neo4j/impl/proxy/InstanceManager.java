@@ -2,7 +2,6 @@ package com.buschmais.cdo.neo4j.impl.proxy;
 
 import com.buschmais.cdo.api.CdoManagerException;
 import com.buschmais.cdo.neo4j.impl.metadata.*;
-import com.buschmais.cdo.neo4j.impl.proxy.NodeInvocationHandler;
 import com.buschmais.cdo.neo4j.impl.proxy.method.*;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
@@ -62,7 +61,7 @@ public class InstanceManager {
         return getInstance(node, type);
     }
 
-    private <T> Class<T> getType(Node node) {
+    public <T> Class<T> getType(Node node) {
         Set<Label> labels = new HashSet<>();
         for (Label label : node.getLabels()) {
             labels.add(label);
@@ -82,21 +81,34 @@ public class InstanceManager {
         return type.cast(instance);
     }
 
+    public <T> void removeInstance(T instance) {
+        Node node = getNode(instance);
+        instanceCache.remove(Long.valueOf(node.getId()));
+    }
+
+    public <T> void destroyInstance(T instance) {
+        getInvocationHandler(instance).close();
+    }
+
     public <T> boolean isNode(T instance) {
         return Proxy.isProxyClass(instance.getClass()) && Proxy.getInvocationHandler(instance) instanceof NodeInvocationHandler;
     }
 
     public <T> Node getNode(T instance) {
-        InvocationHandler invocationHandler = Proxy.getInvocationHandler(instance);
-        if (!(invocationHandler instanceof NodeInvocationHandler)) {
-            throw new CdoManagerException("Instance " + instance + " is not a " + NodeInvocationHandler.class.getName());
-        }
-        return ((NodeInvocationHandler) invocationHandler).getNode();
+        NodeInvocationHandler invocationHandler = getInvocationHandler(instance);
+        return invocationHandler.getNode();
     }
 
     public Object invoke(Node node, Method method, Object[] args) {
         ProxyMethod proxyMethod = proxyMethods.get(method);
         return proxyMethod.invoke(node, args);
+    }
+
+    public void close() {
+        for (Object instance : instanceCache.values()) {
+            destroyInstance(instance);
+        }
+        instanceCache.clear();
     }
 
     private void addMethod(ProxyMethod proxyMethod, Class<?> type, String name, Class<?>... argumentTypes) {
@@ -113,6 +125,14 @@ public class InstanceManager {
         if (method != null) {
             proxyMethods.put(method, proxyMethod);
         }
+    }
+
+    private <T> NodeInvocationHandler getInvocationHandler(T instance) {
+        InvocationHandler invocationHandler = Proxy.getInvocationHandler(instance);
+        if (!(invocationHandler instanceof NodeInvocationHandler)) {
+            throw new CdoManagerException("Instance " + instance + " is not a " + NodeInvocationHandler.class.getName());
+        }
+        return (NodeInvocationHandler) invocationHandler;
     }
 
 }

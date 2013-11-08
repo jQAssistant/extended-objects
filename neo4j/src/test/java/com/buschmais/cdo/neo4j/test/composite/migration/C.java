@@ -2,11 +2,11 @@ package com.buschmais.cdo.neo4j.test.composite.migration;
 
 import com.buschmais.cdo.neo4j.annotation.Label;
 
-@Label("A")
-public interface A {
+@Label("C")
+public interface C {
 
-    String getValue();
+    String getName();
 
-    void setValue(String value);
+    void setName(String name);
 
 }
