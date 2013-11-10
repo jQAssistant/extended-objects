@@ -5,6 +5,7 @@ import com.buschmais.cdo.neo4j.annotation.Label;
 import com.buschmais.cdo.neo4j.annotation.Property;
 import com.buschmais.cdo.neo4j.annotation.Relation;
 
+import java.util.List;
 import java.util.Set;
 
 @Label("A")
@@ -37,6 +38,11 @@ public interface A extends Version {
 
     @Relation("MAPPED_SET_OF_B")
     Set<B> getMappedSetOfB();
+
+    List<B> getListOfB();
+
+    @Relation("MAPPED_LIST_OF_B")
+    List<B> getMappedListOfB();
 
     Enumeration getEnumeratedValue();
 

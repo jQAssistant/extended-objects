@@ -6,6 +6,7 @@ import com.buschmais.cdo.neo4j.test.mapping.composite.A;
 import com.buschmais.cdo.neo4j.test.mapping.composite.B;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -20,7 +21,7 @@ public class CollectionPropertyMappingTest extends AbstractCdoManagerTest {
     }
 
     @Test
-    public void collectionProperty() {
+    public void setProperty() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
         A a = cdoManager.create(A.class);
@@ -37,7 +38,7 @@ public class CollectionPropertyMappingTest extends AbstractCdoManagerTest {
     }
 
     @Test
-    public void mappedCollectionProperty() {
+    public void mappedSetProperty() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
         A a = cdoManager.create(A.class);
@@ -50,4 +51,35 @@ public class CollectionPropertyMappingTest extends AbstractCdoManagerTest {
         cdoManager.commit();
     }
 
+    @Test
+    public void listProperty() {
+        CdoManager cdoManager = getCdoManager();
+        cdoManager.begin();
+        A a = cdoManager.create(A.class);
+        B b = cdoManager.create(B.class);
+        List<B> listOfB = a.getListOfB();
+        assertThat(listOfB.add(b), equalTo(true));
+        assertThat(listOfB.add(b), equalTo(true));
+        assertThat(listOfB.size(), equalTo(2));
+        cdoManager.commit();
+        cdoManager.begin();
+        assertThat(listOfB.remove(b), equalTo(true));
+        assertThat(listOfB.remove(b), equalTo(true));
+        assertThat(listOfB.remove(b), equalTo(false));
+        cdoManager.commit();
+    }
+
+    @Test
+    public void mappedListProperty() {
+        CdoManager cdoManager = getCdoManager();
+        cdoManager.begin();
+        A a = cdoManager.create(A.class);
+        B b = cdoManager.create(B.class);
+        a.getMappedListOfB().add(b);
+        cdoManager.commit();
+        cdoManager.begin();
+        TestResult result = executeQuery("match (a:A)-[:MAPPED_LIST_OF_B]->(b) return b");
+        assertThat(result.getColumn("b"), hasItem(b));
+        cdoManager.commit();
+    }
 }
