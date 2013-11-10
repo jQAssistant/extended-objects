@@ -29,13 +29,13 @@ public class NodeMetadataProvider {
                 return new HashSet<>(Arrays.asList(dependent.getInterfaces()));
             }
         };
-        List<Class<?>> sortedTypes = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
-        LOGGER.info("Registering types {}", sortedTypes);
+        List<Class<?>> allTypes = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
+        LOGGER.info("Processing types {}", allTypes);
         Map<Class<?>, Map<String, BeanProperty>> typeProperties = new HashMap<>();
-        for (Class<?> type : sortedTypes) {
+        for (Class<?> type : allTypes) {
             typeProperties.put(type, getBeanProperties(type));
         }
-        for (Class<?> type : sortedTypes) {
+        for (Class<?> type : allTypes) {
             createMetadata(type, typeProperties.get(type), typeProperties.keySet());
         }
     }
@@ -65,7 +65,7 @@ public class NodeMetadataProvider {
     }
 
     private void createMetadata(Class<?> type, Map<String, BeanProperty> beanProperties, Set<Class<?>> types) {
-        LOGGER.info("Creating node metadata for {}", type.getName());
+        LOGGER.debug("Processing type {}", type.getName());
         Map<String, AbstractPropertyMetadata> propertyMetadataMap = new HashMap<>();
         PrimitivePropertyMetadata indexedProperty = null;
         for (BeanProperty beanProperty : beanProperties.values()) {
@@ -104,12 +104,10 @@ public class NodeMetadataProvider {
         for (Class<?> implementedInterface : type.getInterfaces()) {
             NodeMetadata superNodeMetadata = nodeMetadataByType.get(implementedInterface);
             superNodeMetadataSet.add(superNodeMetadata);
-            org.neo4j.graphdb.Label superNodeMetadataLabel = superNodeMetadata.getLabel();
-            if (superNodeMetadataLabel != null) {
-                aggregatedLabels.add(superNodeMetadataLabel);
-            }
+            aggregatedLabels.addAll(superNodeMetadata.getAggregatedLabels());
         }
         NodeMetadata nodeMetadata = new NodeMetadata(type, superNodeMetadataSet, label, aggregatedLabels, propertyMetadataMap, indexedProperty);
+        LOGGER.info("Registering node metadata for type " + type.getName() + ", labels=" + aggregatedLabels);
         nodeMetadataByType.put(type, nodeMetadata);
         if (label != null) {
             NodeMetadata conflictingMetadata = nodeMetadataByAggregatedLabels.put(aggregatedLabels, nodeMetadata);
