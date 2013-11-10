@@ -1,9 +1,10 @@
-package com.buschmais.cdo.neo4j.test.composite.migration;
+package com.buschmais.cdo.neo4j.test.migration;
 
 import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.neo4j.test.composite.AbstractCdoManagerTest;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
+import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.cdo.neo4j.test.migration.composite.A;
+import com.buschmais.cdo.neo4j.test.migration.composite.B;
+import com.buschmais.cdo.neo4j.test.migration.composite.C;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
