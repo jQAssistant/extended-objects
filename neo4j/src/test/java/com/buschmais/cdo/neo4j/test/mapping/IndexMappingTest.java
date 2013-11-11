@@ -11,7 +11,6 @@ import static org.junit.Assert.assertThat;
 
 public class IndexMappingTest extends AbstractCdoManagerTest {
 
-
     @Override
     protected Class<?>[] getTypes() {
         return new Class<?>[]{A.class,D.class};
