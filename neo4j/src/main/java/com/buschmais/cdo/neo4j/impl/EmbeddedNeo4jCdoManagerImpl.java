@@ -10,12 +10,16 @@ import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
 
 public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmbeddedNeo4jCdoManagerImpl.class);
 
     private final NodeMetadataProvider nodeMetadataProvider;
     private final InstanceManager instanceManager;
@@ -48,7 +52,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     }
 
     @Override
-    public <T> Iterable<T> find(Class<T> type, Object value) {
+    public <T> Iterable<T> find(final Class<T> type, final Object value) {
         NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
         Label label = nodeMetadata.getLabel();
         if (label == null) {
@@ -72,7 +76,8 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
 
                     @Override
                     public T next() {
-                        return instanceManager.getInstance(iterator.next());
+                        Node node = iterator.next();
+                        return instanceManager.getInstance(node);
                     }
 
                     @Override

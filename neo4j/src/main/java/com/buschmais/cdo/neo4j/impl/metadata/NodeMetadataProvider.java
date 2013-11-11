@@ -71,8 +71,6 @@ public class NodeMetadataProvider {
         for (BeanProperty beanProperty : beanProperties.values()) {
             AbstractPropertyMetadata propertyMetadata;
             if (Collection.class.isAssignableFrom(beanProperty.getType())) {
-                ParameterizedType parameterizedType = (ParameterizedType) beanProperty.getGenericType();
-                Type elementType = parameterizedType.getActualTypeArguments()[0];
                 propertyMetadata = new CollectionPropertyMetadata(beanProperty, getRelationshipType(beanProperty));
             } else if (types.contains(beanProperty.getType())) {
                 propertyMetadata = new ReferencePropertyMetadata(beanProperty, getRelationshipType(beanProperty));
@@ -81,8 +79,9 @@ public class NodeMetadataProvider {
             } else {
                 Property property = beanProperty.getGetter().getAnnotation(Property.class);
                 String propertyName = property != null ? property.value() : beanProperty.getName();
-                propertyMetadata = new PrimitivePropertyMetadata(beanProperty, propertyName);
-                if (beanProperty.getGetter().isAnnotationPresent(Indexed.class)) {
+                boolean indexed = beanProperty.getGetter().isAnnotationPresent(Indexed.class);
+                propertyMetadata = new PrimitivePropertyMetadata(beanProperty, propertyName, indexed);
+                if (indexed) {
                     indexedProperty = (PrimitivePropertyMetadata) propertyMetadata;
                 }
             }
