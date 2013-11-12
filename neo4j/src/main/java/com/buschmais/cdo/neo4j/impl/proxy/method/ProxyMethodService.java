@@ -54,7 +54,7 @@ public class ProxyMethodService {
         }
         addMethod(new HashCodeMethod(), Object.class, "hashCode");
         addMethod(new EqualsMethod(instanceManager), Object.class, "equals", Object.class);
-        addMethod(new ToStringMethod(), Object.class, "toString");
+        addMethod(new ToStringMethod(instanceManager), Object.class, "toString");
     }
 
     public Object invoke(Node node, Method method, Object[] args) {

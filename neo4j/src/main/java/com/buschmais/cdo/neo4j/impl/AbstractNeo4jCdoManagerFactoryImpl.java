@@ -10,11 +10,15 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.schema.IndexDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.Arrays;
 
 public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFactory {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNeo4jCdoManagerFactoryImpl.class);
 
     private URL url;
     private NodeMetadataProvider nodeMetadataProvider;
@@ -23,10 +27,13 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFa
     public AbstractNeo4jCdoManagerFactoryImpl(URL url, Class<?>... entities) {
         this.url = url;
         nodeMetadataProvider = new NodeMetadataProvider(Arrays.asList(entities));
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        classLoader = contextClassLoader != null ? contextClassLoader : entities.getClass().getClassLoader();
+        LOGGER.info("Using class loader '{}'.", contextClassLoader.toString());
         classLoader = new ClassLoader() {
             @Override
             public Class<?> loadClass(String name) throws ClassNotFoundException {
-                return super.loadClass(name);
+                return contextClassLoader.loadClass(name);
             }
         };
     }
@@ -55,8 +62,10 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFa
                     }
                 }
                 if (indexedProperty != null && index == null) {
+                    LOGGER.info("Creating index for label {} on property '{}'.", label, indexedProperty.getPropertyName());
                     graphDatabaseService.schema().indexFor(label).on(indexedProperty.getPropertyName()).create();
                 } else if (indexedProperty == null && index != null) {
+                    LOGGER.info("Dropping index for label {} on properties '{}'.", label, index.getPropertyKeys());
                     index.drop();
                 }
             }

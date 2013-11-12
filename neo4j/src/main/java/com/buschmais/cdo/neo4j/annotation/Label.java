@@ -10,4 +10,6 @@ import java.lang.annotation.Target;
 public @interface Label {
 
     String value();
+
+    Class<?> usingIndexOf() default Object.class;
 }

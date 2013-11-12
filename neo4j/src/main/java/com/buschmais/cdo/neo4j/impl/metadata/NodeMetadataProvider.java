@@ -1,7 +1,10 @@
 package com.buschmais.cdo.neo4j.impl.metadata;
 
 import com.buschmais.cdo.api.CdoManagerException;
-import com.buschmais.cdo.neo4j.annotation.*;
+import com.buschmais.cdo.neo4j.annotation.Indexed;
+import com.buschmais.cdo.neo4j.annotation.Label;
+import com.buschmais.cdo.neo4j.annotation.Property;
+import com.buschmais.cdo.neo4j.annotation.Relation;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
@@ -10,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -87,10 +89,6 @@ public class NodeMetadataProvider {
             }
             propertyMetadataMap.put(propertyMetadata.getBeanProperty().getName(), propertyMetadata);
         }
-        UsingIndexOf usingIndexOfAnnotation = type.getAnnotation(UsingIndexOf.class);
-        if (indexedProperty == null && usingIndexOfAnnotation != null) {
-            indexedProperty = nodeMetadataByType.get(usingIndexOfAnnotation.value()).getIndexedProperty();
-        }
         Label labelAnnotation = type.getAnnotation(Label.class);
         Set<org.neo4j.graphdb.Label> aggregatedLabels = new HashSet<>();
         org.neo4j.graphdb.Label label = null;
@@ -98,6 +96,10 @@ public class NodeMetadataProvider {
             label = DynamicLabel.label(labelAnnotation.value());
             aggregatedLabels.add(label);
             allLabels.add(label);
+            Class<?> usingIndexOf = labelAnnotation.usingIndexOf();
+            if (!Object.class.equals(usingIndexOf)) {
+                indexedProperty = nodeMetadataByType.get(usingIndexOf).getIndexedProperty();
+            }
         }
         Set<NodeMetadata> superNodeMetadataSet = new HashSet<>();
         for (Class<?> implementedInterface : type.getInterfaces()) {
