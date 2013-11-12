@@ -19,7 +19,6 @@ import java.util.*;
 public class NodeMetadataProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeMetadata.class);
-    private Set<org.neo4j.graphdb.Label> allLabels = new HashSet<>();
     private Map<Class<?>, NodeMetadata> nodeMetadataByType = new HashMap<>();
     private Map<org.neo4j.graphdb.Label, NodeMetadata> nodeMetadataByAggregatedLabels = new HashMap<>();
 
@@ -32,7 +31,7 @@ public class NodeMetadataProvider {
             }
         };
         List<Class<?>> allTypes = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
-        LOGGER.info("Processing types {}", allTypes);
+        LOGGER.debug("Processing types {}", allTypes);
         Map<Class<?>, Map<String, BeanProperty>> typeProperties = new HashMap<>();
         for (Class<?> type : allTypes) {
             typeProperties.put(type, getBeanProperties(type));
@@ -84,12 +83,16 @@ public class NodeMetadataProvider {
             propertyMetadataMap.put(propertyMetadata.getBeanProperty().getName(), propertyMetadata);
         }
         Label labelAnnotation = type.getAnnotation(Label.class);
-        Set<org.neo4j.graphdb.Label> aggregatedLabels = new HashSet<>();
+        SortedSet<org.neo4j.graphdb.Label> aggregatedLabels = new TreeSet<>(new Comparator<org.neo4j.graphdb.Label>() {
+            @Override
+            public int compare(org.neo4j.graphdb.Label o1, org.neo4j.graphdb.Label o2) {
+                return o1.name().compareTo(o2.name());
+            }
+        });
         org.neo4j.graphdb.Label label = null;
         if (labelAnnotation != null) {
             label = DynamicLabel.label(labelAnnotation.value());
             aggregatedLabels.add(label);
-            allLabels.add(label);
             Class<?> usingIndexOf = labelAnnotation.usingIndexOf();
             if (!Object.class.equals(usingIndexOf)) {
                 indexedProperty = nodeMetadataByType.get(usingIndexOf).getIndexedProperty();
@@ -102,7 +105,7 @@ public class NodeMetadataProvider {
             aggregatedLabels.addAll(superNodeMetadata.getAggregatedLabels());
         }
         NodeMetadata nodeMetadata = new NodeMetadata(type, superNodeMetadataSet, label, aggregatedLabels, propertyMetadataMap, indexedProperty);
-        LOGGER.info("Registering node metadata for type " + type.getName() + ", labels=" + aggregatedLabels);
+        LOGGER.info("Registering {}, labels={}.", type.getName(), aggregatedLabels);
         nodeMetadataByType.put(type, nodeMetadata);
         if (label != null) {
             NodeMetadata conflictingMetadata = nodeMetadataByAggregatedLabels.put(label, nodeMetadata);
