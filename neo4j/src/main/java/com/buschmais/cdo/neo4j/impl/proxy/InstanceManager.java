@@ -9,10 +9,7 @@ import org.neo4j.graphdb.Node;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.*;
 
 public class InstanceManager {
 
@@ -29,28 +26,47 @@ public class InstanceManager {
     }
 
     public <T> T getInstance(Node node) {
-        Class<T> type = getType(node);
-        return getInstance(node, type);
+        List<Class<?>> types = getTypes(node);
+        return getInstance(node, types);
     }
 
-    public <T> Class<T> getType(Node node) {
-        Set<Label> labels = new HashSet<>();
+    public List<Class<?>> getTypes(Node node) {
+        Set<Class<?>> types = new HashSet<>();
         for (Label label : node.getLabels()) {
-            labels.add(label);
+            NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(label);
+            if (nodeMetadata != null) {
+                types.add(nodeMetadata.getType());
+            }
         }
-        labels.retainAll(nodeMetadataProvider.getAllLabels());
-        NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(labels);
-        return (Class<T>) nodeMetadata.getType();
+        SortedSet<Class<?>> uniqueTypes = new TreeSet<>(new Comparator<Class<?>>() {
+            @Override
+            public int compare(Class<?> o1, Class<?> o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        for (Class<?> type : types) {
+            boolean subtype = false;
+            for (Iterator<Class<?>> subTypeIterator = types.iterator(); subTypeIterator.hasNext() && !subtype; ) {
+                Class<?> otherType = subTypeIterator.next();
+                if (!type.equals(otherType) && type.isAssignableFrom(otherType)) {
+                    subtype = true;
+                }
+            }
+            if (!subtype) {
+                uniqueTypes.add(type);
+            }
+        }
+        return new ArrayList<>(uniqueTypes);
     }
 
-    public <T> T getInstance(Node node, Class<T> type) {
+    public <T> T getInstance(Node node, List<Class<?>> types) {
         Object instance = instanceCache.get(Long.valueOf(node.getId()));
         if (instance == null) {
             NodeInvocationHandler invocationHandler = new NodeInvocationHandler(node, proxyMethodService);
-            instance = Proxy.newProxyInstance(classLoader, new Class<?>[]{type}, invocationHandler);
+            instance = Proxy.newProxyInstance(classLoader, types.toArray(new Class<?>[types.size()]), invocationHandler);
             instanceCache.put(Long.valueOf(node.getId()), instance);
         }
-        return type.cast(instance);
+        return (T) instance;
     }
 
     public <T> void removeInstance(T instance) {

@@ -5,6 +5,8 @@ import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 
+import java.util.List;
+
 public class ToStringMethod implements ProxyMethod {
 
     private InstanceManager instanceManager;
@@ -15,8 +17,14 @@ public class ToStringMethod implements ProxyMethod {
 
     @Override
     public Object invoke(Node node, Object[] args) {
-        Class<Object> type = instanceManager.getType(node);
-        StringBuffer stringBuffer = new StringBuffer(type.getName());
+        StringBuffer stringBuffer = new StringBuffer();
+        List<Class<?>> types = instanceManager.getTypes(node);
+        for (Class<?> type : types) {
+            if (stringBuffer.length()>0) {
+                stringBuffer.append('|');
+            }
+            stringBuffer.append(type);
+        }
         stringBuffer.append(", id=");
         stringBuffer.append(Long.toString(node.getId()));
         stringBuffer.append(" [");

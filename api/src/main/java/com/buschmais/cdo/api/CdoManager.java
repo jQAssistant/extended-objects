@@ -14,7 +14,7 @@ public interface CdoManager {
 
     <T> Iterable<T> find(Class<T> type, Object value);
 
-    <T> T create(Class<T> type);
+    <T> T create(Class<?>... types);
 
     <T, M> M migrate(T instance, Class<M> migrationTarget, MigrationHandler<T, M>... migrationHandlers);
 

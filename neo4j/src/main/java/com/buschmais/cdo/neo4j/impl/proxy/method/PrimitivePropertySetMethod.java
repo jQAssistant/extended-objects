@@ -14,6 +14,9 @@ public class PrimitivePropertySetMethod extends AbstractPropertyMethod<Primitive
         Object value = args[0];
         String propertyName = getMetadata().getPropertyName();
         if (value != null) {
+            if (Enum.class.isAssignableFrom(getMetadata().getBeanProperty().getType())) {
+                value = ((Enum) value).name();
+            }
             node.setProperty(propertyName, value);
         } else {
             if (node.hasProperty(propertyName)) {

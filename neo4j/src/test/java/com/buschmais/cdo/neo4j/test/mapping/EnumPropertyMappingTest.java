@@ -17,22 +17,42 @@ public class EnumPropertyMappingTest extends AbstractCdoManagerTest {
     }
 
     @Test
+    public void enumerationLabel() {
+        CdoManager cdoManager = getCdoManager();
+        cdoManager.begin();
+        A a = cdoManager.create(A.class);
+        a.setEnumerationLabel(Enumeration.FIRST);
+        cdoManager.commit();
+        cdoManager.begin();
+        assertThat(a.getEnumerationLabel(), equalTo(Enumeration.FIRST));
+        a.setEnumerationLabel(Enumeration.SECOND);
+        cdoManager.commit();
+        cdoManager.begin();
+        assertThat(a.getEnumerationLabel(), equalTo(Enumeration.SECOND));
+        a.setEnumerationLabel(null);
+        cdoManager.commit();
+        cdoManager.begin();
+        assertThat(a.getEnumerationLabel(), equalTo(null));
+        cdoManager.commit();
+    }
+
+    @Test
     public void enumerationProperty() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
         A a = cdoManager.create(A.class);
-        a.setEnumeratedValue(Enumeration.FIRST);
+        a.setEnumerationProperty(Enumeration.FIRST);
         cdoManager.commit();
         cdoManager.begin();
-        assertThat(a.getEnumeratedValue(), equalTo(Enumeration.FIRST));
-        a.setEnumeratedValue(Enumeration.SECOND);
+        assertThat(a.getEnumerationProperty(), equalTo(Enumeration.FIRST));
+        a.setEnumerationProperty(Enumeration.SECOND);
         cdoManager.commit();
         cdoManager.begin();
-        assertThat(a.getEnumeratedValue(), equalTo(Enumeration.SECOND));
-        a.setEnumeratedValue(null);
+        assertThat(a.getEnumerationProperty(), equalTo(Enumeration.SECOND));
+        a.setEnumerationProperty(null);
         cdoManager.commit();
         cdoManager.begin();
-        assertThat(a.getEnumeratedValue(), equalTo(null));
+        assertThat(a.getEnumerationProperty(), equalTo(null));
         cdoManager.commit();
     }
 }

@@ -2,7 +2,7 @@ package com.buschmais.cdo.neo4j.impl;
 
 import com.buschmais.cdo.api.CdoManagerException;
 import com.buschmais.cdo.api.QueryResult;
-import com.buschmais.cdo.neo4j.EmbeddedNeo4jCdoManager;
+import com.buschmais.cdo.neo4j.api.EmbeddedNeo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMetadata;
@@ -90,28 +90,35 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     }
 
     @Override
-    public <T> T create(Class<T> type) {
+    public <T> T create(Class<?>... types) {
         Node node = database.createNode();
-        NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
-        for (Label label : nodeMetadata.getAggregatedLabels()) {
-            node.addLabel(label);
+        for (Class<?> type : types) {
+            NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
+            for (Label label : nodeMetadata.getAggregatedLabels()) {
+                node.addLabel(label);
+            }
         }
-        return instanceManager.getInstance(node, type);
+        return (T) instanceManager.getInstance(node, Arrays.asList(types));
     }
 
     @Override
     public <T, M> M migrate(T instance, Class<M> migrationTarget, MigrationHandler<T, M>... migrationHandlers) {
         Node node = instanceManager.getNode(instance);
-        Class<T> type = instanceManager.getType(node);
-        NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
+        List<Class<?>> types = instanceManager.getTypes(node);
+
         NodeMetadata targetMetadata = nodeMetadataProvider.getNodeMetadata(migrationTarget);
-        Set<Label> labelsToRemove = new HashSet<>(nodeMetadata.getAggregatedLabels());
+        Set<Label> labelsToAdd = new HashSet<>(targetMetadata.getAggregatedLabels());
+
+        Set<Label> labelsToRemove = new HashSet<>();
+        for (Class<?> type : types) {
+            NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
+            labelsToAdd.removeAll(nodeMetadata.getAggregatedLabels());
+            labelsToRemove.addAll(nodeMetadata.getAggregatedLabels());
+        }
         labelsToRemove.removeAll(targetMetadata.getAggregatedLabels());
         for (Label label : labelsToRemove) {
             node.removeLabel(label);
         }
-        Set<Label> labelsToAdd = new HashSet<>(targetMetadata.getAggregatedLabels());
-        labelsToAdd.removeAll(nodeMetadata.getAggregatedLabels());
         for (Label label : labelsToAdd) {
             node.addLabel(label);
         }

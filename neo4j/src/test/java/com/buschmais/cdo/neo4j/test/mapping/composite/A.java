@@ -1,9 +1,9 @@
 package com.buschmais.cdo.neo4j.test.mapping.composite;
 
-import com.buschmais.cdo.neo4j.annotation.Indexed;
-import com.buschmais.cdo.neo4j.annotation.Label;
-import com.buschmais.cdo.neo4j.annotation.Property;
-import com.buschmais.cdo.neo4j.annotation.Relation;
+import com.buschmais.cdo.neo4j.api.annotation.Indexed;
+import com.buschmais.cdo.neo4j.api.annotation.Label;
+import com.buschmais.cdo.neo4j.api.annotation.Property;
+import com.buschmais.cdo.neo4j.api.annotation.Relation;
 
 import java.util.List;
 import java.util.Set;
@@ -44,8 +44,12 @@ public interface A extends Version {
     @Relation("MAPPED_LIST_OF_B")
     List<B> getMappedListOfB();
 
-    Enumeration getEnumeratedValue();
+    Enumeration getEnumerationLabel();
 
-    void setEnumeratedValue(Enumeration enumeration);
+    void setEnumerationLabel(Enumeration enumeration);
 
+    @Property("enumeration")
+    Enumeration getEnumerationProperty();
+
+    void setEnumerationProperty(Enumeration enumeration);
 }
