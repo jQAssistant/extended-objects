@@ -99,6 +99,7 @@
     <modules>
         <module>api</module>
         <module>neo4j</module>
+        <module>doc</module>
     </modules>
 
 </project>
