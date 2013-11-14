@@ -16,11 +16,11 @@ public class ToStringMethod implements ProxyMethod {
     }
 
     @Override
-    public Object invoke(Node node, Object[] args) {
+    public Object invoke(Node node, Object instance, Object[] args) {
         StringBuffer stringBuffer = new StringBuffer();
         List<Class<?>> types = instanceManager.getTypes(node);
         for (Class<?> type : types) {
-            if (stringBuffer.length()>0) {
+            if (stringBuffer.length() > 0) {
                 stringBuffer.append('|');
             }
             stringBuffer.append(type);

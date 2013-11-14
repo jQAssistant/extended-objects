@@ -1,11 +1,11 @@
 package com.buschmais.cdo.neo4j.impl.metadata;
 
-public class PrimitivePropertyMetadata extends AbstractPropertyMetadata {
+public class PrimitiveMethodMetadata extends AbstractMethodMetadata {
 
     private String propertyName;
 
-    protected PrimitivePropertyMetadata(BeanProperty beanProperty, String propertyName) {
-        super(beanProperty);
+    protected PrimitiveMethodMetadata(BeanPropertyMethod beanPropertyMethod, String propertyName) {
+        super(beanPropertyMethod);
         this.propertyName = propertyName;
     }
 

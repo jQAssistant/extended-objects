@@ -1,22 +1,22 @@
 package com.buschmais.cdo.neo4j.impl.proxy.method;
 
-import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMetadata;
+import com.buschmais.cdo.neo4j.impl.metadata.PrimitiveMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import org.neo4j.graphdb.Node;
 
-public class PrimitivePropertyGetMethod extends AbstractPropertyMethod<PrimitivePropertyMetadata> {
+public class PrimitivePropertyGetMethod extends AbstractPropertyMethod<PrimitiveMethodMetadata> {
 
-    public PrimitivePropertyGetMethod(PrimitivePropertyMetadata metadata, InstanceManager instanceManager) {
+    public PrimitivePropertyGetMethod(PrimitiveMethodMetadata metadata, InstanceManager instanceManager) {
         super(metadata, instanceManager);
     }
 
-    public Object invoke(Node node, Object[] args) {
+    public Object invoke(Node node, Object instance, Object[] args) {
         String propertyName = getMetadata().getPropertyName();
         if (!node.hasProperty(propertyName)) {
             return null;
         }
         Object value = node.getProperty(propertyName);
-        Class<?> type = getMetadata().getBeanProperty().getType();
+        Class<?> type = getMetadata().getBeanMethod().getType();
         if (Enum.class.isAssignableFrom(type)) {
             return Enum.valueOf((Class<Enum>) type, (String) value);
         }

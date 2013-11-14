@@ -22,7 +22,7 @@ public class NodeInvocationHandler implements InvocationHandler {
         if (node == null) {
             throw new CdoManagerException("Invalid access to an un-managed instance.");
         }
-        return proxyMethodService.invoke(node, method, args);
+        return proxyMethodService.invoke(node, proxy, method, args);
     }
 
     public Node getNode() {

@@ -12,7 +12,7 @@ public class EqualsMethod implements ProxyMethod {
     }
 
     @Override
-    public Object invoke(Node node, Object[] args) {
+    public Object invoke(Node node, Object instance, Object[] args) {
         Object other = args[0];
         if (instanceManager.isNode(other)) {
             Node otherNode = instanceManager.getNode(other);

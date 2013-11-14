@@ -2,12 +2,12 @@ package com.buschmais.cdo.neo4j.impl.metadata;
 
 import org.neo4j.graphdb.RelationshipType;
 
-public abstract class AbstractRelationshipPropertyMetadata extends AbstractPropertyMetadata {
+public abstract class AbstractRelationshipMethodMetadata extends AbstractMethodMetadata {
 
     private RelationshipType relationshipType;
 
-    public AbstractRelationshipPropertyMetadata(BeanProperty beanProperty, RelationshipType relationshipType) {
-        super(beanProperty);
+    public AbstractRelationshipMethodMetadata(BeanPropertyMethod beanPropertyMethod, RelationshipType relationshipType) {
+        super(beanPropertyMethod);
         this.relationshipType = relationshipType;
     }
 
