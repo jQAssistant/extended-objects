@@ -56,7 +56,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
         NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
         Label label = nodeMetadata.getLabel();
         if (label == null) {
-            throw new CdoManagerException("Type " + type.getName() + " has label.");
+            throw new CdoManagerException("Type " + type.getName() + " has no label.");
         }
         PrimitivePropertyMetadata indexedProperty = nodeMetadata.getIndexedProperty();
         if (indexedProperty == null) {
@@ -102,29 +102,37 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     }
 
     @Override
-    public <T, M> M migrate(T instance, Class<M> migrationTarget, MigrationHandler<T, M>... migrationHandlers) {
+    public <T, M> M migrate(T instance, Class<?>... targetTypes) {
+        return migrate(instance, null, targetTypes);
+    }
+
+    @Override
+    public <T, M> M migrate(T instance, MigrationHandler<T, M> migrationHandler, Class<?>... targetTypes) {
         Node node = instanceManager.getNode(instance);
         List<Class<?>> types = instanceManager.getTypes(node);
-
-        NodeMetadata targetMetadata = nodeMetadataProvider.getNodeMetadata(migrationTarget);
-        Set<Label> labelsToAdd = new HashSet<>(targetMetadata.getAggregatedLabels());
-
-        Set<Label> labelsToRemove = new HashSet<>();
+        Set<Label> labels = new HashSet<>();
         for (Class<?> type : types) {
             NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
-            labelsToAdd.removeAll(nodeMetadata.getAggregatedLabels());
-            labelsToRemove.addAll(nodeMetadata.getAggregatedLabels());
+            labels.addAll(nodeMetadata.getAggregatedLabels());
         }
-        labelsToRemove.removeAll(targetMetadata.getAggregatedLabels());
+        Set<Label> targetLabels = new HashSet<>();
+        for (Class<?> targetType : targetTypes) {
+            NodeMetadata targetMetadata = nodeMetadataProvider.getNodeMetadata(targetType);
+            targetLabels.addAll(targetMetadata.getAggregatedLabels());
+        }
+        Set<Label> labelsToRemove = new HashSet<>(labels);
+        labelsToRemove.removeAll(targetLabels);
         for (Label label : labelsToRemove) {
             node.removeLabel(label);
         }
+        Set<Label> labelsToAdd = new HashSet<>(targetLabels);
+        labelsToAdd.removeAll(labels);
         for (Label label : labelsToAdd) {
             node.addLabel(label);
         }
         instanceManager.removeInstance(instance);
         M migratedInstance = instanceManager.getInstance(node);
-        for (MigrationHandler<T, M> migrationHandler : migrationHandlers) {
+        if (migrationHandler != null) {
             migrationHandler.migrate(instance, migratedInstance);
         }
         instanceManager.destroyInstance(instance);
@@ -132,7 +140,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     }
 
     @Override
-    public <T> void remove(T instance) {
+    public <T> void delete(T instance) {
         Node node = instanceManager.getNode(instance);
         node.delete();
     }
