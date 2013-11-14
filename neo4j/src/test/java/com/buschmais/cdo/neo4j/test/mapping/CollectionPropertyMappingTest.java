@@ -4,6 +4,7 @@ import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.mapping.composite.A;
 import com.buschmais.cdo.neo4j.test.mapping.composite.B;
+import org.hamcrest.core.IsCollectionContaining;
 import org.junit.Test;
 
 import java.util.List;
@@ -47,6 +48,7 @@ public class CollectionPropertyMappingTest extends AbstractCdoManagerTest {
         cdoManager.commit();
         cdoManager.begin();
         TestResult result = executeQuery("match (a:A)-[:MAPPED_SET_OF_B]->(b) return b");
+        assertThat(result.getColumn("b").size(), equalTo(1));
         assertThat(result.getColumn("b"), hasItem(b));
         cdoManager.commit();
     }
@@ -76,9 +78,11 @@ public class CollectionPropertyMappingTest extends AbstractCdoManagerTest {
         A a = cdoManager.create(A.class);
         B b = cdoManager.create(B.class);
         a.getMappedListOfB().add(b);
+        a.getMappedListOfB().add(b);
         cdoManager.commit();
         cdoManager.begin();
         TestResult result = executeQuery("match (a:A)-[:MAPPED_LIST_OF_B]->(b) return b");
+        assertThat(result.getColumn("b").size(), equalTo(2));
         assertThat(result.getColumn("b"), hasItem(b));
         cdoManager.commit();
     }

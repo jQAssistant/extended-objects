@@ -52,12 +52,14 @@ public class CollectionProxy<E> extends AbstractCollection<E> {
         return size;
     }
 
+    @Override
     public boolean add(E e) {
         Node endNode = instanceManager.getNode(e);
         node.createRelationshipTo(endNode, relationshipType);
         return true;
     }
 
+    @Override
     public boolean remove(Object o) {
         if (instanceManager.isNode(o)) {
             Node endNode = instanceManager.getNode(o);

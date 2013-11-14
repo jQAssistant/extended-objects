@@ -93,7 +93,7 @@ public class NodeMetadataProvider {
         if (labelAnnotation != null) {
             label = DynamicLabel.label(labelAnnotation.value());
             aggregatedLabels.add(label);
-            Class<?> usingIndexOf = labelAnnotation.usingIndexOf();
+            Class<?> usingIndexOf = labelAnnotation.usingIndexedPropertyOf();
             if (!Object.class.equals(usingIndexOf)) {
                 indexedProperty = nodeMetadataByType.get(usingIndexOf).getIndexedProperty();
             }

@@ -11,5 +11,5 @@ public @interface Label {
 
     String value();
 
-    Class<?> usingIndexOf() default Object.class;
+    Class<?> usingIndexedPropertyOf() default Object.class;
 }
