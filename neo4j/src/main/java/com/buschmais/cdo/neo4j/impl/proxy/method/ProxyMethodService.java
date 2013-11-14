@@ -1,8 +1,14 @@
 package com.buschmais.cdo.neo4j.impl.proxy.method;
 
 import com.buschmais.cdo.api.CdoManagerException;
+import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.neo4j.impl.metadata.*;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.proxy.method.composite.AsMethod;
+import com.buschmais.cdo.neo4j.impl.proxy.method.property.*;
+import com.buschmais.cdo.neo4j.impl.proxy.method.object.EqualsMethod;
+import com.buschmais.cdo.neo4j.impl.proxy.method.object.HashCodeMethod;
+import com.buschmais.cdo.neo4j.impl.proxy.method.object.ToStringMethod;
 import org.neo4j.graphdb.Node;
 
 import java.lang.management.MemoryType;
@@ -64,6 +70,7 @@ public class ProxyMethodService {
                 addProxyMethod(proxyMethod, beanMethod.getMethod());
             }
         }
+        addMethod(new AsMethod(), CompositeObject.class, "as", Class.class);
         addMethod(new HashCodeMethod(), Object.class, "hashCode");
         addMethod(new EqualsMethod(instanceManager), Object.class, "equals", Object.class);
         addMethod(new ToStringMethod(instanceManager), Object.class, "toString");

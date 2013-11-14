@@ -1,7 +1,8 @@
-package com.buschmais.cdo.neo4j.impl.proxy.method;
+package com.buschmais.cdo.neo4j.impl.proxy.method.property;
 
-import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.metadata.AbstractMethodMetadata;
+import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.proxy.method.ProxyMethod;
 
 public abstract class AbstractPropertyMethod<M extends AbstractMethodMetadata> implements ProxyMethod {
 

@@ -1,6 +1,7 @@
 package com.buschmais.cdo.neo4j.test.migration;
 
 import com.buschmais.cdo.api.CdoManager;
+import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.migration.composite.A;
 import com.buschmais.cdo.neo4j.test.migration.composite.B;
@@ -47,6 +48,26 @@ public class MigrationTest extends AbstractCdoManagerTest {
             }
         };
         C c = cdoManager.migrate(a, migrationHandler, C.class);
+        assertThat(c.getName(), equalTo("Value"));
+        cdoManager.commit();
+        cdoManager.close();
+    }
+
+    @Test
+    public void compositeObjectMigrationHandler() {
+        CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
+        cdoManager.begin();
+        A a = cdoManager.create(A.class);
+        a.setValue("Value");
+        cdoManager.commit();
+        cdoManager.begin();
+        CdoManager.MigrationHandler<A, CompositeObject> migrationHandler = new CdoManager.MigrationHandler<A, CompositeObject>() {
+            @Override
+            public void migrate(A instance, CompositeObject target) {
+                target.as(C.class).setName(instance.getValue());
+            }
+        };
+        C c = cdoManager.migrate(a, migrationHandler, CompositeObject.class, C.class).as(C.class);
         assertThat(c.getName(), equalTo("Value"));
         cdoManager.commit();
         cdoManager.close();

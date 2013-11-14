@@ -1,6 +1,7 @@
 package com.buschmais.cdo.neo4j.impl.proxy;
 
 import com.buschmais.cdo.api.CdoManagerException;
+import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.proxy.method.ProxyMethodService;
@@ -63,7 +64,10 @@ public class InstanceManager {
         Object instance = instanceCache.get(Long.valueOf(node.getId()));
         if (instance == null) {
             NodeInvocationHandler invocationHandler = new NodeInvocationHandler(node, proxyMethodService);
-            instance = Proxy.newProxyInstance(classLoader, types.toArray(new Class<?>[types.size()]), invocationHandler);
+            List<Class<?>> effectiveTypes = new ArrayList<>(types.size() +1);
+            effectiveTypes.addAll(types);
+            effectiveTypes.add(CompositeObject.class);
+            instance = Proxy.newProxyInstance(classLoader, effectiveTypes.toArray(new Class<?>[effectiveTypes.size()]), invocationHandler);
             instanceCache.put(Long.valueOf(node.getId()), instance);
         }
         return (T) instance;

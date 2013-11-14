@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.impl.proxy.method;
+package com.buschmais.cdo.neo4j.impl.proxy.method.property;
 
 import com.buschmais.cdo.api.CdoManagerException;
 import com.buschmais.cdo.neo4j.impl.metadata.CollectionMethodMetadata;

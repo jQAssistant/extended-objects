@@ -3,7 +3,7 @@ package com.buschmais.cdo.api;
 import java.util.Map;
 
 /**
- * Defines methods to manage the lifecycle of composite instances, query execution and transaction management.
+ * Defines methods to manage the lifecycle of property instances, query execution and transaction management.
  */
 public interface CdoManager {
 
@@ -23,51 +23,86 @@ public interface CdoManager {
     void rollback();
 
     /**
-     * Find all composite instances according to the given type and value (e.g. from an index).
+     * Find all property instances according to the given type and value (e.g. from an index).
      *
-     * @param <T>   The composite type.
-     * @param type  The interface of the composite type.
+     * @param <T>   The property type.
+     * @param type  The interface of the property type.
      * @param value The value.
-     * @return An {@Iterable} returning the composite instance.
+     * @return An {@Iterable} returning the property instance.
      */
     <T> Iterable<T> find(Class<T> type, Object value);
 
     /**
-     * Create a new composite instance.
+     * Create a new {@CompositeObject} instance.
      *
      * @param <T>   The expected return type. Note that it must be assignable to at least one of the interfaces specified for the types.
-     * @param types The interfaces the composite type shall implement.
-     * @return The composite instance.
+     * @param type  The interface the property type shall implement.
+     * @param types Additional interfaces the property type shall implement.
+     * @return The {@link CompositeObject} instance.
      */
-    <T> T create(Class<?>... types);
+    CompositeObject create(Class type, Class<?>... types);
 
     /**
-     * Migrates the type of a composite instance to the given target and returns it. The original instance will not be usable anymore after migration.
+     * Create a new property instance.
      *
-     * @param <T>              The composite type.
-     * @param <M>              The migrated composite type. Note that it be assignable to at least one of the interfaces specified for types.
-     * @param instance         The instance.
-     * @param targetTypes      The target interfaces which shall be implemented by the migrated instance..
+     * @param <T>  The expected return type. Note that it must be assignable to at least one of the interfaces specified for the types.
+     * @param type The interface the property type shall implement.
+     * @return The property instance.
+     */
+    <T> T create(Class<T> type);
+
+    /**
+     * Migrates the type of a property instance to the given target types and returns it. The original instance will not be usable anymore after migration.
+     *
+     * @param <T>         The property type.
+     * @param <M>         The migrated property type. Note that it be assignable to at least one of the interfaces specified for types.
+     * @param instance    The instance.
+     * @param targetType  The target interface  which shall be implemented by the migrated instance.
+     * @param targetTypes More target interfaces which shall be implemented by the migrated instance.
      * @return The migrated instance.
      */
-    <T, M> M migrate(T instance, Class<?>... targetTypes);
+    <T, M> CompositeObject migrate(T instance, Class<M> targetType, Class<?>... targetTypes);
 
     /**
-     * Migrates the type of a composite instance to the given target and returns it. The original instance will not be usable anymore after migration.
+     * Migrates the type of a property instance to the given target type and returns it. The original instance will not be usable anymore after migration.
      *
-     * @param <T>              The composite type.
-     * @param <M>              The migrated composite type. Note that it be assignable to at least one of the interfaces specified for types.
+     * @param <T>        The property type.
+     * @param <M>        The migrated property type. Note that it be assignable to at least one of the interfaces specified for types.
+     * @param instance   The instance.
+     * @param targetType The target interface  which shall be implemented by the migrated instance.
+     * @return The migrated instance.
+     */
+    <T, M> M migrate(T instance, Class<M> targetType);
+
+    /**
+     * Migrates the type of a property instance to the given target and returns it. The original instance will not be usable anymore after migration.
+     *
+     * @param <T>              The property type.
+     * @param <M>              The migrated property type. Note that it be assignable to at least one of the interfaces specified for types.
      * @param instance         The instance.
      * @param migrationHandler The {@link MigrationHandler} to be used to migrate data (e.g. properties) to the new type.
-     * @param targetTypes      The target interfaces which shall be implemented by the migrated instance..
+     * @param targetType       The target interface which shall be implemented by the migrated instance.
+     * @param targetTypes      More target interfaces which shall be implemented by the migrated instance.
      * @return The migrated instance.
      */
-    <T, M> M migrate(T instance, MigrationHandler<T, M> migrationHandler, Class<?>... targetTypes);
+    <T, M> CompositeObject migrate(T instance, MigrationHandler<T, M> migrationHandler, Class<M> targetType, Class<?>... targetTypes);
 
     /**
-     * Deletes a composite instance.
+     * Migrates the type of a property instance to the given target and returns it. The original instance will not be usable anymore after migration.
      *
-     * @param <T>      The composite type.
+     * @param <T>              The property type.
+     * @param <M>              The migrated property type. Note that it be assignable to at least one of the interfaces specified for types.
+     * @param instance         The instance.
+     * @param migrationHandler The {@link MigrationHandler} to be used to migrate data (e.g. properties) to the new type.
+     * @param targetType       The target interface which shall be implemented by the migrated instance.
+     * @return The migrated instance.
+     */
+    <T, M> M migrate(T instance, MigrationHandler<T, M> migrationHandler, Class<M> targetType);
+
+    /**
+     * Deletes a property instance.
+     *
+     * @param <T>      The property type.
      * @param instance The instance.
      */
     <T> void delete(T instance);

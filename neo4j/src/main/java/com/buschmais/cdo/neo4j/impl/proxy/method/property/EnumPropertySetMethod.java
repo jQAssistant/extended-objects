@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.impl.proxy.method;
+package com.buschmais.cdo.neo4j.impl.proxy.method.property;
 
 import com.buschmais.cdo.neo4j.impl.metadata.EnumMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
@@ -12,6 +12,7 @@ public class EnumPropertySetMethod extends AbstractPropertyMethod<EnumMethodMeta
         super(metadata, instanceManager);
     }
 
+    @Override
     public Object invoke(Node node, Object instance, Object[] args) {
         Object value = args[0];
         for (Enum<?> enumerationValue : getMetadata().getEnumerationType().getEnumConstants()) {

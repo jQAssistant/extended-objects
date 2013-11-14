@@ -1,6 +1,7 @@
 package com.buschmais.cdo.neo4j.impl;
 
 import com.buschmais.cdo.api.CdoManagerException;
+import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.QueryResult;
 import com.buschmais.cdo.neo4j.api.EmbeddedNeo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
@@ -90,24 +91,25 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     }
 
     @Override
-    public <T> T create(Class<?>... types) {
+    public CompositeObject create(Class type, Class<?>... types) {
         Node node = database.createNode();
-        for (Class<?> type : types) {
-            NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
-            for (Label label : nodeMetadata.getAggregatedLabels()) {
-                node.addLabel(label);
-            }
+        List<Class<?>> effectiveTypes = getEffectiveTypes(type, types);
+        Set<Label> labels = new HashSet<>();
+        for (Class<?> currentType : effectiveTypes) {
+            labels.addAll(nodeMetadataProvider.getNodeMetadata(currentType).getAggregatedLabels());
         }
-        return (T) instanceManager.getInstance(node, Arrays.asList(types));
+        for (Label label : labels) {
+            node.addLabel(label);
+        }
+        return (CompositeObject) instanceManager.getInstance(node, effectiveTypes);
+    }
+
+    public <T> T create(Class<T> type) {
+        return create(type, new Class<?>[0]).as(type);
     }
 
     @Override
-    public <T, M> M migrate(T instance, Class<?>... targetTypes) {
-        return migrate(instance, null, targetTypes);
-    }
-
-    @Override
-    public <T, M> M migrate(T instance, MigrationHandler<T, M> migrationHandler, Class<?>... targetTypes) {
+    public <T, M> CompositeObject migrate(T instance, MigrationHandler<T, M> migrationHandler, Class<M> targetType, Class<?>... targetTypes) {
         Node node = instanceManager.getNode(instance);
         List<Class<?>> types = instanceManager.getTypes(node);
         Set<Label> labels = new HashSet<>();
@@ -116,8 +118,9 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
             labels.addAll(nodeMetadata.getAggregatedLabels());
         }
         Set<Label> targetLabels = new HashSet<>();
-        for (Class<?> targetType : targetTypes) {
-            NodeMetadata targetMetadata = nodeMetadataProvider.getNodeMetadata(targetType);
+        List<Class<?>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
+        for (Class<?> currentType : effectiveTargetTypes) {
+            NodeMetadata targetMetadata = nodeMetadataProvider.getNodeMetadata(currentType);
             targetLabels.addAll(targetMetadata.getAggregatedLabels());
         }
         Set<Label> labelsToRemove = new HashSet<>(labels);
@@ -131,13 +134,29 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
             node.addLabel(label);
         }
         instanceManager.removeInstance(instance);
-        M migratedInstance = instanceManager.getInstance(node);
+        CompositeObject migratedInstance = instanceManager.getInstance(node);
         if (migrationHandler != null) {
-            migrationHandler.migrate(instance, migratedInstance);
+            migrationHandler.migrate(instance, migratedInstance.as(targetType));
         }
         instanceManager.destroyInstance(instance);
         return migratedInstance;
     }
+
+    @Override
+    public <T, M> CompositeObject migrate(T instance, Class<M> targetType, Class<?>... targetTypes) {
+        return migrate(instance, null, targetTypes);
+    }
+
+    @Override
+    public <T, M> M migrate(T instance, MigrationHandler<T, M> migrationHandler, Class<M> targetType) {
+        return migrate(instance, migrationHandler, targetType, new Class<?>[0]).as(targetType);
+    }
+
+    @Override
+    public <T, M> M migrate(T instance, Class<M> targetType) {
+        return migrate(instance, null, targetType);
+    }
+
 
     @Override
     public <T> void delete(T instance) {
@@ -165,6 +184,13 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     @Override
     public GraphDatabaseService getGraphDatabaseService() {
         return database;
+    }
+
+    private List<Class<?>> getEffectiveTypes(Class<?> type, Class<?>... types) {
+        List<Class<?>> effectiveTypes = new ArrayList<>(types.length + 1);
+        effectiveTypes.add(type);
+        effectiveTypes.addAll(Arrays.asList(types));
+        return effectiveTypes;
     }
 
     private final class RowIterable implements Iterable<QueryResult.Row>, Closeable {
