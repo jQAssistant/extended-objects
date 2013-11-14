@@ -12,9 +12,13 @@ import org.neo4j.graphdb.RelationshipType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
+
+import static com.buschmais.cdo.neo4j.impl.metadata.BeanPropertyMethod.MethodType.GETTER;
+import static com.buschmais.cdo.neo4j.impl.metadata.BeanPropertyMethod.MethodType.SETTER;
 
 public class NodeMetadataProvider {
 
@@ -32,8 +36,11 @@ public class NodeMetadataProvider {
         };
         List<Class<?>> allTypes = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
         LOGGER.debug("Processing types {}", allTypes);
-        Map<Class<?>, Collection<BeanProperty>> typeProperties = new HashMap<>();
+        Map<Class<?>, Collection<BeanPropertyMethod>> typeProperties = new HashMap<>();
         for (Class<?> type : allTypes) {
+            if (!type.isInterface()) {
+                throw new CdoManagerException("Type " + type.getName() + " is not an interface.");
+            }
             typeProperties.put(type, getBeanProperties(type));
         }
         for (Class<?> type : allTypes) {
@@ -57,30 +64,38 @@ public class NodeMetadataProvider {
         return nodeMetadataByAggregatedLabels.get(label);
     }
 
-    private void createMetadata(Class<?> type, Collection<BeanProperty> beanProperties, Set<Class<?>> types) {
+    private void createMetadata(Class<?> type, Collection<BeanPropertyMethod> beanMethods, Set<Class<?>> types) {
         LOGGER.debug("Processing type {}", type.getName());
-        Collection<AbstractPropertyMetadata> propertyMetadataMap = new ArrayList<>();
-        PrimitivePropertyMetadata indexedProperty = null;
-        for (BeanProperty beanProperty : beanProperties) {
-            AbstractPropertyMetadata propertyMetadata;
-            if (Collection.class.isAssignableFrom(beanProperty.getType())) {
-                propertyMetadata = new CollectionPropertyMetadata(beanProperty, getRelationshipType(beanProperty));
-            } else if (types.contains(beanProperty.getType())) {
-                propertyMetadata = new ReferencePropertyMetadata(beanProperty, getRelationshipType(beanProperty));
+        Collection<AbstractMethodMetadata> methodMetadataList = new ArrayList<>();
+
+        // Collect the getter methods as they provide annotations holding meta information also to be applied to setters
+        Map<String, BeanPropertyMethod> getterMethods = new HashMap<>();
+        for (BeanPropertyMethod beanMethod : beanMethods) {
+            if (BeanPropertyMethod.MethodType.GETTER.equals(beanMethod.getMethodType())) {
+                getterMethods.put(beanMethod.getName(), beanMethod);
+            }
+        }
+        PrimitiveMethodMetadata indexedProperty = null;
+        for (BeanPropertyMethod beanPropertyMethod : beanMethods) {
+            AbstractMethodMetadata propertyMetadata;
+            if (Collection.class.isAssignableFrom(beanPropertyMethod.getType())) {
+                propertyMetadata = new CollectionMethodMetadata(beanPropertyMethod, getRelationshipType(beanPropertyMethod, getterMethods));
+            } else if (types.contains(beanPropertyMethod.getType())) {
+                propertyMetadata = new ReferenceMethodMetadata(beanPropertyMethod, getRelationshipType(beanPropertyMethod, getterMethods));
             } else {
-                Property property = beanProperty.getGetter().getAnnotation(Property.class);
-                String propertyName = property != null ? property.value() : beanProperty.getName();
-                if (Enum.class.isAssignableFrom(beanProperty.getType()) && property == null) {
-                    propertyMetadata = new EnumPropertyMetadata(beanProperty, (Class<? extends Enum<?>>) beanProperty.getType());
+                Property property = getAnnotation(Property.class, beanPropertyMethod, getterMethods );
+                String propertyName = property != null ? property.value() : beanPropertyMethod.getName();
+                if (Enum.class.isAssignableFrom(beanPropertyMethod.getType()) && property == null) {
+                    propertyMetadata = new EnumMethodMetadata(beanPropertyMethod, (Class<? extends Enum<?>>) beanPropertyMethod.getType());
                 } else {
-                    boolean indexed = beanProperty.getGetter().isAnnotationPresent(Indexed.class);
-                    propertyMetadata = new PrimitivePropertyMetadata(beanProperty, propertyName);
+                    boolean indexed = beanPropertyMethod.getMethod().isAnnotationPresent(Indexed.class);
+                    propertyMetadata = new PrimitiveMethodMetadata(beanPropertyMethod, propertyName);
                     if (indexed) {
-                        indexedProperty = (PrimitivePropertyMetadata) propertyMetadata;
+                        indexedProperty = (PrimitiveMethodMetadata) propertyMetadata;
                     }
                 }
             }
-            propertyMetadataMap.add(propertyMetadata);
+            methodMetadataList.add(propertyMetadata);
         }
         Label labelAnnotation = type.getAnnotation(Label.class);
         SortedSet<org.neo4j.graphdb.Label> aggregatedLabels = new TreeSet<>(new Comparator<org.neo4j.graphdb.Label>() {
@@ -102,7 +117,7 @@ public class NodeMetadataProvider {
             NodeMetadata superNodeMetadata = nodeMetadataByType.get(implementedInterface);
             aggregatedLabels.addAll(superNodeMetadata.getAggregatedLabels());
         }
-        NodeMetadata nodeMetadata = new NodeMetadata(type, label, aggregatedLabels, propertyMetadataMap, indexedProperty);
+        NodeMetadata nodeMetadata = new NodeMetadata(type, label, aggregatedLabels, methodMetadataList, indexedProperty);
         LOGGER.info("Registering {}, labels={}.", type.getName(), aggregatedLabels);
         nodeMetadataByType.put(type, nodeMetadata);
         if (label != null) {
@@ -113,44 +128,40 @@ public class NodeMetadataProvider {
         }
     }
 
-    private RelationshipType getRelationshipType(BeanProperty beanProperty) {
-        Relation relation = beanProperty.getGetter().getAnnotation(Relation.class);
-        String name = relation != null ? relation.value() : beanProperty.getName();
+    private RelationshipType getRelationshipType(BeanPropertyMethod beanPropertyMethod, Map<String, BeanPropertyMethod> getterMethods) {
+        Relation relation = getAnnotation(Relation.class, beanPropertyMethod, getterMethods );
+        String name = relation != null ? relation.value() : beanPropertyMethod.getName();
         return DynamicRelationshipType.withName(name);
     }
 
-    private Collection<BeanProperty> getBeanProperties(Class<?> type) {
-        if (!type.isInterface()) {
-            throw new CdoManagerException("Type " + type.getName() + " is not an interface.");
+    private <T extends Annotation> T getAnnotation(Class<T> type, BeanPropertyMethod beanPropertyMethod, Map<String, BeanPropertyMethod> getters) {
+        BeanPropertyMethod beanProperty = getters.get(beanPropertyMethod.getName());
+        if (beanProperty == null) {
+            beanProperty = beanPropertyMethod;
         }
-        Map<String, BeanProperty> beanProperties = new HashMap<>();
+        Method method = beanProperty.getMethod();
+        return method.getAnnotation(type);
+    }
+
+    private Collection<BeanPropertyMethod> getBeanProperties(Class<?> type) {
+        List<BeanPropertyMethod> beanProperties = new ArrayList<>();
         for (Method method : type.getDeclaredMethods()) {
             String methodName = method.getName();
             Class<?> returnType = method.getReturnType();
-            Type genericReturnType = method.getGenericReturnType();
             Class<?>[] parameterTypes = method.getParameterTypes();
-            if (parameterTypes.length == 0 && !void.class.equals(genericReturnType)) {
+            if (parameterTypes.length == 0 && !void.class.equals(returnType)) {
                 if (methodName.startsWith("get")) {
-                    getBeanProperty(beanProperties, StringUtils.capitalize(methodName.substring(3)), returnType).setGetter(method);
+                    beanProperties.add(new BeanPropertyMethod(method, GETTER, StringUtils.capitalize(methodName.substring(3)), returnType));
                 } else if (methodName.startsWith("is")) {
-                    getBeanProperty(beanProperties, StringUtils.capitalize(methodName.substring(2)), returnType).setGetter(method);
+                    beanProperties.add(new BeanPropertyMethod(method, GETTER, StringUtils.capitalize(methodName.substring(2)), returnType));
                 }
-            } else if (parameterTypes.length == 1 && void.class.equals(genericReturnType) && methodName.startsWith("set")) {
-                getBeanProperty(beanProperties, StringUtils.capitalize(methodName.substring(3)), parameterTypes[0]).setSetter(method);
+            } else if (parameterTypes.length == 1 && void.class.equals(returnType) && methodName.startsWith("set")) {
+                beanProperties.add(new BeanPropertyMethod(method, SETTER, StringUtils.capitalize(methodName.substring(3)), parameterTypes[0]));
             } else {
                 throw new CdoManagerException("Method " + method.toGenericString() + " is neither Getter nor Setter.");
             }
         }
-        return beanProperties.values();
-    }
-
-    private BeanProperty getBeanProperty(Map<String, BeanProperty> beanProperties, String propertyName, Class<?> type) {
-        BeanProperty beanProperty = beanProperties.get(propertyName);
-        if (beanProperty == null) {
-            beanProperty = new BeanProperty(propertyName, type);
-            beanProperties.put(beanProperty.getName(), beanProperty);
-        }
-        return beanProperty;
+        return beanProperties;
     }
 
 }

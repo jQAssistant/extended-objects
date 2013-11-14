@@ -1,15 +1,15 @@
 package com.buschmais.cdo.neo4j.impl.proxy.method;
 
+import com.buschmais.cdo.neo4j.impl.metadata.ReferenceMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
-import com.buschmais.cdo.neo4j.impl.metadata.ReferencePropertyMetadata;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 
-public class ReferencePropertySetMethod extends AbstractPropertyMethod<ReferencePropertyMetadata> {
+public class ReferencePropertySetMethod extends AbstractPropertyMethod<ReferenceMethodMetadata> {
 
-    public ReferencePropertySetMethod(ReferencePropertyMetadata metadata, InstanceManager instanceManager) {
+    public ReferencePropertySetMethod(ReferenceMethodMetadata metadata, InstanceManager instanceManager) {
         super(metadata, instanceManager);
     }
 

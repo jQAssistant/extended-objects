@@ -3,7 +3,6 @@ package com.buschmais.cdo.neo4j.impl.metadata;
 import org.neo4j.graphdb.Label;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 public class NodeMetadata {
@@ -11,10 +10,10 @@ public class NodeMetadata {
     private Class<?> type;
     private Label label;
     private Set<Label> aggregatedLabels;
-    private Collection<AbstractPropertyMetadata> properties;
-    private PrimitivePropertyMetadata indexedProperty;
+    private Collection<AbstractMethodMetadata> properties;
+    private PrimitiveMethodMetadata indexedProperty;
 
-    public NodeMetadata(Class<?> type, Label label, Set<Label> aggregatedLabels, Collection<AbstractPropertyMetadata> properties, PrimitivePropertyMetadata indexedProperty) {
+    public NodeMetadata(Class<?> type, Label label, Set<Label> aggregatedLabels, Collection<AbstractMethodMetadata> properties, PrimitiveMethodMetadata indexedProperty) {
         this.type = type;
         this.label = label;
         this.aggregatedLabels = aggregatedLabels;
@@ -34,11 +33,11 @@ public class NodeMetadata {
         return aggregatedLabels;
     }
 
-    public Collection< AbstractPropertyMetadata> getProperties() {
+    public Collection<AbstractMethodMetadata> getProperties() {
         return properties;
     }
 
-    public PrimitivePropertyMetadata getIndexedProperty() {
+    public PrimitiveMethodMetadata getIndexedProperty() {
         return indexedProperty;
     }
 }

@@ -1,7 +1,7 @@
 package com.buschmais.cdo.neo4j.impl.proxy.method;
 
+import com.buschmais.cdo.neo4j.impl.metadata.CollectionMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
-import com.buschmais.cdo.neo4j.impl.metadata.CollectionPropertyMetadata;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -9,9 +9,9 @@ import org.neo4j.graphdb.RelationshipType;
 
 import java.util.Collection;
 
-public class CollectionPropertySetMethod extends AbstractPropertyMethod<CollectionPropertyMetadata> {
+public class CollectionPropertySetMethod extends AbstractPropertyMethod<CollectionMethodMetadata> {
 
-    public CollectionPropertySetMethod(CollectionPropertyMetadata metadata, InstanceManager instanceManager) {
+    public CollectionPropertySetMethod(CollectionMethodMetadata metadata, InstanceManager instanceManager) {
         super(metadata, instanceManager);
     }
 

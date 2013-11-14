@@ -1,16 +1,13 @@
 package com.buschmais.cdo.neo4j.impl.proxy.method;
 
-import com.buschmais.cdo.neo4j.impl.metadata.EnumPropertyMetadata;
+import com.buschmais.cdo.neo4j.impl.metadata.EnumMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import org.neo4j.graphdb.DynamicLabel;
-import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 
-import java.util.Map;
+public class EnumPropertyGetMethod extends AbstractPropertyMethod<EnumMethodMetadata> {
 
-public class EnumPropertyGetMethod extends AbstractPropertyMethod<EnumPropertyMetadata> {
-
-    public EnumPropertyGetMethod(EnumPropertyMetadata metadata, InstanceManager instanceManager) {
+    public EnumPropertyGetMethod(EnumMethodMetadata metadata, InstanceManager instanceManager) {
         super(metadata, instanceManager);
     }
 

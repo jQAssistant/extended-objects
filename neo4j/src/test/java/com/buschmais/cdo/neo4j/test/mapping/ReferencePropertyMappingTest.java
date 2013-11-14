@@ -7,6 +7,7 @@ import com.buschmais.cdo.neo4j.test.mapping.composite.B;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
 
 public class ReferencePropertyMappingTest extends AbstractCdoManagerTest {
@@ -36,6 +37,19 @@ public class ReferencePropertyMappingTest extends AbstractCdoManagerTest {
         cdoManager.begin();
         assertThat(a.getB(), equalTo(null));
         cdoManager.commit();
+    }
+
+    @Test
+    public void mappedReferenceProperty() {
+        CdoManager cdoManager = getCdoManager();
+        cdoManager.begin();
+        A a = cdoManager.create(A.class);
+        B b = cdoManager.create(B.class);
+        a.setMappedB(b);
+        cdoManager.commit();
+        cdoManager.begin();
+        TestResult result = executeQuery("match (a:A)-[:MAPPED_B]->(b) return b");
+        assertThat(result.getColumn("b"), hasItem(b));
     }
 
 }

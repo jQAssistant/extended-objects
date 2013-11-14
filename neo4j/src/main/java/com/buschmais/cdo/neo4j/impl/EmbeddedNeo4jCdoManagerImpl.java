@@ -5,7 +5,7 @@ import com.buschmais.cdo.api.QueryResult;
 import com.buschmais.cdo.neo4j.api.EmbeddedNeo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadataProvider;
-import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMetadata;
+import com.buschmais.cdo.neo4j.impl.metadata.PrimitiveMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
@@ -58,7 +58,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
         if (label == null) {
             throw new CdoManagerException("Type " + type.getName() + " has label.");
         }
-        PrimitivePropertyMetadata indexedProperty = nodeMetadata.getIndexedProperty();
+        PrimitiveMethodMetadata indexedProperty = nodeMetadata.getIndexedProperty();
         if (indexedProperty == null) {
             throw new CdoManagerException("Type " + nodeMetadata.getType().getName() + " has no indexed property.");
         }

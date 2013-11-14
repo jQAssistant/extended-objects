@@ -5,6 +5,7 @@ import com.buschmais.cdo.neo4j.impl.metadata.*;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import org.neo4j.graphdb.Node;
 
+import java.lang.management.MemoryType;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,39 +18,50 @@ public class ProxyMethodService {
     public ProxyMethodService(NodeMetadataProvider nodeMetadataProvider, InstanceManager instanceManager) {
         proxyMethods = new HashMap<>();
         for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
-            for (AbstractPropertyMetadata propertyMetadata : nodeMetadata.getProperties()) {
-                Method getter = propertyMetadata.getBeanProperty().getGetter();
-                if (getter != null) {
-                    ProxyMethod getterProxyMethod;
-                    if (propertyMetadata instanceof PrimitivePropertyMetadata) {
-                        getterProxyMethod = new PrimitivePropertyGetMethod((PrimitivePropertyMetadata) propertyMetadata, instanceManager);
-                    } else if (propertyMetadata instanceof EnumPropertyMetadata) {
-                        getterProxyMethod = new EnumPropertyGetMethod((EnumPropertyMetadata) propertyMetadata, instanceManager);
-                    } else if (propertyMetadata instanceof ReferencePropertyMetadata) {
-                        getterProxyMethod = new ReferencePropertyGetMethod((ReferencePropertyMetadata) propertyMetadata, instanceManager);
-                    } else if (propertyMetadata instanceof CollectionPropertyMetadata) {
-                        getterProxyMethod = new CollectionPropertyGetMethod((CollectionPropertyMetadata) propertyMetadata, instanceManager);
-                    } else {
-                        throw new CdoManagerException("Unsupported metadata type " + propertyMetadata);
+            for (AbstractMethodMetadata methodMetadata : nodeMetadata.getProperties()) {
+                BeanPropertyMethod beanMethod = methodMetadata.getBeanMethod();
+                ProxyMethod proxyMethod = null;
+                if (methodMetadata instanceof PrimitiveMethodMetadata) {
+                    switch (beanMethod.getMethodType()) {
+                        case GETTER:
+                            proxyMethod = new PrimitivePropertyGetMethod((PrimitiveMethodMetadata) methodMetadata, instanceManager);
+                            break;
+                        case SETTER:
+                            proxyMethod = new PrimitivePropertySetMethod((PrimitiveMethodMetadata) methodMetadata, instanceManager);
+                            break;
                     }
-                    addProxyMethod(getterProxyMethod, getter);
-                }
-                Method setter = propertyMetadata.getBeanProperty().getSetter();
-                if (setter != null) {
-                    ProxyMethod setterProxyMethod;
-                    if (propertyMetadata instanceof PrimitivePropertyMetadata) {
-                        setterProxyMethod = new PrimitivePropertySetMethod((PrimitivePropertyMetadata) propertyMetadata, instanceManager);
-                    } else if (propertyMetadata instanceof EnumPropertyMetadata) {
-                        setterProxyMethod = new EnumPropertySetMethod((EnumPropertyMetadata) propertyMetadata, instanceManager);
-                    } else if (propertyMetadata instanceof ReferencePropertyMetadata) {
-                        setterProxyMethod = new ReferencePropertySetMethod((ReferencePropertyMetadata) propertyMetadata, instanceManager);
-                    } else if (propertyMetadata instanceof CollectionPropertyMetadata) {
-                        setterProxyMethod = new CollectionPropertySetMethod((CollectionPropertyMetadata) propertyMetadata, instanceManager);
-                    } else {
-                        throw new CdoManagerException("Unsupported metadata type " + propertyMetadata);
+                } else if (methodMetadata instanceof EnumMethodMetadata) {
+                    switch (beanMethod.getMethodType()) {
+                        case GETTER:
+                            proxyMethod = new EnumPropertyGetMethod((EnumMethodMetadata) methodMetadata, instanceManager);
+                            break;
+                        case SETTER:
+                            proxyMethod = new EnumPropertySetMethod((EnumMethodMetadata) methodMetadata, instanceManager);
+                            break;
                     }
-                    addProxyMethod(setterProxyMethod, setter);
+                } else if (methodMetadata instanceof ReferenceMethodMetadata) {
+                    switch (beanMethod.getMethodType()) {
+                        case GETTER:
+                            proxyMethod = new ReferencePropertyGetMethod((ReferenceMethodMetadata) methodMetadata, instanceManager);
+                            break;
+                        case SETTER:
+                            proxyMethod = new ReferencePropertySetMethod((ReferenceMethodMetadata) methodMetadata, instanceManager);
+                            break;
+                    }
+                } else if (methodMetadata instanceof CollectionMethodMetadata) {
+                    switch (beanMethod.getMethodType()) {
+                        case GETTER:
+                            proxyMethod = new CollectionPropertyGetMethod((CollectionMethodMetadata) methodMetadata, instanceManager);
+                            break;
+                        case SETTER:
+                            proxyMethod = new CollectionPropertySetMethod((CollectionMethodMetadata) methodMetadata, instanceManager);
+                            break;
+                    }
                 }
+                if (proxyMethod == null) {
+                    throw new CdoManagerException("Unsupported metadata type " + methodMetadata);
+                }
+                addProxyMethod(proxyMethod, beanMethod.getMethod());
             }
         }
         addMethod(new HashCodeMethod(), Object.class, "hashCode");
