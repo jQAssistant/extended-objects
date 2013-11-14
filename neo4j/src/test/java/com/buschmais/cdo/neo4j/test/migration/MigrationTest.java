@@ -46,7 +46,7 @@ public class MigrationTest extends AbstractCdoManagerTest {
                 target.setName(instance.getValue());
             }
         };
-        C c = cdoManager.migrate(a, C.class, migrationHandler);
+        C c = cdoManager.migrate(a, migrationHandler, C.class);
         assertThat(c.getName(), equalTo("Value"));
         cdoManager.commit();
         cdoManager.close();
