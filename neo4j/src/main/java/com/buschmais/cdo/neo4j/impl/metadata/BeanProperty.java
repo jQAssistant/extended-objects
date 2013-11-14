@@ -13,14 +13,12 @@ import java.lang.reflect.Type;
 public class BeanProperty {
     private String name = null;
     private Class<?> type = null;
-    private Type genericType = null;
     private Method getter = null;
     private Method setter = null;
 
-    public BeanProperty(String name, Class<?> type, Type genericType) {
+    public BeanProperty(String name, Class<?> type) {
         this.name = name;
         this.type = type;
-        this.genericType = genericType;
     }
 
     public String getName() {
@@ -29,10 +27,6 @@ public class BeanProperty {
 
     public Class<?> getType() {
         return type;
-    }
-
-    public Type getGenericType() {
-        return genericType;
     }
 
     public Method getGetter() {

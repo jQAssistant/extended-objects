@@ -13,7 +13,7 @@ public class ReferencePropertySetMethod extends AbstractPropertyMethod<Reference
         super(metadata, instanceManager);
     }
 
-    public Object invoke(Node node, Object[] args) {
+    public Object invoke(Node node, Object instance, Object[] args) {
         Object value = args[0];
         RelationshipType relationshipType = getMetadata().getRelationshipType();
         if (node.hasRelationship(relationshipType, Direction.OUTGOING)) {

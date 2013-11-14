@@ -14,7 +14,7 @@ public class EnumPropertyGetMethod extends AbstractPropertyMethod<EnumPropertyMe
         super(metadata, instanceManager);
     }
 
-    public Object invoke(Node node, Object[] args) {
+    public Object invoke(Node node, Object instance, Object[] args) {
         for (Enum<?> enumerationValue : getMetadata().getEnumerationType().getEnumConstants()) {
             if (node.hasLabel(DynamicLabel.label(enumerationValue.name()))) {
                 return enumerationValue;

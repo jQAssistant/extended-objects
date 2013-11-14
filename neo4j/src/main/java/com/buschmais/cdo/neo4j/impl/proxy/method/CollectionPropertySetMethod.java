@@ -15,7 +15,7 @@ public class CollectionPropertySetMethod extends AbstractPropertyMethod<Collecti
         super(metadata, instanceManager);
     }
 
-    public Object invoke(Node node, Object[] args) {
+    public Object invoke(Node node, Object instance, Object[] args) {
         Object value = args[0];
         Collection<?> collection = (Collection<?>) value;
         RelationshipType relationshipType = getMetadata().getRelationshipType();

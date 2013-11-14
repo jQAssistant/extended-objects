@@ -17,7 +17,7 @@ public class ProxyMethodService {
     public ProxyMethodService(NodeMetadataProvider nodeMetadataProvider, InstanceManager instanceManager) {
         proxyMethods = new HashMap<>();
         for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
-            for (AbstractPropertyMetadata propertyMetadata : nodeMetadata.getProperties().values()) {
+            for (AbstractPropertyMetadata propertyMetadata : nodeMetadata.getProperties()) {
                 Method getter = propertyMetadata.getBeanProperty().getGetter();
                 if (getter != null) {
                     ProxyMethod getterProxyMethod;
@@ -57,9 +57,12 @@ public class ProxyMethodService {
         addMethod(new ToStringMethod(instanceManager), Object.class, "toString");
     }
 
-    public Object invoke(Node node, Method method, Object[] args) {
+    public Object invoke(Node node, Object instance, Method method, Object[] args) {
         ProxyMethod proxyMethod = proxyMethods.get(method);
-        return proxyMethod.invoke(node, args);
+        if (proxyMethod == null) {
+            throw new CdoManagerException("Cannot invoke method " + method.getName());
+        }
+        return proxyMethod.invoke(node, instance, args);
     }
 
     private void addMethod(ProxyMethod proxyMethod, Class<?> type, String name, Class<?>... argumentTypes) {

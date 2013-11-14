@@ -10,7 +10,7 @@ public class PrimitivePropertyGetMethod extends AbstractPropertyMethod<Primitive
         super(metadata, instanceManager);
     }
 
-    public Object invoke(Node node, Object[] args) {
+    public Object invoke(Node node, Object instance, Object[] args) {
         String propertyName = getMetadata().getPropertyName();
         if (!node.hasProperty(propertyName)) {
             return null;

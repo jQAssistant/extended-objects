@@ -13,7 +13,7 @@ public class ReferencePropertyGetMethod extends AbstractPropertyMethod<Reference
         super(metadata, instanceManager);
     }
 
-    public Object invoke(Node node, Object[] args) {
+    public Object invoke(Node node, Object instance, Object[] args) {
         RelationshipType relationshipType = getMetadata().getRelationshipType();
         Relationship singleRelationship = node.getSingleRelationship(relationshipType, Direction.OUTGOING);
         if (singleRelationship == null) {
