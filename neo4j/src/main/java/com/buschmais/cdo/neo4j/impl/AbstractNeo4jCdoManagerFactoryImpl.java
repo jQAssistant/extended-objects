@@ -4,7 +4,7 @@ import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadataProvider;
-import com.buschmais.cdo.neo4j.impl.metadata.PrimitiveMethodMetadata;
+import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
@@ -51,7 +51,7 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFa
         Transaction transaction = graphDatabaseService.beginTx();
         for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
             Label label = nodeMetadata.getLabel();
-            PrimitiveMethodMetadata indexedProperty = nodeMetadata.getIndexedProperty();
+            PrimitivePropertyMethodMetadata indexedProperty = nodeMetadata.getIndexedProperty();
             if (label != null && indexedProperty != null) {
                 IndexDefinition index = null;
                 for (IndexDefinition indexDefinition : graphDatabaseService.schema().getIndexes(label)) {

@@ -1,14 +1,14 @@
 package com.buschmais.cdo.neo4j.impl.metadata;
 
-public abstract class AbstractMethodMetadata {
+public abstract class AbstractMethodMetadata<B extends BeanMethod> {
 
-    private BeanPropertyMethod beanMethod;
+    private B beanMethod;
 
-    protected AbstractMethodMetadata(BeanPropertyMethod beanMethod) {
+    protected AbstractMethodMetadata(B beanMethod) {
         this.beanMethod = beanMethod;
     }
 
-    public BeanPropertyMethod getBeanMethod() {
+    public B getBeanMethod() {
         return beanMethod;
     }
 

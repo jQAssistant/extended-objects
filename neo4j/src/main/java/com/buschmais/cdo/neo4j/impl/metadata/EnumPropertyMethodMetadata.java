@@ -1,11 +1,11 @@
 package com.buschmais.cdo.neo4j.impl.metadata;
 
 
-public class EnumMethodMetadata extends AbstractMethodMetadata {
+public class EnumPropertyMethodMetadata extends AbstractPropertyMethodMetadata {
 
     private Class<? extends Enum<?>> enumerationType;
 
-    protected EnumMethodMetadata(BeanPropertyMethod beanPropertyMethod, Class<? extends Enum<?>> enumerationType) {
+    protected EnumPropertyMethodMetadata(BeanPropertyMethod beanPropertyMethod, Class<? extends Enum<?>> enumerationType) {
         super(beanPropertyMethod);
         this.enumerationType = enumerationType;
     }

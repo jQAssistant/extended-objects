@@ -1,17 +1,17 @@
 package com.buschmais.cdo.neo4j.impl.proxy.method;
 
-import com.buschmais.cdo.api.CdoManagerException;
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
+import com.buschmais.cdo.neo4j.api.proxy.ProxyMethod;
 import com.buschmais.cdo.neo4j.impl.metadata.*;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.proxy.method.composite.AsMethod;
-import com.buschmais.cdo.neo4j.impl.proxy.method.property.*;
 import com.buschmais.cdo.neo4j.impl.proxy.method.object.EqualsMethod;
 import com.buschmais.cdo.neo4j.impl.proxy.method.object.HashCodeMethod;
 import com.buschmais.cdo.neo4j.impl.proxy.method.object.ToStringMethod;
+import com.buschmais.cdo.neo4j.impl.proxy.method.property.*;
 import org.neo4j.graphdb.Node;
 
-import java.lang.management.MemoryType;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,47 +25,61 @@ public class ProxyMethodService {
         proxyMethods = new HashMap<>();
         for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
             for (AbstractMethodMetadata methodMetadata : nodeMetadata.getProperties()) {
-                BeanPropertyMethod beanMethod = methodMetadata.getBeanMethod();
+                BeanMethod beanMethod = methodMetadata.getBeanMethod();
                 ProxyMethod proxyMethod = null;
-                if (methodMetadata instanceof PrimitiveMethodMetadata) {
-                    switch (beanMethod.getMethodType()) {
-                        case GETTER:
-                            proxyMethod = new PrimitivePropertyGetMethod((PrimitiveMethodMetadata) methodMetadata, instanceManager);
-                            break;
-                        case SETTER:
-                            proxyMethod = new PrimitivePropertySetMethod((PrimitiveMethodMetadata) methodMetadata, instanceManager);
-                            break;
+                if (methodMetadata instanceof InvokeUsingMethodMetadata) {
+                    InvokeUsingMethodMetadata invokeUsingMethodMetadata = (InvokeUsingMethodMetadata) methodMetadata;
+                    Class<? extends ProxyMethod> proxyMethodType = invokeUsingMethodMetadata.getProxyMethodType();
+                    try {
+                        proxyMethod = proxyMethodType.newInstance();
+                    } catch (InstantiationException e) {
+                        throw new CdoException("Cannot instantiate proxy method of type " + proxyMethodType.getName(), e);
+                    } catch (IllegalAccessException e) {
+                        throw new CdoException("Unexpected exception while instantiating type " + proxyMethodType.getName(), e);
                     }
-                } else if (methodMetadata instanceof EnumMethodMetadata) {
-                    switch (beanMethod.getMethodType()) {
-                        case GETTER:
-                            proxyMethod = new EnumPropertyGetMethod((EnumMethodMetadata) methodMetadata, instanceManager);
-                            break;
-                        case SETTER:
-                            proxyMethod = new EnumPropertySetMethod((EnumMethodMetadata) methodMetadata, instanceManager);
-                            break;
-                    }
-                } else if (methodMetadata instanceof ReferenceMethodMetadata) {
-                    switch (beanMethod.getMethodType()) {
-                        case GETTER:
-                            proxyMethod = new ReferencePropertyGetMethod((ReferenceMethodMetadata) methodMetadata, instanceManager);
-                            break;
-                        case SETTER:
-                            proxyMethod = new ReferencePropertySetMethod((ReferenceMethodMetadata) methodMetadata, instanceManager);
-                            break;
-                    }
-                } else if (methodMetadata instanceof CollectionMethodMetadata) {
-                    switch (beanMethod.getMethodType()) {
-                        case GETTER:
-                            proxyMethod = new CollectionPropertyGetMethod((CollectionMethodMetadata) methodMetadata, instanceManager);
-                            break;
-                        case SETTER:
-                            proxyMethod = new CollectionPropertySetMethod((CollectionMethodMetadata) methodMetadata, instanceManager);
-                            break;
+                }
+                if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
+                    BeanPropertyMethod beanPropertyMethod = (BeanPropertyMethod) beanMethod;
+                    if (methodMetadata instanceof PrimitivePropertyMethodMetadata) {
+                        switch (beanPropertyMethod.getMethodType()) {
+                            case GETTER:
+                                proxyMethod = new PrimitivePropertyGetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager);
+                                break;
+                            case SETTER:
+                                proxyMethod = new PrimitivePropertySetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager);
+                                break;
+                        }
+                    } else if (methodMetadata instanceof EnumPropertyMethodMetadata) {
+                        switch (beanPropertyMethod.getMethodType()) {
+                            case GETTER:
+                                proxyMethod = new EnumPropertyGetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager);
+                                break;
+                            case SETTER:
+                                proxyMethod = new EnumPropertySetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager);
+                                break;
+                        }
+                    } else if (methodMetadata instanceof ReferencePropertyMethodMetadata) {
+                        switch (beanPropertyMethod.getMethodType()) {
+                            case GETTER:
+                                proxyMethod = new ReferencePropertyGetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager);
+                                break;
+                            case SETTER:
+                                proxyMethod = new ReferencePropertySetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager);
+                                break;
+                        }
+                    } else if (methodMetadata instanceof CollectionPropertyMethodMetadata) {
+                        switch (beanPropertyMethod.getMethodType()) {
+                            case GETTER:
+                                proxyMethod = new CollectionPropertyGetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager);
+                                break;
+                            case SETTER:
+                                proxyMethod = new CollectionPropertySetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager);
+                                break;
+                        }
                     }
                 }
                 if (proxyMethod == null) {
-                    throw new CdoManagerException("Unsupported metadata type " + methodMetadata);
+                    throw new CdoException("Unsupported metadata type " + methodMetadata);
                 }
                 addProxyMethod(proxyMethod, beanMethod.getMethod());
             }
@@ -79,7 +93,7 @@ public class ProxyMethodService {
     public Object invoke(Node node, Object instance, Method method, Object[] args) {
         ProxyMethod proxyMethod = proxyMethods.get(method);
         if (proxyMethod == null) {
-            throw new CdoManagerException("Cannot invoke method " + method.getName());
+            throw new CdoException("Cannot invoke method " + method.getName());
         }
         return proxyMethod.invoke(node, instance, args);
     }
@@ -89,7 +103,7 @@ public class ProxyMethodService {
         try {
             method = type.getDeclaredMethod(name, argumentTypes);
         } catch (NoSuchMethodException e) {
-            throw new CdoManagerException("Cannot resolve method '" + name + "' (" + Arrays.asList(argumentTypes) + ")");
+            throw new CdoException("Cannot resolve method '" + name + "' (" + Arrays.asList(argumentTypes) + ")");
         }
         addProxyMethod(proxyMethod, method);
     }

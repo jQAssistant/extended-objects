@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.proxy.method.composite;
 
-import com.buschmais.cdo.neo4j.impl.proxy.method.ProxyMethod;
+import com.buschmais.cdo.neo4j.api.proxy.ProxyMethod;
 import org.neo4j.graphdb.Node;
 
 public class AsMethod implements ProxyMethod {

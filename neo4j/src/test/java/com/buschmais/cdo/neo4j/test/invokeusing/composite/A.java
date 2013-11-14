@@ -10,6 +10,12 @@ public interface A {
 
     void setValue(int i);
 
+    @InvokeUsing(SetMethod.class)
+    void setUsingHandler(String usingHandler);
+
+    @InvokeUsing(GetMethod.class)
+    String getUsingHandler();
+
     @InvokeUsing(IncrementValueMethod.class)
     int incrementValue();
 

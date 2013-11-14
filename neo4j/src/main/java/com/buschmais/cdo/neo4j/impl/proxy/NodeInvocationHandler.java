@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.proxy;
 
-import com.buschmais.cdo.api.CdoManagerException;
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.neo4j.impl.proxy.method.ProxyMethodService;
 import org.neo4j.graphdb.Node;
 
@@ -20,7 +20,7 @@ public class NodeInvocationHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (node == null) {
-            throw new CdoManagerException("Invalid access to an un-managed instance.");
+            throw new CdoException("Invalid access to an un-managed instance.");
         }
         return proxyMethodService.invoke(node, proxy, method, args);
     }

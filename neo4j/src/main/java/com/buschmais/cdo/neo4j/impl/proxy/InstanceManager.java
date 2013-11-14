@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.proxy;
 
-import com.buschmais.cdo.api.CdoManagerException;
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadataProvider;
@@ -101,7 +101,7 @@ public class InstanceManager {
     private <T> NodeInvocationHandler getInvocationHandler(T instance) {
         InvocationHandler invocationHandler = Proxy.getInvocationHandler(instance);
         if (!(invocationHandler instanceof NodeInvocationHandler)) {
-            throw new CdoManagerException("Instance " + instance + " is not a " + NodeInvocationHandler.class.getName());
+            throw new CdoException("Instance " + instance + " is not a " + NodeInvocationHandler.class.getName());
         }
         return (NodeInvocationHandler) invocationHandler;
     }

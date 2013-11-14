@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.impl.proxy.method;
+package com.buschmais.cdo.neo4j.api.proxy;
 
 import org.neo4j.graphdb.Node;
 

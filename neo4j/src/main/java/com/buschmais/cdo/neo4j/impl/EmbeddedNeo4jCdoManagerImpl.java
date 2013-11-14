@@ -1,12 +1,12 @@
 package com.buschmais.cdo.neo4j.impl;
 
-import com.buschmais.cdo.api.CdoManagerException;
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.QueryResult;
 import com.buschmais.cdo.neo4j.api.EmbeddedNeo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadataProvider;
-import com.buschmais.cdo.neo4j.impl.metadata.PrimitiveMethodMetadata;
+import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
@@ -57,11 +57,11 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
         NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
         Label label = nodeMetadata.getLabel();
         if (label == null) {
-            throw new CdoManagerException("Type " + type.getName() + " has no label.");
+            throw new CdoException("Type " + type.getName() + " has no label.");
         }
-        PrimitiveMethodMetadata indexedProperty = nodeMetadata.getIndexedProperty();
+        PrimitivePropertyMethodMetadata indexedProperty = nodeMetadata.getIndexedProperty();
         if (indexedProperty == null) {
-            throw new CdoManagerException("Type " + nodeMetadata.getType().getName() + " has no indexed property.");
+            throw new CdoException("Type " + nodeMetadata.getType().getName() + " has no indexed property.");
         }
         final ResourceIterable<Node> nodesByLabelAndProperty = database.findNodesByLabelAndProperty(label, indexedProperty.getPropertyName(), value);
         return new Iterable<T>() {

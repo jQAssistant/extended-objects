@@ -16,8 +16,8 @@ public class InvokeUsingTest extends AbstractCdoManagerTest {
         return new Class<?>[]{A.class};
     }
 
-    @Test @Ignore
-    public void downCast() {
+    @Test
+    public void nonPropertyMethod() {
         CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
         cdoManager.begin();
         A a = cdoManager.create(A.class);
@@ -28,4 +28,15 @@ public class InvokeUsingTest extends AbstractCdoManagerTest {
         cdoManager.close();
     }
 
+    @Test
+    public void propertyMethods() {
+        CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
+        cdoManager.begin();
+        A a = cdoManager.create(A.class);
+        a.setUsingHandler("VALUE");
+        String value = a.getUsingHandler();
+        assertThat(value, equalTo("set_VALUE_get"));
+        cdoManager.commit();
+        cdoManager.close();
+    }
 }

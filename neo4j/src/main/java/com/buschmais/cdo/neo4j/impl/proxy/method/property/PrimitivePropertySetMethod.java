@@ -1,12 +1,12 @@
 package com.buschmais.cdo.neo4j.impl.proxy.method.property;
 
-import com.buschmais.cdo.neo4j.impl.metadata.PrimitiveMethodMetadata;
+import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import org.neo4j.graphdb.Node;
 
-public class PrimitivePropertySetMethod extends AbstractPropertyMethod<PrimitiveMethodMetadata> {
+public class PrimitivePropertySetMethod extends AbstractPropertyMethod<PrimitivePropertyMethodMetadata> {
 
-    public PrimitivePropertySetMethod(PrimitiveMethodMetadata metadata, InstanceManager instanceManager) {
+    public PrimitivePropertySetMethod(PrimitivePropertyMethodMetadata metadata, InstanceManager instanceManager) {
         super(metadata, instanceManager);
     }
 
