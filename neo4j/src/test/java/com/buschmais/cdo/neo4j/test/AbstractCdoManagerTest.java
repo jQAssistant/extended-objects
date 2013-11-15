@@ -13,54 +13,26 @@ import java.util.*;
 
 public abstract class AbstractCdoManagerTest {
 
-    /**
-     * Represents a test result which allows fetching values by row or columns.
-     */
-    protected class TestResult {
-        private List<Map<String, Object>> rows;
-        private Map<String, List<Object>> columns;
-
-        TestResult(List<Map<String, Object>> rows, Map<String, List<Object>> columns) {
-            this.rows = rows;
-            this.columns = columns;
-        }
-
-        /**
-         * Return all rows.
-         *
-         * @return All rows.
-         */
-        public List<Map<String, Object>> getRows() {
-            return rows;
-        }
-
-        /**
-         * Return a column identified by its name.
-         *
-         * @param <T> The expected type.
-         * @return All columns.
-         */
-        public <T> List<T> getColumn(String name) {
-            return (List<T>) columns.get(name);
-        }
-    }
-
     private CdoManagerFactory cdoManagerFactory;
-
-    private CdoManager cdoManager;
+    private CdoManager cdoManager = null;
 
     @Before
     public void createNodeManagerFactory() throws MalformedURLException {
         cdoManagerFactory = new EmbeddedNeo4jCdoManagerFactoryImpl(new File("target/neo4j").toURI().toURL(), getTypes());
-        cdoManager = getCdoManagerFactory().createCdoManager();
-        cdoManager.begin();
-        cdoManager.executeQuery("MATCH (n)-[r]-(d) DELETE r");
-        cdoManager.executeQuery("MATCH (n) DELETE n");
-        cdoManager.commit();
+        dropDatabase();
+    }
+
+    private void dropDatabase() {
+        CdoManager manager = getCdoManager();
+        manager.begin();
+        manager.executeQuery("MATCH (n)-[r]-() DELETE r");
+        manager.executeQuery("MATCH (n) DELETE n");
+        manager.commit();
     }
 
     @After
     public void closeNodeManagerFactory() {
+        closeCdoManager();
         cdoManagerFactory.close();
     }
 
@@ -104,8 +76,51 @@ public abstract class AbstractCdoManagerTest {
     }
 
     protected CdoManager getCdoManager() {
+        if (cdoManager == null) {
+            cdoManager = getCdoManagerFactory().createCdoManager();
+        }
         return cdoManager;
     }
 
+    protected void closeCdoManager() {
+        if (cdoManager != null) {
+            cdoManager.close();
+        }
+    }
+
     protected abstract Class<?>[] getTypes();
+
+
+
+    /**
+     * Represents a test result which allows fetching values by row or columns.
+     */
+    protected class TestResult {
+        private List<Map<String, Object>> rows;
+        private Map<String, List<Object>> columns;
+
+        TestResult(List<Map<String, Object>> rows, Map<String, List<Object>> columns) {
+            this.rows = rows;
+            this.columns = columns;
+        }
+
+        /**
+         * Return all rows.
+         *
+         * @return All rows.
+         */
+        public List<Map<String, Object>> getRows() {
+            return rows;
+        }
+
+        /**
+         * Return a column identified by its name.
+         *
+         * @param <T> The expected type.
+         * @return All columns.
+         */
+        public <T> List<T> getColumn(String name) {
+            return (List<T>) columns.get(name);
+        }
+    }
 }

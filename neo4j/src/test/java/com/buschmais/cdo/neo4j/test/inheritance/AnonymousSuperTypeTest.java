@@ -1,9 +1,9 @@
-package com.buschmais.cdo.neo4j.test.mapping;
+package com.buschmais.cdo.neo4j.test.inheritance;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
-import com.buschmais.cdo.neo4j.test.mapping.composite.A;
-import com.buschmais.cdo.neo4j.test.mapping.composite.C;
+import com.buschmais.cdo.neo4j.test.inheritance.composite.A;
+import com.buschmais.cdo.neo4j.test.inheritance.composite.B;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -13,20 +13,20 @@ public class AnonymousSuperTypeTest extends AbstractCdoManagerTest {
 
     @Override
     protected Class<?>[] getTypes() {
-        return new Class<?>[]{A.class, C.class};
+        return new Class<?>[]{A.class, B.class};
     }
 
     @Test
     public void anonymousSuperType() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
-        C c = cdoManager.create(C.class);
-        c.setIndex("1");
-        c.setVersion(1);
+        B b = cdoManager.create(B.class);
+        b.setIndex("1");
+        b.setVersion(1);
         cdoManager.commit();
         cdoManager.begin();
         A a = cdoManager.find(A.class, "1").iterator().next();
-        assertThat(c, equalTo(a));
+        assertThat(b, equalTo(a));
         assertThat(a.getVersion(), equalTo(1L));
         cdoManager.commit();
     }

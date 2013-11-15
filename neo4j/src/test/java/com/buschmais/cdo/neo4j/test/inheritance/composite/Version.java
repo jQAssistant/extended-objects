@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.test.mapping.composite;
+package com.buschmais.cdo.neo4j.test.inheritance.composite;
 
 public interface Version {
 
