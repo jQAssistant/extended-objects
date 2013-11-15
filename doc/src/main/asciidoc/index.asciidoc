@@ -25,7 +25,8 @@ Modeling data objects in various domains often requires common properties (e.g. 
  }
  ---
 
-
+Mapping Composite Data Objects to Neo4j
+---------------------------------------
 
 As a graph database Neo4j provides very good capabilities to model highly interconnected datastructures consisting of nodes and relationships. With release 2.0 a new concept of labels has been introduced. One or more number of labels can be added to a node:
 
