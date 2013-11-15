@@ -32,11 +32,21 @@ public class InstanceManager {
     }
 
     public List<Class<?>> getTypes(Node node) {
-        Set<Class<?>> types = new HashSet<>();
+        // Collect all labels from the node
+        Set<Label> labels = new HashSet<>();
         for (Label label : node.getLabels()) {
-            NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(label);
-            if (nodeMetadata != null) {
-                types.add(nodeMetadata.getType());
+            labels.add(label);
+        }
+        // Get all types matching the labels
+        Set<Class<?>> types = new HashSet<>();
+        for (Label label : labels) {
+            Set<NodeMetadata> nodeMetadataOfLabel = nodeMetadataProvider.getNodeMetadata(label);
+            if (nodeMetadataOfLabel != null) {
+                for (NodeMetadata nodeMetadata : nodeMetadataOfLabel) {
+                    if (labels.containsAll(nodeMetadata.getAggregatedLabels())) {
+                        types.add(nodeMetadata.getType());
+                    }
+                }
             }
         }
         SortedSet<Class<?>> uniqueTypes = new TreeSet<>(new Comparator<Class<?>>() {
@@ -45,6 +55,7 @@ public class InstanceManager {
                 return o1.getName().compareTo(o2.getName());
             }
         });
+        // Remove super types if subtypes are already in the type set
         for (Class<?> type : types) {
             boolean subtype = false;
             for (Iterator<Class<?>> subTypeIterator = types.iterator(); subTypeIterator.hasNext() && !subtype; ) {
@@ -64,7 +75,7 @@ public class InstanceManager {
         Object instance = instanceCache.get(Long.valueOf(node.getId()));
         if (instance == null) {
             NodeInvocationHandler invocationHandler = new NodeInvocationHandler(node, proxyMethodService);
-            List<Class<?>> effectiveTypes = new ArrayList<>(types.size() +1);
+            List<Class<?>> effectiveTypes = new ArrayList<>(types.size() + 1);
             effectiveTypes.addAll(types);
             effectiveTypes.add(CompositeObject.class);
             instance = Proxy.newProxyInstance(classLoader, effectiveTypes.toArray(new Class<?>[effectiveTypes.size()]), invocationHandler);

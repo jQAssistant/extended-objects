@@ -3,10 +3,9 @@ package com.buschmais.cdo.neo4j.impl.metadata;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.neo4j.api.annotation.*;
+import com.buschmais.cdo.neo4j.api.annotation.Label;
 import org.apache.commons.lang.StringUtils;
-import org.neo4j.graphdb.DynamicLabel;
-import org.neo4j.graphdb.DynamicRelationshipType;
-import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,7 @@ public class NodeMetadataProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeMetadata.class);
     private Map<Class<?>, NodeMetadata> nodeMetadataByType = new HashMap<>();
-    private Map<org.neo4j.graphdb.Label, NodeMetadata> nodeMetadataByAggregatedLabels = new HashMap<>();
+    private Map<org.neo4j.graphdb.Label, Set<NodeMetadata>> nodeMetadataByLabel = new HashMap<>();
 
     public NodeMetadataProvider(Collection<Class<?>> types) {
         DependencyResolver.DependencyProvider<Class<?>> classDependencyProvider = new DependencyResolver.DependencyProvider<Class<?>>() {
@@ -57,8 +56,8 @@ public class NodeMetadataProvider {
         return nodeMetadata;
     }
 
-    public NodeMetadata getNodeMetadata(org.neo4j.graphdb.Label label) {
-        return nodeMetadataByAggregatedLabels.get(label);
+    public Set<NodeMetadata> getNodeMetadata(org.neo4j.graphdb.Label label) {
+        return nodeMetadataByLabel.get(label);
     }
 
     private void createMetadata(Class<?> type, Collection<BeanMethod> beanMethods, Set<Class<?>> types) {
@@ -128,12 +127,15 @@ public class NodeMetadataProvider {
         NodeMetadata nodeMetadata = new NodeMetadata(type, label, aggregatedLabels, methodMetadataList, indexedProperty);
         LOGGER.info("Registering {}, labels={}.", type.getName(), aggregatedLabels);
         nodeMetadataByType.put(type, nodeMetadata);
-        if (label != null) {
-            NodeMetadata conflictingMetadata = nodeMetadataByAggregatedLabels.put(label, nodeMetadata);
-            if (conflictingMetadata != null) {
-                throw new CdoException("Types " + nodeMetadata.getType().getName() + " and " + conflictingMetadata.getType().getName() + " define the same label: " + label);
+        for (org.neo4j.graphdb.Label aggregatedLabel : nodeMetadata.getAggregatedLabels()) {
+            Set<NodeMetadata> nodeMetadataOfLabel = nodeMetadataByLabel.get(aggregatedLabel);
+            if (nodeMetadataOfLabel == null) {
+                nodeMetadataOfLabel= new HashSet<>();
+                nodeMetadataByLabel.put(label, nodeMetadataOfLabel);
             }
+            nodeMetadataOfLabel.add(nodeMetadata);
         }
+
         nodeMetadataByType.put(CompositeObject.class, new NodeMetadata(CompositeObject.class, null, Collections.<org.neo4j.graphdb.Label>emptySet(), Collections.<AbstractMethodMetadata>emptyList(), null));
     }
 
