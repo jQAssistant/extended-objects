@@ -6,6 +6,10 @@ import java.util.Map;
 
 public interface QueryResult extends Closeable {
 
+    List<String> getColumns();
+
+    IterableResult<Row> getRows();
+
     /**
      * A row of a query result containing named columns and their values.
      */
@@ -18,16 +22,13 @@ public interface QueryResult extends Closeable {
         }
 
         @SuppressWarnings("unchecked")
-        public <T> T get(String column) {
-            return (T) row.get(column);
+        public <T> T get(String column, Class<T> type) {
+            Object value = row.get(column);
+            return value != null ? type.cast(value) : null;
         }
 
         public Map<String, Object> get() {
             return row;
         }
     }
-
-    List<String> getColumns();
-
-    Iterable<QueryResult.Row> getRows();
 }

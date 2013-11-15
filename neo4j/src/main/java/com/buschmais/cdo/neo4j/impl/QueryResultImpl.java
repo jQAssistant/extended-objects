@@ -1,5 +1,6 @@
 package com.buschmais.cdo.neo4j.impl;
 
+import com.buschmais.cdo.api.IterableResult;
 import com.buschmais.cdo.api.QueryResult;
 import org.apache.commons.io.IOUtils;
 
@@ -24,7 +25,7 @@ public class QueryResultImpl implements Closeable, QueryResult {
      * corresponding classes.
      * </p>
      */
-    private final Iterable<Row> rows;
+    private final IterableResult<Row> rows;
 
     /**
      * Constructor.
@@ -32,7 +33,7 @@ public class QueryResultImpl implements Closeable, QueryResult {
      * @param columns A list containing the names of the returned columns.
      * @param rows    The rows.
      */
-    public QueryResultImpl(List<String> columns, Iterable<Row> rows) {
+    public QueryResultImpl(List<String> columns, IterableResult<Row> rows) {
         this.columns = columns;
         this.rows = rows;
     }
@@ -53,7 +54,7 @@ public class QueryResultImpl implements Closeable, QueryResult {
      * @return The {@link Iterable} to be used to scroll through the rows.
      */
     @Override
-    public Iterable<Row> getRows() {
+    public IterableResult<Row> getRows() {
         return rows;
     }
 

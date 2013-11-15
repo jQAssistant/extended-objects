@@ -105,15 +105,6 @@ public abstract class AbstractCdoManagerTest {
         }
 
         /**
-         * Return all rows.
-         *
-         * @return All rows.
-         */
-        public List<Map<String, Object>> getRows() {
-            return rows;
-        }
-
-        /**
          * Return a column identified by its name.
          *
          * @param <T> The expected type.

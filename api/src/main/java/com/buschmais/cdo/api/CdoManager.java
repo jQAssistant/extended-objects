@@ -30,12 +30,11 @@ public interface CdoManager {
      * @param value The value.
      * @return An {@Iterable} returning the property instance.
      */
-    <T> Iterable<T> find(Class<T> type, Object value);
+    <T> IterableResult<T> find(Class<T> type, Object value);
 
     /**
      * Create a new {@CompositeObject} instance.
      *
-     * @param <T>   The expected return type. Note that it must be assignable to at least one of the interfaces specified for the types.
      * @param type  The interface the property type shall implement.
      * @param types Additional interfaces the property type shall implement.
      * @return The {@link CompositeObject} instance.

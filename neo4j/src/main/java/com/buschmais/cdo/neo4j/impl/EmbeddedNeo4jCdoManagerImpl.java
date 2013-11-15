@@ -2,11 +2,13 @@ package com.buschmais.cdo.neo4j.impl;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
+import com.buschmais.cdo.api.IterableResult;
 import com.buschmais.cdo.api.QueryResult;
 import com.buschmais.cdo.neo4j.api.EmbeddedNeo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.neo4j.impl.proxy.AbstractIterableResult;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
@@ -53,7 +55,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     }
 
     @Override
-    public <T> Iterable<T> find(final Class<T> type, final Object value) {
+    public <T> IterableResult<T> find(final Class<T> type, final Object value) {
         NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
         Label label = nodeMetadata.getLabel();
         if (label == null) {
@@ -64,7 +66,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
             throw new CdoException("Type " + nodeMetadata.getType().getName() + " has no indexed property.");
         }
         final ResourceIterable<Node> nodesByLabelAndProperty = database.findNodesByLabelAndProperty(label, indexedProperty.getPropertyName(), value);
-        return new Iterable<T>() {
+        return new AbstractIterableResult<T>() {
             @Override
             public Iterator<T> iterator() {
                 final ResourceIterator<Node> iterator = nodesByLabelAndProperty.iterator();
@@ -172,7 +174,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     @Override
     public QueryResult executeQuery(String query, Map<String, Object> parameters) {
         ExecutionResult result = executionEngine.execute(query, parameters);
-        Iterable<QueryResult.Row> rowIterable = new RowIterable(result.columns(), result.iterator());
+        IterableResult<QueryResult.Row> rowIterable = new RowIterable(result.columns(), result.iterator());
         return new QueryResultImpl(result.columns(), rowIterable);
     }
 
@@ -193,7 +195,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
         return effectiveTypes;
     }
 
-    private final class RowIterable implements Iterable<QueryResult.Row>, Closeable {
+    private final class RowIterable extends AbstractIterableResult<QueryResult.Row> implements Closeable {
 
         private List<String> columns;
         private ResourceIterator<Map<String, Object>> iterator;
