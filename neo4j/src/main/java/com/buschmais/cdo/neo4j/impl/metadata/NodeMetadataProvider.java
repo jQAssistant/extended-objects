@@ -77,9 +77,9 @@ public class NodeMetadataProvider {
         PrimitivePropertyMethodMetadata indexedProperty = null;
         for (BeanMethod beanMethod : beanMethods) {
             AbstractMethodMetadata propertyMetadata;
-            InvokeUsing invokeUsing = beanMethod.getMethod().getAnnotation(InvokeUsing.class);
-            if (invokeUsing != null) {
-                propertyMetadata = new InvokeUsingMethodMetadata(beanMethod, invokeUsing.value());
+            ImplementedBy implementedBy = beanMethod.getMethod().getAnnotation(ImplementedBy.class);
+            if (implementedBy != null) {
+                propertyMetadata = new ImplementedByMethodMetadata(beanMethod, implementedBy.value());
             } else if (beanMethod instanceof BeanPropertyMethod) {
                 BeanPropertyMethod beanPropertyMethod = (BeanPropertyMethod) beanMethod;
                 if (Collection.class.isAssignableFrom(beanPropertyMethod.getType())) {

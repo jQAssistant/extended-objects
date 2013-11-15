@@ -27,9 +27,9 @@ public class ProxyMethodService {
             for (AbstractMethodMetadata methodMetadata : nodeMetadata.getProperties()) {
                 BeanMethod beanMethod = methodMetadata.getBeanMethod();
                 ProxyMethod proxyMethod = null;
-                if (methodMetadata instanceof InvokeUsingMethodMetadata) {
-                    InvokeUsingMethodMetadata invokeUsingMethodMetadata = (InvokeUsingMethodMetadata) methodMetadata;
-                    Class<? extends ProxyMethod> proxyMethodType = invokeUsingMethodMetadata.getProxyMethodType();
+                if (methodMetadata instanceof ImplementedByMethodMetadata) {
+                    ImplementedByMethodMetadata implementedByMethodMetadata = (ImplementedByMethodMetadata) methodMetadata;
+                    Class<? extends ProxyMethod> proxyMethodType = implementedByMethodMetadata.getProxyMethodType();
                     try {
                         proxyMethod = proxyMethodType.newInstance();
                     } catch (InstantiationException e) {

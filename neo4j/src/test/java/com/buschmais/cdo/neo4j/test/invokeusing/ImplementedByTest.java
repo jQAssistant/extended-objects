@@ -3,13 +3,12 @@ package com.buschmais.cdo.neo4j.test.invokeusing;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.invokeusing.composite.A;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class InvokeUsingTest extends AbstractCdoManagerTest {
+public class ImplementedByTest extends AbstractCdoManagerTest {
 
     @Override
     protected Class<?>[] getTypes() {
@@ -33,8 +32,8 @@ public class InvokeUsingTest extends AbstractCdoManagerTest {
         CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
         cdoManager.begin();
         A a = cdoManager.create(A.class);
-        a.setUsingHandler("VALUE");
-        String value = a.getUsingHandler();
+        a.setCustomValue("VALUE");
+        String value = a.getCustomValue();
         assertThat(value, equalTo("set_VALUE_get"));
         cdoManager.commit();
         cdoManager.close();
