@@ -32,6 +32,10 @@
         <url>https://github.com/buschmais/cdo-neo4j</url>
     </scm>
 
+    <ciManagement>
+        <url>https://travis-ci.org/buschmais/cdo-neo4j</url>
+    </ciManagement>
+
     <developers>
         <developer>
             <id>dirk-mahler</id>
