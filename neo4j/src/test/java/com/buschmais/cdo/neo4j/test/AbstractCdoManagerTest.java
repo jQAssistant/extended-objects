@@ -2,7 +2,7 @@ package com.buschmais.cdo.neo4j.test;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.api.QueryResult;
+import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.impl.EmbeddedNeo4jCdoManagerFactoryImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -25,8 +25,8 @@ public abstract class AbstractCdoManagerTest {
     private void dropDatabase() {
         CdoManager manager = getCdoManager();
         manager.begin();
-        manager.executeQuery("MATCH (n)-[r]-() DELETE r");
-        manager.executeQuery("MATCH (n) DELETE n");
+        manager.createQuery("MATCH (n)-[r]-() DELETE r").execute();
+        manager.createQuery("MATCH (n) DELETE n").execute();
         manager.commit();
     }
 
@@ -37,9 +37,9 @@ public abstract class AbstractCdoManagerTest {
     }
 
     /**
-     * Executes a query and returns a {@link TestResult}.
+     * Executes a createQuery and returns a {@link TestResult}.
      *
-     * @param query The query.
+     * @param query The createQuery.
      * @return The {@link TestResult}.
      */
     protected TestResult executeQuery(String query) {
@@ -47,20 +47,20 @@ public abstract class AbstractCdoManagerTest {
     }
 
     /**
-     * Executes a query and returns a {@link TestResult}.
+     * Executes a createQuery and returns a {@link TestResult}.
      *
-     * @param query      The query.
-     * @param parameters The query parameters.
+     * @param query      The createQuery.
+     * @param parameters The createQuery parameters.
      * @return The {@link TestResult}.
      */
     protected TestResult executeQuery(String query, Map<String, Object> parameters) {
-        QueryResult queryResult = cdoManager.executeQuery(query, parameters);
+        Query.Result queryResult = cdoManager.createQuery(query).setParameters(parameters).execute();
         List<Map<String, Object>> rows = new ArrayList<>();
         Map<String, List<Object>> columns = new HashMap<>();
         for (String column : queryResult.getColumns()) {
             columns.put(column, new ArrayList<>());
         }
-        for (QueryResult.Row row : queryResult.getRows()) {
+        for (Query.Result.Row row : queryResult.getRows()) {
             Map<String, Object> rowData = row.get();
             rows.add(rowData);
             for (Map.Entry<String, ?> entry : rowData.entrySet()) {
@@ -89,7 +89,6 @@ public abstract class AbstractCdoManagerTest {
     }
 
     protected abstract Class<?>[] getTypes();
-
 
 
     /**

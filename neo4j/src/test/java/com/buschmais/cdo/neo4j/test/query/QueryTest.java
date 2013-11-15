@@ -2,15 +2,10 @@ package com.buschmais.cdo.neo4j.test.query;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.api.IterableResult;
-import com.buschmais.cdo.api.QueryResult;
+import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.query.composite.A;
-import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -58,13 +53,10 @@ public class QueryTest extends AbstractCdoManagerTest {
         a2_2.setValue("A2");
         cdoManager.commit();
         cdoManager.begin();
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("a", "A1");
-        QueryResult queryResult = cdoManager.executeQuery("match (a:A) where a.Value={a} return a", parameters);
+        Query.Result queryResult = cdoManager.createQuery("match (a:A) where a.Value={a} return a").setParameter("a", "A1").execute();
         A a = queryResult.getRows().getSingleResult().get("a", A.class);
         assertThat(a, equalTo(a1));
-        parameters.put("a", "A2");
-        queryResult = cdoManager.executeQuery("match (a:A) where a.Value={a} return a", parameters);
+        queryResult = cdoManager.createQuery("match (a:A) where a.Value={a} return a").setParameter("a", "A2").execute();
         try {
             queryResult.getRows().getSingleResult().get("a", A.class);
             fail("Expecting a " + CdoException.class.getName());

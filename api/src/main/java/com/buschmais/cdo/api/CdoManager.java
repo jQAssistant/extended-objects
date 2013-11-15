@@ -1,7 +1,5 @@
 package com.buschmais.cdo.api;
 
-import java.util.Map;
-
 /**
  * Defines methods to manage the lifecycle of property instances, query execution and transaction management.
  */
@@ -106,9 +104,12 @@ public interface CdoManager {
      */
     <T> void delete(T instance);
 
-    QueryResult executeQuery(String query);
-
-    QueryResult executeQuery(String query, Map<String, Object> parameters);
+    /**
+     * Creates a {@link Query}.
+     *
+     * @return The {@link Query}.
+     */
+    Query createQuery(String query);
 
     /**
      * Close the {@CdoManager}.

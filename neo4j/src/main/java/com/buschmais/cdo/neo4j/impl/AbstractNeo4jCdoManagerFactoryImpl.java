@@ -23,8 +23,9 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFa
     private URL url;
     private NodeMetadataProvider nodeMetadataProvider;
     private ClassLoader classLoader;
+    private GraphDatabaseService graphDatabaseService;
 
-    public AbstractNeo4jCdoManagerFactoryImpl(URL url, Class<?>... entities) {
+    protected AbstractNeo4jCdoManagerFactoryImpl(URL url, Class<?>... entities) {
         this.url = url;
         nodeMetadataProvider = new NodeMetadataProvider(Arrays.asList(entities));
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
@@ -36,18 +37,17 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFa
                 return contextClassLoader.loadClass(name);
             }
         };
+        this.graphDatabaseService = createGraphDatabaseService(url);
+        this.updateIndexes();
     }
 
     @Override
     public CdoManager createCdoManager() {
-        this.updateIndexes();
-        GraphDatabaseService graphDatabaseService = getGraphDatabaseService(url);
         InstanceManager instanceManager = new InstanceManager(nodeMetadataProvider, classLoader);
         return new EmbeddedNeo4jCdoManagerImpl(nodeMetadataProvider, graphDatabaseService, instanceManager);
     }
 
     private void updateIndexes() {
-        GraphDatabaseService graphDatabaseService = getGraphDatabaseService(url);
         Transaction transaction = graphDatabaseService.beginTx();
         for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
             Label label = nodeMetadata.getLabel();
@@ -74,5 +74,10 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFa
         transaction.close();
     }
 
-    protected abstract GraphDatabaseService getGraphDatabaseService(URL url);
+    @Override
+    public void close() {
+        graphDatabaseService.shutdown();
+    }
+
+    protected abstract GraphDatabaseService createGraphDatabaseService(URL url);
 }

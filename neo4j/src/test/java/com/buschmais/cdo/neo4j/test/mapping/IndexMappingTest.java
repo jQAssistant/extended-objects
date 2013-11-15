@@ -43,6 +43,4 @@ public class IndexMappingTest extends AbstractCdoManagerTest {
         assertThat(cdoManager.find(D.class, "1").iterator().next(), equalTo(a1));
         cdoManager.commit();
     }
-
-
 }

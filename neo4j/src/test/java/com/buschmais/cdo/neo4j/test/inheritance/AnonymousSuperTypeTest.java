@@ -30,5 +30,4 @@ public class AnonymousSuperTypeTest extends AbstractCdoManagerTest {
         assertThat(a.getVersion(), equalTo(1L));
         cdoManager.commit();
     }
-
 }

@@ -1,23 +1,18 @@
 package com.buschmais.cdo.neo4j.impl;
 
-import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.CompositeObject;
-import com.buschmais.cdo.api.IterableResult;
-import com.buschmais.cdo.api.QueryResult;
+import com.buschmais.cdo.api.*;
 import com.buschmais.cdo.neo4j.api.EmbeddedNeo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.proxy.AbstractIterableResult;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.query.EmbeddedNeo4jQueryImpl;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.util.*;
 
 public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
@@ -167,15 +162,8 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     }
 
     @Override
-    public QueryResult executeQuery(String query) {
-        return executeQuery(query, Collections.<String, Object>emptyMap());
-    }
-
-    @Override
-    public QueryResult executeQuery(String query, Map<String, Object> parameters) {
-        ExecutionResult result = executionEngine.execute(query, parameters);
-        IterableResult<QueryResult.Row> rowIterable = new RowIterable(result.columns(), result.iterator());
-        return new QueryResultImpl(result.columns(), rowIterable);
+    public Query createQuery(String query) {
+        return new EmbeddedNeo4jQueryImpl(query, executionEngine, instanceManager);
     }
 
     @Override
@@ -193,68 +181,5 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
         effectiveTypes.add(type);
         effectiveTypes.addAll(Arrays.asList(types));
         return effectiveTypes;
-    }
-
-    private final class RowIterable extends AbstractIterableResult<QueryResult.Row> implements Closeable {
-
-        private List<String> columns;
-        private ResourceIterator<Map<String, Object>> iterator;
-
-        private RowIterable(List<String> columns, ResourceIterator<Map<String, Object>> iterator) {
-            this.columns = columns;
-            this.iterator = iterator;
-        }
-
-        @Override
-        public Iterator<QueryResult.Row> iterator() {
-
-            return new Iterator<QueryResult.Row>() {
-
-                @Override
-                public boolean hasNext() {
-                    return iterator.hasNext();
-                }
-
-                @Override
-                public QueryResult.Row next() {
-                    Map<String, Object> next = iterator.next();
-                    Map<String, Object> row = new LinkedHashMap<>();
-                    for (String column : columns) {
-                        Object value = next.get(column);
-                        Object decodedValue = decodeValue(value);
-                        row.put(column, decodedValue);
-                    }
-                    return new QueryResult.Row(row);
-                }
-
-                @Override
-                public void remove() {
-                    iterator.remove();
-                }
-
-                private Object decodeValue(Object value) {
-                    Object decodedValue;
-                    if (value instanceof Node) {
-                        Node node = (Node) value;
-                        return instanceManager.getInstance(node);
-                    } else if (value instanceof List<?>) {
-                        List<?> listValue = (List<?>) value;
-                        List<Object> decodedList = new ArrayList<>();
-                        for (Object o : listValue) {
-                            decodedList.add(decodeValue(o));
-                        }
-                        decodedValue = decodedList;
-                    } else {
-                        decodedValue = value;
-                    }
-                    return decodedValue;
-                }
-            };
-        }
-
-        @Override
-        public void close() throws IOException {
-            iterator.close();
-        }
     }
 }

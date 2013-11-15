@@ -1,25 +1,24 @@
-package com.buschmais.cdo.neo4j.impl;
+package com.buschmais.cdo.neo4j.impl.query;
 
 import com.buschmais.cdo.api.IterableResult;
-import com.buschmais.cdo.api.QueryResult;
+import com.buschmais.cdo.api.Query;
 import org.apache.commons.io.IOUtils;
 
 import java.io.Closeable;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Represents the result of a query.
+ * Represents the result of a createQuery.
  */
-public class QueryResultImpl implements Closeable, QueryResult {
+public class QueryResultImpl implements Closeable, Query.Result {
 
     /**
-     * The column names returned by the query.
+     * The column names returned by the createQuery.
      */
     private final List<String> columns;
     /**
      * The Iterable which can be used to scroll through the rows returned by the
-     * query.
+     * createQuery.
      * <p>
      * Where applicable the values of a row are transformed to instances of the
      * corresponding classes.
