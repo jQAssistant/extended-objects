@@ -44,6 +44,10 @@
         </developer>
     </developers>
 
+	<properties>
+		<jqassistant.version>1.0.0-M1</jqassistant.version>
+	</properties>
+	
     <build>
         <plugins>
             <plugin>
@@ -66,6 +70,40 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.buschmais.jqassistant.maven</groupId>
+                <artifactId>jqassistant-maven-plugin</artifactId>
+                <version>${jqassistant.version}</version>
+                <executions>
+                    <execution>
+                        <id>scan</id>
+                        <goals>
+                            <goal>scan</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>analyze</id>
+                        <goals>
+                            <goal>analyze</goal>
+                        </goals>
+                        <configuration>
+                            <failOnConstraintViolations>false</failOnConstraintViolations>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.buschmais.jqassistant</groupId>
+                        <artifactId>jqassistant.rules.java</artifactId>
+                        <version>${jqassistant.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.buschmais.jqassistant</groupId>
+                        <artifactId>jqassistant.rules.junit4</artifactId>
+                        <version>${jqassistant.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
