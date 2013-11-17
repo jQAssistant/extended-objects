@@ -3,11 +3,12 @@ package com.buschmais.cdo.neo4j.impl.node.metadata;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.neo4j.api.annotation.*;
-import com.buschmais.cdo.neo4j.api.annotation.Label;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethodProvider;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.DynamicLabel;
+import org.neo4j.graphdb.DynamicRelationshipType;
+import org.neo4j.graphdb.RelationshipType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,9 +78,12 @@ public class NodeMetadataProvider {
         PrimitivePropertyMethodMetadata indexedProperty = null;
         for (BeanMethod beanMethod : beanMethods) {
             AbstractMethodMetadata propertyMetadata;
+            ResultOf resultOf = beanMethod.getMethod().getAnnotation(ResultOf.class);
             ImplementedBy implementedBy = beanMethod.getMethod().getAnnotation(ImplementedBy.class);
             if (implementedBy != null) {
                 propertyMetadata = new ImplementedByMethodMetadata(beanMethod, implementedBy.value());
+            } else if (resultOf != null) {
+                propertyMetadata = new ResultOfMethodMetadata(beanMethod, resultOf.query(), resultOf.usingThisAs());
             } else if (beanMethod instanceof BeanPropertyMethod) {
                 BeanPropertyMethod beanPropertyMethod = (BeanPropertyMethod) beanMethod;
                 if (Collection.class.isAssignableFrom(beanPropertyMethod.getType())) {
@@ -130,7 +134,7 @@ public class NodeMetadataProvider {
         for (org.neo4j.graphdb.Label aggregatedLabel : nodeMetadata.getAggregatedLabels()) {
             Set<NodeMetadata> nodeMetadataOfLabel = nodeMetadataByLabel.get(aggregatedLabel);
             if (nodeMetadataOfLabel == null) {
-                nodeMetadataOfLabel= new HashSet<>();
+                nodeMetadataOfLabel = new HashSet<>();
                 nodeMetadataByLabel.put(label, nodeMetadataOfLabel);
             }
             nodeMetadataOfLabel.add(nodeMetadata);

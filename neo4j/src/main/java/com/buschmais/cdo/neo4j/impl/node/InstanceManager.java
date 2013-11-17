@@ -6,6 +6,7 @@ import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.proxy.NodeInvocationHandler;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.NodeProxyMethodService;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 
@@ -20,11 +21,11 @@ public class InstanceManager {
     private final Map<Long, Object> instanceCache;
     private final NodeProxyMethodService nodeProxyMethodService;
 
-    public InstanceManager(NodeMetadataProvider nodeMetadataProvider, ClassLoader classLoader) {
+    public InstanceManager(NodeMetadataProvider nodeMetadataProvider, GraphDatabaseService graphDatabaseService, ClassLoader classLoader) {
         this.nodeMetadataProvider = nodeMetadataProvider;
         this.classLoader = classLoader;
         instanceCache = new WeakHashMap<>();
-        nodeProxyMethodService = new NodeProxyMethodService(nodeMetadataProvider, this);
+        nodeProxyMethodService = new NodeProxyMethodService(nodeMetadataProvider, this, graphDatabaseService);
     }
 
     public <T> T getInstance(Node node) {

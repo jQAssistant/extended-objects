@@ -2,10 +2,10 @@ package com.buschmais.cdo.neo4j.impl;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
@@ -43,7 +43,7 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFa
 
     @Override
     public CdoManager createCdoManager() {
-        InstanceManager instanceManager = new InstanceManager(nodeMetadataProvider, classLoader);
+        InstanceManager instanceManager = new InstanceManager(nodeMetadataProvider, graphDatabaseService, classLoader);
         return new EmbeddedNeo4jCdoManagerImpl(nodeMetadataProvider, graphDatabaseService, instanceManager);
     }
 
