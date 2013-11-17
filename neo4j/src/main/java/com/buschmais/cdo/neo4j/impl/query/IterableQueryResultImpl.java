@@ -11,7 +11,6 @@ import org.neo4j.graphdb.ResourceIterator;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.lang.reflect.InvocationHandler;
 import java.util.*;
 
 class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements IterableQueryResult<T>, Closeable {
@@ -49,7 +48,7 @@ class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements It
                     row.put(column, decodedValue);
                 }
                 RowInvocationHandler invocationHandler = new RowInvocationHandler(row, rowProxyMethodService);
-                return instanceManager.createInstance(invocationHandler, types, CompositeObject.class, Row.class);
+                return instanceManager.createInstance(invocationHandler, types, CompositeRowObject.class);
             }
 
             @Override

@@ -8,7 +8,7 @@ public class ToStringMethod implements RowProxyMethod {
 
     @Override
     public Object invoke(Map<String, Object> element, Object instance, Object[] args) {
-        return "Row " + element.toString();
+        return "CompositeRowObject " + element.toString();
     }
 
 }

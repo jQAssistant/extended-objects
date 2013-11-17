@@ -33,7 +33,7 @@ public class RowProxyMethodService extends AbstractProxyMethodService<Map<String
             }
         }
         addMethod(new AsMethod<Map<String,Object>>(), CompositeObject.class, "as", Class.class);
-        addMethod(new com.buschmais.cdo.neo4j.impl.query.proxy.method.row.GetMethod(), IterableQueryResult.Row.class, "get", String.class, Class.class);
+        addMethod(new com.buschmais.cdo.neo4j.impl.query.proxy.method.row.GetMethod(), IterableQueryResult.CompositeRowObject.class, "get", String.class, Class.class);
         addMethod(new HashCodeMethod(), Object.class, "hashCode");
         addMethod(new EqualsMethod(), Object.class, "equals", Object.class);
         addMethod(new ToStringMethod(), Object.class, "toString");    }

@@ -54,12 +54,12 @@ public abstract class AbstractCdoManagerTest {
      * @return The {@link TestResult}.
      */
     protected TestResult executeQuery(String query, Map<String, Object> parameters) {
-        IterableQueryResult<IterableQueryResult.Row> result = cdoManager.createQuery(query).withParameters(parameters).execute();
+        IterableQueryResult<IterableQueryResult.CompositeRowObject> result = cdoManager.createQuery(query).withParameters(parameters).execute();
         Map<String, List<Object>> columns = new HashMap<>();
         for (String column : result.getColumns()) {
             columns.put(column, new ArrayList<>());
         }
-        for (IterableQueryResult.Row row : result) {
+        for (IterableQueryResult.CompositeRowObject row : result) {
             for (String columnName : result.getColumns()) {
                 List<Object> columnValues = columns.get(columnName);
                 columnValues.add(row.get(columnName, Object.class));

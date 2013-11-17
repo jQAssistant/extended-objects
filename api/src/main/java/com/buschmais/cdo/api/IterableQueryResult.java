@@ -6,7 +6,7 @@ public interface IterableQueryResult<T> extends IterableResult<T> {
 
     public List<String> getColumns();
 
-    public interface Row {
+    public interface CompositeRowObject extends CompositeObject {
         <C> C get(String name, Class<C> type);
     }
 }
