@@ -5,6 +5,8 @@ import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.query.composite.A;
+import com.buschmais.cdo.neo4j.test.query.typedquery.InstanceByValue;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -18,8 +20,8 @@ public class QueryTest extends AbstractCdoManagerTest {
         return new Class<?>[]{A.class};
     }
 
-    @Test
-    public void index() {
+    @Before
+    public void createData() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
         A a1 = cdoManager.create(A.class);
@@ -29,36 +31,34 @@ public class QueryTest extends AbstractCdoManagerTest {
         A a2_2 = cdoManager.create(A.class);
         a2_2.setValue("A2");
         cdoManager.commit();
+    }
+
+    @Test
+    public void cypherStringQuery() {
+        CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
-        A a = cdoManager.find(A.class, "A1").getSingleResult();
-        assertThat(a, equalTo(a1));
+        Query.Result queryResult = cdoManager.createQuery("match (a:A) where a.Value={value} return a").withParameter("value", "A1").execute();
+        A a = queryResult.getRows().getSingleResult().get("a", A.class);
+        assertThat(a.getValue(), equalTo("A1"));
+        queryResult = cdoManager.createQuery("match (a:A) where a.Value={value} return a").withParameter("value", "A2").execute();
         try {
-            cdoManager.find(A.class, "A2").getSingleResult();
+            queryResult.getRows().getSingleResult().get("a", A.class);
             fail("Expecting a " + CdoException.class.getName());
         } catch (CdoException e) {
-
         }
         cdoManager.commit();
     }
 
     @Test
-    public void query() {
+    public void typedQuery() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
-        A a1 = cdoManager.create(A.class);
-        a1.setValue("A1");
-        A a2_1 = cdoManager.create(A.class);
-        a2_1.setValue("A2");
-        A a2_2 = cdoManager.create(A.class);
-        a2_2.setValue("A2");
-        cdoManager.commit();
-        cdoManager.begin();
-        Query.Result queryResult = cdoManager.createQuery("match (a:A) where a.Value={a} return a").withParameter("a", "A1").execute();
-        A a = queryResult.getRows().getSingleResult().get("a", A.class);
-        assertThat(a, equalTo(a1));
-        queryResult = cdoManager.createQuery("match (a:A) where a.Value={a} return a").withParameter("a", "A2").execute();
+        Query.Result queryResult = cdoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
+        A a = queryResult.getRows().getSingleResult().get("A", A.class);
+        assertThat(a.getValue(), equalTo("A1"));
+        queryResult = cdoManager.createQuery(InstanceByValue.class).withParameter("value", "A2").execute();
         try {
-            queryResult.getRows().getSingleResult().get("a", A.class);
+            queryResult.getRows().getSingleResult().get("A", A.class);
             fail("Expecting a " + CdoException.class.getName());
         } catch (CdoException e) {
         }

@@ -11,6 +11,7 @@ import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.proxy.AbstractIterableResult;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
+import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.*;
 import org.slf4j.Logger;
@@ -168,6 +169,8 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     public <QL> Query createQuery(QL query, Class<?>... types) {
         if (query instanceof String) {
             return new CypherStringQueryImpl(String.class.cast(query), executionEngine, instanceManager);
+        } else if (query instanceof Class<?>) {
+            return new CypherTypeQueryImpl(Class.class.cast(query), executionEngine, instanceManager);
         }
         throw new CdoException("Unsupported query language of type " + query.getClass().getName());
     }

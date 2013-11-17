@@ -44,7 +44,7 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
 
     @Override
     public Query withParameters(Map<String, Object> parameters) {
-        if (parameters != null) {
+        if (this.parameters != null) {
             throw new CdoException(("Parameters have already beed assigned: " + parameters));
         }
         this.parameters = parameters;
