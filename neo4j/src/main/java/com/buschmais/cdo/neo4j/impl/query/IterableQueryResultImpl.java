@@ -13,7 +13,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
 
-class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements IterableQueryResult<T>, Closeable {
+class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements IterableQueryResult<T> {
 
     private InstanceManager instanceManager;
     private List<String> columns;

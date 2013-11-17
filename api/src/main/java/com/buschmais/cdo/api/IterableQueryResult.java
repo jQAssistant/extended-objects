@@ -1,8 +1,9 @@
 package com.buschmais.cdo.api;
 
+import java.io.Closeable;
 import java.util.List;
 
-public interface IterableQueryResult<T> extends IterableResult<T> {
+public interface IterableQueryResult<T> extends IterableResult<T>, AutoCloseable, Closeable {
 
     public List<String> getColumns();
 
