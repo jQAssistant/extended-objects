@@ -15,7 +15,7 @@ public interface E {
     @Relation("RELATED_TO")
     List<F> getRelatedTo();
 
-    @ResultOf(query = ByName.class, usingThisAs = "e")
-    IterableQueryResult<ByName> getByName(@Parameter("value") String value);
+    @ResultOf(query = ByValue.class, usingThisAs = "e")
+    IterableQueryResult<ByValue> getByValue(@Parameter("value") String value);
 
 }

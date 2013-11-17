@@ -30,8 +30,8 @@ public class ResultOfTest extends AbstractCdoManagerTest {
         e.getRelatedTo().add(f2);
         cdoManager.commit();
         cdoManager.begin();
-        IterableQueryResult<ByName> byName = e.getByName("F1");
-        assertThat(byName.getSingleResult().getF(), equalTo(f1));
+        IterableQueryResult<ByValue> byValue = e.getByValue("F1");
+        assertThat(byValue.getSingleResult().getF(), equalTo(f1));
         cdoManager.commit();
     }
 
