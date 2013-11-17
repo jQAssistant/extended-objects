@@ -36,4 +36,6 @@
         </plugins>
     </build>
 
+	<name>Composite Data Objects - Documentation</name>
+	
 </project>
