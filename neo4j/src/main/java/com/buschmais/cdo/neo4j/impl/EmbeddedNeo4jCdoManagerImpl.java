@@ -5,11 +5,11 @@ import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.IterableResult;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.api.EmbeddedNeo4jCdoManager;
-import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
-import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadataProvider;
-import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.neo4j.impl.proxy.AbstractIterableResult;
-import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.common.AbstractIterableResult;
+import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
+import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
+import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
@@ -168,9 +168,9 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     @Override
     public <QL> Query createQuery(QL query, Class<?>... types) {
         if (query instanceof String) {
-            return new CypherStringQueryImpl(String.class.cast(query), executionEngine, instanceManager);
+            return new CypherStringQueryImpl(String.class.cast(query), executionEngine, instanceManager, Arrays.asList(types));
         } else if (query instanceof Class<?>) {
-            return new CypherTypeQueryImpl(Class.class.cast(query), executionEngine, instanceManager);
+            return new CypherTypeQueryImpl(Class.class.cast(query), executionEngine, instanceManager, Arrays.asList(types));
         }
         throw new CdoException("Unsupported query language of type " + query.getClass().getName());
     }

@@ -2,8 +2,8 @@ package com.buschmais.cdo.neo4j.api.proxy;
 
 import org.neo4j.graphdb.Node;
 
-public interface ProxyMethod {
+public interface ProxyMethod<T> {
 
-    Object invoke(Node node, Object instance, Object[] args);
+    Object invoke(T element, Object instance, Object[] args);
 
 }

@@ -2,7 +2,7 @@ package com.buschmais.cdo.neo4j.test;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.api.Query;
+import com.buschmais.cdo.api.IterableQueryResult;
 import com.buschmais.cdo.neo4j.impl.EmbeddedNeo4jCdoManagerFactoryImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -54,21 +54,18 @@ public abstract class AbstractCdoManagerTest {
      * @return The {@link TestResult}.
      */
     protected TestResult executeQuery(String query, Map<String, Object> parameters) {
-        Query.Result queryResult = cdoManager.createQuery(query).withParameters(parameters).execute();
-        List<Map<String, Object>> rows = new ArrayList<>();
+        IterableQueryResult<IterableQueryResult.Row> result = cdoManager.createQuery(query).withParameters(parameters).execute();
         Map<String, List<Object>> columns = new HashMap<>();
-        for (String column : queryResult.getColumns()) {
+        for (String column : result.getColumns()) {
             columns.put(column, new ArrayList<>());
         }
-        for (Query.Result.Row row : queryResult.getRows()) {
-            Map<String, Object> rowData = row.get();
-            rows.add(rowData);
-            for (Map.Entry<String, ?> entry : rowData.entrySet()) {
-                List<Object> column = columns.get(entry.getKey());
-                column.add(entry.getValue());
+        for (IterableQueryResult.Row row : result) {
+            for (String columnName : result.getColumns()) {
+                List<Object> columnValues = columns.get(columnName);
+                columnValues.add(row.get(columnName, Object.class));
             }
         }
-        return new TestResult(rows, columns);
+        return new TestResult(columns);
     }
 
     protected CdoManagerFactory getCdoManagerFactory() {
@@ -95,11 +92,10 @@ public abstract class AbstractCdoManagerTest {
      * Represents a test result which allows fetching values by row or columns.
      */
     protected class TestResult {
-        private List<Map<String, Object>> rows;
+
         private Map<String, List<Object>> columns;
 
-        TestResult(List<Map<String, Object>> rows, Map<String, List<Object>> columns) {
-            this.rows = rows;
+        TestResult(Map<String, List<Object>> columns) {
             this.columns = columns;
         }
 

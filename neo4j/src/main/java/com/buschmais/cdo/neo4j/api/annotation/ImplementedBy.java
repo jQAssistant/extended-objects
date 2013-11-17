@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.api.annotation;
 
-import com.buschmais.cdo.neo4j.api.proxy.ProxyMethod;
+import com.buschmais.cdo.neo4j.api.proxy.NodeProxyMethod;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface ImplementedBy {
 
-    Class<? extends ProxyMethod> value();
+    Class<? extends NodeProxyMethod> value();
 
 }

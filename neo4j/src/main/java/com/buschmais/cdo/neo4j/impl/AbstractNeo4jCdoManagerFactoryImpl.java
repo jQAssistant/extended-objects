@@ -2,10 +2,10 @@ package com.buschmais.cdo.neo4j.impl;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
-import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadataProvider;
-import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
+import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
+import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
