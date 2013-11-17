@@ -6,11 +6,9 @@ import java.util.Map;
 
 public interface Query {
 
-    Query setParameter(String name, Object value);
+    Query withParameter(String name, Object value);
 
-    Query setParameters(Map<String, Object> parameters);
-
-    Query setExpression(String query);
+    Query withParameters(Map<String, Object> parameters);
 
     Result execute();
 

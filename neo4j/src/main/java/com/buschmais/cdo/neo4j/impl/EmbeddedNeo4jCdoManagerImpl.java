@@ -1,13 +1,16 @@
 package com.buschmais.cdo.neo4j.impl;
 
-import com.buschmais.cdo.api.*;
+import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.api.CompositeObject;
+import com.buschmais.cdo.api.IterableResult;
+import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.api.EmbeddedNeo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.proxy.AbstractIterableResult;
 import com.buschmais.cdo.neo4j.impl.proxy.InstanceManager;
-import com.buschmais.cdo.neo4j.impl.query.EmbeddedNeo4jQueryImpl;
+import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.*;
 import org.slf4j.Logger;
@@ -162,8 +165,11 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     }
 
     @Override
-    public Query createQuery(String query) {
-        return new EmbeddedNeo4jQueryImpl(query, executionEngine, instanceManager);
+    public <QL> Query createQuery(QL query, Class<?>... types) {
+        if (query instanceof String) {
+            return new CypherStringQueryImpl(String.class.cast(query), executionEngine, instanceManager);
+        }
+        throw new CdoException("Unsupported query language of type " + query.getClass().getName());
     }
 
     @Override

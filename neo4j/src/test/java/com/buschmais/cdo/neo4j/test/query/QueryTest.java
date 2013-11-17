@@ -53,10 +53,10 @@ public class QueryTest extends AbstractCdoManagerTest {
         a2_2.setValue("A2");
         cdoManager.commit();
         cdoManager.begin();
-        Query.Result queryResult = cdoManager.createQuery("match (a:A) where a.Value={a} return a").setParameter("a", "A1").execute();
+        Query.Result queryResult = cdoManager.createQuery("match (a:A) where a.Value={a} return a").withParameter("a", "A1").execute();
         A a = queryResult.getRows().getSingleResult().get("a", A.class);
         assertThat(a, equalTo(a1));
-        queryResult = cdoManager.createQuery("match (a:A) where a.Value={a} return a").setParameter("a", "A2").execute();
+        queryResult = cdoManager.createQuery("match (a:A) where a.Value={a} return a").withParameter("a", "A2").execute();
         try {
             queryResult.getRows().getSingleResult().get("a", A.class);
             fail("Expecting a " + CdoException.class.getName());

@@ -9,6 +9,7 @@
 		-->
 		<includeConstraint refId="package:PackageNameMustStartWithArtifactGroup"/>
         <includeConstraint refId="package:PackageNameMustContainArtifactName"/>
+        <includeConstraint refId="naming:AbstractClassesMustHaveAbstractPrefix"/>
         <includeConstraint refId="modules:ApiMustNotDependOnImplementation"/>
         <includeConstraint refId="modules:ModuleMustDependOnApiOfOtherModule"/>
     </group>

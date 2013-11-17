@@ -54,7 +54,7 @@ public abstract class AbstractCdoManagerTest {
      * @return The {@link TestResult}.
      */
     protected TestResult executeQuery(String query, Map<String, Object> parameters) {
-        Query.Result queryResult = cdoManager.createQuery(query).setParameters(parameters).execute();
+        Query.Result queryResult = cdoManager.createQuery(query).withParameters(parameters).execute();
         List<Map<String, Object>> rows = new ArrayList<>();
         Map<String, List<Object>> columns = new HashMap<>();
         for (String column : queryResult.getColumns()) {

@@ -1,5 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.query;
 
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.IterableResult;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.impl.proxy.AbstractIterableResult;
@@ -13,46 +14,56 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
 
-public class EmbeddedNeo4jQueryImpl implements Query {
+public abstract class AbstractCypherQueryImpl<QL> implements Query {
 
     private ExecutionEngine executionEngine;
 
     private InstanceManager instanceManager;
 
-    private String expression;
+    private QL expression;
 
-    private Map<String, Object> parameters = new HashMap<>();
+    private Map<String, Object> parameters = null;
 
-    public EmbeddedNeo4jQueryImpl(String expression, ExecutionEngine executionEngine, InstanceManager instanceManager) {
+    public AbstractCypherQueryImpl(QL expression, ExecutionEngine executionEngine, InstanceManager instanceManager) {
         this.expression = expression;
         this.executionEngine = executionEngine;
         this.instanceManager = instanceManager;
     }
 
     @Override
-    public Query setExpression(String expression) {
-        this.expression = expression;
+    public Query withParameter(String name, Object value) {
+        if (parameters == null) {
+            parameters = new HashMap<>();
+        }
+        Object oldValue = parameters.put(name, value);
+        if (oldValue != null) {
+            throw new CdoException("Parameter '" + name + "' has alread been assigned to value '" + value + "'.");
+        }
         return this;
     }
 
     @Override
-    public Query setParameter(String name, Object value) {
-        parameters.put(name, value);
-        return this;
-    }
-
-    @Override
-    public Query setParameters(Map<String, Object> parameters) {
+    public Query withParameters(Map<String, Object> parameters) {
+        if (parameters != null) {
+            throw new CdoException(("Parameters have already beed assigned: " + parameters));
+        }
         this.parameters = parameters;
         return this;
     }
 
     @Override
     public Result execute() {
-        ExecutionResult result = executionEngine.execute(expression, parameters);
+        String query = getQuery();
+        ExecutionResult result = executionEngine.execute(query, parameters != null ? parameters : Collections.<String, Object>emptyMap());
         IterableResult<Result.Row> rowIterable = new RowIterable(result.columns(), result.iterator());
         return new QueryResultImpl(result.columns(), rowIterable);
     }
+
+    protected QL getExpression() {
+        return expression;
+    }
+
+    protected abstract String getQuery();
 
     private final class RowIterable extends AbstractIterableResult<Result.Row> implements Closeable {
 

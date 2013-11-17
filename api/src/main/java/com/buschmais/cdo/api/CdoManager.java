@@ -107,9 +107,11 @@ public interface CdoManager {
     /**
      * Creates a {@link Query}.
      *
+     * @param <QL>  The type of the used query language.
+     * @param types The types to be returned.
      * @return The {@link Query}.
      */
-    Query createQuery(String query);
+    <QL> Query createQuery(QL query, Class<?>... types);
 
     /**
      * Close the {@CdoManager}.
