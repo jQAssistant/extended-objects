@@ -9,8 +9,8 @@ import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethodProvider;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.EqualsMethod;
-import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.ToStringMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.HashCodeMethod;
+import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.ToStringMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.property.GetMethod;
 
 import java.util.Collection;
