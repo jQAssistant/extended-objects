@@ -1,6 +1,7 @@
 package com.buschmais.cdo.neo4j.impl.node.proxy.method.resultof;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.api.annotation.ResultOf;
 import com.buschmais.cdo.neo4j.api.proxy.NodeProxyMethod;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
@@ -40,6 +41,7 @@ public class ResultOfMethod implements NodeProxyMethod {
             }
             query.withParameter(parameters.get(i).value(), parameterValue);
         }
-        return query.execute();
+        Query.Result<Object> result = query.execute();
+        return resultOfMethodMetadata.isSingleResult() ? result.getSingleResult() : result;
     }
 }

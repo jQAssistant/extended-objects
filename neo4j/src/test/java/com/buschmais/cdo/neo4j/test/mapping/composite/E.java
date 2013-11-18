@@ -16,6 +16,17 @@ public interface E {
     List<F> getRelatedTo();
 
     @ResultOf(query = ByValue.class, usingThisAs = "e")
-    Result<ByValue> getByValue(@Parameter("value") String value);
+    Result<ByValue> getResultByValueUsingExplicitQuery(@Parameter("value") String value);
 
+    @ResultOf(usingThisAs = "e")
+    Result<ByValue> getResultByValueUsingReturnType(@Parameter("value") String value);
+
+    @ResultOf(query = ByValue.class, usingThisAs = "e")
+    ByValue getByValueUsingExplicitQuery(@Parameter("value") String value);
+
+    @ResultOf(usingThisAs = "e")
+    ByValue getByValueUsingReturnType(@Parameter("value") String value);
+
+    @ResultOf
+    ByValueUsingImplicitThis getByValueUsingImplicitThis(@Parameter("value") String value);
 }

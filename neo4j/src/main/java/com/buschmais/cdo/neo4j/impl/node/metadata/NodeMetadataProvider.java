@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class NodeMetadataProvider {
@@ -145,6 +147,21 @@ public class NodeMetadataProvider {
 
     private AbstractMethodMetadata createResultOfMetadata(BeanMethod beanMethod, ResultOf resultOf) {
         Method method = beanMethod.getMethod();
+        // Determine query type
+        Class<?> queryType = resultOf.query();
+        Class<?> returnType = method.getReturnType();
+        if (Object.class.equals(queryType)) {
+            if (Iterable.class.isAssignableFrom(returnType)) {
+                Type genericReturnType = method.getGenericReturnType();
+                if (genericReturnType instanceof ParameterizedType) {
+                    ParameterizedType parameterizedType = (ParameterizedType) genericReturnType;
+                    queryType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+                }
+            } else {
+                queryType = returnType;
+            }
+        }
+        // Determine parameter bindings
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         List<ResultOf.Parameter> parameters = new ArrayList<>();
         for (int i = 0; i < parameterAnnotations.length; i++) {
@@ -159,7 +176,8 @@ public class NodeMetadataProvider {
             }
             parameters.add(parameter);
         }
-        return new ResultOfMethodMetadata(beanMethod, resultOf.query(), resultOf.usingThisAs(), parameters);
+        boolean singleResult = !Iterable.class.isAssignableFrom(returnType);
+        return new ResultOfMethodMetadata(beanMethod, queryType, resultOf.usingThisAs(), parameters, singleResult);
     }
 
     private RelationshipType getRelationshipType(BeanPropertyMethod beanPropertyMethod, Map<String, BeanPropertyMethod> getterMethods) {

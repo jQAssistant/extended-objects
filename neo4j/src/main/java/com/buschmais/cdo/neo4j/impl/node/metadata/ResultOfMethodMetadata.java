@@ -13,12 +13,15 @@ public class ResultOfMethodMetadata extends AbstractMethodMetadata<BeanMethod> {
 
     private List<ResultOf.Parameter> parameters;
 
-    public ResultOfMethodMetadata(BeanMethod beanMethod, Class<?> query, String usingThisAs, List<ResultOf.Parameter> parameters) {
+    private boolean singleResult;
+
+    public ResultOfMethodMetadata(BeanMethod beanMethod, Class<?> query, String usingThisAs, List<ResultOf.Parameter> parameters, boolean singleResult) {
         super(beanMethod);
 
         this.query = query;
         this.usingThisAs = usingThisAs;
         this.parameters = parameters;
+        this.singleResult = singleResult;
     }
 
     public Class<?> getQuery() {
@@ -31,5 +34,9 @@ public class ResultOfMethodMetadata extends AbstractMethodMetadata<BeanMethod> {
 
     public List<ResultOf.Parameter> getParameters() {
         return parameters;
+    }
+
+    public boolean isSingleResult() {
+        return singleResult;
     }
 }
