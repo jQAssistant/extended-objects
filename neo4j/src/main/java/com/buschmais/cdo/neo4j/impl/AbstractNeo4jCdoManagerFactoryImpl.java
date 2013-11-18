@@ -44,7 +44,6 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFa
             }
         };
         this.graphDatabaseService = createGraphDatabaseService(url);
-        Validation.byDefaultProvider().
         try {
             this.validatorFactory = Validation.buildDefaultValidatorFactory();
         } catch (ValidationException e) {

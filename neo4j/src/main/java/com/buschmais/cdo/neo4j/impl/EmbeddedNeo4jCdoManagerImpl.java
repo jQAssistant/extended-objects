@@ -66,7 +66,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
         }
         Validator validator = validatorFactory.getValidator();
         Set<ConstraintViolation<Object>> violations = new HashSet<>();
-        for (Object instance : cache.values()) {
+        for (Object instance : new ArrayList<>(cache.values())) {
             violations.addAll(validator.validate(instance));
         }
         return violations;
