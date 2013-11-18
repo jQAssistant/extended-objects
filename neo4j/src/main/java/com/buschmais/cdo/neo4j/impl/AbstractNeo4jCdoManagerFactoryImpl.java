@@ -2,6 +2,7 @@ package com.buschmais.cdo.neo4j.impl;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
@@ -13,6 +14,9 @@ import org.neo4j.graphdb.schema.IndexDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.Validation;
+import javax.validation.ValidationException;
+import javax.validation.ValidatorFactory;
 import java.net.URL;
 import java.util.Arrays;
 
@@ -24,6 +28,8 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFa
     private NodeMetadataProvider nodeMetadataProvider;
     private ClassLoader classLoader;
     private GraphDatabaseService graphDatabaseService;
+    private ValidatorFactory validatorFactory;
+
 
     protected AbstractNeo4jCdoManagerFactoryImpl(URL url, Class<?>... entities) {
         this.url = url;
@@ -38,13 +44,21 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFa
             }
         };
         this.graphDatabaseService = createGraphDatabaseService(url);
+        Validation.byDefaultProvider().
+        try {
+            this.validatorFactory = Validation.buildDefaultValidatorFactory();
+        } catch (ValidationException e) {
+            LOGGER.debug("Cannot find validation provider.", e);
+            LOGGER.info("No JSR 303 Bean Validation provider available.");
+        }
         this.updateIndexes();
     }
 
     @Override
     public CdoManager createCdoManager() {
-        InstanceManager instanceManager = new InstanceManager(nodeMetadataProvider, graphDatabaseService, classLoader);
-        return new EmbeddedNeo4jCdoManagerImpl(nodeMetadataProvider, graphDatabaseService, instanceManager);
+        TransactionalCache cache = new TransactionalCache();
+        InstanceManager instanceManager = new InstanceManager(nodeMetadataProvider, graphDatabaseService, classLoader, cache);
+        return new EmbeddedNeo4jCdoManagerImpl(nodeMetadataProvider, graphDatabaseService, instanceManager, cache, validatorFactory);
     }
 
     private void updateIndexes() {

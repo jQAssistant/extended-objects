@@ -7,6 +7,6 @@ public class HashCodeMethod implements NodeProxyMethod {
 
     @Override
     public Object invoke(Node node, Object instance, Object[] args) {
-        return Long.valueOf(node.getId());
+        return Integer.valueOf((int) node.getId());
     }
 }

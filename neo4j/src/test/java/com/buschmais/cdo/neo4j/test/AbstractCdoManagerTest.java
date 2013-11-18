@@ -84,6 +84,7 @@ public abstract class AbstractCdoManagerTest {
     protected void closeCdoManager() {
         if (cdoManager != null) {
             cdoManager.close();
+            cdoManager = null;
         }
     }
 

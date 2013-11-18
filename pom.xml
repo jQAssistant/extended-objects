@@ -11,6 +11,8 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <name>Composite Data Objects</name>
+
     <url>https://github.com/buschmais/cdo-neo4j</url>
     <description>Composite Data Objects - Neo4j.</description>
 
@@ -47,7 +49,7 @@
 	<properties>
 		<jqassistant.version>1.0.0-M1</jqassistant.version>
 	</properties>
-	
+
     <build>
         <plugins>
             <plugin>
@@ -116,6 +118,17 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>1.1.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>5.0.1.Final</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.5</version>
@@ -144,6 +157,4 @@
         <module>doc</module>
     </modules>
 
-    <name>Composite Data Objects</name>
-    
 </project>

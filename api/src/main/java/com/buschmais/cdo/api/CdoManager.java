@@ -1,5 +1,8 @@
 package com.buschmais.cdo.api;
 
+import javax.validation.ConstraintViolation;
+import java.util.Set;
+
 /**
  * Defines methods to manage the lifecycle of property instances, query execution and transaction management.
  */
@@ -19,6 +22,8 @@ public interface CdoManager {
      * Rollback all changes from the current transaction.
      */
     void rollback();
+
+     Set<ConstraintViolation<Object>> validate();
 
     /**
      * Find all property instances according to the given type and value (e.g. from an index).

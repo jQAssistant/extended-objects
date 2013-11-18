@@ -5,11 +5,12 @@ import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.IterableResult;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.api.EmbeddedNeo4jCdoManager;
+import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.common.AbstractIterableResult;
+import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
@@ -17,6 +18,8 @@ import org.neo4j.graphdb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.*;
+import javax.validation.ConstraintViolationException;
 import java.util.*;
 
 public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
@@ -25,14 +28,18 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
 
     private final NodeMetadataProvider nodeMetadataProvider;
     private final InstanceManager instanceManager;
+    private final TransactionalCache cache;
     private final GraphDatabaseService database;
     private final ExecutionEngine executionEngine;
+    private final ValidatorFactory validatorFactory;
     private Transaction transaction;
 
-    public EmbeddedNeo4jCdoManagerImpl(NodeMetadataProvider nodeMetadataProvider, GraphDatabaseService database, InstanceManager instanceManager) {
+    public EmbeddedNeo4jCdoManagerImpl(NodeMetadataProvider nodeMetadataProvider, GraphDatabaseService database, InstanceManager instanceManager, TransactionalCache cache, ValidatorFactory validatorFactory) {
         this.nodeMetadataProvider = nodeMetadataProvider;
         this.database = database;
         this.instanceManager = instanceManager;
+        this.cache = cache;
+        this.validatorFactory = validatorFactory;
         this.executionEngine = new ExecutionEngine(database);
     }
 
@@ -43,14 +50,33 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
 
     @Override
     public void commit() {
+        Set<ConstraintViolation<Object>> constraintViolations = validate();
+        if (!constraintViolations.isEmpty()) {
+            throw new ConstraintViolationException(constraintViolations);
+        }
         transaction.success();
         transaction.close();
+        cache.afterCompletion(true);
+    }
+
+    @Override
+    public Set<ConstraintViolation<Object>> validate() {
+        if (validatorFactory == null) {
+            return Collections.emptySet();
+        }
+        Validator validator = validatorFactory.getValidator();
+        Set<ConstraintViolation<Object>> violations = new HashSet<>();
+        for (Object instance : cache.values()) {
+            violations.addAll(validator.validate(instance));
+        }
+        return violations;
     }
 
     @Override
     public void rollback() {
         transaction.failure();
         transaction.close();
+        cache.afterCompletion(false);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.buschmais.cdo.neo4j.impl.node;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
+import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.proxy.NodeInvocationHandler;
@@ -18,13 +19,13 @@ public class InstanceManager {
 
     private final NodeMetadataProvider nodeMetadataProvider;
     private final ClassLoader classLoader;
-    private final Map<Long, Object> instanceCache;
+    private final TransactionalCache cache;
     private final NodeProxyMethodService nodeProxyMethodService;
 
-    public InstanceManager(NodeMetadataProvider nodeMetadataProvider, GraphDatabaseService graphDatabaseService, ClassLoader classLoader) {
+    public InstanceManager(NodeMetadataProvider nodeMetadataProvider, GraphDatabaseService graphDatabaseService, ClassLoader classLoader, TransactionalCache cache) {
         this.nodeMetadataProvider = nodeMetadataProvider;
         this.classLoader = classLoader;
-        instanceCache = new WeakHashMap<>();
+        this.cache = cache;
         nodeProxyMethodService = new NodeProxyMethodService(nodeMetadataProvider, this, graphDatabaseService);
     }
 
@@ -74,11 +75,11 @@ public class InstanceManager {
     }
 
     public <T> T getInstance(Node node, List<Class<?>> types) {
-        Object instance = instanceCache.get(Long.valueOf(node.getId()));
+        Object instance = cache.get(Long.valueOf(node.getId()));
         if (instance == null) {
             NodeInvocationHandler invocationHandler = new NodeInvocationHandler(node, nodeProxyMethodService);
             instance = createInstance(invocationHandler, types, CompositeObject.class);
-            instanceCache.put(Long.valueOf(node.getId()), instance);
+            cache.put(Long.valueOf(node.getId()), instance);
         }
         return (T) instance;
     }
@@ -94,7 +95,7 @@ public class InstanceManager {
 
     public <T> void removeInstance(T instance) {
         Node node = getNode(instance);
-        instanceCache.remove(Long.valueOf(node.getId()));
+        cache.remove(Long.valueOf(node.getId()));
     }
 
     public <T> void destroyInstance(T instance) {
@@ -111,10 +112,10 @@ public class InstanceManager {
     }
 
     public void close() {
-        for (Object instance : instanceCache.values()) {
+        for (Object instance : cache.values()) {
             destroyInstance(instance);
         }
-        instanceCache.clear();
+        cache.clear();
     }
 
     private <T> NodeInvocationHandler getInvocationHandler(T instance) {

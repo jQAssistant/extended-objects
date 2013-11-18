@@ -10,6 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>cdo.doc</artifactId>
 
+    <name>Composite Data Objects - Documentation</name>
+
     <properties>
         <asciidoctor.version></asciidoctor.version>
     </properties>
@@ -36,6 +38,4 @@
         </plugins>
     </build>
 
-	<name>Composite Data Objects - Documentation</name>
-	
 </project>
