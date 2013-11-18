@@ -144,4 +144,6 @@
         <module>doc</module>
     </modules>
 
+    <name>Composite Data Objects</name>
+    
 </project>
