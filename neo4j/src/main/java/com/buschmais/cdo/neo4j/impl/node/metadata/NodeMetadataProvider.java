@@ -83,7 +83,7 @@ public class NodeMetadataProvider {
             if (implementedBy != null) {
                 propertyMetadata = new ImplementedByMethodMetadata(beanMethod, implementedBy.value());
             } else if (resultOf != null) {
-                propertyMetadata = new ResultOfMethodMetadata(beanMethod, resultOf.query(), resultOf.usingThisAs());
+                propertyMetadata = createResultOfMetadata(beanMethod, resultOf);
             } else if (beanMethod instanceof BeanPropertyMethod) {
                 BeanPropertyMethod beanPropertyMethod = (BeanPropertyMethod) beanMethod;
                 if (Collection.class.isAssignableFrom(beanPropertyMethod.getType())) {
@@ -141,6 +141,25 @@ public class NodeMetadataProvider {
         }
 
         nodeMetadataByType.put(CompositeObject.class, new NodeMetadata(CompositeObject.class, null, Collections.<org.neo4j.graphdb.Label>emptySet(), Collections.<AbstractMethodMetadata>emptyList(), null));
+    }
+
+    private AbstractMethodMetadata createResultOfMetadata(BeanMethod beanMethod, ResultOf resultOf) {
+        Method method = beanMethod.getMethod();
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        List<ResultOf.Parameter> parameters = new ArrayList<>();
+        for (int i = 0; i < parameterAnnotations.length; i++) {
+            ResultOf.Parameter parameter = null;
+            for (Annotation annotation : parameterAnnotations[i]) {
+                if (ResultOf.Parameter.class.equals(annotation.annotationType())) {
+                    parameter = (ResultOf.Parameter) annotation;
+                }
+            }
+            if (parameter == null) {
+                throw new CdoException("Cannot determine parameter names for '" + method.getName() + "', all parameters must be annotated with '" + ResultOf.Parameter.class.getName() + "'.");
+            }
+            parameters.add(parameter);
+        }
+        return new ResultOfMethodMetadata(beanMethod, resultOf.query(), resultOf.usingThisAs(), parameters);
     }
 
     private RelationshipType getRelationshipType(BeanPropertyMethod beanPropertyMethod, Map<String, BeanPropertyMethod> getterMethods) {

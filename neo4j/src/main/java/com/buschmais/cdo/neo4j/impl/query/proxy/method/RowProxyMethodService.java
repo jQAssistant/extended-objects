@@ -2,7 +2,7 @@ package com.buschmais.cdo.neo4j.impl.query.proxy.method;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
-import com.buschmais.cdo.api.IterableQueryResult;
+import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.AbstractProxyMethodService;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.composite.AsMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
@@ -16,6 +16,8 @@ import com.buschmais.cdo.neo4j.impl.query.proxy.method.property.GetMethod;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 
 public class RowProxyMethodService extends AbstractProxyMethodService<Map<String, Object>, RowProxyMethod> {
 
@@ -33,7 +35,7 @@ public class RowProxyMethodService extends AbstractProxyMethodService<Map<String
             }
         }
         addMethod(new AsMethod<Map<String,Object>>(), CompositeObject.class, "as", Class.class);
-        addMethod(new com.buschmais.cdo.neo4j.impl.query.proxy.method.row.GetMethod(), IterableQueryResult.CompositeRowObject.class, "get", String.class, Class.class);
+        addMethod(new com.buschmais.cdo.neo4j.impl.query.proxy.method.row.GetMethod(), CompositeRowObject.class, "get", String.class, Class.class);
         addMethod(new HashCodeMethod(), Object.class, "hashCode");
         addMethod(new EqualsMethod(), Object.class, "equals", Object.class);
         addMethod(new ToStringMethod(), Object.class, "toString");    }

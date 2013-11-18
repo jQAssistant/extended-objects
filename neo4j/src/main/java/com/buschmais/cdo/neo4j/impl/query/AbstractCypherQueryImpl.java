@@ -1,7 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.query;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.IterableQueryResult;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
@@ -50,7 +49,7 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
     }
 
     @Override
-    public <T> IterableQueryResult<T> execute() {
+    public <T> Result<T> execute() {
         String query = getQuery();
         ExecutionResult result = executionEngine.execute(query, parameters != null ? parameters : Collections.<String, Object>emptyMap());
         List<Class<?>> resultTypes = getResultTypes(expression, types);

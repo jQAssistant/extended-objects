@@ -2,7 +2,6 @@ package com.buschmais.cdo.neo4j.test;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.api.IterableQueryResult;
 import com.buschmais.cdo.neo4j.impl.EmbeddedNeo4jCdoManagerFactoryImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -10,6 +9,9 @@ import org.junit.Before;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.*;
+
+import static com.buschmais.cdo.api.Query.Result;
+import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 
 public abstract class AbstractCdoManagerTest {
 
@@ -54,12 +56,12 @@ public abstract class AbstractCdoManagerTest {
      * @return The {@link TestResult}.
      */
     protected TestResult executeQuery(String query, Map<String, Object> parameters) {
-        IterableQueryResult<IterableQueryResult.CompositeRowObject> result = cdoManager.createQuery(query).withParameters(parameters).execute();
+        Result<CompositeRowObject> result = cdoManager.createQuery(query).withParameters(parameters).execute();
         Map<String, List<Object>> columns = new HashMap<>();
         for (String column : result.getColumns()) {
             columns.put(column, new ArrayList<>());
         }
-        for (IterableQueryResult.CompositeRowObject row : result) {
+        for (CompositeRowObject row : result) {
             for (String columnName : result.getColumns()) {
                 List<Object> columnValues = columns.get(columnName);
                 columnValues.add(row.get(columnName, Object.class));

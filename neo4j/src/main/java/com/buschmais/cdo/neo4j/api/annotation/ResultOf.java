@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ResultOf {
 
-    Class<?> query();
+    Class<?> query() default Object.class;
 
-    String usingThisAs();
+    String usingThisAs() default "this";
 
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Parameter {

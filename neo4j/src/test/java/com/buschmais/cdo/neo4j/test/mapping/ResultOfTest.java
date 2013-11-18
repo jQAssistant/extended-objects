@@ -1,11 +1,12 @@
 package com.buschmais.cdo.neo4j.test.mapping;
 
 import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.api.IterableQueryResult;
+import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.mapping.composite.*;
 import org.junit.Test;
 
+import static com.buschmais.cdo.api.Query.Result;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
@@ -30,7 +31,7 @@ public class ResultOfTest extends AbstractCdoManagerTest {
         e.getRelatedTo().add(f2);
         cdoManager.commit();
         cdoManager.begin();
-        IterableQueryResult<ByValue> byValue = e.getByValue("F1");
+        Result<ByValue> byValue = e.getByValue("F1");
         assertThat(byValue.getSingleResult().getF(), equalTo(f1));
         cdoManager.commit();
     }

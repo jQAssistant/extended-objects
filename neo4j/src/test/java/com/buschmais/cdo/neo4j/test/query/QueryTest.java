@@ -2,13 +2,14 @@ package com.buschmais.cdo.neo4j.test.query;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.api.IterableQueryResult;
 import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.query.composite.A;
 import com.buschmais.cdo.neo4j.test.query.typedquery.InstanceByValue;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.buschmais.cdo.api.Query.Result;
+import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -37,7 +38,7 @@ public class QueryTest extends AbstractCdoManagerTest {
     public void cypherStringQuery() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
-        IterableQueryResult<IterableQueryResult.CompositeRowObject> result= cdoManager.createQuery("match (a:A) where a.value={value} return a").withParameter("value", "A1").execute();
+        Result<CompositeRowObject> result= cdoManager.createQuery("match (a:A) where a.value={value} return a").withParameter("value", "A1").execute();
         A a = result.getSingleResult().get("a", A.class);
         assertThat(a.getValue(), equalTo("A1"));
         result = cdoManager.createQuery("match (a:A) where a.Value={value} return a").withParameter("value", "A2").execute();
@@ -53,7 +54,7 @@ public class QueryTest extends AbstractCdoManagerTest {
     public void rowTypedQuery() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
-        IterableQueryResult<IterableQueryResult.CompositeRowObject> result = cdoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
+        Result<CompositeRowObject> result = cdoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
         A a = result.getSingleResult().get("a", A.class);
         assertThat(a.getValue(), equalTo("A1"));
         result = cdoManager.createQuery(InstanceByValue.class).withParameter("value", "A2").execute();
@@ -69,7 +70,7 @@ public class QueryTest extends AbstractCdoManagerTest {
     public void typedQuery() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
-        IterableQueryResult<InstanceByValue> result = cdoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
+        Result<InstanceByValue> result = cdoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
         A a = result.getSingleResult().getA();
         assertThat(a.getValue(), equalTo("A1"));
         cdoManager.commit();

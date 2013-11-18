@@ -10,6 +10,14 @@ public interface Query {
 
     Query withParameters(Map<String, Object> parameters);
 
-    <T> IterableQueryResult<T> execute();
+    <T> Result<T> execute();
 
+    public interface Result<T> extends IterableResult<T>, AutoCloseable, Closeable {
+
+        public List<String> getColumns();
+
+        public interface CompositeRowObject extends CompositeObject {
+            <C> C get(String name, Class<C> type);
+        }
+    }
 }

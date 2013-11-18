@@ -1,7 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.query;
 
-import com.buschmais.cdo.api.CompositeObject;
-import com.buschmais.cdo.api.IterableQueryResult;
+import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.impl.common.AbstractIterableResult;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.query.proxy.RowInvocationHandler;
@@ -9,11 +8,10 @@ import com.buschmais.cdo.neo4j.impl.query.proxy.method.RowProxyMethodService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
 
-class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements IterableQueryResult<T> {
+class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements Query.Result<T> {
 
     private InstanceManager instanceManager;
     private List<String> columns;
