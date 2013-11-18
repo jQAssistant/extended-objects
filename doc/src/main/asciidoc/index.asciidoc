@@ -8,22 +8,31 @@ This document describes the Java language binding of Composite Data Objects for 
 [abstract]
 Composite Data Objects
 ----------------------
-Modeling data objects in various domains often requires common properties (e.g. lastChangedBy, created, name, id, etc.) to be present in several data types. This is commonly solved by defining (abstract) base types representing a specific aspect or role and defining these properties there. Concrete data types may derive from the abstract base types if the information contained there is needed. This approach comes to its limits if more than aspect shall be re-used in one Java POJOs as multiple inheritance is not supported for classes in this language.
+Modeling data objects in various domains often requires common properties (e.g. lastChangedBy, created, name, id, etc.)
+to be present in several data types. This is commonly solved by defining abstract base types representing a specific
+aspect or role and defining these properties here. Concrete data types may derive from these base types if the
+information is needed. This approach comes to its limits if more than one aspect shall be re-used in one
+Java POJO as multiple inheritance is not supported for classes in the Java language.
 
- Composite Data Objects (CDO) allows modeling the types as interfaces by only specifying the required accessor methods (i.e. getter and setter) and composing these types:
+Composite Data Objects (CDO) allow modeling the types as interfaces by only specifying the required accessor methods
+(i.e. getter and setter) and composing these types:
 
- [source,java]
- ---
+Person.java
+[source,java]
  public interface Person {
    String getName();
    void setName();
  }
+ 
 
+Customer.java
+[source,java]
  public interface Customer {
    int getCustomerNo();
    void setCustomerNo(int customerNo);
  }
- ---
+
+
 
 Mapping Composite Data Objects to Neo4j
 ---------------------------------------
