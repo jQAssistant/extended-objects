@@ -32,14 +32,10 @@ public class ResultOfMethod implements NodeProxyMethod {
     public Object invoke(Node element, Object instance, Object[] args) {
         CypherTypeQueryImpl query = new CypherTypeQueryImpl(resultOfMethodMetadata.getQuery(), new ExecutionEngine(graphDatabaseService), instanceManager, Collections.<Class<?>>emptyList());
         String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
-        query.withParameter(usingThisAs, instanceManager.getNode(instance));
+        query.withParameter(usingThisAs, instance);
         List<ResultOf.Parameter> parameters = resultOfMethodMetadata.getParameters();
         for (int i = 0; i < parameters.size(); i++) {
-            Object parameterValue = args[i];
-            if (instanceManager.isNode(parameterValue)) {
-                parameterValue = instanceManager.getNode(parameterValue);
-            }
-            query.withParameter(parameters.get(i).value(), parameterValue);
+            query.withParameter(parameters.get(i).value(), args[i]);
         }
         Query.Result<Object> result = query.execute();
         return resultOfMethodMetadata.isSingleResult() ? result.getSingleResult() : result;

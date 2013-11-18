@@ -11,13 +11,9 @@ import java.util.*;
 public abstract class AbstractCypherQueryImpl<QL> implements Query {
 
     private QL expression;
-
     private ExecutionEngine executionEngine;
-
     private InstanceManager instanceManager;
-
     private List<Class<?>> types;
-
     private Map<String, Object> parameters = null;
 
     public AbstractCypherQueryImpl(QL expression, ExecutionEngine executionEngine, InstanceManager instanceManager, List<Class<?>> types) {
@@ -51,7 +47,18 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
     @Override
     public <T> Result<T> execute() {
         String query = getQuery();
-        ExecutionResult result = executionEngine.execute(query, parameters != null ? parameters : Collections.<String, Object>emptyMap());
+        Map<String, Object> effectiveParameters = new HashMap<>();
+        if (parameters != null) {
+            for (Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
+                String name = parameterEntry.getKey();
+                Object value = parameterEntry.getValue();
+                if (instanceManager.isNode(value)) {
+                    value = instanceManager.getNode(value);
+                }
+                effectiveParameters.put(name, value);
+            }
+        }
+        ExecutionResult result = executionEngine.execute(query, effectiveParameters);
         List<Class<?>> resultTypes = getResultTypes(expression, types);
         return new IterableQueryResultImpl(instanceManager, result.columns(), result.iterator(), resultTypes);
     }

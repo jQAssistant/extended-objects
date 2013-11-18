@@ -16,6 +16,10 @@ import static org.junit.Assert.fail;
 
 public class QueryTest extends AbstractCdoManagerTest {
 
+    private A a1;
+    private A a2_1;
+    private A a2_2;
+
     @Override
     protected Class<?>[] getTypes() {
         return new Class<?>[]{A.class};
@@ -25,11 +29,11 @@ public class QueryTest extends AbstractCdoManagerTest {
     public void createData() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
-        A a1 = cdoManager.create(A.class);
+        a1 = cdoManager.create(A.class);
         a1.setValue("A1");
-        A a2_1 = cdoManager.create(A.class);
+        a2_1 = cdoManager.create(A.class);
         a2_1.setValue("A2");
-        A a2_2 = cdoManager.create(A.class);
+        a2_2 = cdoManager.create(A.class);
         a2_2.setValue("A2");
         cdoManager.commit();
     }
@@ -38,7 +42,7 @@ public class QueryTest extends AbstractCdoManagerTest {
     public void cypherStringQuery() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
-        Result<CompositeRowObject> result= cdoManager.createQuery("match (a:A) where a.value={value} return a").withParameter("value", "A1").execute();
+        Result<CompositeRowObject> result = cdoManager.createQuery("match (a:A) where a.value={value} return a").withParameter("value", "A1").execute();
         A a = result.getSingleResult().get("a", A.class);
         assertThat(a.getValue(), equalTo("A1"));
         result = cdoManager.createQuery("match (a:A) where a.Value={value} return a").withParameter("value", "A2").execute();
@@ -51,7 +55,7 @@ public class QueryTest extends AbstractCdoManagerTest {
     }
 
     @Test
-    public void rowTypedQuery() {
+    public void compositeRowTypedQuery() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
         Result<CompositeRowObject> result = cdoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
@@ -75,4 +79,15 @@ public class QueryTest extends AbstractCdoManagerTest {
         assertThat(a.getValue(), equalTo("A1"));
         cdoManager.commit();
     }
+
+    @Test
+    public void instanceParameter() {
+        CdoManager cdoManager = getCdoManager();
+        cdoManager.begin();
+        Result<CompositeRowObject> row = cdoManager.createQuery("match (a:A) where a={instance} return a").withParameter("instance", a1).execute();
+        A a = row.getSingleResult().get("a", A.class);
+        assertThat(a, equalTo(a1));
+        cdoManager.commit();
+    }
+
 }
