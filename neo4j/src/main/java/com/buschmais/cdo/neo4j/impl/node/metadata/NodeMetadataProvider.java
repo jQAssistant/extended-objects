@@ -6,6 +6,7 @@ import com.buschmais.cdo.neo4j.api.annotation.*;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethodProvider;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
+import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.RelationshipType;
@@ -182,7 +183,7 @@ public class NodeMetadataProvider {
 
     private RelationshipType getRelationshipType(BeanPropertyMethod beanPropertyMethod, Map<String, BeanPropertyMethod> getterMethods) {
         Relation relation = getAnnotation(Relation.class, beanPropertyMethod, getterMethods);
-        String name = relation != null ? relation.value() : beanPropertyMethod.getName();
+        String name = relation != null ? relation.value() : StringUtils.capitalize(beanPropertyMethod.getName());
         return DynamicRelationshipType.withName(name);
     }
 
