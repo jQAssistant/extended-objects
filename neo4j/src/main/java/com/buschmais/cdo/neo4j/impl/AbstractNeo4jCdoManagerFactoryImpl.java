@@ -7,6 +7,7 @@ import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.neo4j.impl.query.QueryExecutor;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
@@ -20,14 +21,15 @@ import javax.validation.ValidatorFactory;
 import java.net.URL;
 import java.util.Arrays;
 
-public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFactory {
+public abstract class AbstractNeo4jCdoManagerFactoryImpl<GDS extends GraphDatabaseService> implements CdoManagerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNeo4jCdoManagerFactoryImpl.class);
 
     private URL url;
     private NodeMetadataProvider nodeMetadataProvider;
     private ClassLoader classLoader;
-    private GraphDatabaseService graphDatabaseService;
+    private GDS graphDatabaseService;
+    private QueryExecutor queryExecutor;
     private ValidatorFactory validatorFactory;
 
 
@@ -44,53 +46,34 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl implements CdoManagerFa
             }
         };
         this.graphDatabaseService = createGraphDatabaseService(url);
+        this.queryExecutor = createQueryExecutor(this.graphDatabaseService);
         try {
             this.validatorFactory = Validation.buildDefaultValidatorFactory();
         } catch (ValidationException e) {
             LOGGER.debug("Cannot find validation provider.", e);
             LOGGER.info("No JSR 303 Bean Validation provider available.");
         }
-        this.updateIndexes();
+        this.init(graphDatabaseService, nodeMetadataProvider);
     }
 
     @Override
     public CdoManager createCdoManager() {
         TransactionalCache cache = new TransactionalCache();
-        InstanceManager instanceManager = new InstanceManager(nodeMetadataProvider, graphDatabaseService, classLoader, cache);
-        return new EmbeddedNeo4jCdoManagerImpl(nodeMetadataProvider, graphDatabaseService, instanceManager, cache, validatorFactory);
+        InstanceManager instanceManager = new InstanceManager(nodeMetadataProvider, queryExecutor, classLoader, cache);
+        return new EmbeddedNeo4jCdoManagerImpl(nodeMetadataProvider, graphDatabaseService, queryExecutor, instanceManager, cache, validatorFactory);
     }
 
-    private void updateIndexes() {
-        Transaction transaction = graphDatabaseService.beginTx();
-        for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
-            Label label = nodeMetadata.getLabel();
-            PrimitivePropertyMethodMetadata indexedProperty = nodeMetadata.getIndexedProperty();
-            if (label != null && indexedProperty != null) {
-                IndexDefinition index = null;
-                for (IndexDefinition indexDefinition : graphDatabaseService.schema().getIndexes(label)) {
-                    for (String s : indexDefinition.getPropertyKeys()) {
-                        if (s.equals(indexedProperty.getPropertyName())) {
-                            index = indexDefinition;
-                        }
-                    }
-                }
-                if (indexedProperty != null && index == null) {
-                    LOGGER.info("Creating index for label {} on property '{}'.", label, indexedProperty.getPropertyName());
-                    graphDatabaseService.schema().indexFor(label).on(indexedProperty.getPropertyName()).create();
-                } else if (indexedProperty == null && index != null) {
-                    LOGGER.info("Dropping index for label {} on properties '{}'.", label, index.getPropertyKeys());
-                    index.drop();
-                }
-            }
-        }
-        transaction.success();
-        transaction.close();
-    }
+
 
     @Override
     public void close() {
         graphDatabaseService.shutdown();
     }
 
-    protected abstract GraphDatabaseService createGraphDatabaseService(URL url);
+    protected abstract GDS createGraphDatabaseService(URL url);
+
+    protected abstract QueryExecutor createQueryExecutor(GDS graphDatabaseService);
+
+    protected abstract void init(GraphDatabaseService graphDatabaseService, NodeMetadataProvider nodeMetadataProvider);
+
 }

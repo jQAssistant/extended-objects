@@ -1,5 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.query;
 
+import com.buschmais.cdo.api.IterableResult;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.impl.common.AbstractIterableResult;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
@@ -8,23 +9,22 @@ import com.buschmais.cdo.neo4j.impl.query.proxy.method.RowProxyMethodService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
 
 class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements Query.Result<T> {
 
     private InstanceManager instanceManager;
-    private List<String> columns;
-    private ResourceIterator<Map<String, Object>> iterator;
+    private Iterator<Map<String, Object>> iterator;
     private List<Class<?>> types;
     private RowProxyMethodService rowProxyMethodService;
 
-    IterableQueryResultImpl(InstanceManager instanceManager, List<String> columns, ResourceIterator<Map<String, Object>> iterator, List<Class<?>> types) {
+    IterableQueryResultImpl(InstanceManager instanceManager, Iterator<Map<String, Object>> iterator, List<Class<?>> types) {
         this.instanceManager = instanceManager;
-        this.columns = columns;
         this.iterator = iterator;
         this.types = types;
-        this.rowProxyMethodService= new RowProxyMethodService(types);
+        this.rowProxyMethodService = new RowProxyMethodService(types);
     }
 
     @Override
@@ -40,8 +40,9 @@ class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements Qu
             public T next() {
                 Map<String, Object> next = iterator.next();
                 Map<String, Object> row = new LinkedHashMap<>();
-                for (String column : columns) {
-                    Object value = next.get(column);
+                for (Map.Entry<String, Object> entry : next.entrySet()) {
+                    String column = entry.getKey();
+                    Object value = entry.getValue();
                     Object decodedValue = decodeValue(value);
                     row.put(column, decodedValue);
                 }
@@ -75,12 +76,9 @@ class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements Qu
     }
 
     @Override
-    public List<String> getColumns() {
-        return columns;
-    }
-
-    @Override
     public void close() throws IOException {
-        iterator.close();
+        if (iterator instanceof Closeable) {
+            ((Closeable)iterator).close();
+        }
     }
 }

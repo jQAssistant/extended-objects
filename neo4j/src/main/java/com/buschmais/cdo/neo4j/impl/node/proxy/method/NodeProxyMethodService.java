@@ -14,6 +14,7 @@ import com.buschmais.cdo.neo4j.impl.node.proxy.method.property.*;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.resultof.ResultOfMethod;
+import com.buschmais.cdo.neo4j.impl.query.QueryExecutor;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.RowProxyMethodService;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -25,7 +26,7 @@ import java.util.Map;
 
 public class NodeProxyMethodService extends AbstractProxyMethodService<Node, NodeProxyMethod> {
 
-    public NodeProxyMethodService(NodeMetadataProvider nodeMetadataProvider, InstanceManager instanceManager, GraphDatabaseService graphDatabaseService) {
+    public NodeProxyMethodService(NodeMetadataProvider nodeMetadataProvider, InstanceManager instanceManager, QueryExecutor queryExecutor) {
         for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
             for (AbstractMethodMetadata methodMetadata : nodeMetadata.getProperties()) {
                 BeanMethod beanMethod = methodMetadata.getBeanMethod();
@@ -43,7 +44,7 @@ public class NodeProxyMethodService extends AbstractProxyMethodService<Node, Nod
                 }
                 if (methodMetadata instanceof ResultOfMethodMetadata) {
                     ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata)methodMetadata;
-                    proxyMethod=new ResultOfMethod(resultOfMethodMetadata, instanceManager, graphDatabaseService);
+                    proxyMethod=new ResultOfMethod(resultOfMethodMetadata, instanceManager, queryExecutor);
                 }
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
                     BeanPropertyMethod beanPropertyMethod = (BeanPropertyMethod) beanMethod;

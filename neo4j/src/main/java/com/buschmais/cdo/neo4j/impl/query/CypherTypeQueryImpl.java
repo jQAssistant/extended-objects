@@ -10,8 +10,8 @@ import java.util.List;
 
 public class CypherTypeQueryImpl extends AbstractCypherQueryImpl<Class<?>> {
 
-    public CypherTypeQueryImpl(Class<?> expression, ExecutionEngine executionEngine, InstanceManager instanceManager, List<Class<?>> types) {
-        super(expression, executionEngine, instanceManager, types);
+    public CypherTypeQueryImpl(Class<?> expression, QueryExecutor queryExecutor, InstanceManager instanceManager, List<Class<?>> types) {
+        super(expression, queryExecutor, instanceManager, types);
     }
 
     @Override

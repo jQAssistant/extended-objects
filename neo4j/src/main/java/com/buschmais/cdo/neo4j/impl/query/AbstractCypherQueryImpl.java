@@ -1,24 +1,23 @@
 package com.buschmais.cdo.neo4j.impl.query;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.api.IterableResult;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.cypher.javacompat.ExecutionResult;
 
 import java.util.*;
 
 public abstract class AbstractCypherQueryImpl<QL> implements Query {
 
     private QL expression;
-    private ExecutionEngine executionEngine;
+    private QueryExecutor queryExecutor;
     private InstanceManager instanceManager;
     private List<Class<?>> types;
     private Map<String, Object> parameters = null;
 
-    public AbstractCypherQueryImpl(QL expression, ExecutionEngine executionEngine, InstanceManager instanceManager, List<Class<?>> types) {
+    public AbstractCypherQueryImpl(QL expression, QueryExecutor queryExecutor, InstanceManager instanceManager, List<Class<?>> types) {
         this.expression = expression;
-        this.executionEngine = executionEngine;
+        this.queryExecutor = queryExecutor;
         this.instanceManager = instanceManager;
         this.types = types;
     }
@@ -58,9 +57,9 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
                 effectiveParameters.put(name, value);
             }
         }
-        ExecutionResult result = executionEngine.execute(query, effectiveParameters);
+        Iterator<Map<String,Object>> iterator = queryExecutor.execute(query, effectiveParameters);
         List<Class<?>> resultTypes = getResultTypes(expression, types);
-        return new IterableQueryResultImpl(instanceManager, result.columns(), result.iterator(), resultTypes);
+        return new IterableQueryResultImpl(instanceManager, iterator, resultTypes);
     }
 
     protected QL getExpression() {

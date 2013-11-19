@@ -1,5 +1,7 @@
 package com.buschmais.cdo.api;
 
+import java.io.Closeable;
+
 /**
  * An {@Iterable} which allows retrieving a single result.
  *

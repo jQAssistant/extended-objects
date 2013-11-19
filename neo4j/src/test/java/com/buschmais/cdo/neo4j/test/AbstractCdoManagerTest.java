@@ -2,6 +2,7 @@ package com.buschmais.cdo.neo4j.test;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.neo4j.impl.AbstractNeo4jCdoManagerFactoryImpl;
 import com.buschmais.cdo.neo4j.impl.EmbeddedNeo4jCdoManagerFactoryImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -20,9 +21,13 @@ public abstract class AbstractCdoManagerTest {
 
     @Before
     public void createNodeManagerFactory() throws MalformedURLException {
-        cdoManagerFactory = new EmbeddedNeo4jCdoManagerFactoryImpl(new File("target/neo4j").toURI().toURL(), getTypes());
+        cdoManagerFactory = getNeo4jCdoManagerFactory(getTypes());
         dropDatabase();
     }
+
+    protected abstract AbstractNeo4jCdoManagerFactoryImpl getNeo4jCdoManagerFactory(Class<?>[] types) throws MalformedURLException;
+
+    protected abstract Class<?>[] getTypes();
 
     private void dropDatabase() {
         CdoManager manager = getCdoManager();
@@ -47,7 +52,6 @@ public abstract class AbstractCdoManagerTest {
     protected TestResult executeQuery(String query) {
         return executeQuery(query, Collections.<String, Object>emptyMap());
     }
-
     /**
      * Executes a createQuery and returns a {@link TestResult}.
      *
@@ -58,12 +62,14 @@ public abstract class AbstractCdoManagerTest {
     protected TestResult executeQuery(String query, Map<String, Object> parameters) {
         Result<CompositeRowObject> result = cdoManager.createQuery(query).withParameters(parameters).execute();
         Map<String, List<Object>> columns = new HashMap<>();
-        for (String column : result.getColumns()) {
-            columns.put(column, new ArrayList<>());
-        }
         for (CompositeRowObject row : result) {
-            for (String columnName : result.getColumns()) {
+            Iterable<String> columnNames = row.getColumns();
+            for (String columnName : columnNames) {
                 List<Object> columnValues = columns.get(columnName);
+                if (columnValues==null) {
+                    columnValues = new ArrayList<>();
+                    columns.put(columnName, columnValues);
+                }
                 columnValues.add(row.get(columnName, Object.class));
             }
         }
@@ -87,8 +93,6 @@ public abstract class AbstractCdoManagerTest {
             cdoManager = null;
         }
     }
-
-    protected abstract Class<?>[] getTypes();
 
 
     /**

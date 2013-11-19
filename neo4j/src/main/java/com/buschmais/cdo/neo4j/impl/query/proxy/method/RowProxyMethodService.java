@@ -12,6 +12,7 @@ import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.EqualsMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.HashCodeMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.ToStringMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.property.GetMethod;
+import com.buschmais.cdo.neo4j.impl.query.proxy.method.row.GetColumnsMethod;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,6 +37,7 @@ public class RowProxyMethodService extends AbstractProxyMethodService<Map<String
         }
         addMethod(new AsMethod<Map<String, Object>>(), CompositeObject.class, "as", Class.class);
         addMethod(new com.buschmais.cdo.neo4j.impl.query.proxy.method.row.GetMethod(), CompositeRowObject.class, "get", String.class, Class.class);
+        addMethod(new GetColumnsMethod(), CompositeRowObject.class, "getColumns");
         addMethod(new HashCodeMethod(), Object.class, "hashCode");
         addMethod(new EqualsMethod(), Object.class, "equals", Object.class);
         addMethod(new ToStringMethod(), Object.class, "toString");

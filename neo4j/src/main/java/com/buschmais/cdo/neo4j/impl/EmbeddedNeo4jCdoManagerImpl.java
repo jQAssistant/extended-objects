@@ -13,6 +13,7 @@ import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
+import com.buschmais.cdo.neo4j.impl.query.QueryExecutor;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.*;
 import org.slf4j.Logger;
@@ -24,23 +25,21 @@ import java.util.*;
 
 public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmbeddedNeo4jCdoManagerImpl.class);
-
     private final NodeMetadataProvider nodeMetadataProvider;
     private final InstanceManager instanceManager;
     private final TransactionalCache cache;
     private final GraphDatabaseService database;
-    private final ExecutionEngine executionEngine;
+    private final QueryExecutor queryExecutor;
     private final ValidatorFactory validatorFactory;
     private Transaction transaction;
 
-    public EmbeddedNeo4jCdoManagerImpl(NodeMetadataProvider nodeMetadataProvider, GraphDatabaseService database, InstanceManager instanceManager, TransactionalCache cache, ValidatorFactory validatorFactory) {
+    public EmbeddedNeo4jCdoManagerImpl(NodeMetadataProvider nodeMetadataProvider, GraphDatabaseService database, QueryExecutor queryExecutor, InstanceManager instanceManager, TransactionalCache cache, ValidatorFactory validatorFactory) {
         this.nodeMetadataProvider = nodeMetadataProvider;
         this.database = database;
         this.instanceManager = instanceManager;
         this.cache = cache;
         this.validatorFactory = validatorFactory;
-        this.executionEngine = new ExecutionEngine(database);
+        this.queryExecutor = queryExecutor;
     }
 
     @Override
@@ -128,7 +127,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
         for (Label label : labels) {
             node.addLabel(label);
         }
-        return (CompositeObject) instanceManager.getInstance(node, effectiveTypes);
+        return instanceManager.getInstance(node, effectiveTypes);
     }
 
     public <T> T create(Class<T> type) {
@@ -188,15 +187,17 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     @Override
     public <T> void delete(T instance) {
         Node node = instanceManager.getNode(instance);
+        instanceManager.removeInstance(instance);
+        instanceManager.destroyInstance(instance);
         node.delete();
     }
 
     @Override
     public <QL> Query createQuery(QL query, Class<?>... types) {
         if (query instanceof String) {
-            return new CypherStringQueryImpl(String.class.cast(query), executionEngine, instanceManager, Arrays.asList(types));
+            return new CypherStringQueryImpl(String.class.cast(query), queryExecutor, instanceManager, Arrays.asList(types));
         } else if (query instanceof Class<?>) {
-            return new CypherTypeQueryImpl(Class.class.cast(query), executionEngine, instanceManager, Arrays.asList(types));
+            return new CypherTypeQueryImpl(Class.class.cast(query), queryExecutor, instanceManager, Arrays.asList(types));
         }
         throw new CdoException("Unsupported query language of type " + query.getClass().getName());
     }

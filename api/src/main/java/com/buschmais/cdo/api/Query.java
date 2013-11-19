@@ -1,6 +1,7 @@
 package com.buschmais.cdo.api;
 
 import java.io.Closeable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -42,16 +43,16 @@ public interface Query {
     public interface Result<T> extends IterableResult<T>, AutoCloseable, Closeable {
 
         /**
-         * Return the name of the columns returned by the query.
-         *
-         * @return The column names.
-         */
-        public List<String> getColumns();
-
-        /**
          * Defines the interface which is implemented by all instances contained in a {@link Result} and which allows access to a column in a row.
          */
         public interface CompositeRowObject extends CompositeObject {
+
+            /**
+             * Return the names of the columns in this row.
+             *
+             * @return The column names.
+             */
+            public Collection<String> getColumns();
 
             /**
              * Return the value of column in row.
