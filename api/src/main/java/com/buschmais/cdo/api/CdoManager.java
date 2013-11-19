@@ -23,7 +23,7 @@ public interface CdoManager {
      */
     void rollback();
 
-     Set<ConstraintViolation<Object>> validate();
+    Set<ConstraintViolation<Object>> validate();
 
     /**
      * Find all property instances according to the given type and value (e.g. from an index).
@@ -79,27 +79,27 @@ public interface CdoManager {
     /**
      * Migrates the type of a property instance to the given target and returns it. The original instance will not be usable anymore after migration.
      *
-     * @param <T>              The property type.
-     * @param <M>              The migrated property type. Note that it be assignable to at least one of the interfaces specified for types.
-     * @param instance         The instance.
-     * @param migrationHandler The {@link MigrationHandler} to be used to migrate data (e.g. properties) to the new type.
-     * @param targetType       The target interface which shall be implemented by the migrated instance.
-     * @param targetTypes      More target interfaces which shall be implemented by the migrated instance.
+     * @param <T>               The property type.
+     * @param <M>               The migrated property type. Note that it be assignable to at least one of the interfaces specified for types.
+     * @param instance          The instance.
+     * @param migrationStrategy The {@link com.buschmais.cdo.api.CdoManager.MigrationStrategy} to be used to migrate data (e.g. properties) to the new type.
+     * @param targetType        The target interface which shall be implemented by the migrated instance.
+     * @param targetTypes       More target interfaces which shall be implemented by the migrated instance.
      * @return The migrated instance.
      */
-    <T, M> CompositeObject migrate(T instance, MigrationHandler<T, M> migrationHandler, Class<M> targetType, Class<?>... targetTypes);
+    <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes);
 
     /**
      * Migrates the type of a property instance to the given target and returns it. The original instance will not be usable anymore after migration.
      *
-     * @param <T>              The property type.
-     * @param <M>              The migrated property type. Note that it be assignable to at least one of the interfaces specified for types.
-     * @param instance         The instance.
-     * @param migrationHandler The {@link MigrationHandler} to be used to migrate data (e.g. properties) to the new type.
-     * @param targetType       The target interface which shall be implemented by the migrated instance.
+     * @param <T>               The property type.
+     * @param <M>               The migrated property type. Note that it be assignable to at least one of the interfaces specified for types.
+     * @param instance          The instance.
+     * @param migrationStrategy The {@link com.buschmais.cdo.api.CdoManager.MigrationStrategy} to be used to migrate data (e.g. properties) to the target type.
+     * @param targetType        The target interface which shall be implemented by the migrated instance.
      * @return The migrated instance.
      */
-    <T, M> M migrate(T instance, MigrationHandler<T, M> migrationHandler, Class<M> targetType);
+    <T, M> M migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType);
 
     /**
      * Deletes a property instance.
@@ -123,7 +123,19 @@ public interface CdoManager {
      */
     void close();
 
-    interface MigrationHandler<T, M> {
+    /**
+     * Defines the interface of strategies for migration between different composite object types.
+     *
+     * @param <T> The instance type.
+     * @param <M> The target instance type.
+     */
+    interface MigrationStrategy<T, M> {
+        /**
+         * Migrate an instance of a type to instance of another type.
+         *
+         * @param instance The instance.
+         * @param target   The target instance.
+         */
         void migrate(T instance, M target);
     }
 }

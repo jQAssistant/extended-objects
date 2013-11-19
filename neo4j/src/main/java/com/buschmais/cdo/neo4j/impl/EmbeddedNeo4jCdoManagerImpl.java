@@ -136,7 +136,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     }
 
     @Override
-    public <T, M> CompositeObject migrate(T instance, MigrationHandler<T, M> migrationHandler, Class<M> targetType, Class<?>... targetTypes) {
+    public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
         Node node = instanceManager.getNode(instance);
         List<Class<?>> types = instanceManager.getTypes(node);
         Set<Label> labels = new HashSet<>();
@@ -162,8 +162,8 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
         }
         instanceManager.removeInstance(instance);
         CompositeObject migratedInstance = instanceManager.getInstance(node);
-        if (migrationHandler != null) {
-            migrationHandler.migrate(instance, migratedInstance.as(targetType));
+        if (migrationStrategy != null) {
+            migrationStrategy.migrate(instance, migratedInstance.as(targetType));
         }
         instanceManager.destroyInstance(instance);
         return migratedInstance;
@@ -175,8 +175,8 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     }
 
     @Override
-    public <T, M> M migrate(T instance, MigrationHandler<T, M> migrationHandler, Class<M> targetType) {
-        return migrate(instance, migrationHandler, targetType, new Class<?>[0]).as(targetType);
+    public <T, M> M migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType) {
+        return migrate(instance, migrationStrategy, targetType, new Class<?>[0]).as(targetType);
     }
 
     @Override

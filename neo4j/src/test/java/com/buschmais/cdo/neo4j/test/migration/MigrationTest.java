@@ -41,13 +41,13 @@ public class MigrationTest extends AbstractCdoManagerTest {
         a.setValue("Value");
         cdoManager.commit();
         cdoManager.begin();
-        CdoManager.MigrationHandler<A, C> migrationHandler = new CdoManager.MigrationHandler<A, C>() {
+        CdoManager.MigrationStrategy<A, C> migrationStrategy = new CdoManager.MigrationStrategy<A, C>() {
             @Override
             public void migrate(A instance, C target) {
                 target.setName(instance.getValue());
             }
         };
-        C c = cdoManager.migrate(a, migrationHandler, C.class);
+        C c = cdoManager.migrate(a, migrationStrategy, C.class);
         assertThat(c.getName(), equalTo("Value"));
         cdoManager.commit();
         cdoManager.close();
@@ -61,13 +61,13 @@ public class MigrationTest extends AbstractCdoManagerTest {
         a.setValue("Value");
         cdoManager.commit();
         cdoManager.begin();
-        CdoManager.MigrationHandler<A, CompositeObject> migrationHandler = new CdoManager.MigrationHandler<A, CompositeObject>() {
+        CdoManager.MigrationStrategy<A, CompositeObject> migrationStrategy = new CdoManager.MigrationStrategy<A, CompositeObject>() {
             @Override
             public void migrate(A instance, CompositeObject target) {
                 target.as(C.class).setName(instance.getValue());
             }
         };
-        C c = cdoManager.migrate(a, migrationHandler, CompositeObject.class, C.class).as(C.class);
+        C c = cdoManager.migrate(a, migrationStrategy, CompositeObject.class, C.class).as(C.class);
         assertThat(c.getName(), equalTo("Value"));
         cdoManager.commit();
         cdoManager.close();
