@@ -4,14 +4,9 @@ import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
-import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
-import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.query.QueryExecutor;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.schema.IndexDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +55,7 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl<GDS extends GraphDataba
     public CdoManager createCdoManager() {
         TransactionalCache cache = new TransactionalCache();
         InstanceManager instanceManager = new InstanceManager(nodeMetadataProvider, queryExecutor, classLoader, cache);
-        return new EmbeddedNeo4jCdoManagerImpl(nodeMetadataProvider, graphDatabaseService, queryExecutor, instanceManager, cache, validatorFactory);
+        return new Neo4jCdoManagerImpl(nodeMetadataProvider, graphDatabaseService, queryExecutor, instanceManager, cache, validatorFactory);
     }
 
 

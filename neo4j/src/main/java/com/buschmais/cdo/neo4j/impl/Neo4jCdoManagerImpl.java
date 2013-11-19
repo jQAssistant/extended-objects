@@ -4,7 +4,7 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.IterableResult;
 import com.buschmais.cdo.api.Query;
-import com.buschmais.cdo.neo4j.api.EmbeddedNeo4jCdoManager;
+import com.buschmais.cdo.neo4j.api.Neo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.common.AbstractIterableResult;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
@@ -14,16 +14,13 @@ import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadat
 import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.QueryExecutor;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.validation.*;
 import javax.validation.ConstraintViolationException;
 import java.util.*;
 
-public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
+public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
 
     private final NodeMetadataProvider nodeMetadataProvider;
     private final InstanceManager instanceManager;
@@ -33,7 +30,7 @@ public class EmbeddedNeo4jCdoManagerImpl implements EmbeddedNeo4jCdoManager {
     private final ValidatorFactory validatorFactory;
     private Transaction transaction;
 
-    public EmbeddedNeo4jCdoManagerImpl(NodeMetadataProvider nodeMetadataProvider, GraphDatabaseService database, QueryExecutor queryExecutor, InstanceManager instanceManager, TransactionalCache cache, ValidatorFactory validatorFactory) {
+    public Neo4jCdoManagerImpl(NodeMetadataProvider nodeMetadataProvider, GraphDatabaseService database, QueryExecutor queryExecutor, InstanceManager instanceManager, TransactionalCache cache, ValidatorFactory validatorFactory) {
         this.nodeMetadataProvider = nodeMetadataProvider;
         this.database = database;
         this.instanceManager = instanceManager;

@@ -4,7 +4,7 @@ import com.buschmais.cdo.api.CdoManager;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.kernel.GraphDatabaseAPI;
 
-public interface EmbeddedNeo4jCdoManager extends CdoManager {
+public interface Neo4jCdoManager extends CdoManager {
 
     GraphDatabaseService getGraphDatabaseService();
 
