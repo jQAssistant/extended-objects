@@ -34,7 +34,7 @@ public abstract class AbstractRestCdoManagerTest extends AbstractCdoManagerTest 
 
     @BeforeClass
     public static void startServer() {
-        GraphDatabaseService graphDatabaseService = new GraphDatabaseFactory().newEmbeddedDatabase("target/server");
+        GraphDatabaseService graphDatabaseService = new GraphDatabaseFactory().newEmbeddedDatabase("target/neo4j/server");
         server = new WrappingNeoServer((GraphDatabaseAPI) graphDatabaseService);
         server.start();
     }

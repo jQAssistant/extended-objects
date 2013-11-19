@@ -35,11 +35,12 @@ public class CrudTest extends AbstractRestCdoManagerTest {
         a.setName("Bar");
         cdoManager.commit();
         cdoManager.begin();
+        cdoManager.createQuery("match (a:A) where a.name={name} return a").withParameter("name", "Bar").execute().getSingleResult();
         cdoManager.delete(a);
         cdoManager.commit();
         cdoManager.begin();
         try {
-            assertThat(a.getName(), equalTo("Bar"));
+            cdoManager.createQuery("match (a:A) return a").execute().getSingleResult();
             Assert.fail("An exception is expected.");
         } catch (CdoException e) {
         }
