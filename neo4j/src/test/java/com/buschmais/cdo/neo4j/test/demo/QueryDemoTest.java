@@ -1,13 +1,12 @@
 package com.buschmais.cdo.neo4j.test.demo;
 
 import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.demo.composite.Group;
 import com.buschmais.cdo.neo4j.test.demo.composite.Person;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
-
-import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 
 public class QueryDemoTest  extends AbstractCdoManagerTest{
     @Override
@@ -28,8 +27,9 @@ public class QueryDemoTest  extends AbstractCdoManagerTest{
         group.getMembers().add(person2);
         cdoManager.commit();
         cdoManager.begin();
-        Group.PersonByName peters = group.getPersonByName("Peter");
-        System.err.println(peters.getPerson().getName());
+        Group.MemberByName memberByName = group.getMemberByName("Peter");
+        Person peter = memberByName.getMember();
+        Assert.assertThat(peter, Matchers.equalTo(person1));
         cdoManager.commit();
     }
 }

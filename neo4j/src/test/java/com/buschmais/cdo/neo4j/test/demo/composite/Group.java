@@ -16,11 +16,11 @@ public interface Group {
     List<Person> getMembers();
 
     @ResultOf
-    PersonByName getPersonByName(@Parameter("name") String name);
+    MemberByName getMemberByName(@Parameter("name") String name);
 
-    @Cypher("match (g:Group)-[:HasMember]->(p:Person) where g={this} and p.name={name} return p as person")
-    public interface PersonByName {
-        Person getPerson();
+    @Cypher("match (g:Group)-[:HasMember]->(p:Person) where g={this} and p.name={name} return p as member")
+    public interface MemberByName {
+        Person getMember();
     }
 
 }
