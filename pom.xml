@@ -155,6 +155,7 @@
         <module>api</module>
         <module>neo4j</module>
         <module>doc</module>
+        <module>inject</module>
     </modules>
 
 </project>
