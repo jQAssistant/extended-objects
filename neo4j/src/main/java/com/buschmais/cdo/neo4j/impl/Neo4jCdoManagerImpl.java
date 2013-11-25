@@ -8,13 +8,10 @@ import com.buschmais.cdo.neo4j.api.Neo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.common.AbstractIterableResult;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
-import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 
 import javax.validation.ConstraintViolation;
@@ -25,12 +22,12 @@ import java.util.*;
 
 public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
 
-    private final InstanceManager instanceManager;
+    private final InstanceManager<Long, Node> instanceManager;
     private final TransactionalCache cache;
-    private final DatastoreSession<Node> datastoreSession;
+    private final DatastoreSession<Long, Node> datastoreSession;
     private final ValidatorFactory validatorFactory;
 
-    public Neo4jCdoManagerImpl(DatastoreSession<Node> datastoreSession, InstanceManager instanceManager, TransactionalCache cache, ValidatorFactory validatorFactory) {
+    public Neo4jCdoManagerImpl(DatastoreSession<Long, Node> datastoreSession, InstanceManager instanceManager, TransactionalCache cache, ValidatorFactory validatorFactory) {
         this.instanceManager = instanceManager;
         this.cache = cache;
         this.validatorFactory = validatorFactory;
@@ -59,7 +56,7 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
         }
         Validator validator = validatorFactory.getValidator();
         Set<ConstraintViolation<Object>> violations = new HashSet<>();
-        for (Object instance : new ArrayList<>(cache.values())) {
+        for (Object instance : new ArrayList(cache.values())) {
             violations.addAll(validator.validate(instance));
         }
         return violations;
@@ -103,7 +100,7 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
     public CompositeObject create(Class type, Class<?>... types) {
         List<Class<?>> effectiveTypes = getEffectiveTypes(type, types);
         Node node = datastoreSession.create(effectiveTypes);
-        return instanceManager.getInstance(node, effectiveTypes);
+        return instanceManager.getInstance(node);
     }
 
     public <T> T create(Class<T> type) {
@@ -113,7 +110,7 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
     @Override
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
         Node node = instanceManager.getNode(instance);
-        List<Class<?>> types = instanceManager.getTypes(node);
+        List<Class<?>> types = datastoreSession.getTypes(node);
         List<Class<?>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
         datastoreSession.migrate(node, types, effectiveTargetTypes);
         instanceManager.removeInstance(instance);

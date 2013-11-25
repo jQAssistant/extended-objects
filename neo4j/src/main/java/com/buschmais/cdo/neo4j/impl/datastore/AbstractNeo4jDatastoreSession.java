@@ -1,17 +1,18 @@
 package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.neo4j.impl.common.AbstractIterableResult;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.neo4j.spi.Datastore;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.ResourceIterable;
 
 import java.util.*;
 
-public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Node> {
+public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node> {
 
     private GDS graphDatabaseService;
     private NodeMetadataProvider metadataProvider;
@@ -75,5 +76,51 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         for (Label label : labelsToAdd) {
             entity.addLabel(label);
         }
+    }
+
+    @Override
+    public List<Class<?>> getTypes(Node entity) {
+        // Collect all labels from the node
+        Set<Label> labels = new HashSet<>();
+        for (Label label : entity.getLabels()) {
+            labels.add(label);
+        }
+        // Get all types matching the labels
+        Set<Class<?>> types = new HashSet<>();
+        for (Label label : labels) {
+            Set<NodeMetadata> nodeMetadataOfLabel = metadataProvider.getNodeMetadata(label);
+            if (nodeMetadataOfLabel != null) {
+                for (NodeMetadata nodeMetadata : nodeMetadataOfLabel) {
+                    if (labels.containsAll(nodeMetadata.getAggregatedLabels())) {
+                        types.add(nodeMetadata.getType());
+                    }
+                }
+            }
+        }
+        SortedSet<Class<?>> uniqueTypes = new TreeSet<>(new Comparator<Class<?>>() {
+            @Override
+            public int compare(Class<?> o1, Class<?> o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        // Remove super types if subtypes are already in the type set
+        for (Class<?> type : types) {
+            boolean subtype = false;
+            for (Iterator<Class<?>> subTypeIterator = types.iterator(); subTypeIterator.hasNext() && !subtype; ) {
+                Class<?> otherType = subTypeIterator.next();
+                if (!type.equals(otherType) && type.isAssignableFrom(otherType)) {
+                    subtype = true;
+                }
+            }
+            if (!subtype) {
+                uniqueTypes.add(type);
+            }
+        }
+        return new ArrayList<>(uniqueTypes);
+    }
+
+    @Override
+    public Long getId(Node entity) {
+        return Long.valueOf(entity.getId());
     }
 }

@@ -6,8 +6,6 @@ import com.buschmais.cdo.neo4j.test.embedded.generics.composite.BoundType;
 import com.buschmais.cdo.neo4j.test.embedded.generics.composite.GenericSuperType;
 import org.junit.Test;
 
-import static org.junit.Assert.assertThat;
-
 public class GenericTypeTest extends AbstractEmbeddedCdoManagerTest {
 
     @Override

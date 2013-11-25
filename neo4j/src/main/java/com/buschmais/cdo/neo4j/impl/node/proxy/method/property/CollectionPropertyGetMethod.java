@@ -1,8 +1,8 @@
 package com.buschmais.cdo.neo4j.impl.node.proxy.method.property;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.neo4j.impl.node.metadata.CollectionPropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.node.metadata.CollectionPropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.proxy.collection.CollectionProxy;
 import com.buschmais.cdo.neo4j.impl.node.proxy.collection.ListProxy;
 import com.buschmais.cdo.neo4j.impl.node.proxy.collection.SetProxy;

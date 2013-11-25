@@ -2,7 +2,6 @@ package com.buschmais.cdo.neo4j.impl.query.proxy.method;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
-import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.AbstractProxyMethodService;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.composite.AsMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;

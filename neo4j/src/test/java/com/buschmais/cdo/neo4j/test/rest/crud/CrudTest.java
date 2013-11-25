@@ -5,12 +5,8 @@ import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.neo4j.api.annotation.Indexed;
 import com.buschmais.cdo.neo4j.api.annotation.Label;
 import com.buschmais.cdo.neo4j.test.rest.AbstractRestCdoManagerTest;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;

@@ -6,7 +6,7 @@ import org.neo4j.graphdb.Node;
 
 public class EqualsMethod implements NodeProxyMethod {
 
-    private InstanceManager instanceManager;
+    private InstanceManager<Long,Node> instanceManager;
 
     public EqualsMethod(InstanceManager instanceManager) {
         this.instanceManager = instanceManager;

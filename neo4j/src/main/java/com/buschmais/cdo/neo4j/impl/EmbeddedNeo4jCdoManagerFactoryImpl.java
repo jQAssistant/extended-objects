@@ -5,7 +5,6 @@ import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastoreSession;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
