@@ -1,13 +1,11 @@
 package com.buschmais.cdo.neo4j.impl.query;
 
-import com.buschmais.cdo.api.IterableResult;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.impl.common.AbstractIterableResult;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.query.proxy.RowInvocationHandler;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.RowProxyMethodService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterator;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -47,7 +45,7 @@ class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements Qu
                     row.put(column, decodedValue);
                 }
                 RowInvocationHandler invocationHandler = new RowInvocationHandler(row, rowProxyMethodService);
-                return instanceManager.createInstance(invocationHandler, types, CompositeRowObject.class);
+                return (T) instanceManager.createInstance(invocationHandler, types, CompositeRowObject.class);
             }
 
             @Override
@@ -78,7 +76,7 @@ class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements Qu
     @Override
     public void close() throws IOException {
         if (iterator instanceof Closeable) {
-            ((Closeable)iterator).close();
+            ((Closeable) iterator).close();
         }
     }
 }

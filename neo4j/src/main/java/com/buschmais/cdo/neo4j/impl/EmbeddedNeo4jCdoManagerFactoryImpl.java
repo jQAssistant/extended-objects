@@ -1,12 +1,10 @@
 package com.buschmais.cdo.neo4j.impl;
 
-import com.buschmais.cdo.api.IterableResult;
+import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
+import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastoreSession;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.neo4j.impl.query.QueryExecutor;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
@@ -16,11 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.Iterator;
-import java.util.Map;
 
-public class EmbeddedNeo4jCdoManagerFactoryImpl extends AbstractNeo4jCdoManagerFactoryImpl<GraphDatabaseService> {
-
+public class EmbeddedNeo4jCdoManagerFactoryImpl extends AbstractNeo4jCdoManagerFactoryImpl<EmbeddedNeo4jDatastore> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNeo4jCdoManagerFactoryImpl.class);
 
@@ -28,24 +23,15 @@ public class EmbeddedNeo4jCdoManagerFactoryImpl extends AbstractNeo4jCdoManagerF
         super(url, entities);
     }
 
-    protected GraphDatabaseService createGraphDatabaseService(URL url) {
-        return new GraphDatabaseFactory().newEmbeddedDatabase(url.getPath());
+    protected EmbeddedNeo4jDatastore createDatastore(URL url, NodeMetadataProvider metadataProvider) {
+        GraphDatabaseService graphDatabaseService = new GraphDatabaseFactory().newEmbeddedDatabase(url.getPath());
+        return new EmbeddedNeo4jDatastore(graphDatabaseService, metadataProvider);
     }
 
     @Override
-    protected QueryExecutor createQueryExecutor(GraphDatabaseService graphDatabaseService) {
-        final ExecutionEngine executionEngine = new ExecutionEngine(graphDatabaseService);
-        return new QueryExecutor() {
-            @Override
-            public Iterator<Map<String, Object>> execute(String query, Map<String, Object> parameters) {
-                ExecutionResult executionResult = executionEngine.execute(query, parameters);
-                return executionResult.iterator();
-            }
-        };
-    }
-
-    @Override
-    protected void init(GraphDatabaseService graphDatabaseService, NodeMetadataProvider nodeMetadataProvider) {
+    protected void init(EmbeddedNeo4jDatastore datastore, NodeMetadataProvider nodeMetadataProvider) {
+        EmbeddedNeo4jDatastoreSession session = datastore.createSession();
+        GraphDatabaseService graphDatabaseService = session.getGraphDatabaseService();
         Transaction transaction = graphDatabaseService.beginTx();
         for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
             Label label = nodeMetadata.getLabel();

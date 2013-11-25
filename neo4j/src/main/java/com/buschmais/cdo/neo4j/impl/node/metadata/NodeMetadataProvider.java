@@ -19,6 +19,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 
+import static com.buschmais.cdo.neo4j.impl.common.DependencyResolver.DependencyProvider;
+
 public class NodeMetadataProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeMetadata.class);
@@ -27,8 +29,7 @@ public class NodeMetadataProvider {
     private Map<org.neo4j.graphdb.Label, Set<NodeMetadata>> nodeMetadataByLabel = new HashMap<>();
 
     public NodeMetadataProvider(Collection<Class<?>> types) {
-        com.buschmais.cdo.neo4j.impl.common.DependencyResolver.DependencyProvider<Class<?>> classDependencyProvider = new com.buschmais.cdo.neo4j.impl.common.DependencyResolver.DependencyProvider<Class<?>>() {
-
+        DependencyProvider<Class<?>> classDependencyProvider = new DependencyProvider<Class<?>>() {
             @Override
             public Set<Class<?>> getDependencies(Class<?> dependent) {
                 return new HashSet<>(Arrays.asList(dependent.getInterfaces()));

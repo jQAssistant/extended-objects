@@ -4,29 +4,22 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.neo4j.api.proxy.NodeProxyMethod;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.AbstractProxyMethodService;
-import com.buschmais.cdo.neo4j.impl.node.metadata.*;
-import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.composite.AsMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
+import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.node.metadata.*;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.object.EqualsMethod;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.object.HashCodeMethod;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.object.ToStringMethod;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.property.*;
-import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
-import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.resultof.ResultOfMethod;
-import com.buschmais.cdo.neo4j.impl.query.QueryExecutor;
-import com.buschmais.cdo.neo4j.impl.query.proxy.method.RowProxyMethodService;
-import org.neo4j.graphdb.GraphDatabaseService;
+import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import org.neo4j.graphdb.Node;
-
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class NodeProxyMethodService extends AbstractProxyMethodService<Node, NodeProxyMethod> {
 
-    public NodeProxyMethodService(NodeMetadataProvider nodeMetadataProvider, InstanceManager instanceManager, QueryExecutor queryExecutor) {
+    public NodeProxyMethodService(NodeMetadataProvider nodeMetadataProvider, InstanceManager instanceManager, DatastoreSession datastoreSession) {
         for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
             for (AbstractMethodMetadata methodMetadata : nodeMetadata.getProperties()) {
                 BeanMethod beanMethod = methodMetadata.getBeanMethod();
@@ -44,7 +37,7 @@ public class NodeProxyMethodService extends AbstractProxyMethodService<Node, Nod
                 }
                 if (methodMetadata instanceof ResultOfMethodMetadata) {
                     ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata)methodMetadata;
-                    proxyMethod=new ResultOfMethod(resultOfMethodMetadata, instanceManager, queryExecutor);
+                    proxyMethod=new ResultOfMethod(resultOfMethodMetadata, instanceManager, datastoreSession);
                 }
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
                     BeanPropertyMethod beanPropertyMethod = (BeanPropertyMethod) beanMethod;

@@ -2,13 +2,15 @@ package com.buschmais.cdo.neo4j.test.embedded.mapping;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
-import com.buschmais.cdo.neo4j.test.embedded.mapping.composite.*;
+import com.buschmais.cdo.neo4j.test.embedded.mapping.composite.ByValue;
+import com.buschmais.cdo.neo4j.test.embedded.mapping.composite.ByValueUsingImplicitThis;
+import com.buschmais.cdo.neo4j.test.embedded.mapping.composite.E;
+import com.buschmais.cdo.neo4j.test.embedded.mapping.composite.F;
 import org.junit.Before;
 import org.junit.Test;
 
 import static com.buschmais.cdo.api.Query.Result;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
 
 public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {

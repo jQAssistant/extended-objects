@@ -8,40 +8,35 @@ import com.buschmais.cdo.neo4j.api.Neo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.common.AbstractIterableResult;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
-import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
-import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
-import com.buschmais.cdo.neo4j.impl.query.QueryExecutor;
-import org.neo4j.graphdb.*;
+import com.buschmais.cdo.neo4j.spi.DatastoreSession;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
 
-import javax.validation.*;
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.*;
 
 public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
 
-    private final NodeMetadataProvider nodeMetadataProvider;
-    private final InstanceManager instanceManager;
+    private final InstanceManager<Long, Node> instanceManager;
     private final TransactionalCache cache;
-    private final GraphDatabaseService database;
-    private final QueryExecutor queryExecutor;
+    private final DatastoreSession<Long, Node> datastoreSession;
     private final ValidatorFactory validatorFactory;
-    private Transaction transaction;
 
-    public Neo4jCdoManagerImpl(NodeMetadataProvider nodeMetadataProvider, GraphDatabaseService database, QueryExecutor queryExecutor, InstanceManager instanceManager, TransactionalCache cache, ValidatorFactory validatorFactory) {
-        this.nodeMetadataProvider = nodeMetadataProvider;
-        this.database = database;
+    public Neo4jCdoManagerImpl(DatastoreSession<Long, Node> datastoreSession, InstanceManager instanceManager, TransactionalCache cache, ValidatorFactory validatorFactory) {
         this.instanceManager = instanceManager;
         this.cache = cache;
         this.validatorFactory = validatorFactory;
-        this.queryExecutor = queryExecutor;
+        this.datastoreSession = datastoreSession;
     }
 
     @Override
     public void begin() {
-        transaction = database.beginTx();
+        datastoreSession.begin();
     }
 
     @Override
@@ -50,8 +45,7 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
         if (!constraintViolations.isEmpty()) {
             throw new ConstraintViolationException(constraintViolations);
         }
-        transaction.success();
-        transaction.close();
+        datastoreSession.commit();
         cache.afterCompletion(true);
     }
 
@@ -62,7 +56,7 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
         }
         Validator validator = validatorFactory.getValidator();
         Set<ConstraintViolation<Object>> violations = new HashSet<>();
-        for (Object instance : new ArrayList<>(cache.values())) {
+        for (Object instance : new ArrayList(cache.values())) {
             violations.addAll(validator.validate(instance));
         }
         return violations;
@@ -70,27 +64,16 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
 
     @Override
     public void rollback() {
-        transaction.failure();
-        transaction.close();
+        datastoreSession.rollback();
         cache.afterCompletion(false);
     }
 
     @Override
     public <T> IterableResult<T> find(final Class<T> type, final Object value) {
-        NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
-        Label label = nodeMetadata.getLabel();
-        if (label == null) {
-            throw new CdoException("Type " + type.getName() + " has no label.");
-        }
-        PrimitivePropertyMethodMetadata indexedProperty = nodeMetadata.getIndexedProperty();
-        if (indexedProperty == null) {
-            throw new CdoException("Type " + nodeMetadata.getType().getName() + " has no indexed property.");
-        }
-        final ResourceIterable<Node> nodesByLabelAndProperty = database.findNodesByLabelAndProperty(label, indexedProperty.getPropertyName(), value);
+        final Iterator<Node> iterator = datastoreSession.find(type, value);
         return new AbstractIterableResult<T>() {
             @Override
             public Iterator<T> iterator() {
-                final ResourceIterator<Node> iterator = nodesByLabelAndProperty.iterator();
                 return new Iterator<T>() {
 
                     @Override
@@ -115,16 +98,9 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
 
     @Override
     public CompositeObject create(Class type, Class<?>... types) {
-        Node node = database.createNode();
         List<Class<?>> effectiveTypes = getEffectiveTypes(type, types);
-        Set<Label> labels = new HashSet<>();
-        for (Class<?> currentType : effectiveTypes) {
-            labels.addAll(nodeMetadataProvider.getNodeMetadata(currentType).getAggregatedLabels());
-        }
-        for (Label label : labels) {
-            node.addLabel(label);
-        }
-        return instanceManager.getInstance(node, effectiveTypes);
+        Node node = datastoreSession.create(effectiveTypes);
+        return instanceManager.getInstance(node);
     }
 
     public <T> T create(Class<T> type) {
@@ -134,28 +110,9 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
     @Override
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
         Node node = instanceManager.getNode(instance);
-        List<Class<?>> types = instanceManager.getTypes(node);
-        Set<Label> labels = new HashSet<>();
-        for (Class<?> type : types) {
-            NodeMetadata nodeMetadata = nodeMetadataProvider.getNodeMetadata(type);
-            labels.addAll(nodeMetadata.getAggregatedLabels());
-        }
-        Set<Label> targetLabels = new HashSet<>();
+        List<Class<?>> types = datastoreSession.getTypes(node);
         List<Class<?>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
-        for (Class<?> currentType : effectiveTargetTypes) {
-            NodeMetadata targetMetadata = nodeMetadataProvider.getNodeMetadata(currentType);
-            targetLabels.addAll(targetMetadata.getAggregatedLabels());
-        }
-        Set<Label> labelsToRemove = new HashSet<>(labels);
-        labelsToRemove.removeAll(targetLabels);
-        for (Label label : labelsToRemove) {
-            node.removeLabel(label);
-        }
-        Set<Label> labelsToAdd = new HashSet<>(targetLabels);
-        labelsToAdd.removeAll(labels);
-        for (Label label : labelsToAdd) {
-            node.addLabel(label);
-        }
+        datastoreSession.migrate(node, types, effectiveTargetTypes);
         instanceManager.removeInstance(instance);
         CompositeObject migratedInstance = instanceManager.getInstance(node);
         if (migrationStrategy != null) {
@@ -180,7 +137,6 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
         return migrate(instance, null, targetType);
     }
 
-
     @Override
     public <T> void delete(T instance) {
         Node node = instanceManager.getNode(instance);
@@ -192,9 +148,9 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
     @Override
     public <QL> Query createQuery(QL query, Class<?>... types) {
         if (query instanceof String) {
-            return new CypherStringQueryImpl(String.class.cast(query), queryExecutor, instanceManager, Arrays.asList(types));
+            return new CypherStringQueryImpl(String.class.cast(query), datastoreSession, instanceManager, Arrays.asList(types));
         } else if (query instanceof Class<?>) {
-            return new CypherTypeQueryImpl(Class.class.cast(query), queryExecutor, instanceManager, Arrays.asList(types));
+            return new CypherTypeQueryImpl(Class.class.cast(query), datastoreSession, instanceManager, Arrays.asList(types));
         }
         throw new CdoException("Unsupported query language of type " + query.getClass().getName());
     }
@@ -206,7 +162,7 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
 
     @Override
     public GraphDatabaseService getGraphDatabaseService() {
-        return database;
+        return null;
     }
 
     private List<Class<?>> getEffectiveTypes(Class<?> type, Class<?>... types) {

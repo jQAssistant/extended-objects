@@ -3,15 +3,15 @@ package com.buschmais.cdo.neo4j.impl.query;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.neo4j.api.annotation.Cypher;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
+import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CypherTypeQueryImpl extends AbstractCypherQueryImpl<Class<?>> {
 
-    public CypherTypeQueryImpl(Class<?> expression, QueryExecutor queryExecutor, InstanceManager instanceManager, List<Class<?>> types) {
-        super(expression, queryExecutor, instanceManager, types);
+    public CypherTypeQueryImpl(Class<?> expression, DatastoreSession datastoreSession, InstanceManager instanceManager, List<Class<?>> types) {
+        super(expression, datastoreSession, instanceManager, types);
     }
 
     @Override

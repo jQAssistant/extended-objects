@@ -3,11 +3,9 @@ package com.buschmais.cdo.neo4j.test;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.neo4j.impl.AbstractNeo4jCdoManagerFactoryImpl;
-import com.buschmais.cdo.neo4j.impl.EmbeddedNeo4jCdoManagerFactoryImpl;
 import org.junit.After;
 import org.junit.Before;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.util.*;
 

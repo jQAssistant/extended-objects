@@ -2,7 +2,6 @@ package com.buschmais.cdo.api;
 
 import java.io.Closeable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**

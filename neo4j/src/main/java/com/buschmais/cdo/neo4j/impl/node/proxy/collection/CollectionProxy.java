@@ -13,7 +13,7 @@ public class CollectionProxy<E> extends AbstractCollection<E> {
 
     private Node node;
     private RelationshipType relationshipType;
-    private InstanceManager instanceManager;
+    private InstanceManager<Long, Node> instanceManager;
 
     public CollectionProxy(Node node, RelationshipType relationshipType, InstanceManager instanceManager) {
         this.node = node;
@@ -33,7 +33,8 @@ public class CollectionProxy<E> extends AbstractCollection<E> {
 
             @Override
             public E next() {
-                return instanceManager.getInstance(iterator.next().getEndNode());
+                Node endNode = iterator.next().getEndNode();
+                return instanceManager.getInstance(endNode);
             }
 
             @Override

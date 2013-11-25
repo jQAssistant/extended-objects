@@ -1,23 +1,26 @@
 package com.buschmais.cdo.neo4j.impl.query;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.IterableResult;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
+import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractCypherQueryImpl<QL> implements Query {
 
     private QL expression;
-    private QueryExecutor queryExecutor;
+    private DatastoreSession datastoreSession;
     private InstanceManager instanceManager;
     private List<Class<?>> types;
     private Map<String, Object> parameters = null;
 
-    public AbstractCypherQueryImpl(QL expression, QueryExecutor queryExecutor, InstanceManager instanceManager, List<Class<?>> types) {
+    public AbstractCypherQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager, List<Class<?>> types) {
         this.expression = expression;
-        this.queryExecutor = queryExecutor;
+        this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
         this.types = types;
     }
@@ -57,7 +60,7 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
                 effectiveParameters.put(name, value);
             }
         }
-        Iterator<Map<String,Object>> iterator = queryExecutor.execute(query, effectiveParameters);
+        Iterator<Map<String,Object>> iterator = datastoreSession.execute(query, effectiveParameters);
         List<Class<?>> resultTypes = getResultTypes(expression, types);
         return new IterableQueryResultImpl(instanceManager, iterator, resultTypes);
     }

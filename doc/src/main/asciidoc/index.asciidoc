@@ -37,7 +37,7 @@ Customer.java
 Mapping Composite Data Objects to Neo4j
 ---------------------------------------
 
-As a graph database Neo4j provides very good capabilities to model highly interconnected datastructures consisting of nodes and relationships. With release 2.0 a new concept of labels has been introduced. One or more number of labels can be added to a node:
+As a graph database Neo4j provides very good capabilities to model highly interconnected datastructures consisting of nodes and relationships. With release 2.0 a new concept of labels has been introduced. One or more number of labels can be added to a entity:
 
 [source]
 ----
@@ -58,7 +58,7 @@ return
   n.firstName, n.lastName;
 ----
 
-If a node has a label it can be assumed that this node represents some specific type of data which enforces the presence of specific properties and relationships (e.g. firstName, lastName for persons).
+If a entity has a label it can be assumed that this entity represents some specific type of data which enforces the presence of specific properties and relationships (e.g. firstName, lastName for persons).
 
 :numbered:
 
