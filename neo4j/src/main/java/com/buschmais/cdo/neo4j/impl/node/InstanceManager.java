@@ -7,8 +7,7 @@ import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.proxy.NodeInvocationHandler;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.NodeProxyMethodService;
-import com.buschmais.cdo.neo4j.impl.query.QueryExecutor;
-import org.neo4j.graphdb.GraphDatabaseService;
+import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 
@@ -23,11 +22,11 @@ public class InstanceManager {
     private final TransactionalCache cache;
     private final NodeProxyMethodService nodeProxyMethodService;
 
-    public InstanceManager(NodeMetadataProvider nodeMetadataProvider, QueryExecutor queryExecutor, ClassLoader classLoader, TransactionalCache cache) {
+    public InstanceManager(NodeMetadataProvider nodeMetadataProvider, DatastoreSession datastoreSession, ClassLoader classLoader, TransactionalCache cache) {
         this.nodeMetadataProvider = nodeMetadataProvider;
         this.classLoader = classLoader;
         this.cache = cache;
-        nodeProxyMethodService = new NodeProxyMethodService(nodeMetadataProvider, this, queryExecutor);
+        nodeProxyMethodService = new NodeProxyMethodService(nodeMetadataProvider, this, datastoreSession);
     }
 
     public <T> T getInstance(Node node) {
