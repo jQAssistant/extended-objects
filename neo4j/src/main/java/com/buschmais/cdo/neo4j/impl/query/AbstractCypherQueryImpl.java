@@ -54,8 +54,8 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
             for (Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
                 String name = parameterEntry.getKey();
                 Object value = parameterEntry.getValue();
-                if (instanceManager.isNode(value)) {
-                    value = instanceManager.getNode(value);
+                if (instanceManager.isEntity(value)) {
+                    value = instanceManager.getEntity(value);
                 }
                 effectiveParameters.put(name, value);
             }

@@ -2,10 +2,10 @@ package com.buschmais.cdo.neo4j.impl.cache;
 
 import java.util.WeakHashMap;
 
-public class ReferenceCache<I> extends AbstractCache<I, Object> {
+public class ReferenceCache<Id> extends AbstractCache<Id, Object> {
 
     protected ReferenceCache() {
-        super(new WeakHashMap<I, Object>());
+        super(new WeakHashMap<Id, Object>());
     }
 
     @Override

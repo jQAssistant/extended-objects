@@ -21,9 +21,9 @@ public class CollectionPropertyGetMethod extends AbstractPropertyMethod<Collecti
     }
 
     @Override
-    public Object invoke(Node node, Object instance, Object[] args) {
+    public Object invoke(Node entity, Object instance, Object[] args) {
         CollectionPropertyMethodMetadata collectionPropertyMetadata = getMetadata();
-        CollectionProxy<?> collectionProxy = new CollectionProxy<>(node, relationshipManager, getInstanceManager());
+        CollectionProxy<?> collectionProxy = new CollectionProxy<>(entity, relationshipManager, getInstanceManager());
         if (Set.class.isAssignableFrom(collectionPropertyMetadata.getBeanMethod().getType())) {
             return new SetProxy<>(collectionProxy);
         } else if (List.class.isAssignableFrom(collectionPropertyMetadata.getBeanMethod().getType())) {

@@ -3,30 +3,26 @@ package com.buschmais.cdo.neo4j.impl.cache;
 import java.util.Collection;
 import java.util.Map;
 
-public abstract class AbstractCache<K, V> implements Cache<K, V> {
+public abstract class AbstractCache<Key, Value> implements Cache<Key, Value> {
 
-    private Map<K, V> cache;
+    private Map<Key, Value> cache;
 
-    protected AbstractCache(Map<K, V> cache) {
+    protected AbstractCache(Map<Key, Value> cache) {
         this.cache = cache;
     }
 
-    protected Map<K,V> getCache() {
-        return cache;
-    }
-
     @Override
-    public void put(K key, V value) {
+    public void put(Key key, Value value) {
         cache.put(key, value);
     }
 
     @Override
-    public V get(K key) {
+    public Value get(Key key) {
         return cache.get(key);
     }
 
     @Override
-    public void remove(K key) {
+    public void remove(Key key) {
         cache.remove(key);
     }
 
@@ -36,7 +32,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public Collection<V> values() {
+    public Collection<Value> values() {
         return cache.values();
     }
 }

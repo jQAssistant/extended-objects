@@ -109,7 +109,7 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
 
     @Override
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
-        Node node = instanceManager.getNode(instance);
+        Node node = instanceManager.getEntity(instance);
         List<Class<?>> types = datastoreSession.getTypes(node);
         List<Class<?>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
         datastoreSession.migrate(node, types, effectiveTargetTypes);
@@ -139,7 +139,7 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
 
     @Override
     public <T> void delete(T instance) {
-        Node node = instanceManager.getNode(instance);
+        Node node = instanceManager.getEntity(instance);
         instanceManager.removeInstance(instance);
         instanceManager.destroyInstance(instance);
         node.delete();

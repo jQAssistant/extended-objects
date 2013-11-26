@@ -1,12 +1,8 @@
 package com.buschmais.cdo.neo4j.impl.node.proxy.collection;
 
-import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.property.RelationshipManager;
-import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
@@ -55,15 +51,15 @@ public class CollectionProxy<E> extends AbstractCollection<E> {
 
     @Override
     public boolean add(E e) {
-        Node target = instanceManager.getNode(e);
+        Node target = instanceManager.getEntity(e);
         relationshipManager.createRelationship(node, target);
         return true;
     }
 
     @Override
     public boolean remove(Object o) {
-        if (instanceManager.isNode(o)) {
-            Node target = instanceManager.getNode(o);
+        if (instanceManager.isEntity(o)) {
+            Node target = instanceManager.getEntity(o);
             return relationshipManager.removeRelationship(node, target);
         }
         return false;

@@ -14,7 +14,7 @@ public class ToStringMethod implements NodeProxyMethod {
     }
 
     @Override
-    public Object invoke(Node node, Object instance, Object[] args) {
+    public Object invoke(Node entity, Object instance, Object[] args) {
         StringBuffer stringBuffer = new StringBuffer();
         for (Class<?> type : instance.getClass().getInterfaces()) {
             if (stringBuffer.length() > 0) {
@@ -23,9 +23,9 @@ public class ToStringMethod implements NodeProxyMethod {
             stringBuffer.append(type);
         }
         stringBuffer.append(", id=");
-        stringBuffer.append(Long.toString(node.getId()));
+        stringBuffer.append(Long.toString(entity.getId()));
         stringBuffer.append(" [");
-        for (Label label : node.getLabels()) {
+        for (Label label : entity.getLabels()) {
             stringBuffer.append(label.name());
             stringBuffer.append(' ');
         }

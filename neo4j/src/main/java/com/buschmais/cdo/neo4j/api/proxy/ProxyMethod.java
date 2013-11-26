@@ -1,7 +1,7 @@
 package com.buschmais.cdo.neo4j.api.proxy;
 
-public interface ProxyMethod<T> {
+public interface ProxyMethod<Entity> {
 
-    Object invoke(T element, Object instance, Object[] args);
+    Object invoke(Entity entity, Object instance, Object[] args);
 
 }

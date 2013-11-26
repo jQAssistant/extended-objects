@@ -2,23 +2,23 @@ package com.buschmais.cdo.neo4j.impl.cache;
 
 import java.util.HashMap;
 
-public class TransactionalCache<I> extends AbstractCache<I, Object> {
+public class TransactionalCache<Id> extends AbstractCache<Id, Object> {
 
     private ReferenceCache referenceCache;
 
     public TransactionalCache() {
-        super(new HashMap<I, Object>());
+        super(new HashMap<Id, Object>());
         this.referenceCache = new ReferenceCache();
     }
 
     @Override
-    public void put(I key, Object value) {
+    public void put(Id key, Object value) {
         super.put(key, value);
         referenceCache.put(key, value);
     }
 
     @Override
-    public Object get(I key) {
+    public Object get(Id key) {
         Object value = super.get(key);
         if (value == null) {
             value = referenceCache.get(key);
@@ -30,7 +30,7 @@ public class TransactionalCache<I> extends AbstractCache<I, Object> {
     }
 
     @Override
-    public void remove(I key) {
+    public void remove(Id key) {
         super.remove(key);
         referenceCache.remove(key);
     }

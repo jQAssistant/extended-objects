@@ -6,7 +6,7 @@ import org.neo4j.graphdb.Node;
 public class HashCodeMethod implements NodeProxyMethod {
 
     @Override
-    public Object invoke(Node node, Object instance, Object[] args) {
-        return Integer.valueOf((int) node.getId());
+    public Object invoke(Node entity, Object instance, Object[] args) {
+        return Integer.valueOf((int) entity.getId());
     }
 }

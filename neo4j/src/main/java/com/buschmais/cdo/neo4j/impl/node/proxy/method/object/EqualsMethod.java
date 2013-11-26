@@ -13,11 +13,11 @@ public class EqualsMethod implements NodeProxyMethod {
     }
 
     @Override
-    public Object invoke(Node node, Object instance, Object[] args) {
+    public Object invoke(Node entity, Object instance, Object[] args) {
         Object other = args[0];
-        if (instanceManager.isNode(other)) {
-            Node otherNode = instanceManager.getNode(other);
-            boolean equal = (otherNode.getId() == node.getId());
+        if (instanceManager.isEntity(other)) {
+            Node otherNode = instanceManager.getEntity(other);
+            boolean equal = (otherNode.getId() == entity.getId());
             return Boolean.valueOf(equal);
         }
         return Boolean.valueOf(false);

@@ -16,8 +16,8 @@ public class ReferencePropertyGetMethod extends AbstractPropertyMethod<Reference
         relationshipManager = new RelationshipManager(metadata);
     }
 
-    public Object invoke(Node node, Object instance, Object[] args) {
-        Node endNode = relationshipManager.getSingleRelationship(node);
+    public Object invoke(Node entity, Object instance, Object[] args) {
+        Node endNode = relationshipManager.getSingleRelationship(entity);
         return endNode != null ? getInstanceManager().getInstance(endNode) : null;
     }
 }

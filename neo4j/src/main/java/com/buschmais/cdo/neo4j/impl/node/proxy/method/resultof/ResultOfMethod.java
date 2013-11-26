@@ -25,7 +25,7 @@ public class ResultOfMethod implements NodeProxyMethod {
     }
 
     @Override
-    public Object invoke(Node element, Object instance, Object[] args) {
+    public Object invoke(Node entity, Object instance, Object[] args) {
         CypherTypeQueryImpl query = new CypherTypeQueryImpl(resultOfMethodMetadata.getQuery(), datastoreSession, instanceManager, Collections.<Class<?>>emptyList());
         String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
         query.withParameter(usingThisAs, instance);

@@ -6,7 +6,7 @@ import org.neo4j.graphdb.Node;
 public class IncrementValueMethod implements NodeProxyMethod {
 
     @Override
-    public Object invoke(Node node, Object instance, Object[] args) {
+    public Object invoke(Node entity, Object instance, Object[] args) {
         A a = A.class.cast(instance);
         int value = a.getValue();
         value++;

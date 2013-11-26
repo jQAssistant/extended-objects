@@ -7,8 +7,8 @@ import java.util.Map;
 public class GetColumnsMethod implements RowProxyMethod {
 
     @Override
-    public Object invoke(Map<String, Object> element, Object instance, Object[] args) {
-        return element.keySet();
+    public Object invoke(Map<String, Object> entity, Object instance, Object[] args) {
+        return entity.keySet();
     }
 
 }

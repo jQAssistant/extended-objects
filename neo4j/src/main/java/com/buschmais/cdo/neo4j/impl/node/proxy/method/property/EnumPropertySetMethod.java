@@ -13,14 +13,14 @@ public class EnumPropertySetMethod extends AbstractPropertyMethod<EnumPropertyMe
     }
 
     @Override
-    public Object invoke(Node node, Object instance, Object[] args) {
+    public Object invoke(Node entity, Object instance, Object[] args) {
         Object value = args[0];
         for (Enum<?> enumerationValue : getMetadata().getEnumerationType().getEnumConstants()) {
             Label label = DynamicLabel.label(enumerationValue.name());
             if (enumerationValue.equals(value)) {
-                node.addLabel(label);
-            } else if (node.hasLabel(label)) {
-                node.removeLabel(label);
+                entity.addLabel(label);
+            } else if (entity.hasLabel(label)) {
+                entity.removeLabel(label);
             }
         }
         return null;
