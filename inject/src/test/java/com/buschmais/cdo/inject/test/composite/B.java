@@ -1,4 +1,4 @@
-package com.buschmais.cdo.inject.test;
+package com.buschmais.cdo.inject.test.composite;
 
 import com.buschmais.cdo.neo4j.api.annotation.Indexed;
 import com.buschmais.cdo.neo4j.api.annotation.Label;
@@ -6,9 +6,9 @@ import com.buschmais.cdo.neo4j.api.annotation.Label;
 @Label("B")
 public interface B {
 
-	@Indexed
-	public String getValue();
+    @Indexed
+    public String getValue();
 
-	public void setValue(String value);
+    public void setValue(String value);
 
 }
