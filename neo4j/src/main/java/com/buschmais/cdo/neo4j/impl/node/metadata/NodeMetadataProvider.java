@@ -7,6 +7,7 @@ import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethodProvider;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
 import org.apache.commons.lang.StringUtils;
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.RelationshipType;
@@ -91,9 +92,9 @@ public class NodeMetadataProvider {
             } else if (beanMethod instanceof BeanPropertyMethod) {
                 BeanPropertyMethod beanPropertyMethod = (BeanPropertyMethod) beanMethod;
                 if (Collection.class.isAssignableFrom(beanPropertyMethod.getType())) {
-                    propertyMetadata = new CollectionPropertyMethodMetadata(beanPropertyMethod, getRelationshipType(beanPropertyMethod, getterMethods));
+                    propertyMetadata = new CollectionPropertyMethodMetadata(beanPropertyMethod, getRelationshipType(beanPropertyMethod, getterMethods), getRelationshipDirection(beanPropertyMethod, getterMethods));
                 } else if (types.contains(beanPropertyMethod.getType())) {
-                    propertyMetadata = new ReferencePropertyMethodMetadata(beanPropertyMethod, getRelationshipType(beanPropertyMethod, getterMethods));
+                    propertyMetadata = new ReferencePropertyMethodMetadata(beanPropertyMethod, getRelationshipType(beanPropertyMethod, getterMethods), getRelationshipDirection(beanPropertyMethod, getterMethods));
                 } else {
                     Property property = getAnnotation(Property.class, beanPropertyMethod, getterMethods);
                     String propertyName = property != null ? property.value() : beanPropertyMethod.getName();
@@ -186,6 +187,18 @@ public class NodeMetadataProvider {
         Relation relation = getAnnotation(Relation.class, beanPropertyMethod, getterMethods);
         String name = relation != null ? relation.value() : StringUtils.capitalize(beanPropertyMethod.getName());
         return DynamicRelationshipType.withName(name);
+    }
+
+    private Direction getRelationshipDirection(BeanPropertyMethod beanPropertyMethod, Map<String, BeanPropertyMethod> getterMethods) {
+        Relation.Incoming incoming = getAnnotation(Relation.Incoming.class, beanPropertyMethod, getterMethods);
+        Relation.Outgoing outgoing = getAnnotation(Relation.Outgoing.class, beanPropertyMethod, getterMethods);
+        if (incoming != null && outgoing != null) {
+            throw new CdoException("A relation property must be either incoming or outgoing: '" + beanPropertyMethod.getName() + "'");
+        }
+        if (incoming != null) {
+            return Direction.INCOMING;
+        }
+        return Direction.OUTGOING;
     }
 
     private <T extends Annotation> T getAnnotation(Class<T> type, BeanPropertyMethod beanPropertyMethod, Map<String, BeanPropertyMethod> getters) {

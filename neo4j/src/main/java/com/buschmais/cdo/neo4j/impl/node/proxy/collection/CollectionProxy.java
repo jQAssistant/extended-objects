@@ -1,6 +1,8 @@
 package com.buschmais.cdo.neo4j.impl.node.proxy.collection;
 
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.node.proxy.method.property.RelationshipManager;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -12,18 +14,17 @@ import java.util.Iterator;
 public class CollectionProxy<E> extends AbstractCollection<E> {
 
     private Node node;
-    private RelationshipType relationshipType;
+    private RelationshipManager relationshipManager;
     private InstanceManager<Long, Node> instanceManager;
 
-    public CollectionProxy(Node node, RelationshipType relationshipType, InstanceManager instanceManager) {
+    public CollectionProxy(Node node, RelationshipManager relationshipManager, InstanceManager instanceManager) {
         this.node = node;
-        this.relationshipType = relationshipType;
+        this.relationshipManager = relationshipManager;
         this.instanceManager = instanceManager;
     }
 
     public Iterator<E> iterator() {
-        Iterable<Relationship> relationships = node.getRelationships(relationshipType, Direction.OUTGOING);
-        final Iterator<Relationship> iterator = relationships.iterator();
+        final Iterator<Node> iterator = relationshipManager.getRelationships(node);
         return new Iterator<E>() {
 
             @Override
@@ -33,8 +34,7 @@ public class CollectionProxy<E> extends AbstractCollection<E> {
 
             @Override
             public E next() {
-                Node endNode = iterator.next().getEndNode();
-                return instanceManager.getInstance(endNode);
+                return instanceManager.getInstance(iterator.next());
             }
 
             @Override
@@ -46,7 +46,7 @@ public class CollectionProxy<E> extends AbstractCollection<E> {
 
     public int size() {
         int size = 0;
-        for (Iterator<Relationship> iterator = node.getRelationships(relationshipType, Direction.OUTGOING).iterator(); iterator.hasNext(); ) {
+        for (Iterator<Node> iterator = relationshipManager.getRelationships(node); iterator.hasNext(); ) {
             iterator.next();
             size++;
         }
@@ -55,21 +55,16 @@ public class CollectionProxy<E> extends AbstractCollection<E> {
 
     @Override
     public boolean add(E e) {
-        Node endNode = instanceManager.getNode(e);
-        node.createRelationshipTo(endNode, relationshipType);
+        Node target = instanceManager.getNode(e);
+        relationshipManager.createRelationship(node, target);
         return true;
     }
 
     @Override
     public boolean remove(Object o) {
         if (instanceManager.isNode(o)) {
-            Node endNode = instanceManager.getNode(o);
-            for (Relationship relationship : node.getRelationships(relationshipType, Direction.OUTGOING)) {
-                if (endNode.equals(relationship.getEndNode())) {
-                    relationship.delete();
-                    return true;
-                }
-            }
+            Node target = instanceManager.getNode(o);
+            return relationshipManager.removeRelationship(node, target);
         }
         return false;
     }

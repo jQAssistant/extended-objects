@@ -9,17 +9,15 @@ import org.neo4j.graphdb.RelationshipType;
 
 public class ReferencePropertyGetMethod extends AbstractPropertyMethod<ReferencePropertyMethodMetadata> {
 
+    private RelationshipManager relationshipManager;
+
     public ReferencePropertyGetMethod(ReferencePropertyMethodMetadata metadata, InstanceManager instanceManager) {
         super(metadata, instanceManager);
+        relationshipManager = new RelationshipManager(metadata);
     }
 
     public Object invoke(Node node, Object instance, Object[] args) {
-        RelationshipType relationshipType = getMetadata().getRelationshipType();
-        Relationship singleRelationship = node.getSingleRelationship(relationshipType, Direction.OUTGOING);
-        if (singleRelationship == null) {
-            return null;
-        }
-        Node endNode = singleRelationship.getEndNode();
-        return getInstanceManager().getInstance(endNode);
+        Node endNode = relationshipManager.getSingleRelationship(node);
+        return endNode != null ? getInstanceManager().getInstance(endNode) : null;
     }
 }

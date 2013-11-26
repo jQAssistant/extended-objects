@@ -9,10 +9,6 @@ import java.util.Iterator;
 
 public class SetProxy<E> extends AbstractSet<E> {
 
-    private Node node;
-    private RelationshipType relationshipType;
-    private InstanceManager instanceManager;
-
     private CollectionProxy<E> collectionProxy;
 
     public SetProxy(CollectionProxy<E> collectionProxy) {

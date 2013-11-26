@@ -1,5 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.node.proxy.method.property;
 
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.ReferencePropertyMethodMetadata;
 import org.neo4j.graphdb.Direction;
@@ -9,21 +10,17 @@ import org.neo4j.graphdb.RelationshipType;
 
 public class ReferencePropertySetMethod extends AbstractPropertyMethod<ReferencePropertyMethodMetadata> {
 
+    private RelationshipManager relationshipManager;
+
     public ReferencePropertySetMethod(ReferencePropertyMethodMetadata metadata, InstanceManager instanceManager) {
         super(metadata, instanceManager);
+        relationshipManager = new RelationshipManager(metadata);
     }
 
     public Object invoke(Node node, Object instance, Object[] args) {
         Object value = args[0];
-        RelationshipType relationshipType = getMetadata().getRelationshipType();
-        if (node.hasRelationship(relationshipType, Direction.OUTGOING)) {
-            Relationship relationship = node.getSingleRelationship(relationshipType, Direction.OUTGOING);
-            relationship.delete();
-        }
-        if (value != null) {
-            Node endNode = getInstanceManager().getNode(value);
-            node.createRelationshipTo(endNode, relationshipType);
-        }
+        Node target = value != null ? getInstanceManager().getNode(value) : null;
+        relationshipManager.createSingleRelationship(node, target);
         return null;
     }
 }

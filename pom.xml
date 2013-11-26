@@ -46,9 +46,9 @@
         </developer>
     </developers>
 
-	<properties>
-		<jqassistant.version>1.0.0-M1</jqassistant.version>
-	</properties>
+    <properties>
+        <jqassistant.version>1.0.0-M1</jqassistant.version>
+    </properties>
 
     <build>
         <plugins>
@@ -80,12 +80,14 @@
                 <executions>
                     <execution>
                         <id>scan</id>
+                        <phase/>
                         <goals>
                             <goal>scan</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>analyze</id>
+                        <phase/>
                         <goals>
                             <goal>analyze</goal>
                         </goals>
