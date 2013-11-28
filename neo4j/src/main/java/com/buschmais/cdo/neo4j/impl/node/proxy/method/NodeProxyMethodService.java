@@ -3,7 +3,9 @@ package com.buschmais.cdo.neo4j.impl.node.proxy.method;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.neo4j.api.proxy.NodeProxyMethod;
+import com.buschmais.cdo.neo4j.api.proxy.ProxyMethod;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.AbstractProxyMethodService;
+import com.buschmais.cdo.neo4j.impl.common.proxy.method.UnsupportedOperationMethod;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.composite.AsMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
@@ -23,8 +25,10 @@ public class NodeProxyMethodService extends AbstractProxyMethodService<Node, Nod
         for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
             for (AbstractMethodMetadata methodMetadata : nodeMetadata.getProperties()) {
                 BeanMethod beanMethod = methodMetadata.getBeanMethod();
-                NodeProxyMethod proxyMethod = null;
-                if (methodMetadata instanceof ImplementedByMethodMetadata) {
+                ProxyMethod<Node> proxyMethod = null;
+                if (methodMetadata instanceof UnsupportedOperationMethodMetadata) {
+                    proxyMethod = new UnsupportedOperationMethod((UnsupportedOperationMethodMetadata) methodMetadata);
+                } else if (methodMetadata instanceof ImplementedByMethodMetadata) {
                     ImplementedByMethodMetadata implementedByMethodMetadata = (ImplementedByMethodMetadata) methodMetadata;
                     Class<? extends NodeProxyMethod> proxyMethodType = implementedByMethodMetadata.getProxyMethodType();
                     try {
@@ -36,8 +40,8 @@ public class NodeProxyMethodService extends AbstractProxyMethodService<Node, Nod
                     }
                 }
                 if (methodMetadata instanceof ResultOfMethodMetadata) {
-                    ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata)methodMetadata;
-                    proxyMethod=new ResultOfMethod(resultOfMethodMetadata, instanceManager, datastoreSession);
+                    ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata) methodMetadata;
+                    proxyMethod = new ResultOfMethod(resultOfMethodMetadata, instanceManager, datastoreSession);
                 }
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
                     BeanPropertyMethod beanPropertyMethod = (BeanPropertyMethod) beanMethod;

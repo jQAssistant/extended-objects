@@ -109,7 +109,7 @@ public class NodeMetadataProvider {
                     }
                 }
             } else {
-                throw new CdoException("Cannot determine metadata of method " + beanMethod.getMethod().getName());
+                propertyMetadata = new UnsupportedOperationMethodMetadata(beanMethod);
             }
             methodMetadataList.add(propertyMetadata);
         }

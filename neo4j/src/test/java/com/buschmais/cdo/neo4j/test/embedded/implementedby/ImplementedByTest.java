@@ -38,4 +38,34 @@ public class ImplementedByTest extends AbstractEmbeddedCdoManagerTest {
         cdoManager.commit();
         cdoManager.close();
     }
+
+    @Test
+    public void compareTo() {
+        CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
+        cdoManager.begin();
+        A a1 = cdoManager.create(A.class);
+        a1.setValue(100);
+        A a2 = cdoManager.create(A.class);
+        a2.setValue(200);
+        cdoManager.commit();
+        cdoManager.begin();
+        assertThat(a1.compareTo(a2), equalTo(-100));
+        cdoManager.commit();
+        cdoManager.close();
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void unsupportedOperation() {
+        CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
+        cdoManager.begin();
+        A a = cdoManager.create(A.class);
+        cdoManager.commit();
+        cdoManager.begin();
+        try {
+            a.unsupportedOperation();
+        } finally {
+            cdoManager.commit();
+        }
+    }
+
 }
