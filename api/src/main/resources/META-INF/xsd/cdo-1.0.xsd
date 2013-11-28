@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:cdo="http://buschmais.com/cdo/schema/v1.0"
+           targetNamespace="http://buschmais.com/cdo/schema/v1.0"
+           elementFormDefault="unqualified">
+
+    <xs:element name="cdo">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="cdo-unit" type="cdo:CdoUnitType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="version" type="cdo:VersionType" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="VersionType">
+        <xs:restriction base="xs:token">
+            <xs:pattern value="[0-9]+(\.[0-9]+)*"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="CdoUnitType">
+        <xs:sequence>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:element name="provider" type="xs:string" minOccurs="0"/>
+            <xs:element name="types" type="cdo:TypesType" minOccurs="1"/>
+            <xs:element name="validation-mode" type="xs:string" minOccurs="0"/>
+            <xs:element name="properties" type="cdo:PropertiesType" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="TypesType">
+        <xs:sequence>
+            <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PropertiesType">
+        <xs:sequence>
+            <xs:element name="property" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PropertyType">
+        <xs:attribute name="name" use="required"/>
+        <xs:attribute name="value" use="required"/>
+    </xs:complexType>
+
+</xs:schema>
