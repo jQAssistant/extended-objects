@@ -6,12 +6,16 @@
         <artifactId>parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>cdo.api</artifactId>
+    <artifactId>cdo.spi</artifactId>
 
-    <name>Composite Data Objects - API</name>
+    <name>Composite Data Objects - SPI</name>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -23,12 +27,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>

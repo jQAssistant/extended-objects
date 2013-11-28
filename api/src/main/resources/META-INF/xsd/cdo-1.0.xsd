@@ -24,7 +24,7 @@
             <xs:element name="description" type="xs:string" minOccurs="0"/>
             <xs:element name="provider" type="xs:string" minOccurs="0"/>
             <xs:element name="types" type="cdo:TypesType" minOccurs="1"/>
-            <xs:element name="validation-mode" type="xs:string" minOccurs="0"/>
+            <xs:element name="validation-mode" type="cdo:ValidationModeType" minOccurs="0"/>
             <xs:element name="properties" type="cdo:PropertiesType" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="name" use="required"/>
@@ -36,9 +36,16 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:simpleType name="ValidationModeType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="AUTO"/>
+            <xs:enumeration value="NONE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="PropertiesType">
         <xs:sequence>
-            <xs:element name="property" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="property" type="cdo:PropertyType" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 

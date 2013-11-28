@@ -72,11 +72,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <archive>
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                    </archive>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -168,6 +163,11 @@
         <dependencies>
             <dependency>
                 <groupId>com.buschmais.cdo</groupId>
+                <artifactId>cdo.spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.buschmais.cdo</groupId>
                 <artifactId>cdo.api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -206,6 +206,7 @@
     </dependencyManagement>
 
     <modules>
+        <module>spi</module>
         <module>api</module>
         <module>neo4j</module>
         <module>doc</module>
