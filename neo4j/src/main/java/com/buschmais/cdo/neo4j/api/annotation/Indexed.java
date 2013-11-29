@@ -14,6 +14,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Indexed {
 
-    boolean create() default true;
+    boolean create() default false;
 
 }
