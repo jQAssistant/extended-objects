@@ -33,7 +33,7 @@ public interface CdoManager {
      * @param value The value.
      * @return An {@Iterable} returning the property instance.
      */
-    <T> IterableResult<T> find(Class<T> type, Object value);
+    <T> ResultIterable<T> find(Class<T> type, Object value);
 
     /**
      * Create a new {@CompositeObject} instance.

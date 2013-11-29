@@ -1,12 +1,9 @@
 package com.buschmais.cdo.neo4j.impl;
 
-import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.CompositeObject;
-import com.buschmais.cdo.api.IterableResult;
-import com.buschmais.cdo.api.Query;
+import com.buschmais.cdo.api.*;
 import com.buschmais.cdo.neo4j.api.Neo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
-import com.buschmais.cdo.neo4j.impl.common.AbstractIterableResult;
+import com.buschmais.cdo.neo4j.impl.common.AbstractResultIterable;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
@@ -69,12 +66,12 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
     }
 
     @Override
-    public <T> IterableResult<T> find(final Class<T> type, final Object value) {
-        final Iterator<Node> iterator = datastoreSession.find(type, value);
-        return new AbstractIterableResult<T>() {
+    public <T> ResultIterable<T> find(final Class<T> type, final Object value) {
+        final ResultIterator<Node> iterator = datastoreSession.find(type, value);
+        return new AbstractResultIterable<T>() {
             @Override
-            public Iterator<T> iterator() {
-                return new Iterator<T>() {
+            public ResultIterator<T> iterator() {
+                return new ResultIterator<T>() {
 
                     @Override
                     public boolean hasNext() {
@@ -90,6 +87,11 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
                     @Override
                     public void remove() {
                         throw new UnsupportedOperationException("Cannot remove instance.");
+                    }
+
+                    @Override
+                    public void close() {
+                        iterator.close();
                     }
                 };
             }

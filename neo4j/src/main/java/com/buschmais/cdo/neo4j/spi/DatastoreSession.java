@@ -1,10 +1,11 @@
 package com.buschmais.cdo.neo4j.spi;
 
-import java.util.Iterator;
+import com.buschmais.cdo.api.ResultIterator;
+
 import java.util.List;
 import java.util.Map;
 
-public interface DatastoreSession<I,E> {
+public interface DatastoreSession<I, E> {
 
     void begin();
 
@@ -16,9 +17,9 @@ public interface DatastoreSession<I,E> {
 
     E create(List<Class<?>> types);
 
-    Iterator<E> find(Class<?> type, Object value);
+    ResultIterator<E> find(Class<?> type, Object value);
 
-    Iterator<Map<String, Object>> execute(String query, Map<String, Object> parameters);
+    ResultIterator<Map<String, Object>> execute(String query, Map<String, Object> parameters);
 
     void migrate(E entity, List<Class<?>> types, List<Class<?>> targetTypes);
 

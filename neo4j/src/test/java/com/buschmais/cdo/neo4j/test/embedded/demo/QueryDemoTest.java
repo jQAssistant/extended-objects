@@ -10,6 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertThat;
 
 public class QueryDemoTest extends AbstractEmbeddedCdoManagerTest {
+
     @Override
     protected Class<?>[] getTypes() {
         return new Class<?>[]{Group.class, Person.class};

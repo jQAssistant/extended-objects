@@ -1,24 +1,27 @@
 package com.buschmais.cdo.neo4j.impl.query;
 
 import com.buschmais.cdo.api.Query;
-import com.buschmais.cdo.neo4j.impl.common.AbstractIterableResult;
+import com.buschmais.cdo.api.ResultIterator;
+import com.buschmais.cdo.neo4j.impl.common.AbstractResultIterable;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.query.proxy.RowInvocationHandler;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.RowProxyMethodService;
 import org.neo4j.graphdb.Node;
 
-import java.io.Closeable;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements Query.Result<T> {
+class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Query.Result<T> {
 
     private InstanceManager instanceManager;
-    private Iterator<Map<String, Object>> iterator;
+    private ResultIterator<Map<String, Object>> iterator;
     private List<Class<?>> types;
     private RowProxyMethodService rowProxyMethodService;
 
-    IterableQueryResultImpl(InstanceManager instanceManager, Iterator<Map<String, Object>> iterator, List<Class<?>> types) {
+    QueryResultIterableImpl(InstanceManager instanceManager, ResultIterator<Map<String, Object>> iterator, List<Class<?>> types) {
         this.instanceManager = instanceManager;
         this.iterator = iterator;
         this.types = types;
@@ -26,8 +29,8 @@ class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements Qu
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return new Iterator<T>() {
+    public ResultIterator<T> iterator() {
+        return new ResultIterator<T>() {
 
             @Override
             public boolean hasNext() {
@@ -70,13 +73,16 @@ class IterableQueryResultImpl<T> extends AbstractIterableResult<T> implements Qu
                 }
                 return decodedValue;
             }
+
+            @Override
+            public void close() {
+                iterator.close();
+            }
         };
     }
 
     @Override
     public void close() throws IOException {
-        if (iterator instanceof Closeable) {
-            ((Closeable) iterator).close();
-        }
+        iterator.close();
     }
 }

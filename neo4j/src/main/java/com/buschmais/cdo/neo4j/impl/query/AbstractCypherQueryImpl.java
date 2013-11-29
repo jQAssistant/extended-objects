@@ -2,11 +2,11 @@ package com.buschmais.cdo.neo4j.impl.query;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.Query;
+import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -60,9 +60,9 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
                 effectiveParameters.put(name, value);
             }
         }
-        Iterator<Map<String,Object>> iterator = datastoreSession.execute(query, effectiveParameters);
+        ResultIterator<Map<String, Object>> iterator = datastoreSession.execute(query, effectiveParameters);
         List<Class<?>> resultTypes = getResultTypes(expression, types);
-        return new IterableQueryResultImpl(instanceManager, iterator, resultTypes);
+        return new QueryResultIterableImpl(instanceManager, iterator, resultTypes);
     }
 
     protected QL getExpression() {
