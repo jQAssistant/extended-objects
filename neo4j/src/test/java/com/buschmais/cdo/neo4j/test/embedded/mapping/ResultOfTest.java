@@ -71,6 +71,8 @@ public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {
         cdoManager.begin();
         ByValue byValue= e.getByValueUsingReturnType("F1");
         assertThat(byValue.getF(), equalTo(f1));
+        byValue= e.getByValueUsingReturnType("unknownF");
+        assertThat(byValue, equalTo(null));
         cdoManager.commit();
     }
 

@@ -34,6 +34,9 @@ public class ResultOfMethod implements NodeProxyMethod {
             query.withParameter(parameters.get(i).value(), args[i]);
         }
         Query.Result<Object> result = query.execute();
-        return resultOfMethodMetadata.isSingleResult() ? result.getSingleResult() : result;
+        if (resultOfMethodMetadata.isSingleResult()) {
+            return result.hasResult() ? result.getSingleResult() : null;
+        }
+        return result;
     }
 }

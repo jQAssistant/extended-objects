@@ -15,4 +15,11 @@ public interface IterableResult<T> extends Iterable<T> {
      */
     T getSingleResult();
 
+    /**
+     * Return <code>true</code> if a result is available.
+     *
+     * @return <code>true</code> if a result is available.
+     */
+    boolean hasResult();
+
 }

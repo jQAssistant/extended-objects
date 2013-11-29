@@ -19,4 +19,9 @@ public abstract class AbstractIterableResult<T> implements IterableResult<T> {
         }
         return singleResult;
     }
+
+    @Override
+    public boolean hasResult() {
+        return iterator().hasNext();
+    }
 }
