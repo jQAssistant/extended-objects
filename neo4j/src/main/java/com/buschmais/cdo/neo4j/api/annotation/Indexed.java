@@ -7,10 +7,13 @@ import java.lang.annotation.Target;
 
 /**
  * Marks a property as indexed.
- *
+ * <p/>
  * <p>An indexed property is used to find instances using {@link com.buschmais.cdo.api.CdoManager#find(Class, Object)}.</p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Indexed {
+
+    boolean create() default true;
+
 }

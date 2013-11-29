@@ -2,6 +2,7 @@ package com.buschmais.cdo.neo4j.impl;
 
 import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
 import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastoreSession;
+import com.buschmais.cdo.neo4j.impl.node.metadata.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
@@ -34,23 +35,26 @@ public class EmbeddedNeo4jCdoManagerFactoryImpl extends AbstractNeo4jCdoManagerF
         GraphDatabaseService graphDatabaseService = session.getGraphDatabaseService();
         Transaction transaction = graphDatabaseService.beginTx();
         for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
-            Label label = nodeMetadata.getLabel();
-            PrimitivePropertyMethodMetadata indexedProperty = nodeMetadata.getIndexedProperty();
-            if (label != null && indexedProperty != null) {
-                IndexDefinition index = null;
-                for (IndexDefinition indexDefinition : graphDatabaseService.schema().getIndexes(label)) {
-                    for (String s : indexDefinition.getPropertyKeys()) {
-                        if (s.equals(indexedProperty.getPropertyName())) {
-                            index = indexDefinition;
+            IndexedPropertyMethodMetadata indexedPropertyMethodMetadata = nodeMetadata.getIndexedProperty();
+            if (indexedPropertyMethodMetadata != null && indexedPropertyMethodMetadata.isCreate()) {
+                Label label = nodeMetadata.getLabel();
+                PrimitivePropertyMethodMetadata propertyMethodMetadata = indexedPropertyMethodMetadata.getPropertyMethodMetadata();
+                if (label != null && propertyMethodMetadata != null) {
+                    IndexDefinition index = null;
+                    for (IndexDefinition indexDefinition : graphDatabaseService.schema().getIndexes(label)) {
+                        for (String s : indexDefinition.getPropertyKeys()) {
+                            if (s.equals(propertyMethodMetadata.getPropertyName())) {
+                                index = indexDefinition;
+                            }
                         }
                     }
-                }
-                if (indexedProperty != null && index == null) {
-                    LOGGER.info("Creating index for label {} on property '{}'.", label, indexedProperty.getPropertyName());
-                    graphDatabaseService.schema().indexFor(label).on(indexedProperty.getPropertyName()).create();
-                } else if (indexedProperty == null && index != null) {
-                    LOGGER.info("Dropping index for label {} on properties '{}'.", label, index.getPropertyKeys());
-                    index.drop();
+                    if (propertyMethodMetadata != null && index == null) {
+                        LOGGER.info("Creating index for label {} on property '{}'.", label, propertyMethodMetadata.getPropertyName());
+                        graphDatabaseService.schema().indexFor(label).on(propertyMethodMetadata.getPropertyName()).create();
+                    } else if (propertyMethodMetadata == null && index != null) {
+                        LOGGER.info("Dropping index for label {} on properties '{}'.", label, index.getPropertyKeys());
+                        index.drop();
+                    }
                 }
             }
         }

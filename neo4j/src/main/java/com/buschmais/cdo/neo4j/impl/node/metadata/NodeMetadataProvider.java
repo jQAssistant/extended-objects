@@ -72,7 +72,7 @@ public class NodeMetadataProvider {
 
         // Collect the getter methods as they provide annotations holding meta information also to be applied to setters
         Map<String, BeanPropertyMethod> getterMethods = getGetterBeanMethods(beanMethods);
-        PrimitivePropertyMethodMetadata indexedProperty = null;
+        IndexedPropertyMethodMetadata indexedProperty = null;
         for (BeanMethod beanMethod : beanMethods) {
             AbstractMethodMetadata methodMetadata;
             ResultOf resultOf = beanMethod.getMethod().getAnnotation(ResultOf.class);
@@ -86,12 +86,12 @@ public class NodeMetadataProvider {
             } else {
                 methodMetadata = new UnsupportedOperationMethodMetadata(beanMethod);
             }
-            boolean indexed = beanMethod.getMethod().isAnnotationPresent(Indexed.class);
-            if (indexed) {
+            Indexed indexedAnnotation = beanMethod.getMethod().getAnnotation(Indexed.class);
+            if (indexedAnnotation != null) {
                 if (!(methodMetadata instanceof PrimitivePropertyMethodMetadata)) {
                     throw new CdoException("Only primitve properties are allowed to be annotated with " + Indexed.class.getName());
                 }
-                indexedProperty = (PrimitivePropertyMethodMetadata) methodMetadata;
+                indexedProperty = new IndexedPropertyMethodMetadata((BeanPropertyMethod) beanMethod, (PrimitivePropertyMethodMetadata) methodMetadata, indexedAnnotation.create());
             }
             methodMetadataList.add(methodMetadata);
         }

@@ -1,9 +1,9 @@
 package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.neo4j.impl.node.metadata.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
-import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
@@ -46,11 +46,11 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         if (label == null) {
             throw new CdoException("Type " + type.getName() + " has no label.");
         }
-        PrimitivePropertyMethodMetadata indexedProperty = nodeMetadata.getIndexedProperty();
+        IndexedPropertyMethodMetadata indexedProperty = nodeMetadata.getIndexedProperty();
         if (indexedProperty == null) {
             throw new CdoException("Type " + nodeMetadata.getType().getName() + " has no indexed property.");
         }
-        final ResourceIterable<Node> nodesByLabelAndProperty = getGraphDatabaseService().findNodesByLabelAndProperty(label, indexedProperty.getPropertyName(), value);
+        final ResourceIterable<Node> nodesByLabelAndProperty = getGraphDatabaseService().findNodesByLabelAndProperty(label, indexedProperty.getPropertyMethodMetadata().getPropertyName(), value);
         return nodesByLabelAndProperty.iterator();
     }
 
