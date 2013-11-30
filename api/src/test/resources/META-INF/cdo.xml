@@ -11,4 +11,11 @@
             <property name="foo" value="bar"/>
         </properties>
     </cdo-unit>
+    <cdo-unit name="testUnitWithBlankOptionals">
+        <url>file://foo</url>
+        <provider>com.buschmais.cdo.api.test.bootstrap.provider.TestCdoProvider</provider>
+        <types>
+            <type>com.buschmais.cdo.api.test.bootstrap.composite.A</type>
+        </types>
+    </cdo-unit>
 </v1:cdo>
