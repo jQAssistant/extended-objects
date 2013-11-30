@@ -6,6 +6,7 @@ import com.buschmais.cdo.neo4j.api.annotation.Indexed;
 import com.buschmais.cdo.neo4j.api.annotation.Label;
 import com.buschmais.cdo.neo4j.test.rest.AbstractRestCdoManagerTest;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,6 +20,7 @@ public class CrudTest extends AbstractRestCdoManagerTest {
     }
 
     @Test
+    @Ignore("neo4j-rest-graphdb is not available for Neo4j 2.0.0-RC1 and M06 is not compatible.")
     public void create() throws InterruptedException {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();

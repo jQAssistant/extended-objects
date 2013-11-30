@@ -22,6 +22,7 @@
     <xs:complexType name="CdoUnitType">
         <xs:sequence>
             <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:element name="url" type="xs:anyURI" minOccurs="0"/>
             <xs:element name="provider" type="xs:string" minOccurs="0"/>
             <xs:element name="types" type="cdo:TypesType" minOccurs="1"/>
             <xs:element name="validation-mode" type="cdo:ValidationModeType" minOccurs="0"/>

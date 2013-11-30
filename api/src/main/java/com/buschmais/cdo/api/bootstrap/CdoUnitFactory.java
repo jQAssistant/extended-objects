@@ -10,6 +10,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -33,7 +34,7 @@ public class CdoUnitFactory {
             throw new CdoException("Cannot create JAXBContext for reading cdo.xml descriptors.", e);
         }
         try {
-            Enumeration<URL> resources = classLoader.getResources("cdo.xml");
+            Enumeration<URL> resources = classLoader.getResources("META-INF/cdo.xml");
             while (resources.hasMoreElements()) {
                 URL url = resources.nextElement();
                 com.buschmais.cdo.schema.v1.Cdo cdo = readCdoDescriptor(cdoContext, url);
@@ -60,6 +61,13 @@ public class CdoUnitFactory {
         for (CdoUnitType cdoUnitType : cdo.getCdoUnit()) {
             String name = cdoUnitType.getName();
             String description = cdoUnitType.getDescription();
+            String urlName = cdoUnitType.getUrl();
+            URL url = null;
+            try {
+                url = new URL(urlName);
+            } catch (MalformedURLException e) {
+                throw new CdoException("Cannot convert '" + urlName + "' to url.");
+            }
             String providerName = cdoUnitType.getProvider();
             Class<? extends CdoProvider> provider = ClassHelper.getType(providerName);
             Set<Class<?>> types = new HashSet<>();
@@ -82,7 +90,7 @@ public class CdoUnitFactory {
             for (PropertyType propertyType : cdoUnitType.getProperties().getProperty()) {
                 properties.setProperty(propertyType.getName(), propertyType.getValue());
             }
-            CdoUnit cdoUnit = new CdoUnit(name, description, provider, types, validationMode, properties);
+            CdoUnit cdoUnit = new CdoUnit(name, description, url, provider, types, validationMode, properties);
             cdoUnits.put(name, cdoUnit);
         }
     }

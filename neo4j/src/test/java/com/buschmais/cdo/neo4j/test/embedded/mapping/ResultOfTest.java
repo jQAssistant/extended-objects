@@ -60,18 +60,18 @@ public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {
     public void byValueUsingExplicitQuery() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
-        ByValue byValue= e.getByValueUsingExplicitQuery("F1");
+        ByValue byValue = e.getByValueUsingExplicitQuery("F1");
         assertThat(byValue.getF(), equalTo(f1));
         cdoManager.commit();
     }
 
     @Test
-        public void byValueUsingReturnType() {
+    public void byValueUsingReturnType() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
-        ByValue byValue= e.getByValueUsingReturnType("F1");
+        ByValue byValue = e.getByValueUsingReturnType("F1");
         assertThat(byValue.getF(), equalTo(f1));
-        byValue= e.getByValueUsingReturnType("unknownF");
+        byValue = e.getByValueUsingReturnType("unknownF");
         assertThat(byValue, equalTo(null));
         cdoManager.commit();
     }
@@ -80,7 +80,7 @@ public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {
     public void byValueUsingImplicitThis() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.begin();
-        ByValueUsingImplicitThis byValue= e.getByValueUsingImplicitThis("F1");
+        ByValueUsingImplicitThis byValue = e.getByValueUsingImplicitThis("F1");
         assertThat(byValue.getF(), equalTo(f1));
         cdoManager.commit();
     }

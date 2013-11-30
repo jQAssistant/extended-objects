@@ -5,7 +5,7 @@ package com.buschmais.cdo.api;
  *
  * @param <T> The type returned by the {@Iterable}.
  */
-public interface IterableResult<T> extends Iterable<T> {
+public interface ResultIterable<T> extends Iterable<T> {
 
     /**
      * Return a single result.
@@ -21,5 +21,12 @@ public interface IterableResult<T> extends Iterable<T> {
      * @return <code>true</code> if a result is available.
      */
     boolean hasResult();
+
+    /**
+     * Return an result iterator.
+     *
+     * @return The result iterator.
+     */
+    ResultIterator<T> iterator();
 
 }

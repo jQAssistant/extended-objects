@@ -46,5 +46,6 @@ public class PrimitivePropertyMappingTest extends AbstractEmbeddedCdoManagerTest
         cdoManager.begin();
         TestResult result = executeQuery("match (a:A) return a.MAPPED_STRING as v");
         assertThat(result.getColumn("v"), hasItem("mappedValue"));
+        cdoManager.commit();
     }
 }

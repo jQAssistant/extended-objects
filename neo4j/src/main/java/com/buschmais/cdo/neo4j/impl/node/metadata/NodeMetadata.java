@@ -11,9 +11,9 @@ public class NodeMetadata {
     private Label label;
     private Set<Label> aggregatedLabels;
     private Collection<AbstractMethodMetadata> properties;
-    private PrimitivePropertyMethodMetadata indexedProperty;
+    private IndexedPropertyMethodMetadata indexedProperty;
 
-    public NodeMetadata(Class<?> type, Label label, Set<Label> aggregatedLabels, Collection<AbstractMethodMetadata> properties, PrimitivePropertyMethodMetadata indexedProperty) {
+    public NodeMetadata(Class<?> type, Label label, Set<Label> aggregatedLabels, Collection<AbstractMethodMetadata> properties, IndexedPropertyMethodMetadata indexedProperty) {
         this.type = type;
         this.label = label;
         this.aggregatedLabels = aggregatedLabels;
@@ -37,7 +37,7 @@ public class NodeMetadata {
         return properties;
     }
 
-    public PrimitivePropertyMethodMetadata getIndexedProperty() {
+    public IndexedPropertyMethodMetadata getIndexedProperty() {
         return indexedProperty;
     }
 }

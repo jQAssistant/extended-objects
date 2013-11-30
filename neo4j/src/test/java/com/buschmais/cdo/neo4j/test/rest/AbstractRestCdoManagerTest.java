@@ -19,7 +19,7 @@ public abstract class AbstractRestCdoManagerTest extends AbstractCdoManagerTest 
 
     @Override
     protected AbstractNeo4jCdoManagerFactoryImpl getNeo4jCdoManagerFactory(Class<?>[] types) throws MalformedURLException {
-        return new RestNeo4jCdoManagerFactoryImpl(new URL("http://localhost:7474/db/data"), types);
+        return new RestNeo4jCdoManagerFactoryImpl(createCdoUnit("http://localhost:7474/db/data", types));
     }
 
     @BeforeClass

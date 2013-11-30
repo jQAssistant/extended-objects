@@ -2,6 +2,7 @@ package com.buschmais.cdo.neo4j.impl;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
@@ -27,11 +28,11 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl<D extends Datastore> im
     private ValidatorFactory validatorFactory;
 
 
-    protected AbstractNeo4jCdoManagerFactoryImpl(URL url, Class<?>... entities) {
-        this.url = url;
-        nodeMetadataProvider = new NodeMetadataProvider(Arrays.asList(entities));
+    protected AbstractNeo4jCdoManagerFactoryImpl(CdoUnit cdoUnit) {
+        this.url = cdoUnit.getUrl();
+        nodeMetadataProvider = new NodeMetadataProvider(cdoUnit.getTypes());
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        classLoader = contextClassLoader != null ? contextClassLoader : entities.getClass().getClassLoader();
+        classLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();
         LOGGER.info("Using class loader '{}'.", contextClassLoader.toString());
         classLoader = new ClassLoader() {
             @Override
