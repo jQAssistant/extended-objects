@@ -44,13 +44,16 @@ public abstract class AbstractCdoManagerTest {
         cdoManagerFactory.close();
     }
 
+    protected CdoUnit createCdoUnit(URL url, Class<?>[] types) {
+        return new CdoUnit("test", "test unit", url, null, new HashSet<>(Arrays.asList(types)), CdoUnit.ValidationMode.AUTO, new Properties());
+    }
+
     protected CdoUnit createCdoUnit(String url, Class<?>[] types) {
         try {
-            return new CdoUnit("test", "test unit", new URL(url), null, new HashSet<>(Arrays.asList(types)), CdoUnit.ValidationMode.AUTO, new Properties());
+            return createCdoUnit(new URL(url), types);
         } catch (MalformedURLException e) {
             throw new CdoException("Invalid url.", e);
         }
-
     }
 
     /**
