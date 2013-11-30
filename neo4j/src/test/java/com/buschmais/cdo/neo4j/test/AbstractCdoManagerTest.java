@@ -1,13 +1,16 @@
 package com.buschmais.cdo.neo4j.test;
 
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.Query;
+import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.neo4j.impl.AbstractNeo4jCdoManagerFactoryImpl;
 import org.junit.After;
 import org.junit.Before;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
@@ -39,6 +42,15 @@ public abstract class AbstractCdoManagerTest {
     public void closeNodeManagerFactory() {
         closeCdoManager();
         cdoManagerFactory.close();
+    }
+
+    protected CdoUnit createCdoUnit(String url, Class<?>[] types) {
+        try {
+            return new CdoUnit("test", "test unit", new URL(url), null, new HashSet<>(Arrays.asList(types)), CdoUnit.ValidationMode.AUTO, new Properties());
+        } catch (MalformedURLException e) {
+            throw new CdoException("Invalid url.", e);
+        }
+
     }
 
     /**

@@ -11,7 +11,7 @@ public abstract class AbstractEmbeddedCdoManagerTest extends AbstractCdoManagerT
 
     @Override
     protected AbstractNeo4jCdoManagerFactoryImpl getNeo4jCdoManagerFactory(Class<?>[] types) throws MalformedURLException {
-        return new EmbeddedNeo4jCdoManagerFactoryImpl(new File("target/neo4j/embedded").toURI().toURL(), getTypes());
+        return new EmbeddedNeo4jCdoManagerFactoryImpl(createCdoUnit("file://target/neo4j/embedded", getTypes()));
     }
 
 }

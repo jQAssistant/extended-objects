@@ -1,0 +1,14 @@
+<v1:cdo version="1.0" xmlns:v1="http://buschmais.com/cdo/schema/v1.0">
+    <cdo-unit name="testUnit">
+        <description>This is a test unit.</description>
+        <url>file://foo</url>
+        <provider>com.buschmais.cdo.api.test.bootstrap.provider.TestCdoProvider</provider>
+        <types>
+            <type>com.buschmais.cdo.api.test.bootstrap.composite.A</type>
+        </types>
+        <validation-mode>NONE</validation-mode>
+        <properties>
+            <property name="foo" value="bar"/>
+        </properties>
+    </cdo-unit>
+</v1:cdo>

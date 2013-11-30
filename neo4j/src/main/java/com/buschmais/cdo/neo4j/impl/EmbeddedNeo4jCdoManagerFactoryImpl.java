@@ -1,5 +1,6 @@
 package com.buschmais.cdo.neo4j.impl;
 
+import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
 import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastoreSession;
 import com.buschmais.cdo.neo4j.impl.node.metadata.IndexedPropertyMethodMetadata;
@@ -20,8 +21,8 @@ public class EmbeddedNeo4jCdoManagerFactoryImpl extends AbstractNeo4jCdoManagerF
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNeo4jCdoManagerFactoryImpl.class);
 
-    public EmbeddedNeo4jCdoManagerFactoryImpl(URL url, Class<?>... entities) {
-        super(url, entities);
+    public EmbeddedNeo4jCdoManagerFactoryImpl(CdoUnit cdoUnit) {
+        super(cdoUnit);
     }
 
     protected EmbeddedNeo4jDatastore createDatastore(URL url, NodeMetadataProvider metadataProvider) {
