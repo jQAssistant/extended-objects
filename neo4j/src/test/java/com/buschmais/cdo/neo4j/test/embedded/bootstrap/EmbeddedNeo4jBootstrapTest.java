@@ -17,6 +17,7 @@ public class EmbeddedNeo4jBootstrapTest {
         A a = cdoManager.create(A.class);
         a.setName("Test");
         cdoManager.commit();
+        cdoManagerFactory.close();
     }
 
 }
