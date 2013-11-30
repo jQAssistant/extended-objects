@@ -12,13 +12,14 @@ import java.util.Map;
 public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<GraphDatabaseService> {
 
     private Transaction transaction;
+    private final ExecutionEngine executionEngine;
 
     public EmbeddedNeo4jDatastoreSession(GraphDatabaseService graphDatabaseService, NodeMetadataProvider metadataProvider) {
         super(graphDatabaseService, metadataProvider);
+        executionEngine = new ExecutionEngine(graphDatabaseService);
     }
 
     public ResultIterator<Map<String, Object>> execute(String query, Map<String, Object> parameters) {
-        ExecutionEngine executionEngine = new ExecutionEngine(getGraphDatabaseService());
         ExecutionResult executionResult = executionEngine.execute(query, parameters);
         return new Neo4jResultIterator(executionResult.iterator());
     }

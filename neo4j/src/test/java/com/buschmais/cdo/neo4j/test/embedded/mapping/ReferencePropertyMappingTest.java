@@ -50,6 +50,7 @@ public class ReferencePropertyMappingTest extends AbstractEmbeddedCdoManagerTest
         cdoManager.begin();
         TestResult result = executeQuery("match (a:A)-[:MAPPED_B]->(b) return b");
         assertThat(result.getColumn("b"), hasItem(b));
+        cdoManager.commit();
     }
 
 }
