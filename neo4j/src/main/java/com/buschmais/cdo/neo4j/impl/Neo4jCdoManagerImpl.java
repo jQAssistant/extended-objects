@@ -1,14 +1,12 @@
 package com.buschmais.cdo.neo4j.impl;
 
 import com.buschmais.cdo.api.*;
-import com.buschmais.cdo.neo4j.api.Neo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.common.AbstractResultIterable;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
-import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 
 import javax.validation.ConstraintViolation;
@@ -17,7 +15,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.*;
 
-public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
+public class Neo4jCdoManagerImpl implements CdoManager {
 
     private final InstanceManager<Long, Node> instanceManager;
     private final TransactionalCache cache;
@@ -163,8 +161,8 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
     }
 
     @Override
-    public GraphDatabaseService getGraphDatabaseService() {
-        return null;
+    public <DS> DS getDatastoreSession(Class<DS> sessionType) {
+        return sessionType.cast(datastoreSession);
     }
 
     private List<Class<?>> getEffectiveTypes(Class<?> type, Class<?>... types) {

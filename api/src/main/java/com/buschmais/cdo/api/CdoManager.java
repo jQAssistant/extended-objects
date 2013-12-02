@@ -124,6 +124,15 @@ public interface CdoManager {
     void close();
 
     /**
+     * Return the underlying datastore session.
+     *
+     * @param sessionType The expected session type.
+     * @param <DS>        The expected session type.
+     * @return The expected session type.
+     */
+    <DS> DS getDatastoreSession(Class<DS> sessionType);
+
+    /**
      * Defines the interface of strategies for migration between different composite object types.
      *
      * @param <T> The instance type.
