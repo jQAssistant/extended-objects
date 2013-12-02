@@ -5,6 +5,7 @@ import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
+import com.buschmais.cdo.neo4j.spi.TypeSet;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -72,6 +73,6 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
 
     protected abstract String getQuery();
 
-    protected abstract SortedSet<Class<?>> getResultTypes(QL expression, Collection<Class<?>> types);
+    protected abstract TypeSet getResultTypes(QL expression, Collection<Class<?>> types);
 
 }

@@ -7,7 +7,6 @@ import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import com.buschmais.cdo.neo4j.spi.TypeSet;
 
 import java.util.Collection;
-import java.util.SortedSet;
 
 public class CypherTypeQueryImpl extends AbstractCypherQueryImpl<Class<?>> {
 
@@ -26,8 +25,8 @@ public class CypherTypeQueryImpl extends AbstractCypherQueryImpl<Class<?>> {
     }
 
     @Override
-    protected SortedSet<Class<?>> getResultTypes(Class<?> expression, Collection<Class<?>> types) {
-        SortedSet<Class<?>> resultTypes = new TypeSet();
+    protected TypeSet getResultTypes(Class<?> expression, Collection<Class<?>> types) {
+        TypeSet resultTypes = new TypeSet();
         resultTypes.addAll(types);
         resultTypes.add(expression);
         return resultTypes;
