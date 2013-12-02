@@ -7,6 +7,7 @@ import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
+import com.buschmais.cdo.neo4j.spi.TypeSet;
 import org.neo4j.graphdb.Node;
 
 import javax.validation.ConstraintViolation;
@@ -98,7 +99,7 @@ public class Neo4jCdoManagerImpl implements CdoManager {
 
     @Override
     public CompositeObject create(Class type, Class<?>... types) {
-        List<Class<?>> effectiveTypes = getEffectiveTypes(type, types);
+        TypeSet effectiveTypes = getEffectiveTypes(type, types);
         Node node = datastoreSession.create(effectiveTypes);
         return instanceManager.getInstance(node);
     }
@@ -110,8 +111,8 @@ public class Neo4jCdoManagerImpl implements CdoManager {
     @Override
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
         Node node = instanceManager.getEntity(instance);
-        List<Class<?>> types = datastoreSession.getTypes(node);
-        List<Class<?>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
+        TypeSet types = datastoreSession.getTypes(node);
+        TypeSet effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
         datastoreSession.migrate(node, types, effectiveTargetTypes);
         instanceManager.removeInstance(instance);
         CompositeObject migratedInstance = instanceManager.getInstance(node);
@@ -165,8 +166,8 @@ public class Neo4jCdoManagerImpl implements CdoManager {
         return sessionType.cast(datastoreSession);
     }
 
-    private List<Class<?>> getEffectiveTypes(Class<?> type, Class<?>... types) {
-        List<Class<?>> effectiveTypes = new ArrayList<>(types.length + 1);
+    private TypeSet getEffectiveTypes(Class<?> type, Class<?>... types) {
+        TypeSet effectiveTypes = new TypeSet();
         effectiveTypes.add(type);
         effectiveTypes.addAll(Arrays.asList(types));
         return effectiveTypes;

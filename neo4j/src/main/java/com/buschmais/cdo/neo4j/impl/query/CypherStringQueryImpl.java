@@ -2,12 +2,14 @@ package com.buschmais.cdo.neo4j.impl.query;
 
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
+import com.buschmais.cdo.neo4j.spi.TypeSet;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.SortedSet;
 
 public class CypherStringQueryImpl extends AbstractCypherQueryImpl<String> {
 
-    public CypherStringQueryImpl(String expression, DatastoreSession datastoreSession, InstanceManager instanceManager, List<Class<?>> types) {
+    public CypherStringQueryImpl(String expression, DatastoreSession datastoreSession, InstanceManager instanceManager, Collection<Class<?>> types) {
         super(expression, datastoreSession, instanceManager, types);
     }
 
@@ -17,7 +19,9 @@ public class CypherStringQueryImpl extends AbstractCypherQueryImpl<String> {
     }
 
     @Override
-    protected List<Class<?>> getResultTypes(String expression, List<Class<?>> types) {
-        return types;
+    protected SortedSet<Class<?>> getResultTypes(String expression, Collection<Class<?>> types) {
+        SortedSet<Class<?>> result = new TypeSet();
+        types.addAll(types);
+        return result;
     }
 }

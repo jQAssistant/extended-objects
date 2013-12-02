@@ -9,19 +9,16 @@ import com.buschmais.cdo.neo4j.impl.query.proxy.method.RowProxyMethodService;
 import org.neo4j.graphdb.Node;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Query.Result<T> {
 
     private InstanceManager instanceManager;
     private ResultIterator<Map<String, Object>> iterator;
-    private List<Class<?>> types;
+    private SortedSet<Class<?>> types;
     private RowProxyMethodService rowProxyMethodService;
 
-    QueryResultIterableImpl(InstanceManager instanceManager, ResultIterator<Map<String, Object>> iterator, List<Class<?>> types) {
+    QueryResultIterableImpl(InstanceManager instanceManager, ResultIterator<Map<String, Object>> iterator, SortedSet<Class<?>> types) {
         this.instanceManager = instanceManager;
         this.iterator = iterator;
         this.types = types;

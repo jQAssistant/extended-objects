@@ -14,14 +14,14 @@ import com.buschmais.cdo.neo4j.impl.query.proxy.method.property.GetMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.row.GetColumnsMethod;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 
 public class RowProxyMethodService extends AbstractProxyMethodService<Map<String, Object>, RowProxyMethod> {
 
-    public RowProxyMethodService(List<Class<?>> types) {
+    public RowProxyMethodService(SortedSet<Class<?>> types) {
         BeanMethodProvider beanMethodProvider = new BeanMethodProvider();
         for (Class<?> type : types) {
             Collection<BeanMethod> beanMethodsOfType = beanMethodProvider.getMethods(type);

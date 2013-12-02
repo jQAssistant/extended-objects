@@ -6,9 +6,12 @@ import com.buschmais.cdo.neo4j.impl.node.metadata.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
+import com.buschmais.cdo.neo4j.spi.TypeSet;
 import org.neo4j.graphdb.*;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node> {
 
@@ -25,7 +28,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public Node create(List<Class<?>> types) {
+    public Node create(TypeSet types) {
         Node node = getGraphDatabaseService().createNode();
         Set<Label> labels = new HashSet<>();
         for (Class<?> currentType : types) {
@@ -54,7 +57,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public void migrate(Node entity, List<Class<?>> types, List<Class<?>> targetTypes) {
+    public void migrate(Node entity, TypeSet types, TypeSet targetTypes) {
         Set<Label> labels = new HashSet<>();
         for (Class<?> type : types) {
             NodeMetadata nodeMetadata = metadataProvider.getNodeMetadata(type);
@@ -78,7 +81,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public List<Class<?>> getTypes(Node entity) {
+    public TypeSet getTypes(Node entity) {
         // Collect all labels from the node
         Set<Label> labels = new HashSet<>();
         for (Label label : entity.getLabels()) {
@@ -96,12 +99,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
                 }
             }
         }
-        SortedSet<Class<?>> uniqueTypes = new TreeSet<>(new Comparator<Class<?>>() {
-            @Override
-            public int compare(Class<?> o1, Class<?> o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        TypeSet uniqueTypes = new TypeSet();
         // Remove super types if subtypes are already in the type set
         for (Class<?> type : types) {
             boolean subtype = false;
@@ -115,7 +113,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
                 uniqueTypes.add(type);
             }
         }
-        return new ArrayList<>(uniqueTypes);
+        return uniqueTypes;
     }
 
     @Override

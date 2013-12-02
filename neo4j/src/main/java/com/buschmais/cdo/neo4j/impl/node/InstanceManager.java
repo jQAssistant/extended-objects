@@ -13,6 +13,7 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class InstanceManager<Id, Entity> {
 
@@ -29,7 +30,7 @@ public class InstanceManager<Id, Entity> {
     }
 
     public <T> T getInstance(Entity entity) {
-         List<Class<?>> types = datastoreSession.getTypes(entity);
+        Set<Class<?>> types = datastoreSession.getTypes(entity);
         Id id = datastoreSession.getId(entity);
         Object instance = cache.get(id);
         if (instance == null) {
@@ -40,7 +41,7 @@ public class InstanceManager<Id, Entity> {
         return (T) instance;
     }
 
-    public <Instance> Instance createInstance(InvocationHandler invocationHandler, List<Class<?>> types, Class<?>... baseTypes) {
+    public <Instance> Instance createInstance(InvocationHandler invocationHandler, Set<Class<?>> types, Class<?>... baseTypes) {
         Object instance;
         List<Class<?>> effectiveTypes = new ArrayList<>(types.size() + baseTypes.length);
         effectiveTypes.addAll(types);

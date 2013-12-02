@@ -6,19 +6,20 @@ import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 
 public abstract class AbstractCypherQueryImpl<QL> implements Query {
 
     private QL expression;
     private DatastoreSession datastoreSession;
     private InstanceManager instanceManager;
-    private List<Class<?>> types;
+    private Collection<Class<?>> types;
     private Map<String, Object> parameters = null;
 
-    public AbstractCypherQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager, List<Class<?>> types) {
+    public AbstractCypherQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager, Collection<Class<?>> types) {
         this.expression = expression;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
@@ -61,7 +62,7 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
             }
         }
         ResultIterator<Map<String, Object>> iterator = datastoreSession.execute(query, effectiveParameters);
-        List<Class<?>> resultTypes = getResultTypes(expression, types);
+        SortedSet<Class<?>> resultTypes = getResultTypes(expression, types);
         return new QueryResultIterableImpl(instanceManager, iterator, resultTypes);
     }
 
@@ -71,6 +72,6 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
 
     protected abstract String getQuery();
 
-    protected abstract List<Class<?>> getResultTypes(QL expression, List<Class<?>> types);
+    protected abstract SortedSet<Class<?>> getResultTypes(QL expression, Collection<Class<?>> types);
 
 }
