@@ -1,7 +1,9 @@
 package com.buschmais.cdo.neo4j.impl.datastore;
 
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
+import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import org.neo4j.rest.graphdb.RestAPI;
 import org.neo4j.rest.graphdb.RestGraphDatabase;
 import org.neo4j.rest.graphdb.query.RestCypherQueryEngine;
@@ -14,6 +16,11 @@ public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<Res
 
     public RestNeo4jDatastoreSession(RestGraphDatabase graphDatabaseService, NodeMetadataProvider metadataProvider) {
         super(graphDatabaseService, metadataProvider);
+    }
+
+    @Override
+    public DatastoreTransaction getDatastoreTransaction() {
+        throw new CdoException("Transactions are not supported for this datastore.");
     }
 
     @Override
@@ -43,18 +50,6 @@ public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<Res
             public void close() {
             }
         };
-    }
-
-    @Override
-    public void begin() {
-    }
-
-    @Override
-    public void commit() {
-    }
-
-    @Override
-    public void rollback() {
     }
 
 }

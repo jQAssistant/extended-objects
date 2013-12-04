@@ -10,6 +10,11 @@ public class CdoUnit {
         NONE, AUTO;
     }
 
+    public enum TransactionAttribute {
+        MANDATORY,
+        REQUIRES;
+    }
+
     private String name;
 
     private String description;
@@ -22,15 +27,18 @@ public class CdoUnit {
 
     private ValidationMode validationMode;
 
+    private TransactionAttribute transactionAttribute;
+
     private Properties properties;
 
-    public CdoUnit(String name, String description, URL url, Class<? extends CdoProvider> provider, Set<Class<?>> types, ValidationMode validationMode, Properties properties) {
+    public CdoUnit(String name, String description, URL url, Class<? extends CdoProvider> provider, Set<Class<?>> types, ValidationMode validationMode, TransactionAttribute transactionAttribute, Properties properties) {
         this.name = name;
         this.description = description;
         this.url = url;
         this.provider = provider;
         this.types = types;
         this.validationMode = validationMode;
+        this.transactionAttribute = transactionAttribute;
         this.properties = properties;
     }
 
@@ -56,6 +64,10 @@ public class CdoUnit {
 
     public ValidationMode getValidationMode() {
         return validationMode;
+    }
+
+    public TransactionAttribute getTransactionAttribute() {
+        return transactionAttribute;
     }
 
     public Properties getProperties() {

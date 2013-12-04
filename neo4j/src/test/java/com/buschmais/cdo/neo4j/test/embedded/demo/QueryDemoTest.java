@@ -19,7 +19,7 @@ public class QueryDemoTest extends AbstractEmbeddedCdoManagerTest {
     @Test
     public void test() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         Group group = cdoManager.create(Group.class);
         Person person1 = cdoManager.create(Person.class);
         person1.setName("Peter");
@@ -27,11 +27,11 @@ public class QueryDemoTest extends AbstractEmbeddedCdoManagerTest {
         Person person2 = cdoManager.create(Person.class);
         person2.setName("Dirk");
         group.getMembers().add(person2);
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         Group.MemberByName memberByName = group.getMemberByName("Peter");
         Person peter = memberByName.getMember();
         assertThat(peter, Matchers.equalTo(person1));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 }

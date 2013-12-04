@@ -2,26 +2,33 @@ package com.buschmais.cdo.neo4j.spi;
 
 import com.buschmais.cdo.api.ResultIterator;
 
-import java.util.List;
 import java.util.Map;
 
 public interface DatastoreSession<I, E> {
 
-    void begin();
+    public interface DatastoreTransaction {
 
-    void commit();
+        void begin();
 
-    void rollback();
+        void commit();
+
+        void rollback();
+
+        boolean isActive();
+    }
+
+    DatastoreTransaction getDatastoreTransaction();
 
     I getId(E entity);
 
-    E create(List<Class<?>> types);
+    E create(TypeSet types);
 
     ResultIterator<E> find(Class<?> type, Object value);
 
     ResultIterator<Map<String, Object>> execute(String query, Map<String, Object> parameters);
 
-    void migrate(E entity, List<Class<?>> types, List<Class<?>> targetTypes);
+    void migrate(E entity, TypeSet types, TypeSet targetTypes);
 
-    List<Class<?>> getTypes(E entity);
+    TypeSet getTypes(E entity);
+
 }

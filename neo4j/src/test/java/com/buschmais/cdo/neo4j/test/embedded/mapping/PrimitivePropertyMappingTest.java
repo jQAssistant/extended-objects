@@ -19,33 +19,33 @@ public class PrimitivePropertyMappingTest extends AbstractEmbeddedCdoManagerTest
     @Test
     public void primitiveProperty() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
         a.setString("value");
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         assertThat(a.getString(), equalTo("value"));
         a.setString("updatedValue");
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         assertThat(a.getString(), equalTo("updatedValue"));
         a.setString(null);
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         assertThat(a.getString(), equalTo(null));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 
     @Test
     public void mappedPrimitiveProperty() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
         a.setMappedString("mappedValue");
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         TestResult result = executeQuery("match (a:A) return a.MAPPED_STRING as v");
         assertThat(result.getColumn("v"), hasItem("mappedValue"));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 }

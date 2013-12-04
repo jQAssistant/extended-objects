@@ -2,6 +2,7 @@ package com.buschmais.cdo.neo4j.impl.node.proxy;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.AbstractProxyMethodService;
+import com.buschmais.cdo.neo4j.impl.common.proxy.method.ProxyMethodService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -9,9 +10,9 @@ import java.lang.reflect.Method;
 public class InstanceInvocationHandler<E> implements InvocationHandler {
 
     private E entity;
-    private AbstractProxyMethodService<E, ?> proxyMethodService;
+    private ProxyMethodService<E, ?> proxyMethodService;
 
-    public InstanceInvocationHandler(E entity, AbstractProxyMethodService<E, ?> proxyMethodService) {
+    public InstanceInvocationHandler(E entity, ProxyMethodService<E, ?> proxyMethodService) {
         this.entity = entity;
         this.proxyMethodService = proxyMethodService;
     }

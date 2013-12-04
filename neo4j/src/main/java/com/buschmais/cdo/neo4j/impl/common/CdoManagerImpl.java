@@ -1,68 +1,41 @@
-package com.buschmais.cdo.neo4j.impl;
+package com.buschmais.cdo.neo4j.impl.common;
 
 import com.buschmais.cdo.api.*;
-import com.buschmais.cdo.neo4j.api.Neo4jCdoManager;
 import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
-import com.buschmais.cdo.neo4j.impl.common.AbstractResultIterable;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
-import org.neo4j.graphdb.GraphDatabaseService;
+import com.buschmais.cdo.neo4j.spi.TypeSet;
 import org.neo4j.graphdb.Node;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.*;
 
-public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
+public class CdoManagerImpl implements CdoManager {
 
-    private final InstanceManager<Long, Node> instanceManager;
-    private final TransactionalCache cache;
+    private final CdoTransaction cdoTransaction;
     private final DatastoreSession<Long, Node> datastoreSession;
-    private final ValidatorFactory validatorFactory;
+    private final InstanceManager<Long, Node> instanceManager;
+    private final InstanceValidator instanceValidator;
 
-    public Neo4jCdoManagerImpl(DatastoreSession<Long, Node> datastoreSession, InstanceManager instanceManager, TransactionalCache cache, ValidatorFactory validatorFactory) {
-        this.instanceManager = instanceManager;
-        this.cache = cache;
-        this.validatorFactory = validatorFactory;
+    public CdoManagerImpl(CdoTransaction cdoTransaction, DatastoreSession<Long, Node> datastoreSession, InstanceManager instanceManager, InstanceValidator instanceValidator) {
+        this.cdoTransaction = cdoTransaction;
         this.datastoreSession = datastoreSession;
+        this.instanceManager = instanceManager;
+        this.instanceValidator = instanceValidator;
     }
 
     @Override
-    public void begin() {
-        datastoreSession.begin();
-    }
-
-    @Override
-    public void commit() {
-        Set<ConstraintViolation<Object>> constraintViolations = validate();
-        if (!constraintViolations.isEmpty()) {
-            throw new ConstraintViolationException(constraintViolations);
-        }
-        datastoreSession.commit();
-        cache.afterCompletion(true);
+    public CdoTransaction currentTransaction() {
+        return cdoTransaction;
     }
 
     @Override
     public Set<ConstraintViolation<Object>> validate() {
-        if (validatorFactory == null) {
-            return Collections.emptySet();
-        }
-        Validator validator = validatorFactory.getValidator();
-        Set<ConstraintViolation<Object>> violations = new HashSet<>();
-        for (Object instance : new ArrayList(cache.values())) {
-            violations.addAll(validator.validate(instance));
-        }
-        return violations;
-    }
-
-    @Override
-    public void rollback() {
-        datastoreSession.rollback();
-        cache.afterCompletion(false);
+        return instanceValidator.validate();
     }
 
     @Override
@@ -100,7 +73,7 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
 
     @Override
     public CompositeObject create(Class type, Class<?>... types) {
-        List<Class<?>> effectiveTypes = getEffectiveTypes(type, types);
+        TypeSet effectiveTypes = getEffectiveTypes(type, types);
         Node node = datastoreSession.create(effectiveTypes);
         return instanceManager.getInstance(node);
     }
@@ -112,8 +85,8 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
     @Override
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
         Node node = instanceManager.getEntity(instance);
-        List<Class<?>> types = datastoreSession.getTypes(node);
-        List<Class<?>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
+        TypeSet types = datastoreSession.getTypes(node);
+        TypeSet effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
         datastoreSession.migrate(node, types, effectiveTargetTypes);
         instanceManager.removeInstance(instance);
         CompositeObject migratedInstance = instanceManager.getInstance(node);
@@ -163,12 +136,12 @@ public class Neo4jCdoManagerImpl implements Neo4jCdoManager {
     }
 
     @Override
-    public GraphDatabaseService getGraphDatabaseService() {
-        return null;
+    public <DS> DS getDatastoreSession(Class<DS> sessionType) {
+        return sessionType.cast(datastoreSession);
     }
 
-    private List<Class<?>> getEffectiveTypes(Class<?> type, Class<?>... types) {
-        List<Class<?>> effectiveTypes = new ArrayList<>(types.length + 1);
+    private TypeSet getEffectiveTypes(Class<?> type, Class<?>... types) {
+        TypeSet effectiveTypes = new TypeSet();
         effectiveTypes.add(type);
         effectiveTypes.addAll(Arrays.asList(types));
         return effectiveTypes;

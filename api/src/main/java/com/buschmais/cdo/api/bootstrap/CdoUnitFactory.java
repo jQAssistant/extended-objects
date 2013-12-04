@@ -14,6 +14,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import static com.buschmais.cdo.api.bootstrap.CdoUnit.TransactionAttribute.MANDATORY;
+import static com.buschmais.cdo.api.bootstrap.CdoUnit.TransactionAttribute.REQUIRES;
+
 public class CdoUnitFactory {
 
     private Map<String, CdoUnit> cdoUnits = new HashMap<>();
@@ -76,21 +79,45 @@ public class CdoUnitFactory {
             }
             ValidationModeType validationModeType = cdoUnitType.getValidationMode();
             CdoUnit.ValidationMode validationMode;
-            switch (validationModeType) {
-                case NONE:
-                    validationMode = CdoUnit.ValidationMode.NONE;
-                    break;
-                case AUTO:
-                    validationMode = CdoUnit.ValidationMode.AUTO;
-                    break;
-                default:
-                    throw new CdoException("Unknown validation mode type " + validationModeType);
+            if (validationModeType != null) {
+                switch (validationModeType) {
+                    case NONE:
+                        validationMode = CdoUnit.ValidationMode.NONE;
+                        break;
+                    case AUTO:
+                        validationMode = CdoUnit.ValidationMode.AUTO;
+                        break;
+                    default:
+                        throw new CdoException("Unknown validation mode type " + validationModeType);
+                }
+            } else {
+                validationMode = CdoUnit.ValidationMode.AUTO;
+            }
+            TransactionAttributeType transactionAttributeType = cdoUnitType.getTransactionAttribute();
+            CdoUnit.TransactionAttribute transactionAttribute;
+            if (transactionAttributeType != null) {
+                switch (transactionAttributeType) {
+                    case MANDATORY:
+                        transactionAttribute = MANDATORY;
+                        break;
+                    case REQUIRES:
+                        transactionAttribute = REQUIRES;
+                        break;
+                    default:
+                        throw new CdoException("Unknown transaction attribute type " + transactionAttributeType);
+                }
+            }
+            else {
+                transactionAttribute = MANDATORY;
             }
             Properties properties = new Properties();
-            for (PropertyType propertyType : cdoUnitType.getProperties().getProperty()) {
-                properties.setProperty(propertyType.getName(), propertyType.getValue());
+            PropertiesType propertiesType = cdoUnitType.getProperties();
+            if (propertiesType != null) {
+                for (PropertyType propertyType : propertiesType.getProperty()) {
+                    properties.setProperty(propertyType.getName(), propertyType.getValue());
+                }
             }
-            CdoUnit cdoUnit = new CdoUnit(name, description, url, provider, types, validationMode, properties);
+            CdoUnit cdoUnit = new CdoUnit(name, description, url, provider, types, validationMode, transactionAttribute, properties);
             cdoUnits.put(name, cdoUnit);
         }
     }

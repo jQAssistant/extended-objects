@@ -20,15 +20,15 @@ public class IndexTest extends AbstractEmbeddedCdoManagerTest {
     @Test
     public void index() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a1 = cdoManager.create(A.class);
         a1.setValue("A1");
         A a2_1 = cdoManager.create(A.class);
         a2_1.setValue("A2");
         A a2_2 = cdoManager.create(A.class);
         a2_2.setValue("A2");
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.find(A.class, "A1").getSingleResult();
         assertThat(a, equalTo(a1));
         try {
@@ -37,6 +37,6 @@ public class IndexTest extends AbstractEmbeddedCdoManagerTest {
         } catch (CdoException e) {
 
         }
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 }

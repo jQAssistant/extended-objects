@@ -4,13 +4,13 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.neo4j.api.annotation.Cypher;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
+import com.buschmais.cdo.neo4j.spi.TypeSet;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class CypherTypeQueryImpl extends AbstractCypherQueryImpl<Class<?>> {
 
-    public CypherTypeQueryImpl(Class<?> expression, DatastoreSession datastoreSession, InstanceManager instanceManager, List<Class<?>> types) {
+    public CypherTypeQueryImpl(Class<?> expression, DatastoreSession datastoreSession, InstanceManager instanceManager, Collection<Class<?>> types) {
         super(expression, datastoreSession, instanceManager, types);
     }
 
@@ -25,8 +25,9 @@ public class CypherTypeQueryImpl extends AbstractCypherQueryImpl<Class<?>> {
     }
 
     @Override
-    protected List<Class<?>> getResultTypes(Class<?> expression, List<Class<?>> types) {
-        List<Class<?>> resultTypes = new ArrayList<>(types);
+    protected TypeSet getResultTypes(Class<?> expression, Collection<Class<?>> types) {
+        TypeSet resultTypes = new TypeSet();
+        resultTypes.addAll(types);
         resultTypes.add(expression);
         return resultTypes;
     }

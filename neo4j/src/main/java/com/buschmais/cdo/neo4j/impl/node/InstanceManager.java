@@ -1,8 +1,12 @@
 package com.buschmais.cdo.neo4j.impl.node;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
+import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
+import com.buschmais.cdo.neo4j.impl.common.proxy.method.ProxyMethodService;
+import com.buschmais.cdo.neo4j.impl.common.proxy.method.TransactionProxyMethodService;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.proxy.InstanceInvocationHandler;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.NodeProxyMethodService;
@@ -13,23 +17,24 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class InstanceManager<Id, Entity> {
 
     private final DatastoreSession<Id, Entity> datastoreSession;
     private final ClassLoader classLoader;
     private final TransactionalCache cache;
-    private final NodeProxyMethodService proxyMethodService;
+    private final ProxyMethodService<Entity, ?> proxyMethodService;
 
-    public InstanceManager(NodeMetadataProvider metadataProvider, DatastoreSession<Id, Entity> datastoreSession, ClassLoader classLoader, TransactionalCache cache) {
+    public InstanceManager(CdoTransaction cdoTransaction, NodeMetadataProvider metadataProvider, DatastoreSession<Id, Entity> datastoreSession, ClassLoader classLoader, TransactionalCache cache, CdoUnit.TransactionAttribute transactionAttribute) {
         this.datastoreSession = datastoreSession;
         this.classLoader = classLoader;
         this.cache = cache;
-        proxyMethodService = new NodeProxyMethodService(metadataProvider, this, datastoreSession);
+        proxyMethodService = new TransactionProxyMethodService(new NodeProxyMethodService(metadataProvider, this, datastoreSession), cdoTransaction, transactionAttribute);
     }
 
     public <T> T getInstance(Entity entity) {
-         List<Class<?>> types = datastoreSession.getTypes(entity);
+        Set<Class<?>> types = datastoreSession.getTypes(entity);
         Id id = datastoreSession.getId(entity);
         Object instance = cache.get(id);
         if (instance == null) {
@@ -40,7 +45,7 @@ public class InstanceManager<Id, Entity> {
         return (T) instance;
     }
 
-    public <Instance> Instance createInstance(InvocationHandler invocationHandler, List<Class<?>> types, Class<?>... baseTypes) {
+    public <Instance> Instance createInstance(InvocationHandler invocationHandler, Set<Class<?>> types, Class<?>... baseTypes) {
         Object instance;
         List<Class<?>> effectiveTypes = new ArrayList<>(types.size() + baseTypes.length);
         effectiveTypes.addAll(types);

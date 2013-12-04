@@ -8,20 +8,7 @@ import java.util.Set;
  */
 public interface CdoManager {
 
-    /**
-     * Begin a transaction.
-     */
-    void begin();
-
-    /**
-     * Commit all changes of the current transaction.
-     */
-    void commit();
-
-    /**
-     * Rollback all changes from the current transaction.
-     */
-    void rollback();
+    CdoTransaction currentTransaction();
 
     Set<ConstraintViolation<Object>> validate();
 
@@ -122,6 +109,15 @@ public interface CdoManager {
      * Close the {@CdoManager}.
      */
     void close();
+
+    /**
+     * Return the underlying datastore session.
+     *
+     * @param sessionType The expected session type.
+     * @param <DS>        The expected session type.
+     * @return The expected session type.
+     */
+    <DS> DS getDatastoreSession(Class<DS> sessionType);
 
     /**
      * Defines the interface of strategies for migration between different composite object types.

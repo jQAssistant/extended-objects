@@ -21,26 +21,26 @@ public class MigrationTest extends AbstractEmbeddedCdoManagerTest {
     @Test
     public void downCast() {
         CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
         a.setValue("Value");
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         B b = cdoManager.migrate(a, B.class);
         assertThat(a == b, equalTo(false));
         assertThat(b.getValue(), equalTo("Value"));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
         cdoManager.close();
     }
 
     @Test
     public void migrationHandler() {
         CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
         a.setValue("Value");
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         CdoManager.MigrationStrategy<A, C> migrationStrategy = new CdoManager.MigrationStrategy<A, C>() {
             @Override
             public void migrate(A instance, C target) {
@@ -49,18 +49,18 @@ public class MigrationTest extends AbstractEmbeddedCdoManagerTest {
         };
         C c = cdoManager.migrate(a, migrationStrategy, C.class);
         assertThat(c.getName(), equalTo("Value"));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
         cdoManager.close();
     }
 
     @Test
     public void compositeObjectMigrationHandler() {
         CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
         a.setValue("Value");
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         CdoManager.MigrationStrategy<A, CompositeObject> migrationStrategy = new CdoManager.MigrationStrategy<A, CompositeObject>() {
             @Override
             public void migrate(A instance, CompositeObject target) {
@@ -69,7 +69,7 @@ public class MigrationTest extends AbstractEmbeddedCdoManagerTest {
         };
         C c = cdoManager.migrate(a, migrationStrategy, CompositeObject.class, C.class).as(C.class);
         assertThat(c.getName(), equalTo("Value"));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
         cdoManager.close();
     }
 }

@@ -27,7 +27,7 @@ public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {
     @Before
     public void createData() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         e = cdoManager.create(E.class);
         f1 = cdoManager.create(F.class);
         f1.setValue("F1");
@@ -35,53 +35,53 @@ public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {
         f2 = cdoManager.create(F.class);
         f2.setValue("F2");
         e.getRelatedTo().add(f2);
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 
     @Test
     public void resultUsingExplicitQuery() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         Result<ByValue> byValue = e.getResultByValueUsingExplicitQuery("F1");
         assertThat(byValue.getSingleResult().getF(), equalTo(f1));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 
     @Test
     public void resultUsingReturnType() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         Result<ByValue> byValue = e.getResultByValueUsingReturnType("F1");
         assertThat(byValue.getSingleResult().getF(), equalTo(f1));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 
     @Test
     public void byValueUsingExplicitQuery() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         ByValue byValue = e.getByValueUsingExplicitQuery("F1");
         assertThat(byValue.getF(), equalTo(f1));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 
     @Test
     public void byValueUsingReturnType() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         ByValue byValue = e.getByValueUsingReturnType("F1");
         assertThat(byValue.getF(), equalTo(f1));
         byValue = e.getByValueUsingReturnType("unknownF");
         assertThat(byValue, equalTo(null));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 
     @Test
     public void byValueUsingImplicitThis() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         ByValueUsingImplicitThis byValue = e.getByValueUsingImplicitThis("F1");
         assertThat(byValue.getF(), equalTo(f1));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 }
