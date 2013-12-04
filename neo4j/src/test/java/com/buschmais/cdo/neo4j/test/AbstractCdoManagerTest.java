@@ -30,14 +30,6 @@ public abstract class AbstractCdoManagerTest {
 
     protected abstract Class<?>[] getTypes();
 
-    private void dropDatabase() {
-        CdoManager manager = getCdoManager();
-        manager.currentTransaction().begin();
-        manager.createQuery("MATCH (n)-[r]-() DELETE r").execute();
-        manager.createQuery("MATCH (n) DELETE n").execute();
-        manager.currentTransaction().commit();
-    }
-
     @After
     public void closeNodeManagerFactory() {
         closeCdoManager();
@@ -45,7 +37,11 @@ public abstract class AbstractCdoManagerTest {
     }
 
     protected CdoUnit createCdoUnit(URL url, Class<?>[] types) {
-        return new CdoUnit("test", "test unit", url, null, new HashSet<>(Arrays.asList(types)), CdoUnit.ValidationMode.AUTO, CdoUnit.TransactionAttribute.MANDATORY, new Properties());
+        return new CdoUnit("test", "test unit", url, null, new HashSet<>(Arrays.asList(types)), CdoUnit.ValidationMode.AUTO, getTransactionAttribute(), new Properties());
+    }
+
+    protected CdoUnit.TransactionAttribute getTransactionAttribute() {
+        return CdoUnit.TransactionAttribute.MANDATORY;
     }
 
     protected CdoUnit createCdoUnit(String url, Class<?>[] types) {
@@ -106,6 +102,14 @@ public abstract class AbstractCdoManagerTest {
             cdoManager.close();
             cdoManager = null;
         }
+    }
+
+    private void dropDatabase() {
+        CdoManager manager = getCdoManager();
+        manager.currentTransaction().begin();
+        manager.createQuery("MATCH (n)-[r]-() DELETE r").execute();
+        manager.createQuery("MATCH (n) DELETE n").execute();
+        manager.currentTransaction().commit();
     }
 
 

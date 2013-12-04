@@ -13,7 +13,7 @@ public class AbstractProxyMethodService<E, M extends ProxyMethod<?>> implements 
     private final Map<Method, ProxyMethod<E>> proxyMethods = new HashMap<>();
 
     @Override
-    public Object invoke(E element, Object instance, Method method, Object[] args) {
+    public Object invoke(E element, Object instance, Method method, Object[] args) throws Exception {
         ProxyMethod<E> proxyMethod = proxyMethods.get(method);
         if (proxyMethod == null) {
             throw new CdoException("Cannot find proxy for method " + method.getName());
