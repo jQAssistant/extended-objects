@@ -39,10 +39,10 @@ public class GuiceInjectionTest {
 	@Test
 	public void testInjectedCdoManager() {
 		assertThat(cdoManagerFactory, notNullValue());
-		cdoManager.begin();
+		cdoManager.currentTransaction().begin();
 		A a = cdoManager.create(A.class);
 		a.setValue("Google Guice");
-		cdoManager.commit();
+		cdoManager.currentTransaction().commit();
 	}
 
 	private void closeCdoManager() {
@@ -53,9 +53,9 @@ public class GuiceInjectionTest {
 	}
 
 	private void dropDatabase() {
-		cdoManager.begin();
+		cdoManager.currentTransaction().begin();
 		cdoManager.createQuery("MATCH (n)-[r]-() DELETE r").execute();
 		cdoManager.createQuery("MATCH (n) DELETE n").execute();
-		cdoManager.commit();
+		cdoManager.currentTransaction().commit();
 	}
 }

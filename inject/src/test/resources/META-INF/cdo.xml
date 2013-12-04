@@ -6,8 +6,5 @@
         <types>
             <type>com.buschmais.cdo.inject.test.composite.A</type>
         </types>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-        </properties>
     </cdo-unit>
 </v1:cdo>
