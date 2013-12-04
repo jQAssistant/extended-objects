@@ -75,25 +75,20 @@ public class CdoUnitFactory {
                 types.add(ClassHelper.getType(typeName));
             }
             ValidationModeType validationModeType = cdoUnitType.getValidationMode();
-            CdoUnit.ValidationMode validationMode = CdoUnit.ValidationMode.AUTO;
-            if (validationModeType != null) {
-                switch (validationModeType) {
-                    case NONE:
-                        validationMode = CdoUnit.ValidationMode.NONE;
-                        break;
-                    case AUTO:
-                        validationMode = CdoUnit.ValidationMode.AUTO;
-                        break;
-                    default:
-                        throw new CdoException("Unknown validation mode type " + validationModeType);
-                }
+            CdoUnit.ValidationMode validationMode;
+            switch (validationModeType) {
+                case NONE:
+                    validationMode = CdoUnit.ValidationMode.NONE;
+                    break;
+                case AUTO:
+                    validationMode = CdoUnit.ValidationMode.AUTO;
+                    break;
+                default:
+                    throw new CdoException("Unknown validation mode type " + validationModeType);
             }
             Properties properties = new Properties();
-            PropertiesType cdoUnitTypeProperties = cdoUnitType.getProperties();
-            if (cdoUnitTypeProperties != null) {
-                for (PropertyType propertyType : cdoUnitTypeProperties.getProperty()) {
-                    properties.setProperty(propertyType.getName(), propertyType.getValue());
-                }
+            for (PropertyType propertyType : cdoUnitType.getProperties().getProperty()) {
+                properties.setProperty(propertyType.getName(), propertyType.getValue());
             }
             CdoUnit cdoUnit = new CdoUnit(name, description, url, provider, types, validationMode, properties);
             cdoUnits.put(name, cdoUnit);
