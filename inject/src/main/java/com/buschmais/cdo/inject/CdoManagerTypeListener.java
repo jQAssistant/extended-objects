@@ -14,7 +14,8 @@ import com.google.inject.spi.TypeListener;
 
 public class CdoManagerTypeListener implements TypeListener {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNeo4jCdoManagerFactoryImpl.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(AbstractNeo4jCdoManagerFactoryImpl.class);
 
 	@Override
 	public <T> void hear(TypeLiteral<T> literal, TypeEncounter<T> encounter) {
@@ -25,7 +26,7 @@ public class CdoManagerTypeListener implements TypeListener {
 				CdoContext context = field.getAnnotation(CdoContext.class);
 				try {
 					encounter.register(new CdoManagerFactoryInjector<T>(field,
-							context.url(), context.classes()));
+							context.unit()));
 				} catch (MalformedURLException e) {
 					LOGGER.error("", e);
 				}
