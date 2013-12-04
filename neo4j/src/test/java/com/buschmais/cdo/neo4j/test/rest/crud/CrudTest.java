@@ -23,26 +23,26 @@ public class CrudTest extends AbstractRestCdoManagerTest {
     @Ignore("neo4j-rest-graphdb is not available for Neo4j 2.0.0-RC1 and M06 is not compatible.")
     public void create() throws InterruptedException {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
         a.setName("Foo");
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         a = cdoManager.find(A.class, "Foo").getSingleResult();
         assertThat(a.getName(), equalTo("Foo"));
         a.setName("Bar");
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         cdoManager.createQuery("match (a:A) where a.name={name} return a").withParameter("name", "Bar").execute().getSingleResult();
         cdoManager.delete(a);
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         try {
             cdoManager.createQuery("match (a:A) return a").execute().getSingleResult();
             Assert.fail("An exception is expected.");
         } catch (CdoException e) {
         }
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 
     @Label("A")

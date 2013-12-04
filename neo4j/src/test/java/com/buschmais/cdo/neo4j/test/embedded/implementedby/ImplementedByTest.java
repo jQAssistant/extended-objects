@@ -18,53 +18,53 @@ public class ImplementedByTest extends AbstractEmbeddedCdoManagerTest {
     @Test
     public void nonPropertyMethod() {
         CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
         a.setValue(1);
         int i = a.incrementValue();
         assertThat(i, equalTo(2));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
         cdoManager.close();
     }
 
     @Test
     public void propertyMethods() {
         CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
         a.setCustomValue("VALUE");
         String value = a.getCustomValue();
         assertThat(value, equalTo("set_VALUE_get"));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
         cdoManager.close();
     }
 
     @Test
     public void compareTo() {
         CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a1 = cdoManager.create(A.class);
         a1.setValue(100);
         A a2 = cdoManager.create(A.class);
         a2.setValue(200);
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         assertThat(a1.compareTo(a2), equalTo(-100));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
         cdoManager.close();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void unsupportedOperation() {
         CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         try {
             a.unsupportedOperation();
         } finally {
-            cdoManager.commit();
+            cdoManager.currentTransaction().commit();
         }
     }
 

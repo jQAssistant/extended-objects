@@ -16,10 +16,10 @@ public class GenericTypeTest extends AbstractEmbeddedCdoManagerTest {
     @Test
     public void composite() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         BoundType b = cdoManager.create(BoundType.class);
         b.setValue("value");
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 
 }

@@ -1,17 +1,16 @@
 package com.buschmais.cdo.neo4j.impl.node;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
-import com.buschmais.cdo.neo4j.api.proxy.NodeProxyMethod;
 import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.ProxyMethodService;
-import com.buschmais.cdo.neo4j.impl.common.proxy.method.TransactionalProxyMethodService;
+import com.buschmais.cdo.neo4j.impl.common.proxy.method.TransactionProxyMethodService;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.proxy.InstanceInvocationHandler;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.NodeProxyMethodService;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
-import org.neo4j.graphdb.Node;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -27,11 +26,11 @@ public class InstanceManager<Id, Entity> {
     private final TransactionalCache cache;
     private final ProxyMethodService<Entity, ?> proxyMethodService;
 
-    public InstanceManager(NodeMetadataProvider metadataProvider, DatastoreSession<Id, Entity> datastoreSession, ClassLoader classLoader, TransactionalCache cache, CdoUnit.TransactionAttribute transactionAttribute) {
+    public InstanceManager(CdoTransaction cdoTransaction, NodeMetadataProvider metadataProvider, DatastoreSession<Id, Entity> datastoreSession, ClassLoader classLoader, TransactionalCache cache, CdoUnit.TransactionAttribute transactionAttribute) {
         this.datastoreSession = datastoreSession;
         this.classLoader = classLoader;
         this.cache = cache;
-        proxyMethodService = new TransactionalProxyMethodService(new NodeProxyMethodService(metadataProvider, this, datastoreSession), transactionAttribute);
+        proxyMethodService = new TransactionProxyMethodService(new NodeProxyMethodService(metadataProvider, this, datastoreSession), cdoTransaction, transactionAttribute);
     }
 
     public <T> T getInstance(Entity entity) {

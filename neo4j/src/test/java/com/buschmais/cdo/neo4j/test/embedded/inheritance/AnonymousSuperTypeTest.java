@@ -19,15 +19,15 @@ public class AnonymousSuperTypeTest extends AbstractEmbeddedCdoManagerTest {
     @Test
     public void anonymousSuperType() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         B b = cdoManager.create(B.class);
         b.setIndex("1");
         b.setVersion(1);
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.find(A.class, "1").iterator().next();
         assertThat(b, equalTo(a));
         assertThat(a.getVersion(), equalTo(1L));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 }

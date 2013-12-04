@@ -32,10 +32,10 @@ public abstract class AbstractCdoManagerTest {
 
     private void dropDatabase() {
         CdoManager manager = getCdoManager();
-        manager.begin();
+        manager.currentTransaction().begin();
         manager.createQuery("MATCH (n)-[r]-() DELETE r").execute();
         manager.createQuery("MATCH (n) DELETE n").execute();
-        manager.commit();
+        manager.currentTransaction().commit();
     }
 
     @After

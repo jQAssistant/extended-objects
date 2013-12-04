@@ -8,20 +8,7 @@ import java.util.Set;
  */
 public interface CdoManager {
 
-    /**
-     * Begin a transaction.
-     */
-    void begin();
-
-    /**
-     * Commit all changes of the current transaction.
-     */
-    void commit();
-
-    /**
-     * Rollback all changes from the current transaction.
-     */
-    void rollback();
+    CdoTransaction currentTransaction();
 
     Set<ConstraintViolation<Object>> validate();
 

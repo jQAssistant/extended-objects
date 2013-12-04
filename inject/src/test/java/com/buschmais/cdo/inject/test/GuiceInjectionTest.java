@@ -42,18 +42,18 @@ public class GuiceInjectionTest {
 
     @Test
     public void testInjectedCdoManager() {
-        cdoManager1.begin();
+        cdoManager1.currentTransaction().begin();
         A a = cdoManager1.create(A.class);
         a.setValue("Google Guice");
-        cdoManager1.commit();
+        cdoManager1.currentTransaction().commit();
 
-        cdoManager1.begin();
-        cdoManager2.begin();
+        cdoManager1.currentTransaction().begin();
+        cdoManager2.currentTransaction().begin();
         A result = cdoManager1.find(A.class, "Google Guice").getSingleResult();
         B b = cdoManager2.create(B.class);
         b.setValue(result.getValue());
-        cdoManager2.commit();
-        cdoManager1.commit();
+        cdoManager2.currentTransaction().commit();
+        cdoManager1.currentTransaction().commit();
     }
 
     private void closeCdoManager(CdoManager cdoManager) {
@@ -64,9 +64,9 @@ public class GuiceInjectionTest {
     }
 
     private void dropDatabase(CdoManager cdoManager) {
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         cdoManager.createQuery("MATCH (n)-[r]-() DELETE r").execute();
         cdoManager.createQuery("MATCH (n) DELETE n").execute();
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 }

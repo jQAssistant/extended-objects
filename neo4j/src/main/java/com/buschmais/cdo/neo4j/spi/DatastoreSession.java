@@ -6,11 +6,18 @@ import java.util.Map;
 
 public interface DatastoreSession<I, E> {
 
-    void begin();
+    public interface DatastoreTransaction {
 
-    void commit();
+        void begin();
 
-    void rollback();
+        void commit();
+
+        void rollback();
+
+        boolean isActive();
+    }
+
+    DatastoreTransaction getDatastoreTransaction();
 
     I getId(E entity);
 

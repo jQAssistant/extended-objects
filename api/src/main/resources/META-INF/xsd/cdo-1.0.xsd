@@ -26,6 +26,7 @@
             <xs:element name="provider" type="xs:string" minOccurs="0"/>
             <xs:element name="types" type="cdo:TypesType" minOccurs="1"/>
             <xs:element name="validation-mode" type="cdo:ValidationModeType" minOccurs="0"/>
+            <xs:element name="transaction-attribute" type="cdo:TransactionAttributeType" minOccurs="0"/>
             <xs:element name="properties" type="cdo:PropertiesType" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="name" use="required"/>
@@ -41,6 +42,13 @@
         <xs:restriction base="xs:token">
             <xs:enumeration value="AUTO"/>
             <xs:enumeration value="NONE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="TransactionAttributeType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="MANDATORY"/>
+            <xs:enumeration value="REQUIRES"/>
         </xs:restriction>
     </xs:simpleType>
 

@@ -2,8 +2,10 @@ package com.buschmais.cdo.neo4j.impl;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
+import com.buschmais.cdo.neo4j.impl.common.*;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.spi.Datastore;
@@ -52,10 +54,14 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl<D extends Datastore> im
 
     @Override
     public CdoManager createCdoManager() {
-        TransactionalCache cache = new TransactionalCache();
         DatastoreSession datastoreSession = datastore.createSession();
-        InstanceManager instanceManager = new InstanceManager(nodeMetadataProvider, datastoreSession, classLoader, cache, transactionAttribute);
-        return new Neo4jCdoManagerImpl(datastoreSession, instanceManager, cache, validatorFactory);
+        CdoTransaction cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction());
+        TransactionalCache cache = new TransactionalCache();
+        InstanceValidator instanceValidator = new InstanceValidator(validatorFactory, cache);
+        cdoTransaction.registerSynchronization(new ValidatorSynchronization(instanceValidator));
+        cdoTransaction.registerSynchronization(new CacheSynchronization(cache));
+        InstanceManager instanceManager = new InstanceManager(cdoTransaction, nodeMetadataProvider, datastoreSession, classLoader, cache, transactionAttribute);
+        return new CdoManagerImpl(cdoTransaction, datastoreSession, instanceManager, instanceValidator);
     }
 
 

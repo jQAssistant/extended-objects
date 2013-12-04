@@ -20,37 +20,37 @@ public class ReferencePropertyMappingTest extends AbstractEmbeddedCdoManagerTest
     @Test
     public void referenceProperty() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
         B b1 = cdoManager.create(B.class);
         B b2 = cdoManager.create(B.class);
         a.setB(b1);
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         assertThat(a.getB(), equalTo(b1));
         a.setB(b2);
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         assertThat(a.getB(), equalTo(b2));
         a.setB(null);
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         assertThat(a.getB(), equalTo(null));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 
     @Test
     public void mappedReferenceProperty() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
         B b = cdoManager.create(B.class);
         a.setMappedB(b);
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         TestResult result = executeQuery("match (a:A)-[:MAPPED_B]->(b) return b");
         assertThat(result.getColumn("b"), hasItem(b));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 
 }

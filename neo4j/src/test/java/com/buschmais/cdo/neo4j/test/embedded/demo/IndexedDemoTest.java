@@ -17,13 +17,13 @@ public class IndexedDemoTest extends AbstractEmbeddedCdoManagerTest {
     @Test
     public void test() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         Person person1 = cdoManager.create(Person.class);
         person1.setName("Peter");
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         Person person2 = cdoManager.find(Person.class, "Peter").getSingleResult();
         Assert.assertThat(person2, Matchers.equalTo(person1));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 }

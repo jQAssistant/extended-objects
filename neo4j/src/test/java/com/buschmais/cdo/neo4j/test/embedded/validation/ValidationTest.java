@@ -24,11 +24,11 @@ public class ValidationTest extends AbstractEmbeddedCdoManagerTest {
     @Test
     public void validationOnCommitAfterInsert() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
         Set<ConstraintViolation<?>> constraintViolations = null;
         try {
-            cdoManager.commit();
+            cdoManager.currentTransaction().commit();
             Assert.fail("Validation must fail.");
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
@@ -37,34 +37,34 @@ public class ValidationTest extends AbstractEmbeddedCdoManagerTest {
         B b = cdoManager.create(B.class);
         a.setB(b);
         a.setName("Indiana Jones");
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 
     @Test
     public void validationOnCommitAfterQuery() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         B b = cdoManager.create(B.class);
         for (int i = 0; i < 100; i++) {
             A a = cdoManager.create(A.class);
             a.setName("Miller");
             a.setB(b);
         }
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
         closeCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         for (A miller : cdoManager.find(A.class, "Miller")) {
             miller.setName(null);
         }
         Set<ConstraintViolation<?>> constraintViolations = null;
         try {
-            cdoManager.commit();
+            cdoManager.currentTransaction().commit();
             Assert.fail("Validation must fail.");
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
         }
         assertThat(constraintViolations.size(), equalTo(100));
-        cdoManager.rollback();
+        cdoManager.currentTransaction().rollback();
     }
 
 }

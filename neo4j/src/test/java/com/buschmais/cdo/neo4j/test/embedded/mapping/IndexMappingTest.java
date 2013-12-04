@@ -19,28 +19,28 @@ public class IndexMappingTest extends AbstractEmbeddedCdoManagerTest {
     @Test
     public void indexedProperty() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a1 = cdoManager.create(A.class);
         a1.setIndex("1");
         A a2 = cdoManager.create(A.class);
         a2.setIndex("2");
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         assertThat(cdoManager.find(A.class, "1").iterator().next(), equalTo(a1));
         assertThat(cdoManager.find(A.class, "2").iterator().next(), equalTo(a2));
         assertThat(cdoManager.find(A.class, "3").iterator().hasNext(), equalTo(false));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 
     @Test
     public void useIndexOf() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.begin();
+        cdoManager.currentTransaction().begin();
         A a1 = cdoManager.create(D.class);
         a1.setIndex("1");
-        cdoManager.commit();
-        cdoManager.begin();
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
         assertThat(cdoManager.find(D.class, "1").iterator().next(), equalTo(a1));
-        cdoManager.commit();
+        cdoManager.currentTransaction().commit();
     }
 }
