@@ -9,24 +9,24 @@ import java.lang.reflect.Method;
 
 public class TransactionProxyMethodService<E, M extends ProxyMethod<?>> implements ProxyMethodService<E, M> {
 
-    private AbstractProxyMethodService<E, M> delegate;
+    private ProxyMethodService<E, M> delegate;
 
     private CdoTransaction cdoTransaction;
 
     private CdoUnit.TransactionAttribute transactionAttribute;
 
-    public TransactionProxyMethodService(AbstractProxyMethodService<E, M> delegate, CdoTransaction cdoTransaction, CdoUnit.TransactionAttribute transactionAttribute) {
+    public TransactionProxyMethodService(ProxyMethodService<E, M> delegate, CdoTransaction cdoTransaction, CdoUnit.TransactionAttribute transactionAttribute) {
         this.delegate = delegate;
-        this.cdoTransaction= cdoTransaction;
+        this.cdoTransaction = cdoTransaction;
         this.transactionAttribute = transactionAttribute;
     }
 
     @Override
-    public Object invoke(E element, Object instance, Method method, Object[] args) {        
+    public Object invoke(E element, Object instance, Method method, Object[] args) throws Exception {
         switch (transactionAttribute) {
             case MANDATORY:
                 if (!this.cdoTransaction.isActive()) {
-                    throw new CdoException("An active transaction is MANDATORY when calling method '" + method.getName() + "'");
+                    throw new CdoException("An active transaction is MANDATORY when calling method '" + method.getName());
                 }
                 return delegate.invoke(element, instance, method, args);
             case REQUIRES: {
@@ -38,6 +38,9 @@ public class TransactionProxyMethodService<E, M extends ProxyMethod<?>> implemen
                         return result;
                     } catch (RuntimeException e) {
                         this.cdoTransaction.rollback();
+                        throw e;
+                    } catch (Exception e) {
+                        this.cdoTransaction.commit();
                         throw e;
                     }
                 }
