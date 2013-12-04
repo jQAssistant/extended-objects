@@ -8,10 +8,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AbstractProxyMethodService<E, M extends ProxyMethod<?>> {
+public class AbstractProxyMethodService<E, M extends ProxyMethod<?>> implements ProxyMethodService<E, M> {
 
     private final Map<Method, ProxyMethod<E>> proxyMethods = new HashMap<>();
 
+    @Override
     public Object invoke(E element, Object instance, Method method, Object[] args) {
         ProxyMethod<E> proxyMethod = proxyMethods.get(method);
         if (proxyMethod == null) {

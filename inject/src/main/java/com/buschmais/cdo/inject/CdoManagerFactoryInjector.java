@@ -31,7 +31,7 @@ public class CdoManagerFactoryInjector<T> implements MembersInjector<T> {
     public void injectMembers(T instance) {
         try {
             // currently only embedded databases are supported
-            field.set(instance, new EmbeddedNeo4jCdoManagerFactoryImpl(new CdoUnit(null, null, url, null, new HashSet<>(Arrays.asList(classes)), CdoUnit.ValidationMode.AUTO, new Properties())));
+            field.set(instance, new EmbeddedNeo4jCdoManagerFactoryImpl(new CdoUnit(null, null, url, null, new HashSet<>(Arrays.asList(classes)), CdoUnit.ValidationMode.AUTO, CdoUnit.TransactionAttribute.MANDATORY, new Properties())));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

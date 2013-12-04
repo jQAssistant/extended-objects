@@ -14,6 +14,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import static com.buschmais.cdo.api.bootstrap.CdoUnit.TransactionAttribute.MANDATORY;
+
 public class CdoUnitFactory {
 
     private Map<String, CdoUnit> cdoUnits = new HashMap<>();
@@ -76,21 +78,28 @@ public class CdoUnitFactory {
             }
             ValidationModeType validationModeType = cdoUnitType.getValidationMode();
             CdoUnit.ValidationMode validationMode;
-            switch (validationModeType) {
-                case NONE:
-                    validationMode = CdoUnit.ValidationMode.NONE;
-                    break;
-                case AUTO:
-                    validationMode = CdoUnit.ValidationMode.AUTO;
-                    break;
-                default:
-                    throw new CdoException("Unknown validation mode type " + validationModeType);
+            if (validationModeType != null) {
+                switch (validationModeType) {
+                    case NONE:
+                        validationMode = CdoUnit.ValidationMode.NONE;
+                        break;
+                    case AUTO:
+                        validationMode = CdoUnit.ValidationMode.AUTO;
+                        break;
+                    default:
+                        throw new CdoException("Unknown validation mode type " + validationModeType);
+                }
+            } else {
+                validationMode = CdoUnit.ValidationMode.AUTO;
             }
             Properties properties = new Properties();
-            for (PropertyType propertyType : cdoUnitType.getProperties().getProperty()) {
-                properties.setProperty(propertyType.getName(), propertyType.getValue());
+            PropertiesType propertiesType = cdoUnitType.getProperties();
+            if (propertiesType != null) {
+                for (PropertyType propertyType : propertiesType.getProperty()) {
+                    properties.setProperty(propertyType.getName(), propertyType.getValue());
+                }
             }
-            CdoUnit cdoUnit = new CdoUnit(name, description, url, provider, types, validationMode, properties);
+            CdoUnit cdoUnit = new CdoUnit(name, description, url, provider, types, validationMode, MANDATORY, properties);
             cdoUnits.put(name, cdoUnit);
         }
     }

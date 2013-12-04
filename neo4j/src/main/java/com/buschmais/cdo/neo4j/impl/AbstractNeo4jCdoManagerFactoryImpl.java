@@ -15,7 +15,6 @@ import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
 import java.net.URL;
-import java.util.Arrays;
 
 public abstract class AbstractNeo4jCdoManagerFactoryImpl<D extends Datastore> implements CdoManagerFactory {
 
@@ -26,11 +25,12 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl<D extends Datastore> im
     private ClassLoader classLoader;
     private D datastore;
     private ValidatorFactory validatorFactory;
-
+    private CdoUnit.TransactionAttribute transactionAttribute;
 
     protected AbstractNeo4jCdoManagerFactoryImpl(CdoUnit cdoUnit) {
         this.url = cdoUnit.getUrl();
         nodeMetadataProvider = new NodeMetadataProvider(cdoUnit.getTypes());
+        this.transactionAttribute = cdoUnit.getTransactionAttribute();
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         classLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();
         LOGGER.info("Using class loader '{}'.", contextClassLoader.toString());
@@ -54,7 +54,7 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl<D extends Datastore> im
     public CdoManager createCdoManager() {
         TransactionalCache cache = new TransactionalCache();
         DatastoreSession datastoreSession = datastore.createSession();
-        InstanceManager instanceManager = new InstanceManager(nodeMetadataProvider, datastoreSession, classLoader, cache);
+        InstanceManager instanceManager = new InstanceManager(nodeMetadataProvider, datastoreSession, classLoader, cache, transactionAttribute);
         return new Neo4jCdoManagerImpl(datastoreSession, instanceManager, cache, validatorFactory);
     }
 

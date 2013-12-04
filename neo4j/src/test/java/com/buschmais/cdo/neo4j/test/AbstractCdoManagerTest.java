@@ -45,7 +45,7 @@ public abstract class AbstractCdoManagerTest {
     }
 
     protected CdoUnit createCdoUnit(URL url, Class<?>[] types) {
-        return new CdoUnit("test", "test unit", url, null, new HashSet<>(Arrays.asList(types)), CdoUnit.ValidationMode.AUTO, new Properties());
+        return new CdoUnit("test", "test unit", url, null, new HashSet<>(Arrays.asList(types)), CdoUnit.ValidationMode.AUTO, CdoUnit.TransactionAttribute.MANDATORY, new Properties());
     }
 
     protected CdoUnit createCdoUnit(String url, Class<?>[] types) {
