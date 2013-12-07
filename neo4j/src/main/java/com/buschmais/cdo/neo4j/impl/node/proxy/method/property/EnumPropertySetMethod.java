@@ -8,8 +8,8 @@ import org.neo4j.graphdb.Node;
 
 public class EnumPropertySetMethod extends AbstractPropertyMethod<EnumPropertyMethodMetadata> {
 
-    public EnumPropertySetMethod(EnumPropertyMethodMetadata metadata, InstanceManager instanceManager) {
-        super(metadata, instanceManager);
+    public EnumPropertySetMethod(EnumPropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
+        super(metadata, instanceManager, propertyManager);
     }
 
     @Override

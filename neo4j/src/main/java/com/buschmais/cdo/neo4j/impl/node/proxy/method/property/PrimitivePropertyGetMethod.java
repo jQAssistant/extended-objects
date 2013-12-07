@@ -6,8 +6,8 @@ import org.neo4j.graphdb.Node;
 
 public class PrimitivePropertyGetMethod extends AbstractPropertyMethod<PrimitivePropertyMethodMetadata> {
 
-    public PrimitivePropertyGetMethod(PrimitivePropertyMethodMetadata metadata, InstanceManager instanceManager) {
-        super(metadata, instanceManager);
+    public PrimitivePropertyGetMethod(PrimitivePropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
+        super(metadata, instanceManager, propertyManager);
     }
 
     public Object invoke(Node entity, Object instance, Object[] args) {

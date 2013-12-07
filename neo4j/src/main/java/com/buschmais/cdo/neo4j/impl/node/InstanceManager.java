@@ -10,6 +10,7 @@ import com.buschmais.cdo.neo4j.impl.common.proxy.method.TransactionProxyMethodSe
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.proxy.InstanceInvocationHandler;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.NodeProxyMethodService;
+import com.buschmais.cdo.neo4j.impl.node.proxy.method.property.PropertyManager;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 
 import java.lang.reflect.InvocationHandler;
@@ -19,23 +20,24 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class InstanceManager<Id, Entity> {
+public class InstanceManager<EntityId, Entity> {
 
-    private final DatastoreSession<Id, Entity> datastoreSession;
+    private final DatastoreSession<EntityId, Entity, ?, ?> datastoreSession;
     private final ClassLoader classLoader;
     private final TransactionalCache cache;
     private final ProxyMethodService<Entity, ?> proxyMethodService;
 
-    public InstanceManager(CdoTransaction cdoTransaction, NodeMetadataProvider metadataProvider, DatastoreSession<Id, Entity> datastoreSession, ClassLoader classLoader, TransactionalCache cache, CdoUnit.TransactionAttribute transactionAttribute) {
+    public InstanceManager(CdoTransaction cdoTransaction, NodeMetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, ?> datastoreSession, ClassLoader classLoader, TransactionalCache cache, CdoUnit.TransactionAttribute transactionAttribute) {
         this.datastoreSession = datastoreSession;
         this.classLoader = classLoader;
         this.cache = cache;
-        proxyMethodService = new TransactionProxyMethodService(new NodeProxyMethodService(metadataProvider, this, datastoreSession), cdoTransaction, transactionAttribute);
+        PropertyManager propertyManager = new PropertyManager(datastoreSession);
+        proxyMethodService = new TransactionProxyMethodService(new NodeProxyMethodService(metadataProvider, this, propertyManager, datastoreSession), cdoTransaction, transactionAttribute);
     }
 
     public <T> T getInstance(Entity entity) {
         Set<Class<?>> types = datastoreSession.getTypes(entity);
-        Id id = datastoreSession.getId(entity);
+        EntityId id = datastoreSession.getId(entity);
         Object instance = cache.get(id);
         if (instance == null) {
             InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(entity, proxyMethodService);
@@ -56,7 +58,7 @@ public class InstanceManager<Id, Entity> {
 
     public <Instance> void removeInstance(Instance instance) {
         Entity entity = getEntity(instance);
-        Id id = datastoreSession.getId(entity);
+        EntityId id = datastoreSession.getId(entity);
         cache.remove(id);
     }
 

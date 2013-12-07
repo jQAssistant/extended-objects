@@ -5,15 +5,17 @@ import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.neo4j.impl.node.metadata.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
+import com.buschmais.cdo.neo4j.impl.node.metadata.RelationshipMetadata;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import com.buschmais.cdo.neo4j.spi.TypeSet;
 import org.neo4j.graphdb.*;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
-public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node> {
+public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, Long, Relationship> {
 
     private GDS graphDatabaseService;
     private NodeMetadataProvider metadataProvider;
@@ -53,7 +55,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         }
         ResourceIterable<Node> nodesByLabelAndProperty = getGraphDatabaseService().findNodesByLabelAndProperty(label, indexedProperty.getPropertyMethodMetadata().getPropertyName(), value);
         ResourceIterator<Node> iterator = nodesByLabelAndProperty.iterator();
-        return new Neo4jResultIterator(iterator);
+        return new ResourceResultIterator(iterator);
     }
 
     @Override
@@ -121,32 +123,61 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         return Long.valueOf(entity.getId());
     }
 
-    protected static final class Neo4jResultIterator<T> implements ResultIterator<T> {
+    @Override
+    public void delete(Node node) {
+        node.delete();
+    }
 
-        private ResourceIterator<T> iterator;
+    @Override
+    public boolean hasRelation(Node source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction) {
+        return source.hasRelationship(metadata.getRelationshipType(), getDirection(direction));
+    }
 
-        protected Neo4jResultIterator(ResourceIterator<T> iterator) {
-            this.iterator = iterator;
+    @Override
+    public Relationship getSingleRelation(Node source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction) {
+        return source.getSingleRelationship(metadata.getRelationshipType(), getDirection(direction));
+    }
+
+    @Override
+    public void deleteRelation(Relationship relationship) {
+        relationship.delete();
+    }
+
+    @Override
+    public Relationship createRelation(Node source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction, Node target) {
+        switch (direction) {
+            case OUTGOING:
+              return  source.createRelationshipTo(target, metadata.getRelationshipType());
+            case INCOMING:
+                return target.createRelationshipTo(source, metadata.getRelationshipType());
+            default:
+                throw new CdoException("Unsupported direction " + direction);
         }
+    }
 
-        @Override
-        public boolean hasNext() {
-            return iterator.hasNext();
-        }
+    @Override
+    public Node getTarget(Relationship relationship) {
+        return relationship.getEndNode();
+    }
 
-        @Override
-        public T next() {
-            return iterator.next();
-        }
+    @Override
+    public Node getSource(Relationship relationship) {
+        return relationship.getStartNode();
+    }
 
-        @Override
-        public void remove() {
-            iterator.remove();
-        }
+    @Override
+    public Iterable<Relationship> getRelations(Node source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction) {
+        return source.getRelationships(metadata.getRelationshipType(), getDirection(direction));
+    }
 
-        @Override
-        public void close() {
-            iterator.close();
+    private Direction getDirection(RelationshipMetadata.Direction direction) {
+        switch (direction) {
+            case OUTGOING:
+                return Direction.OUTGOING;
+            case INCOMING:
+                return Direction.INCOMING;
+            default:
+                throw new CdoException("Unsupported direction " + direction);
         }
     }
 }

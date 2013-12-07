@@ -7,8 +7,8 @@ import org.neo4j.graphdb.Node;
 
 public class EnumPropertyGetMethod extends AbstractPropertyMethod<EnumPropertyMethodMetadata> {
 
-    public EnumPropertyGetMethod(EnumPropertyMethodMetadata metadata, InstanceManager instanceManager) {
-        super(metadata, instanceManager);
+    public EnumPropertyGetMethod(EnumPropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
+        super(metadata, instanceManager, propertyManager);
     }
 
     @Override

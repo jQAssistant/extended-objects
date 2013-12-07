@@ -6,17 +6,14 @@ import org.neo4j.graphdb.Node;
 
 public class ReferencePropertySetMethod extends AbstractPropertyMethod<ReferencePropertyMethodMetadata> {
 
-    private RelationshipManager relationshipManager;
-
-    public ReferencePropertySetMethod(ReferencePropertyMethodMetadata metadata, InstanceManager instanceManager) {
-        super(metadata, instanceManager);
-        relationshipManager = new RelationshipManager(metadata);
+    public ReferencePropertySetMethod(ReferencePropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
+        super(metadata, instanceManager, propertyManager);
     }
 
     public Object invoke(Node entity, Object instance, Object[] args) {
         Object value = args[0];
         Node target = value != null ? getInstanceManager().getEntity(value) : null;
-        relationshipManager.createSingleRelationship(entity, target);
+        getPropertyManager().createSingleRelation(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection(), target);
         return null;
     }
 }

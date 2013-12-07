@@ -13,17 +13,14 @@ import java.util.Set;
 
 public class CollectionPropertyGetMethod extends AbstractPropertyMethod<CollectionPropertyMethodMetadata> {
 
-    private RelationshipManager relationshipManager;
-
-    public CollectionPropertyGetMethod(CollectionPropertyMethodMetadata metadata, InstanceManager instanceManager) {
-        super(metadata, instanceManager);
-        relationshipManager = new RelationshipManager(metadata);
+    public CollectionPropertyGetMethod(CollectionPropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
+        super(metadata, instanceManager, propertyManager);
     }
 
     @Override
     public Object invoke(Node entity, Object instance, Object[] args) {
         CollectionPropertyMethodMetadata collectionPropertyMetadata = getMetadata();
-        CollectionProxy<?> collectionProxy = new CollectionProxy<>(entity, relationshipManager, getInstanceManager());
+        CollectionProxy<?> collectionProxy = new CollectionProxy<>(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection(), getInstanceManager(), getPropertyManager());
         if (Set.class.isAssignableFrom(collectionPropertyMetadata.getBeanMethod().getType())) {
             return new SetProxy<>(collectionProxy);
         } else if (List.class.isAssignableFrom(collectionPropertyMetadata.getBeanMethod().getType())) {

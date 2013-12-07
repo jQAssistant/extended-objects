@@ -3,7 +3,6 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
-import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -66,6 +65,6 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
     @Override
     public ResultIterator<Map<String, Object>> execute(String query, Map<String, Object> parameters) {
         ExecutionResult executionResult = executionEngine.execute(query, parameters);
-        return new Neo4jResultIterator(executionResult.iterator());
+        return new ResourceResultIterator(executionResult.iterator());
     }
 }

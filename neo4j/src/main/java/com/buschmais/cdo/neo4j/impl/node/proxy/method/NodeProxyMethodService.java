@@ -21,7 +21,7 @@ import org.neo4j.graphdb.Node;
 
 public class NodeProxyMethodService extends AbstractProxyMethodService<Node, NodeProxyMethod> {
 
-    public NodeProxyMethodService(NodeMetadataProvider nodeMetadataProvider, InstanceManager instanceManager, DatastoreSession datastoreSession) {
+    public NodeProxyMethodService(NodeMetadataProvider nodeMetadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, DatastoreSession datastoreSession) {
         for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
             for (AbstractMethodMetadata methodMetadata : nodeMetadata.getProperties()) {
                 BeanMethod beanMethod = methodMetadata.getBeanMethod();
@@ -48,37 +48,37 @@ public class NodeProxyMethodService extends AbstractProxyMethodService<Node, Nod
                     if (methodMetadata instanceof PrimitivePropertyMethodMetadata) {
                         switch (beanPropertyMethod.getMethodType()) {
                             case GETTER:
-                                proxyMethod = new PrimitivePropertyGetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager);
+                                proxyMethod = new PrimitivePropertyGetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager);
                                 break;
                             case SETTER:
-                                proxyMethod = new PrimitivePropertySetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager);
+                                proxyMethod = new PrimitivePropertySetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager);
                                 break;
                         }
                     } else if (methodMetadata instanceof EnumPropertyMethodMetadata) {
                         switch (beanPropertyMethod.getMethodType()) {
                             case GETTER:
-                                proxyMethod = new EnumPropertyGetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager);
+                                proxyMethod = new EnumPropertyGetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager);
                                 break;
                             case SETTER:
-                                proxyMethod = new EnumPropertySetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager);
+                                proxyMethod = new EnumPropertySetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager);
                                 break;
                         }
                     } else if (methodMetadata instanceof ReferencePropertyMethodMetadata) {
                         switch (beanPropertyMethod.getMethodType()) {
                             case GETTER:
-                                proxyMethod = new ReferencePropertyGetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager);
+                                proxyMethod = new ReferencePropertyGetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager);
                                 break;
                             case SETTER:
-                                proxyMethod = new ReferencePropertySetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager);
+                                proxyMethod = new ReferencePropertySetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager);
                                 break;
                         }
                     } else if (methodMetadata instanceof CollectionPropertyMethodMetadata) {
                         switch (beanPropertyMethod.getMethodType()) {
                             case GETTER:
-                                proxyMethod = new CollectionPropertyGetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager);
+                                proxyMethod = new CollectionPropertyGetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager);
                                 break;
                             case SETTER:
-                                proxyMethod = new CollectionPropertySetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager);
+                                proxyMethod = new CollectionPropertySetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager);
                                 break;
                         }
                     }

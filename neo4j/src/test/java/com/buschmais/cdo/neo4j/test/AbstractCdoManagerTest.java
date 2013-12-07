@@ -99,6 +99,9 @@ public abstract class AbstractCdoManagerTest {
 
     protected void closeCdoManager() {
         if (cdoManager != null) {
+            if (cdoManager.currentTransaction().isActive()) {
+                cdoManager.currentTransaction().rollback();
+            }
             cdoManager.close();
             cdoManager = null;
         }

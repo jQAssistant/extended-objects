@@ -8,6 +8,7 @@ import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.common.*;
 import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
+import com.buschmais.cdo.neo4j.impl.node.proxy.method.property.PropertyManager;
 import com.buschmais.cdo.neo4j.spi.Datastore;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import org.slf4j.Logger;

@@ -1,13 +1,18 @@
 package com.buschmais.cdo.neo4j.impl.node.metadata;
 
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
-import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.RelationshipType;
 
 public class ReferencePropertyMethodMetadata extends AbstractRelationshipPropertyMethodMetadata {
 
-    public ReferencePropertyMethodMetadata(BeanPropertyMethod beanPropertyMethod, RelationshipType relationshipType, Direction direction) {
+    private final BeanPropertyMethod beanPropertyMethod;
+    private final RelationshipMetadata relationshipType;
+    private final RelationshipMetadata.Direction direction;
+
+    public ReferencePropertyMethodMetadata(BeanPropertyMethod beanPropertyMethod, RelationshipMetadata relationshipType, RelationshipMetadata.Direction direction) {
         super(beanPropertyMethod, relationshipType, direction);
+        this.beanPropertyMethod = beanPropertyMethod;
+        this.relationshipType = relationshipType;
+        this.direction = direction;
     }
 
 }

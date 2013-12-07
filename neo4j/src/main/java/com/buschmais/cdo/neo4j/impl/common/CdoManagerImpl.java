@@ -8,6 +8,7 @@ import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import com.buschmais.cdo.neo4j.spi.TypeSet;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -17,11 +18,11 @@ import java.util.*;
 public class CdoManagerImpl implements CdoManager {
 
     private final CdoTransaction cdoTransaction;
-    private final DatastoreSession<Long, Node> datastoreSession;
+    private final DatastoreSession<Long, Node, Long, Relationship> datastoreSession;
     private final InstanceManager<Long, Node> instanceManager;
     private final InstanceValidator instanceValidator;
 
-    public CdoManagerImpl(CdoTransaction cdoTransaction, DatastoreSession<Long, Node> datastoreSession, InstanceManager instanceManager, InstanceValidator instanceValidator) {
+    public CdoManagerImpl(CdoTransaction cdoTransaction, DatastoreSession<Long, Node, Long , Relationship> datastoreSession, InstanceManager instanceManager, InstanceValidator instanceValidator) {
         this.cdoTransaction = cdoTransaction;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
@@ -117,7 +118,7 @@ public class CdoManagerImpl implements CdoManager {
         Node node = instanceManager.getEntity(instance);
         instanceManager.removeInstance(instance);
         instanceManager.destroyInstance(instance);
-        node.delete();
+        datastoreSession.delete(node);
     }
 
     @Override

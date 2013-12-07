@@ -8,20 +8,17 @@ import java.util.Collection;
 
 public class CollectionPropertySetMethod extends AbstractPropertyMethod<CollectionPropertyMethodMetadata> {
 
-    private RelationshipManager relationshipManager;
-
-    public CollectionPropertySetMethod(CollectionPropertyMethodMetadata metadata, InstanceManager instanceManager) {
-        super(metadata, instanceManager);
-        relationshipManager = new RelationshipManager(metadata);
+    public CollectionPropertySetMethod(CollectionPropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
+        super(metadata, instanceManager, propertyManager);
     }
 
     public Object invoke(Node entity, Object instance, Object[] args) {
         Object value = args[0];
-        relationshipManager.removeRelationships(entity);
+        getPropertyManager().removeRelations(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection());
         Collection<?> collection = (Collection<?>) value;
         for (Object o : collection) {
             Node endNode = getInstanceManager().getEntity(o);
-            relationshipManager.createRelationship(entity, endNode);
+            getPropertyManager().createRelation(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection(), endNode);
         }
         return null;
     }

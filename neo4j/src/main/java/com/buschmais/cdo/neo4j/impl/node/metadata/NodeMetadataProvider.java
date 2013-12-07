@@ -7,10 +7,8 @@ import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethodProvider;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
 import org.apache.commons.lang.StringUtils;
-import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
-import org.neo4j.graphdb.RelationshipType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +19,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 import static com.buschmais.cdo.neo4j.impl.common.DependencyResolver.DependencyProvider;
+import static com.buschmais.cdo.neo4j.impl.node.metadata.RelationshipMetadata.Direction;
 
 public class NodeMetadataProvider {
 
@@ -197,10 +196,10 @@ public class NodeMetadataProvider {
         return new ResultOfMethodMetadata(beanMethod, queryType, resultOf.usingThisAs(), parameters, singleResult);
     }
 
-    private RelationshipType getRelationshipType(BeanPropertyMethod beanPropertyMethod, Map<String, BeanPropertyMethod> getterMethods) {
+    private RelationshipMetadata getRelationshipType(BeanPropertyMethod beanPropertyMethod, Map<String, BeanPropertyMethod> getterMethods) {
         Relation relation = getPropertyAnnotation(Relation.class, beanPropertyMethod, getterMethods);
         String name = relation != null ? relation.value() : StringUtils.capitalize(beanPropertyMethod.getName());
-        return DynamicRelationshipType.withName(name);
+        return new RelationshipMetadata(DynamicRelationshipType.withName(name));
     }
 
     private Direction getRelationshipDirection(BeanPropertyMethod beanPropertyMethod, Map<String, BeanPropertyMethod> getterMethods) {
