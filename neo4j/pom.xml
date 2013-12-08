@@ -137,7 +137,7 @@
     <dependencies>
         <dependency>
             <groupId>com.buschmais.cdo</groupId>
-            <artifactId>cdo.api</artifactId>
+            <artifactId>cdo.impl</artifactId>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>

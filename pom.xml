@@ -172,6 +172,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.buschmais.cdo</groupId>
+                <artifactId>cdo.impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
                 <version>1.1.0.Final</version>
@@ -208,6 +213,7 @@
     <modules>
         <module>spi</module>
         <module>api</module>
+        <module>impl</module>
         <module>neo4j</module>
         <module>doc</module>
         <module>inject</module>
