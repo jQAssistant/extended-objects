@@ -5,15 +5,15 @@ import com.buschmais.cdo.neo4j.impl.node.metadata.ReferencePropertyMethodMetadat
 import com.buschmais.cdo.neo4j.impl.common.PropertyManager;
 import org.neo4j.graphdb.Node;
 
-public class ReferencePropertySetMethod extends AbstractPropertyMethod<ReferencePropertyMethodMetadata> {
+public class ReferencePropertySetMethod<Entity> extends AbstractPropertyMethod<Entity, ReferencePropertyMethodMetadata> {
 
     public ReferencePropertySetMethod(ReferencePropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
         super(metadata, instanceManager, propertyManager);
     }
 
-    public Object invoke(Node entity, Object instance, Object[] args) {
+    public Object invoke(Entity entity, Object instance, Object[] args) {
         Object value = args[0];
-        Node target = value != null ? getInstanceManager().getEntity(value) : null;
+        Entity target = value != null ? getInstanceManager().getEntity(value) : null;
         getPropertyManager().createSingleRelation(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection(), target);
         return null;
     }

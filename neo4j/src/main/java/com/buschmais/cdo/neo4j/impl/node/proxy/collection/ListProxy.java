@@ -4,25 +4,25 @@ import java.util.AbstractSequentialList;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-public class ListProxy<E> extends AbstractSequentialList<E> {
+public class ListProxy<Instance> extends AbstractSequentialList<Instance> {
 
-    private CollectionProxy<E> collectionProxy;
+    private CollectionProxy<Instance, ?> collectionProxy;
 
-    public ListProxy(CollectionProxy<E> collectionProxy) {
+    public ListProxy(CollectionProxy<Instance, ?> collectionProxy) {
         this.collectionProxy = collectionProxy;
     }
 
     @Override
-    public ListIterator<E> listIterator(int index) {
-        final Iterator<E> iterator = collectionProxy.iterator();
-        return new ListIterator<E>() {
+    public ListIterator<Instance> listIterator(int index) {
+        final Iterator<Instance> iterator = collectionProxy.iterator();
+        return new ListIterator<Instance>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
             }
 
             @Override
-            public E next() {
+            public Instance next() {
                 return iterator.next();
             }
 
@@ -32,7 +32,7 @@ public class ListProxy<E> extends AbstractSequentialList<E> {
             }
 
             @Override
-            public E previous() {
+            public Instance previous() {
                 throw new UnsupportedOperationException("Operation not supported.");
             }
 
@@ -52,12 +52,12 @@ public class ListProxy<E> extends AbstractSequentialList<E> {
             }
 
             @Override
-            public void set(E e) {
+            public void set(Instance instance) {
                 throw new UnsupportedOperationException("Operation not supported.");
             }
 
             @Override
-            public void add(E e) {
+            public void add(Instance instance) {
                 throw new UnsupportedOperationException("Operation not supported.");
             }
         };
@@ -69,8 +69,8 @@ public class ListProxy<E> extends AbstractSequentialList<E> {
     }
 
     @Override
-    public boolean add(E e) {
-        return collectionProxy.add(e);
+    public boolean add(Instance instance) {
+        return collectionProxy.add(instance);
     }
 
     @Override

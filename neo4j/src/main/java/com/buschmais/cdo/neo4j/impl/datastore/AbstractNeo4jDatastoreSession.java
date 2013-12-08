@@ -182,7 +182,6 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
 
     // Properties
 
-
     @Override
     public void removeProperty(Node node, PrimitivePropertyMethodMetadata metadata) {
         node.removeProperty(metadata.getPropertyName());
@@ -201,5 +200,27 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     @Override
     public Object getProperty(Node node, PrimitivePropertyMethodMetadata metadata) {
         return  node.getProperty(metadata.getPropertyName());
+    }
+
+    @Override
+    public Enum<?> getEnumProperty(Node node, EnumPropertyMethodMetadata metadata) {
+        for (Enum<?> enumerationValue : metadata.getEnumerationType().getEnumConstants()) {
+            if (node.hasLabel(DynamicLabel.label(enumerationValue.name()))) {
+                return enumerationValue;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void setEnumProperty(Node node, EnumPropertyMethodMetadata metadata, Object value) {
+        for (Enum<?> enumerationValue : metadata.getEnumerationType().getEnumConstants()) {
+            Label label = DynamicLabel.label(enumerationValue.name());
+            if (enumerationValue.equals(value)) {
+                node.addLabel(label);
+            } else if (node.hasLabel(label)) {
+                node.removeLabel(label);
+            }
+        }
     }
 }

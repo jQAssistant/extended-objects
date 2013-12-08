@@ -3,16 +3,16 @@ package com.buschmais.cdo.neo4j.impl.node.proxy.collection;
 import java.util.AbstractSet;
 import java.util.Iterator;
 
-public class SetProxy<E> extends AbstractSet<E> {
+public class SetProxy<T> extends AbstractSet<T> {
 
-    private CollectionProxy<E> collectionProxy;
+    private CollectionProxy<T, ?> collectionProxy;
 
-    public SetProxy(CollectionProxy<E> collectionProxy) {
+    public SetProxy(CollectionProxy<T, ?> collectionProxy) {
         this.collectionProxy = collectionProxy;
     }
 
     @Override
-    public Iterator<E> iterator() {
+    public Iterator<T> iterator() {
         return collectionProxy.iterator();
     }
 
@@ -22,11 +22,11 @@ public class SetProxy<E> extends AbstractSet<E> {
     }
 
     @Override
-    public boolean add(E e) {
-        if (contains(e)) {
+    public boolean add(T t) {
+        if (contains(t)) {
             return false;
         }
-        return collectionProxy.add(e);
+        return collectionProxy.add(t);
     }
 
     @Override

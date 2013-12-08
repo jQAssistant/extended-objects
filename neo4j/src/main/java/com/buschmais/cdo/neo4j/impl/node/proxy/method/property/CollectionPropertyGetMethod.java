@@ -12,16 +12,16 @@ import org.neo4j.graphdb.Node;
 import java.util.List;
 import java.util.Set;
 
-public class CollectionPropertyGetMethod extends AbstractPropertyMethod<CollectionPropertyMethodMetadata> {
+public class CollectionPropertyGetMethod<Entity> extends AbstractPropertyMethod<Entity, CollectionPropertyMethodMetadata> {
 
     public CollectionPropertyGetMethod(CollectionPropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
         super(metadata, instanceManager, propertyManager);
     }
 
     @Override
-    public Object invoke(Node entity, Object instance, Object[] args) {
+    public Object invoke(Entity entity, Object instance, Object[] args) {
         CollectionPropertyMethodMetadata collectionPropertyMetadata = getMetadata();
-        CollectionProxy<?> collectionProxy = new CollectionProxy<>(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection(), getInstanceManager(), getPropertyManager());
+        CollectionProxy<?, Entity> collectionProxy = new CollectionProxy<>(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection(), getInstanceManager(), getPropertyManager());
         if (Set.class.isAssignableFrom(collectionPropertyMetadata.getBeanMethod().getType())) {
             return new SetProxy<>(collectionProxy);
         } else if (List.class.isAssignableFrom(collectionPropertyMetadata.getBeanMethod().getType())) {

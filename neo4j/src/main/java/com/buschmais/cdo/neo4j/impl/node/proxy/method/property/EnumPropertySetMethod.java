@@ -7,23 +7,16 @@ import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 
-public class EnumPropertySetMethod extends AbstractPropertyMethod<EnumPropertyMethodMetadata> {
+public class EnumPropertySetMethod<Entity> extends AbstractPropertyMethod<Entity, EnumPropertyMethodMetadata> {
 
     public EnumPropertySetMethod(EnumPropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
         super(metadata, instanceManager, propertyManager);
     }
 
     @Override
-    public Object invoke(Node entity, Object instance, Object[] args) {
+    public Object invoke(Entity entity, Object instance, Object[] args) {
         Object value = args[0];
-        for (Enum<?> enumerationValue : getMetadata().getEnumerationType().getEnumConstants()) {
-            Label label = DynamicLabel.label(enumerationValue.name());
-            if (enumerationValue.equals(value)) {
-                entity.addLabel(label);
-            } else if (entity.hasLabel(label)) {
-                entity.removeLabel(label);
-            }
-        }
+        getPropertyManager().setEnumProperty(entity, getMetadata(), value);
         return null;
     }
 }

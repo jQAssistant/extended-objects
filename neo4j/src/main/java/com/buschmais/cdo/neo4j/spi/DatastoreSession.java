@@ -1,6 +1,7 @@
 package com.buschmais.cdo.neo4j.spi;
 
 import com.buschmais.cdo.api.ResultIterator;
+import com.buschmais.cdo.neo4j.impl.node.metadata.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.RelationshipMetadata;
 import org.neo4j.graphdb.Node;
@@ -9,16 +10,7 @@ import java.util.Map;
 
 public interface DatastoreSession<EntityId, Entity, RelationId, Relation> {
 
-    void setProperty(Entity entity, PrimitivePropertyMethodMetadata metadata, Object value);
-
-    boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata metadata);
-
-    void removeProperty(Entity entity, PrimitivePropertyMethodMetadata metadata);
-
-    Object getProperty(Entity entity, PrimitivePropertyMethodMetadata metadata);
-
     // Transactions
-
     public interface DatastoreTransaction {
 
         void begin();
@@ -48,7 +40,20 @@ public interface DatastoreSession<EntityId, Entity, RelationId, Relation> {
 
     void migrate(Entity entity, TypeSet types, TypeSet targetTypes);
 
-    // Relation methods
+    //Properties
+    void setProperty(Entity entity, PrimitivePropertyMethodMetadata metadata, Object value);
+
+    boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata metadata);
+
+    void removeProperty(Entity entity, PrimitivePropertyMethodMetadata metadata);
+
+    Object getProperty(Entity entity, PrimitivePropertyMethodMetadata metadata);
+
+    Enum<?> getEnumProperty(Entity entity, EnumPropertyMethodMetadata metadata);
+
+    void setEnumProperty(Entity entity, EnumPropertyMethodMetadata metadata, Object value);
+
+    // Relations
     boolean hasRelation(Entity source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction);
 
     Relation getSingleRelation(Entity source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction);

@@ -5,13 +5,13 @@ import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadat
 import com.buschmais.cdo.neo4j.impl.common.PropertyManager;
 import org.neo4j.graphdb.Node;
 
-public class PrimitivePropertySetMethod extends AbstractPropertyMethod<PrimitivePropertyMethodMetadata> {
+public class PrimitivePropertySetMethod<Entity> extends AbstractPropertyMethod<Entity, PrimitivePropertyMethodMetadata> {
 
     public PrimitivePropertySetMethod(PrimitivePropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
         super(metadata, instanceManager, propertyManager);
     }
 
-    public Object invoke(Node entity, Object instance, Object[] args) {
+    public Object invoke(Entity entity, Object instance, Object[] args) {
         Object value = args[0];
         if (value != null) {
             if (Enum.class.isAssignableFrom(getMetadata().getBeanMethod().getType())) {

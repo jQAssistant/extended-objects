@@ -1,6 +1,7 @@
 package com.buschmais.cdo.neo4j.impl.common;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.neo4j.impl.node.metadata.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.RelationshipMetadata;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
@@ -147,5 +148,13 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
 
     public Object getProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
         return datastoreSession.getProperty(entity, metadata);
+    }
+
+    public Enum<?> getEnumProperty(Entity entity, EnumPropertyMethodMetadata metadata) {
+        return datastoreSession.getEnumProperty(entity, metadata);
+    }
+
+    public void setEnumProperty(Entity entity, EnumPropertyMethodMetadata metadata, Object value) {
+        datastoreSession.setEnumProperty(entity, metadata, value);
     }
 }

@@ -3,31 +3,29 @@ package com.buschmais.cdo.neo4j.impl.node.proxy.collection;
 import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.RelationshipMetadata;
 import com.buschmais.cdo.neo4j.impl.common.PropertyManager;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
 
-public class CollectionProxy<E> extends AbstractCollection<E> {
+public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instance> {
 
-    private Node node;
+    private Entity entity;
     private RelationshipMetadata metadata;
     private RelationshipMetadata.Direction direction;
-    private InstanceManager<Long, Node> instanceManager;
-    private PropertyManager<Long, Node, Long, Relationship> propertyManager;
+    private InstanceManager<?, Entity> instanceManager;
+    private PropertyManager<?, Entity, ?, ?> propertyManager;
 
-    public CollectionProxy(Node node, RelationshipMetadata metadata, RelationshipMetadata.Direction direction, InstanceManager instanceManager, PropertyManager propertyManager) {
-        this.node = node;
+    public CollectionProxy(Entity entity, RelationshipMetadata metadata, RelationshipMetadata.Direction direction, InstanceManager instanceManager, PropertyManager propertyManager) {
+        this.entity = entity;
         this.metadata = metadata;
         this.direction = direction;
         this.instanceManager = instanceManager;
         this.propertyManager = propertyManager;
     }
 
-    public Iterator<E> iterator() {
-        final Iterator<Node> iterator = propertyManager.getRelations(node, metadata, direction);
-        return new Iterator<E>() {
+    public Iterator<Instance> iterator() {
+        final Iterator<Entity> iterator = propertyManager.getRelations(entity, metadata, direction);
+        return new Iterator<Instance>() {
 
             @Override
             public boolean hasNext() {
@@ -35,7 +33,7 @@ public class CollectionProxy<E> extends AbstractCollection<E> {
             }
 
             @Override
-            public E next() {
+            public Instance next() {
                 return instanceManager.getInstance(iterator.next());
             }
 
@@ -48,7 +46,7 @@ public class CollectionProxy<E> extends AbstractCollection<E> {
 
     public int size() {
         int size = 0;
-        for (Iterator<Node> iterator = propertyManager.getRelations(node, metadata, direction); iterator.hasNext(); ) {
+        for (Iterator<Entity> iterator = propertyManager.getRelations(entity, metadata, direction); iterator.hasNext(); ) {
             iterator.next();
             size++;
         }
@@ -56,17 +54,17 @@ public class CollectionProxy<E> extends AbstractCollection<E> {
     }
 
     @Override
-    public boolean add(E e) {
-        Node target = instanceManager.getEntity(e);
-        propertyManager.createRelation(node, metadata, direction, target);
+    public boolean add(Instance instance) {
+        Entity target = instanceManager.getEntity(instance);
+        propertyManager.createRelation(entity, metadata, direction, target);
         return true;
     }
 
     @Override
     public boolean remove(Object o) {
         if (instanceManager.isEntity(o)) {
-            Node target = instanceManager.getEntity(o);
-            return propertyManager.removeRelation(node, metadata, direction, target);
+            Entity target = instanceManager.getEntity(o);
+            return propertyManager.removeRelation(entity, metadata, direction, target);
         }
         return false;
     }

@@ -7,19 +7,19 @@ import org.neo4j.graphdb.Node;
 
 import java.util.Collection;
 
-public class CollectionPropertySetMethod extends AbstractPropertyMethod<CollectionPropertyMethodMetadata> {
+public class CollectionPropertySetMethod<Entity> extends AbstractPropertyMethod<Entity, CollectionPropertyMethodMetadata> {
 
     public CollectionPropertySetMethod(CollectionPropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
         super(metadata, instanceManager, propertyManager);
     }
 
-    public Object invoke(Node entity, Object instance, Object[] args) {
+    public Object invoke(Entity entity, Object instance, Object[] args) {
         Object value = args[0];
         getPropertyManager().removeRelations(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection());
         Collection<?> collection = (Collection<?>) value;
         for (Object o : collection) {
-            Node endNode = getInstanceManager().getEntity(o);
-            getPropertyManager().createRelation(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection(), endNode);
+            Entity target = getInstanceManager().getEntity(o);
+            getPropertyManager().createRelation(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection(), target);
         }
         return null;
     }
