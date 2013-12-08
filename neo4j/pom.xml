@@ -137,6 +137,14 @@
     <dependencies>
         <dependency>
             <groupId>com.buschmais.cdo</groupId>
+            <artifactId>cdo.api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.buschmais.cdo</groupId>
+            <artifactId>cdo.spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.buschmais.cdo</groupId>
             <artifactId>cdo.impl</artifactId>
         </dependency>
         <dependency>

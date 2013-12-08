@@ -175,6 +175,7 @@
                 <groupId>com.buschmais.cdo</groupId>
                 <artifactId>cdo.impl</artifactId>
                 <version>${project.version}</version>
+                <!--<scope>runtime</scope>-->
             </dependency>
             <dependency>
                 <groupId>javax.validation</groupId>
