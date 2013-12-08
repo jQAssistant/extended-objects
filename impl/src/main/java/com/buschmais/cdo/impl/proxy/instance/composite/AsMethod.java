@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.impl.common.proxy.method.composite;
+package com.buschmais.cdo.impl.proxy.instance.composite;
 
 import com.buschmais.cdo.spi.proxy.ProxyMethod;
 

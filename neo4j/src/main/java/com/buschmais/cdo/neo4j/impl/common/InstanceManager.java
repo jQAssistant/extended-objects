@@ -5,10 +5,10 @@ import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
-import com.buschmais.cdo.neo4j.impl.common.proxy.method.ProxyMethodService;
-import com.buschmais.cdo.neo4j.impl.common.proxy.method.TransactionProxyMethodService;
+import com.buschmais.cdo.impl.proxy.ProxyMethodService;
+import com.buschmais.cdo.impl.proxy.TransactionProxyMethodService;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
-import com.buschmais.cdo.neo4j.impl.node.proxy.InstanceInvocationHandler;
+import com.buschmais.cdo.impl.proxy.instance.InstanceInvocationHandler;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.NodeProxyMethodService;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 

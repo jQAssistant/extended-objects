@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.impl.common.proxy.method;
+package com.buschmais.cdo.impl.proxy;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoTransaction;

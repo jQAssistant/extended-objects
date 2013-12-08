@@ -1,8 +1,7 @@
-package com.buschmais.cdo.neo4j.impl.node.proxy;
+package com.buschmais.cdo.impl.proxy.instance;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.neo4j.impl.common.proxy.method.AbstractProxyMethodService;
-import com.buschmais.cdo.neo4j.impl.common.proxy.method.ProxyMethodService;
+import com.buschmais.cdo.impl.proxy.ProxyMethodService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

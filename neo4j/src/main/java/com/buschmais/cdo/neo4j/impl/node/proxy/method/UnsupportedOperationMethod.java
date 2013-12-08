@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.impl.common.proxy.method;
+package com.buschmais.cdo.neo4j.impl.node.proxy.method;
 
 import com.buschmais.cdo.spi.proxy.ProxyMethod;
 import com.buschmais.cdo.neo4j.impl.node.metadata.UnsupportedOperationMethodMetadata;
