@@ -114,7 +114,7 @@ public class NodeMetadataProvider {
             NodeMetadata superNodeMetadata = nodeMetadataByType.get(implementedInterface);
             aggregatedLabels.addAll(superNodeMetadata.getAggregatedLabels());
         }
-        NodeMetadata nodeMetadata = new NodeMetadata(type, label, aggregatedLabels, methodMetadataList, indexedProperty);
+        NodeMetadata<?> nodeMetadata = new NodeMetadata(type, label, aggregatedLabels, methodMetadataList, indexedProperty);
         // determine all possible metadata for a label
         for (org.neo4j.graphdb.Label aggregatedLabel : nodeMetadata.getAggregatedLabels()) {
             Set<NodeMetadata> nodeMetadataOfLabel = nodeMetadataByLabel.get(aggregatedLabel);

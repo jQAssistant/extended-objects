@@ -22,7 +22,7 @@ import org.neo4j.graphdb.Node;
 public class NodeProxyMethodService extends AbstractProxyMethodService<Node, NodeProxyMethod> {
 
     public NodeProxyMethodService(NodeMetadataProvider nodeMetadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, DatastoreSession datastoreSession) {
-        for (NodeMetadata nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
+        for (NodeMetadata<?> nodeMetadata : nodeMetadataProvider.getRegisteredNodeMetadata()) {
             for (AbstractMethodMetadata methodMetadata : nodeMetadata.getProperties()) {
                 BeanMethod beanMethod = methodMetadata.getBeanMethod();
                 ProxyMethod<Node> proxyMethod = null;

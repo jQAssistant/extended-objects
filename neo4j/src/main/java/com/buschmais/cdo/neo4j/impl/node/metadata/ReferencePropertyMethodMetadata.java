@@ -2,7 +2,7 @@ package com.buschmais.cdo.neo4j.impl.node.metadata;
 
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
 
-public class ReferencePropertyMethodMetadata extends AbstractRelationshipPropertyMethodMetadata {
+public class ReferencePropertyMethodMetadata<DatastoreMetadata> extends AbstractRelationshipPropertyMethodMetadata<DatastoreMetadata> {
 
     private final BeanPropertyMethod beanPropertyMethod;
     private final RelationshipMetadata relationshipType;

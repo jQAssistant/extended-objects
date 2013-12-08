@@ -5,7 +5,7 @@ import org.neo4j.graphdb.RelationshipType;
 import java.util.Collection;
 import java.util.Collections;
 
-public class RelationshipMetadata extends AbstractMetadata {
+public class RelationshipMetadata<DatastoreMetadata> extends AbstractMetadata<DatastoreMetadata> {
 
     public enum Direction {
         INCOMING,

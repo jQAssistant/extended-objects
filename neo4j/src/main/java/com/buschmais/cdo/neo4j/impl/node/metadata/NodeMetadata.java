@@ -5,7 +5,7 @@ import org.neo4j.graphdb.Label;
 import java.util.Collection;
 import java.util.Set;
 
-public class NodeMetadata extends AbstractMetadata {
+public class NodeMetadata<DatastoreMetadata> extends AbstractMetadata<DatastoreMetadata> {
 
     private Class<?> type;
     private Label label;

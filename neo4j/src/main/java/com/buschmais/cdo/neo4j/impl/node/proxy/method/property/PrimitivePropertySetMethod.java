@@ -13,14 +13,15 @@ public class PrimitivePropertySetMethod<Entity> extends AbstractPropertyMethod<E
 
     public Object invoke(Entity entity, Object instance, Object[] args) {
         Object value = args[0];
+        PrimitivePropertyMethodMetadata<?> metadata = getMetadata();
         if (value != null) {
-            if (Enum.class.isAssignableFrom(getMetadata().getBeanMethod().getType())) {
+            if (Enum.class.isAssignableFrom(metadata.getBeanMethod().getType())) {
                 value = ((Enum) value).name();
             }
-            getPropertyManager().setProperty(entity, getMetadata(), value);
+            getPropertyManager().setProperty(entity, metadata, value);
         } else {
-            if (getPropertyManager().hasProperty(entity, getMetadata())) {
-                getPropertyManager().removeProperty(entity, getMetadata());
+            if (getPropertyManager().hasProperty(entity, metadata)) {
+                getPropertyManager().removeProperty(entity, metadata);
             }
         }
         return null;

@@ -3,16 +3,18 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.neo4j.impl.node.metadata.*;
+import com.buschmais.cdo.neo4j.impl.node.metadata.neo4j.EnumPropertyMetadata;
+import com.buschmais.cdo.neo4j.impl.node.metadata.neo4j.PrimitivePropertyMetadata;
+import com.buschmais.cdo.neo4j.impl.node.metadata.neo4j.RelationPropertyMetadata;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import com.buschmais.cdo.neo4j.spi.TypeSet;
 import org.neo4j.graphdb.*;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
-public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, Long, Relationship> {
+public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, Long, Relationship, PrimitivePropertyMetadata, EnumPropertyMetadata, RelationPropertyMetadata> {
 
     private GDS graphDatabaseService;
     private NodeMetadataProvider metadataProvider;
@@ -128,13 +130,30 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     // Relations
 
     @Override
-    public boolean hasRelation(Node source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction) {
+    public boolean hasRelation(Node source, RelationshipMetadata<RelationPropertyMetadata> metadata, RelationshipMetadata.Direction direction) {
         return source.hasRelationship(metadata.getRelationshipType(), getDirection(direction));
     }
 
     @Override
-    public Relationship getSingleRelation(Node source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction) {
+    public Relationship getSingleRelation(Node source, RelationshipMetadata<RelationPropertyMetadata> metadata, RelationshipMetadata.Direction direction) {
         return source.getSingleRelationship(metadata.getRelationshipType(), getDirection(direction));
+    }
+
+    @Override
+    public Iterable<Relationship> getRelations(Node source, RelationshipMetadata<RelationPropertyMetadata> metadata, RelationshipMetadata.Direction direction) {
+        return source.getRelationships(metadata.getRelationshipType(), getDirection(direction));
+    }
+
+    @Override
+    public Relationship createRelation(Node source, RelationshipMetadata<RelationPropertyMetadata> metadata, RelationshipMetadata.Direction direction, Node target) {
+        switch (direction) {
+            case OUTGOING:
+                return source.createRelationshipTo(target, metadata.getRelationshipType());
+            case INCOMING:
+                return target.createRelationshipTo(source, metadata.getRelationshipType());
+            default:
+                throw new CdoException("Unsupported direction " + direction);
+        }
     }
 
     @Override
@@ -142,17 +161,6 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         relationship.delete();
     }
 
-    @Override
-    public Relationship createRelation(Node source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction, Node target) {
-        switch (direction) {
-            case OUTGOING:
-              return  source.createRelationshipTo(target, metadata.getRelationshipType());
-            case INCOMING:
-                return target.createRelationshipTo(source, metadata.getRelationshipType());
-            default:
-                throw new CdoException("Unsupported direction " + direction);
-        }
-    }
 
     @Override
     public Node getTarget(Relationship relationship) {
@@ -164,10 +172,6 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         return relationship.getStartNode();
     }
 
-    @Override
-    public Iterable<Relationship> getRelations(Node source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction) {
-        return source.getRelationships(metadata.getRelationshipType(), getDirection(direction));
-    }
 
     private Direction getDirection(RelationshipMetadata.Direction direction) {
         switch (direction) {
@@ -183,27 +187,27 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     // Properties
 
     @Override
-    public void removeProperty(Node node, PrimitivePropertyMethodMetadata metadata) {
+    public void removeProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
         node.removeProperty(metadata.getPropertyName());
     }
 
     @Override
-    public boolean hasProperty(Node node, PrimitivePropertyMethodMetadata metadata) {
+    public boolean hasProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
         return node.hasProperty(metadata.getPropertyName());
     }
 
     @Override
-    public void setProperty(Node node, PrimitivePropertyMethodMetadata metadata, Object value) {
+    public void setProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata, Object value) {
         node.setProperty(metadata.getPropertyName(), value);
     }
 
     @Override
-    public Object getProperty(Node node, PrimitivePropertyMethodMetadata metadata) {
-        return  node.getProperty(metadata.getPropertyName());
+    public Object getProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
+        return node.getProperty(metadata.getPropertyName());
     }
 
     @Override
-    public Enum<?> getEnumProperty(Node node, EnumPropertyMethodMetadata metadata) {
+    public Enum<?> getEnumProperty(Node node, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata) {
         for (Enum<?> enumerationValue : metadata.getEnumerationType().getEnumConstants()) {
             if (node.hasLabel(DynamicLabel.label(enumerationValue.name()))) {
                 return enumerationValue;
@@ -213,7 +217,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public void setEnumProperty(Node node, EnumPropertyMethodMetadata metadata, Object value) {
+    public void setEnumProperty(Node node, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata, Object value) {
         for (Enum<?> enumerationValue : metadata.getEnumerationType().getEnumConstants()) {
             Label label = DynamicLabel.label(enumerationValue.name());
             if (enumerationValue.equals(value)) {

@@ -14,11 +14,11 @@ import java.util.*;
 public class CdoManagerImpl implements CdoManager {
 
     private final CdoTransaction cdoTransaction;
-    private final DatastoreSession<Long, Node, Long, Relationship> datastoreSession;
+    private final DatastoreSession<Long, Node, Long, Relationship, ?, ?, ?> datastoreSession;
     private final InstanceManager<Long, Node> instanceManager;
     private final InstanceValidator instanceValidator;
 
-    public CdoManagerImpl(CdoTransaction cdoTransaction, DatastoreSession<Long, Node, Long , Relationship> datastoreSession, InstanceManager instanceManager, InstanceValidator instanceValidator) {
+    public CdoManagerImpl(CdoTransaction cdoTransaction, DatastoreSession<Long, Node, Long, Relationship, ?, ?, ?> datastoreSession, InstanceManager instanceManager, InstanceValidator instanceValidator) {
         this.cdoTransaction = cdoTransaction;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;

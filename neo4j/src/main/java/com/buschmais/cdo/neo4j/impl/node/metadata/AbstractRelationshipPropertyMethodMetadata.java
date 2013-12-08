@@ -5,7 +5,7 @@ import org.neo4j.graphdb.RelationshipType;
 
 import static com.buschmais.cdo.neo4j.impl.node.metadata.RelationshipMetadata.Direction;
 
-public abstract class AbstractRelationshipPropertyMethodMetadata extends AbstractPropertyMethodMetadata {
+public abstract class AbstractRelationshipPropertyMethodMetadata<DatastoreMetadata> extends AbstractPropertyMethodMetadata<DatastoreMetadata> {
 
     private RelationshipMetadata relationshipType;
 

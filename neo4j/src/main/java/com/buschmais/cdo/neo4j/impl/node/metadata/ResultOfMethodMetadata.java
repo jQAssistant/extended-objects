@@ -5,7 +5,7 @@ import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
 
 import java.util.List;
 
-public class ResultOfMethodMetadata extends AbstractMethodMetadata<BeanMethod> {
+public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMetadata<BeanMethod, DatastoreMetadata> {
 
     private Class<?> query;
 

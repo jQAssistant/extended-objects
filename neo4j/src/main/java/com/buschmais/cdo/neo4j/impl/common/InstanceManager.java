@@ -21,12 +21,12 @@ import java.util.Set;
 
 public class InstanceManager<EntityId, Entity> {
 
-    private final DatastoreSession<EntityId, Entity, ?, ?> datastoreSession;
+    private final DatastoreSession<EntityId, Entity, ?, ?, ?, ?, ?> datastoreSession;
     private final ClassLoader classLoader;
     private final TransactionalCache cache;
     private final ProxyMethodService<Entity, ?> proxyMethodService;
 
-    public InstanceManager(CdoTransaction cdoTransaction, NodeMetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, ?> datastoreSession, ClassLoader classLoader, TransactionalCache cache, CdoUnit.TransactionAttribute transactionAttribute) {
+    public InstanceManager(CdoTransaction cdoTransaction, NodeMetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, ?, ?, ?, ?> datastoreSession, ClassLoader classLoader, TransactionalCache cache, CdoUnit.TransactionAttribute transactionAttribute) {
         this.datastoreSession = datastoreSession;
         this.classLoader = classLoader;
         this.cache = cache;

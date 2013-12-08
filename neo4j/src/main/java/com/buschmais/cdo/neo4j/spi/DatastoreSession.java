@@ -8,7 +8,7 @@ import org.neo4j.graphdb.Node;
 
 import java.util.Map;
 
-public interface DatastoreSession<EntityId, Entity, RelationId, Relation> {
+public interface DatastoreSession<EntityId, Entity, RelationId, Relation, PrimitivePropertyDatastoreMetadata, EnumPropertyDatastoreMetadata, RelationDatastoreMetadata> {
 
     // Transactions
     public interface DatastoreTransaction {
@@ -41,26 +41,26 @@ public interface DatastoreSession<EntityId, Entity, RelationId, Relation> {
     void migrate(Entity entity, TypeSet types, TypeSet targetTypes);
 
     //Properties
-    void setProperty(Entity entity, PrimitivePropertyMethodMetadata metadata, Object value);
+    void setProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyDatastoreMetadata> metadata, Object value);
 
-    boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata metadata);
+    boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyDatastoreMetadata> metadata);
 
-    void removeProperty(Entity entity, PrimitivePropertyMethodMetadata metadata);
+    void removeProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyDatastoreMetadata> metadata);
 
-    Object getProperty(Entity entity, PrimitivePropertyMethodMetadata metadata);
+    Object getProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyDatastoreMetadata> metadata);
 
-    Enum<?> getEnumProperty(Entity entity, EnumPropertyMethodMetadata metadata);
+    Enum<?> getEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyDatastoreMetadata> metadata);
 
-    void setEnumProperty(Entity entity, EnumPropertyMethodMetadata metadata, Object value);
+    void setEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyDatastoreMetadata> metadata, Object value);
 
     // Relations
-    boolean hasRelation(Entity source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction);
+    boolean hasRelation(Entity source, RelationshipMetadata<RelationDatastoreMetadata> metadata, RelationshipMetadata.Direction direction);
 
-    Relation getSingleRelation(Entity source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction);
+    Relation getSingleRelation(Entity source, RelationshipMetadata<RelationDatastoreMetadata> metadata, RelationshipMetadata.Direction direction);
 
-    Iterable<Relation> getRelations(Entity source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction);
+    Iterable<Relation> getRelations(Entity source, RelationshipMetadata<RelationDatastoreMetadata> metadata, RelationshipMetadata.Direction direction);
 
-    Relation createRelation(Entity source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction, Entity target);
+    Relation createRelation(Entity source, RelationshipMetadata<RelationDatastoreMetadata> metadata, RelationshipMetadata.Direction direction, Entity target);
 
     void deleteRelation(Relation relation);
 

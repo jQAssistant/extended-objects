@@ -3,7 +3,7 @@ package com.buschmais.cdo.neo4j.impl.node.metadata;
 
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
 
-public class EnumPropertyMethodMetadata extends AbstractPropertyMethodMetadata {
+public class EnumPropertyMethodMetadata<DatastoreMetadata> extends AbstractPropertyMethodMetadata<DatastoreMetadata> {
 
     private Class<? extends Enum<?>> enumerationType;
 
