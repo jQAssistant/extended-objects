@@ -3,7 +3,7 @@ package com.buschmais.cdo.neo4j.impl.node.proxy.method;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.neo4j.api.proxy.NodeProxyMethod;
-import com.buschmais.cdo.neo4j.api.proxy.ProxyMethod;
+import com.buschmais.cdo.spi.proxy.ProxyMethod;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.AbstractProxyMethodService;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.UnsupportedOperationMethod;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.composite.AsMethod;

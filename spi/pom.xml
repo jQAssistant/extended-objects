@@ -28,4 +28,11 @@
         </plugins>
     </build>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.buschmais.cdo</groupId>
+            <artifactId>cdo.api</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

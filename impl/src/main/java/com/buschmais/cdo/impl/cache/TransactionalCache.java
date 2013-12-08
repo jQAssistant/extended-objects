@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.impl.cache;
+package com.buschmais.cdo.impl.cache;
 
 import java.util.HashMap;
 

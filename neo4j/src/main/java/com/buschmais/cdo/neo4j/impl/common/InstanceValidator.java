@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.common;
 
-import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
+import com.buschmais.cdo.impl.cache.TransactionalCache;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;

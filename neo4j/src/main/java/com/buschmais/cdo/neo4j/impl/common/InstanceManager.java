@@ -4,7 +4,7 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
-import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
+import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.ProxyMethodService;
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.TransactionProxyMethodService;
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;

@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.common.proxy.method;
 
-import com.buschmais.cdo.neo4j.api.proxy.ProxyMethod;
+import com.buschmais.cdo.spi.proxy.ProxyMethod;
 
 import java.lang.reflect.Method;
 

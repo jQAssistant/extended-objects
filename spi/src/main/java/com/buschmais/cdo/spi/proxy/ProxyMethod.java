@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.api.proxy;
+package com.buschmais.cdo.spi.proxy;
 
 public interface ProxyMethod<Entity> {
 

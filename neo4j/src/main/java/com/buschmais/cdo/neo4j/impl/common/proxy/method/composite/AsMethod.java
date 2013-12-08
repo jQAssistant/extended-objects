@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.common.proxy.method.composite;
 
-import com.buschmais.cdo.neo4j.api.proxy.ProxyMethod;
+import com.buschmais.cdo.spi.proxy.ProxyMethod;
 
 public class AsMethod<Entity> implements ProxyMethod<Entity> {
 

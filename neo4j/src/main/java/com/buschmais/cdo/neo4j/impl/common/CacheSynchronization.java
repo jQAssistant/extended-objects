@@ -1,7 +1,7 @@
 package com.buschmais.cdo.neo4j.impl.common;
 
 import com.buschmais.cdo.api.CdoTransaction;
-import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
+import com.buschmais.cdo.impl.cache.TransactionalCache;
 
 public class CacheSynchronization implements CdoTransaction.Synchronization{
 
