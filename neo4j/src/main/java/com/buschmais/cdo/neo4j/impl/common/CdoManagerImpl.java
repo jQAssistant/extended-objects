@@ -1,8 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.common;
 
 import com.buschmais.cdo.api.*;
-import com.buschmais.cdo.neo4j.impl.cache.TransactionalCache;
-import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
@@ -11,8 +9,6 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.*;
 
 public class CdoManagerImpl implements CdoManager {

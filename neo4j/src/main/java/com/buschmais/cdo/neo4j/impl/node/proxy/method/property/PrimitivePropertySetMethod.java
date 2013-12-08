@@ -1,7 +1,8 @@
 package com.buschmais.cdo.neo4j.impl.node.proxy.method.property;
 
-import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.neo4j.impl.common.PropertyManager;
 import org.neo4j.graphdb.Node;
 
 public class PrimitivePropertySetMethod extends AbstractPropertyMethod<PrimitivePropertyMethodMetadata> {
@@ -12,15 +13,14 @@ public class PrimitivePropertySetMethod extends AbstractPropertyMethod<Primitive
 
     public Object invoke(Node entity, Object instance, Object[] args) {
         Object value = args[0];
-        String propertyName = getMetadata().getPropertyName();
         if (value != null) {
             if (Enum.class.isAssignableFrom(getMetadata().getBeanMethod().getType())) {
                 value = ((Enum) value).name();
             }
-            entity.setProperty(propertyName, value);
+            getPropertyManager().setProperty(entity, getMetadata(), value);
         } else {
-            if (entity.hasProperty(propertyName)) {
-                entity.removeProperty(propertyName);
+            if (getPropertyManager().hasProperty(entity, getMetadata())) {
+                getPropertyManager().removeProperty(entity, getMetadata());
             }
         }
         return null;

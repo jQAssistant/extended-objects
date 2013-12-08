@@ -3,7 +3,7 @@ package com.buschmais.cdo.neo4j.impl.node.proxy.method.resultof;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.api.annotation.ResultOf;
 import com.buschmais.cdo.neo4j.api.proxy.NodeProxyMethod;
-import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.ResultOfMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;

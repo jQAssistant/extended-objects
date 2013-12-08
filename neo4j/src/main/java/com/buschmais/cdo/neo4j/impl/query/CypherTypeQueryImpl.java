@@ -2,7 +2,7 @@ package com.buschmais.cdo.neo4j.impl.query;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.neo4j.api.annotation.Cypher;
-import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import com.buschmais.cdo.neo4j.spi.TypeSet;
 

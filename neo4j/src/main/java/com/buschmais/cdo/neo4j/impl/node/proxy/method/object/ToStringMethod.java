@@ -1,7 +1,7 @@
 package com.buschmais.cdo.neo4j.impl.node.proxy.method.object;
 
 import com.buschmais.cdo.neo4j.api.proxy.NodeProxyMethod;
-import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 

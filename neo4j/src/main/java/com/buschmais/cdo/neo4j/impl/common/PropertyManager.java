@@ -1,6 +1,7 @@
-package com.buschmais.cdo.neo4j.impl.node.proxy.method.property;
+package com.buschmais.cdo.neo4j.impl.common;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.RelationshipMetadata;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import org.neo4j.graphdb.Node;
@@ -130,5 +131,21 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
             default:
                 throw new CdoException("Unsupported direction: " + direction);
         }
+    }
+
+    public void setProperty(Entity entity, PrimitivePropertyMethodMetadata metadata, Object value) {
+        datastoreSession.setProperty(entity, metadata, value);
+    }
+
+    public boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
+        return datastoreSession.hasProperty(entity, metadata);
+    }
+
+    public void removeProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
+        datastoreSession.removeProperty(entity, metadata);
+    }
+
+    public Object getProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
+        return datastoreSession.getProperty(entity, metadata);
     }
 }

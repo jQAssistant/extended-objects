@@ -1,12 +1,21 @@
 package com.buschmais.cdo.neo4j.spi;
 
 import com.buschmais.cdo.api.ResultIterator;
+import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.RelationshipMetadata;
 import org.neo4j.graphdb.Node;
 
 import java.util.Map;
 
 public interface DatastoreSession<EntityId, Entity, RelationId, Relation> {
+
+    void setProperty(Entity entity, PrimitivePropertyMethodMetadata metadata, Object value);
+
+    boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata metadata);
+
+    void removeProperty(Entity entity, PrimitivePropertyMethodMetadata metadata);
+
+    Object getProperty(Entity entity, PrimitivePropertyMethodMetadata metadata);
 
     // Transactions
 

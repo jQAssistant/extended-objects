@@ -2,10 +2,7 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
-import com.buschmais.cdo.neo4j.impl.node.metadata.IndexedPropertyMethodMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
-import com.buschmais.cdo.neo4j.impl.node.metadata.RelationshipMetadata;
+import com.buschmais.cdo.neo4j.impl.node.metadata.*;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import com.buschmais.cdo.neo4j.spi.TypeSet;
 import org.neo4j.graphdb.*;
@@ -128,6 +125,8 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         node.delete();
     }
 
+    // Relations
+
     @Override
     public boolean hasRelation(Node source, RelationshipMetadata metadata, RelationshipMetadata.Direction direction) {
         return source.hasRelationship(metadata.getRelationshipType(), getDirection(direction));
@@ -179,5 +178,28 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
             default:
                 throw new CdoException("Unsupported direction " + direction);
         }
+    }
+
+    // Properties
+
+
+    @Override
+    public void removeProperty(Node node, PrimitivePropertyMethodMetadata metadata) {
+        node.removeProperty(metadata.getPropertyName());
+    }
+
+    @Override
+    public boolean hasProperty(Node node, PrimitivePropertyMethodMetadata metadata) {
+        return node.hasProperty(metadata.getPropertyName());
+    }
+
+    @Override
+    public void setProperty(Node node, PrimitivePropertyMethodMetadata metadata, Object value) {
+        node.setProperty(metadata.getPropertyName(), value);
+    }
+
+    @Override
+    public Object getProperty(Node node, PrimitivePropertyMethodMetadata metadata) {
+        return  node.getProperty(metadata.getPropertyName());
     }
 }

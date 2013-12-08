@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.impl.node;
+package com.buschmais.cdo.neo4j.impl.common;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoTransaction;
@@ -10,7 +10,6 @@ import com.buschmais.cdo.neo4j.impl.common.proxy.method.TransactionProxyMethodSe
 import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.proxy.InstanceInvocationHandler;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.NodeProxyMethodService;
-import com.buschmais.cdo.neo4j.impl.node.proxy.method.property.PropertyManager;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 
 import java.lang.reflect.InvocationHandler;

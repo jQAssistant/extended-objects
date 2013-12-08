@@ -1,9 +1,5 @@
 package com.buschmais.cdo.neo4j.impl.node.proxy.collection;
 
-import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.RelationshipType;
-
 import java.util.AbstractSet;
 import java.util.Iterator;
 

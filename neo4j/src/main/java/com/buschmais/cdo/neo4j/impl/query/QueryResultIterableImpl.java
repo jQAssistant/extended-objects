@@ -3,7 +3,7 @@ package com.buschmais.cdo.neo4j.impl.query;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.neo4j.impl.common.AbstractResultIterable;
-import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.query.proxy.RowInvocationHandler;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.RowProxyMethodService;
 import org.neo4j.graphdb.Node;

@@ -9,13 +9,14 @@ import com.buschmais.cdo.neo4j.impl.common.proxy.method.UnsupportedOperationMeth
 import com.buschmais.cdo.neo4j.impl.common.proxy.method.composite.AsMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
-import com.buschmais.cdo.neo4j.impl.node.InstanceManager;
+import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.*;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.object.EqualsMethod;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.object.HashCodeMethod;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.object.ToStringMethod;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.property.*;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.resultof.ResultOfMethod;
+import com.buschmais.cdo.neo4j.impl.common.PropertyManager;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import org.neo4j.graphdb.Node;
 
