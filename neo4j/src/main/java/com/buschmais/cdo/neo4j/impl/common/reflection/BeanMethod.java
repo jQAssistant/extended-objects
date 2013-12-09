@@ -7,6 +7,5 @@ public interface BeanMethod {
 
     Method getMethod();
 
-    public <T extends Annotation> T getAnnotation(Class<T> type);
-
+    <T extends Annotation> T getAnnotation(Class<T> type);
 }

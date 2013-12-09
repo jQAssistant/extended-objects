@@ -5,7 +5,6 @@ import com.buschmais.cdo.neo4j.api.annotation.Property;
 import com.buschmais.cdo.neo4j.api.annotation.Relation;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
-import com.buschmais.cdo.neo4j.impl.common.reflection.UserDefinedMethod;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.EnumPropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.RelationshipMetadata;
@@ -39,14 +38,14 @@ public abstract class AbstractNeo4jDatastore<DS extends AbstractNeo4jDatastoreSe
 
     @Override
     public PrimitivePropertyMetadata createPrimitvePropertyMetadata(PropertyMethod beanPropertyMethod) {
-        Property property = beanPropertyMethod.getAnnotation(Property.class);
+        Property property = beanPropertyMethod.getPropertyAnnotation(Property.class);
         String name = property != null ? property.value() : beanPropertyMethod.getName();
         return new PrimitivePropertyMetadata(name);
     }
 
     @Override
     public EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod beanPropertyMethod) {
-        Property property = beanPropertyMethod.getAnnotation(Property.class);
+        Property property = beanPropertyMethod.getPropertyAnnotation(Property.class);
         String name = property != null ? property.value() : beanPropertyMethod.getName();
         return new EnumPropertyMetadata(name);
     }
@@ -58,15 +57,15 @@ public abstract class AbstractNeo4jDatastore<DS extends AbstractNeo4jDatastoreSe
 
     @Override
     public RelationshipMetadata createRelationMetadata(PropertyMethod beanPropertyMethod) {
-        Relation relation = beanPropertyMethod.getAnnotation(Relation.class);
+        Relation relation = beanPropertyMethod.getPropertyAnnotation(Relation.class);
         String name = relation != null ? relation.value() : StringUtils.capitalize(beanPropertyMethod.getName());
         DynamicRelationshipType relationshipType = DynamicRelationshipType.withName(name);
         return new RelationshipMetadata(relationshipType);
     }
 
     public Direction getRelationDirection(PropertyMethod beanPropertyMethod) {
-        Relation.Incoming incoming = beanPropertyMethod.getAnnotation(Relation.Incoming.class);
-        Relation.Outgoing outgoing = beanPropertyMethod.getAnnotation(Relation.Outgoing.class);
+        Relation.Incoming incoming = beanPropertyMethod.getPropertyAnnotation(Relation.Incoming.class);
+        Relation.Outgoing outgoing = beanPropertyMethod.getPropertyAnnotation(Relation.Outgoing.class);
         if (incoming != null && outgoing != null) {
             throw new CdoException("A relation property must be either incoming or outgoing: '" + beanPropertyMethod.getName() + "'");
         }

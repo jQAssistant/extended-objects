@@ -2,7 +2,6 @@ package com.buschmais.cdo.neo4j.spi;
 
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
-import com.buschmais.cdo.neo4j.impl.common.reflection.UserDefinedMethod;
 import com.buschmais.cdo.neo4j.impl.node.metadata.MetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata;
 
@@ -18,7 +17,7 @@ public interface Datastore<DS extends DatastoreSession> {
 
     <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(BeanMethod beanMethod);
 
-    <CollectionPropertyMetadata>   CollectionPropertyMetadata createCollectionPropertyMetadata(PropertyMethod beanPropertyMethod);
+    <CollectionPropertyMetadata> CollectionPropertyMetadata createCollectionPropertyMetadata(PropertyMethod beanPropertyMethod);
 
     <ReferencePropertyMetadata> ReferencePropertyMetadata createReferencePropertyMetadata(PropertyMethod beanPropertyMethod);
 
@@ -26,7 +25,7 @@ public interface Datastore<DS extends DatastoreSession> {
 
     <EnumPropertyMetadata> EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod beanPropertyMethod);
 
-    <ImplementedByMetadata> ImplementedByMetadata  createIndexedPropertyMetadata(PropertyMethod beanMethod);
+    <ImplementedByMetadata> ImplementedByMetadata createIndexedPropertyMetadata(PropertyMethod beanMethod);
 
     <RelationMetadata> RelationMetadata createRelationMetadata(PropertyMethod beanPropertyMethod);
 

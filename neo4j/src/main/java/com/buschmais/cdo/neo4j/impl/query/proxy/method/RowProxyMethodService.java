@@ -5,9 +5,9 @@ import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.cdo.impl.proxy.instance.composite.AsMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
-import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
-import com.buschmais.cdo.neo4j.impl.common.reflection.UserDefinedMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethodProvider;
+import com.buschmais.cdo.neo4j.impl.common.reflection.GetPropertyMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.EqualsMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.HashCodeMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.ToStringMethod;
@@ -27,7 +27,7 @@ public class RowProxyMethodService extends AbstractProxyMethodService<Map<String
         for (Class<?> type : types) {
             Collection<BeanMethod> beanMethodsOfType = beanMethodProvider.getMethods(type);
             for (BeanMethod beanMethod : beanMethodsOfType) {
-                if (!(beanMethod instanceof PropertyMethod)) {
+                if (!(beanMethod instanceof GetPropertyMethod)) {
                     throw new CdoException("Only get methods are supported for projections: '" + beanMethod.getMethod().getName() + "'.");
                 }
                 PropertyMethod beanPropertyMethod = (PropertyMethod) beanMethod;

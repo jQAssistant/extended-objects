@@ -9,7 +9,7 @@ import com.buschmais.cdo.neo4j.api.annotation.ResultOf;
 import com.buschmais.cdo.neo4j.impl.common.DependencyResolver;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
-import com.buschmais.cdo.neo4j.impl.common.reflection.UserDefinedMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.UserMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethodProvider;
 import com.buschmais.cdo.neo4j.spi.Datastore;
 import org.neo4j.graphdb.DynamicLabel;
@@ -84,7 +84,7 @@ public class MetadataProvider {
             } else if (beanMethod instanceof PropertyMethod) {
                 methodMetadata = createPropertyMethodMetadata(types, (PropertyMethod) beanMethod);
             } else {
-                methodMetadata = new UnsupportedOperationMethodMetadata((UserDefinedMethod) beanMethod);
+                methodMetadata = new UnsupportedOperationMethodMetadata((UserMethod) beanMethod);
             }
             Indexed indexedAnnotation = beanMethod.getAnnotation(Indexed.class);
             if (indexedAnnotation != null) {

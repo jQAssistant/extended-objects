@@ -8,7 +8,9 @@ import com.buschmais.cdo.neo4j.api.proxy.NodeProxyMethod;
 import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.common.PropertyManager;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.GetPropertyMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.SetPropertyMethod;
 import com.buschmais.cdo.neo4j.impl.node.metadata.*;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.object.EqualsMethod;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.object.HashCodeMethod;
@@ -46,35 +48,30 @@ public class EntityProxyMethodService extends AbstractProxyMethodService<Node, N
                 }
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
                     PropertyMethod beanPropertyMethod = (PropertyMethod) beanMethod;
-                    Method getter = beanPropertyMethod.getGetter();
-                    Method setter = beanPropertyMethod.getSetter();
+                    Method method = beanPropertyMethod.getMethod();
                     if (methodMetadata instanceof PrimitivePropertyMethodMetadata) {
-                        if (getter != null) {
-                            addProxyMethod(new PrimitivePropertyGetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), getter);
-                        }
-                        if (setter != null) {
-                            addProxyMethod(new PrimitivePropertySetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), setter);
+                        if (beanPropertyMethod instanceof GetPropertyMethod) {
+                            addProxyMethod(new PrimitivePropertyGetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
+                        } else if (beanPropertyMethod instanceof SetPropertyMethod) {
+                            addProxyMethod(new PrimitivePropertySetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
                         }
                     } else if (methodMetadata instanceof EnumPropertyMethodMetadata) {
-                        if (getter != null) {
-                            addProxyMethod(new EnumPropertyGetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), getter);
-                        }
-                        if (setter != null) {
-                            addProxyMethod(new EnumPropertySetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), setter);
+                        if (beanPropertyMethod instanceof GetPropertyMethod) {
+                            addProxyMethod(new EnumPropertyGetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
+                        } else if (beanPropertyMethod instanceof SetPropertyMethod) {
+                            addProxyMethod(new EnumPropertySetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
                         }
                     } else if (methodMetadata instanceof ReferencePropertyMethodMetadata) {
-                        if (getter != null) {
-                            addProxyMethod(new ReferencePropertyGetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), getter);
-                        }
-                        if (setter != null) {
-                            addProxyMethod(new ReferencePropertySetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), setter);
+                        if (beanPropertyMethod instanceof GetPropertyMethod) {
+                            addProxyMethod(new ReferencePropertyGetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
+                        } else if (beanPropertyMethod instanceof SetPropertyMethod) {
+                            addProxyMethod(new ReferencePropertySetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
                         }
                     } else if (methodMetadata instanceof CollectionPropertyMethodMetadata) {
-                        if (getter != null) {
-                            addProxyMethod(new CollectionPropertyGetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), getter);
-                        }
-                        if (setter != null) {
-                            addProxyMethod(new CollectionPropertySetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), setter);
+                        if (beanPropertyMethod instanceof GetPropertyMethod) {
+                            addProxyMethod(new CollectionPropertyGetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
+                        } else if (beanPropertyMethod instanceof SetPropertyMethod) {
+                            addProxyMethod(new CollectionPropertySetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
                         }
                     }
                 }

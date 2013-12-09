@@ -42,15 +42,25 @@ public final class BeanMethodProvider {
             }
         }
         List<BeanMethod> beanMethods = new ArrayList<>();
+        Map<String, GetPropertyMethod> getPropertyMethods = new HashMap<>();
         for (Map.Entry<String, Method> methodEntry : getters.entrySet()) {
             String name = methodEntry.getKey();
             Method getter = methodEntry.getValue();
-            Method setter = setters.get(name);
             Class<?> propertyType = types.get(name);
-            beanMethods.add(new PropertyMethod(getter, setter, name, propertyType));
+            GetPropertyMethod getPropertyMethod = new GetPropertyMethod(getter, name, propertyType);
+            beanMethods.add(getPropertyMethod);
+            getPropertyMethods.put(name, getPropertyMethod);
+        }
+        for (Map.Entry<String, Method> methodEntry : setters.entrySet()) {
+            String name = methodEntry.getKey();
+            Method setter = methodEntry.getValue();
+            GetPropertyMethod getPropertyMethod = getPropertyMethods.get(name);
+            Class<?> propertyType = types.get(name);
+            SetPropertyMethod setPropertyMethod = new SetPropertyMethod(setter, getPropertyMethod, name, propertyType);
+            beanMethods.add(setPropertyMethod);
         }
         for (Method method : methods) {
-            beanMethods.add(new UserDefinedMethod(method));
+            beanMethods.add(new UserMethod(method));
         }
         return beanMethods;
     }
@@ -61,5 +71,4 @@ public final class BeanMethodProvider {
             throw new CdoException("Get and set methods for property '" + name + "' do not declare the same type.");
         }
     }
-
 }
