@@ -10,6 +10,7 @@ import com.buschmais.cdo.impl.proxy.TransactionProxyMethodService;
 import com.buschmais.cdo.neo4j.impl.node.metadata.MetadataProvider;
 import com.buschmais.cdo.impl.proxy.instance.InstanceInvocationHandler;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.EntityProxyMethodService;
+import com.buschmais.cdo.neo4j.spi.DatastoreMetadataProvider;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 
 import java.lang.reflect.InvocationHandler;

@@ -26,8 +26,8 @@ import java.lang.reflect.Method;
 public class EntityProxyMethodService extends AbstractProxyMethodService<Node, NodeProxyMethod> {
 
     public EntityProxyMethodService(MetadataProvider metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, DatastoreSession datastoreSession) {
-        for (EntityMetadata<?> entityMetadata : metadataProvider.getRegisteredNodeMetadata()) {
-            for (AbstractMethodMetadata methodMetadata : entityMetadata.getProperties()) {
+        for (TypeMetadata<?> typeMetadata : metadataProvider.getRegisteredMetadata()) {
+            for (AbstractMethodMetadata methodMetadata : typeMetadata.getProperties()) {
                 BeanMethod beanMethod = methodMetadata.getBeanMethod();
                 if (methodMetadata instanceof UnsupportedOperationMethodMetadata) {
                     addProxyMethod(new UnsupportedOperationMethod((UnsupportedOperationMethodMetadata) methodMetadata), beanMethod.getMethod());

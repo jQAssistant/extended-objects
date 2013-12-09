@@ -4,15 +4,14 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.neo4j.api.annotation.ImplementedBy;
 import com.buschmais.cdo.neo4j.api.annotation.Indexed;
-import com.buschmais.cdo.neo4j.api.annotation.Label;
 import com.buschmais.cdo.neo4j.api.annotation.ResultOf;
 import com.buschmais.cdo.neo4j.impl.common.DependencyResolver;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethodProvider;
 import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.UserMethod;
-import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethodProvider;
 import com.buschmais.cdo.neo4j.spi.Datastore;
-import org.neo4j.graphdb.DynamicLabel;
+import com.buschmais.cdo.neo4j.spi.DatastoreMetadataProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,13 +23,14 @@ import java.util.*;
 
 public class MetadataProvider {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EntityMetadata.class);
-    private Datastore<?> datastore;
-    private Map<Class<?>, EntityMetadata> entityMetadataByType = new HashMap<>();
-    private Map<org.neo4j.graphdb.Label, Set<EntityMetadata>> entityMetadataByLabel = new HashMap<>();
+    private static final Logger LOGGER = LoggerFactory.getLogger(TypeMetadata.class);
+    private Datastore.DatastoreMetadataFactory<?> metadataFactory;
+    private DatastoreMetadataProvider datastoreMetadataProvider;
+
+    private Map<Class<?>, TypeMetadata> entityMetadataByType = new HashMap<>();
 
     public MetadataProvider(Collection<Class<?>> types, Datastore<?> datastore) {
-        this.datastore = datastore;
+        this.metadataFactory = datastore.getMetadataFactory();
         DependencyResolver.DependencyProvider<Class<?>> classDependencyProvider = new DependencyResolver.DependencyProvider<Class<?>>() {
             @Override
             public Set<Class<?>> getDependencies(Class<?> dependent) {
@@ -50,22 +50,25 @@ public class MetadataProvider {
         for (Class<?> type : allTypes) {
             createMetadata(type, typeMethods.get(type), typeMethods.keySet());
         }
+        datastoreMetadataProvider = datastore.createMetadataProvider(entityMetadataByType.values());
+        entityMetadataByType.put(CompositeObject.class, new TypeMetadata(CompositeObject.class, Collections.<AbstractMethodMetadata>emptyList(), null, null));
+
     }
 
-    public Collection<EntityMetadata> getRegisteredNodeMetadata() {
+    public DatastoreMetadataProvider getDatastoreMetadataProvider() {
+        return datastoreMetadataProvider;
+    }
+
+    public Collection<TypeMetadata> getRegisteredMetadata() {
         return entityMetadataByType.values();
     }
 
-    public EntityMetadata getEntityMetadata(Class<?> type) {
-        EntityMetadata entityMetadata = entityMetadataByType.get(type);
-        if (entityMetadata == null) {
+    public TypeMetadata getEntityMetadata(Class<?> type) {
+        TypeMetadata typeMetadata = entityMetadataByType.get(type);
+        if (typeMetadata == null) {
             throw new CdoException("Cannot resolve metadata for type " + type.getName() + ".");
         }
-        return entityMetadata;
-    }
-
-    public Set<EntityMetadata> getEntityMetadata(org.neo4j.graphdb.Label label) {
-        return entityMetadataByLabel.get(label);
+        return typeMetadata;
     }
 
     private void createMetadata(Class<?> type, Collection<BeanMethod> beanMethods, Set<Class<?>> types) {
@@ -78,7 +81,7 @@ public class MetadataProvider {
             ResultOf resultOf = beanMethod.getAnnotation(ResultOf.class);
             ImplementedBy implementedBy = beanMethod.getAnnotation(ImplementedBy.class);
             if (implementedBy != null) {
-                methodMetadata = new ImplementedByMethodMetadata(beanMethod, implementedBy.value(), datastore.createImplementedByMetadata(beanMethod));
+                methodMetadata = new ImplementedByMethodMetadata(beanMethod, implementedBy.value(), metadataFactory.createImplementedByMetadata(beanMethod));
             } else if (resultOf != null) {
                 methodMetadata = createResultOfMetadata(beanMethod, resultOf);
             } else if (beanMethod instanceof PropertyMethod) {
@@ -91,56 +94,25 @@ public class MetadataProvider {
                 if (!(methodMetadata instanceof PrimitivePropertyMethodMetadata)) {
                     throw new CdoException("Only primitve properties are allowed to be annotated with " + Indexed.class.getName());
                 }
-                indexedProperty = new IndexedPropertyMethodMetadata((PropertyMethod) beanMethod, (PrimitivePropertyMethodMetadata) methodMetadata, indexedAnnotation.create(), datastore.createIndexedPropertyMetadata((PropertyMethod) beanMethod));
+                indexedProperty = new IndexedPropertyMethodMetadata((PropertyMethod) beanMethod, (PrimitivePropertyMethodMetadata) methodMetadata, indexedAnnotation.create(), metadataFactory.createIndexedPropertyMetadata((PropertyMethod) beanMethod));
             }
             methodMetadataList.add(methodMetadata);
         }
-        Label labelAnnotation = type.getAnnotation(Label.class);
-        SortedSet<org.neo4j.graphdb.Label> aggregatedLabels = new TreeSet<>(new Comparator<org.neo4j.graphdb.Label>() {
-            @Override
-            public int compare(org.neo4j.graphdb.Label o1, org.neo4j.graphdb.Label o2) {
-                return o1.name().compareTo(o2.name());
-            }
-        });
-        org.neo4j.graphdb.Label label = null;
-        if (labelAnnotation != null) {
-            label = DynamicLabel.label(labelAnnotation.value());
-            aggregatedLabels.add(label);
-            Class<?> usingIndexOf = labelAnnotation.usingIndexedPropertyOf();
-            if (!Object.class.equals(usingIndexOf)) {
-                indexedProperty = entityMetadataByType.get(usingIndexOf).getIndexedProperty();
-            }
-        }
-        for (Class<?> implementedInterface : type.getInterfaces()) {
-            EntityMetadata superEntityMetadata = entityMetadataByType.get(implementedInterface);
-            aggregatedLabels.addAll(superEntityMetadata.getAggregatedLabels());
-        }
-        EntityMetadata<?> entityMetadata = new EntityMetadata(type, label, aggregatedLabels, methodMetadataList, indexedProperty, datastore.createEntityMetadata(type));
-        // determine all possible metadata for a label
-        for (org.neo4j.graphdb.Label aggregatedLabel : entityMetadata.getAggregatedLabels()) {
-            Set<EntityMetadata> entityMetadataOfLabel = entityMetadataByLabel.get(aggregatedLabel);
-            if (entityMetadataOfLabel == null) {
-                entityMetadataOfLabel = new HashSet<>();
-                entityMetadataByLabel.put(label, entityMetadataOfLabel);
-            }
-            entityMetadataOfLabel.add(entityMetadata);
-        }
-        LOGGER.info("Registering {}, labels={}.", type.getName(), aggregatedLabels);
-        entityMetadataByType.put(type, entityMetadata);
-        entityMetadataByType.put(CompositeObject.class, new EntityMetadata(CompositeObject.class, null, Collections.<org.neo4j.graphdb.Label>emptySet(), Collections.<AbstractMethodMetadata>emptyList(), null, null));
+        TypeMetadata typeMetadata = new TypeMetadata(type, methodMetadataList, indexedProperty, metadataFactory.createEntityMetadata(type, entityMetadataByType));
+        entityMetadataByType.put(type, typeMetadata);
     }
 
     private AbstractMethodMetadata createPropertyMethodMetadata(Set<Class<?>> types, PropertyMethod beanPropertyMethod) {
         AbstractMethodMetadata methodMetadata;
         if (Collection.class.isAssignableFrom(beanPropertyMethod.getType())) {
-            methodMetadata = new CollectionPropertyMethodMetadata(beanPropertyMethod, new RelationMetadata(datastore.createRelationMetadata(beanPropertyMethod)), datastore.getRelationDirection(beanPropertyMethod), datastore.createCollectionPropertyMetadata(beanPropertyMethod));
+            methodMetadata = new CollectionPropertyMethodMetadata(beanPropertyMethod, new RelationMetadata(metadataFactory.createRelationMetadata(beanPropertyMethod)), metadataFactory.getRelationDirection(beanPropertyMethod), metadataFactory.createCollectionPropertyMetadata(beanPropertyMethod));
         } else if (types.contains(beanPropertyMethod.getType())) {
-            methodMetadata = new ReferencePropertyMethodMetadata(beanPropertyMethod, new RelationMetadata(datastore.createRelationMetadata(beanPropertyMethod)), datastore.getRelationDirection(beanPropertyMethod), datastore.createReferencePropertyMetadata(beanPropertyMethod));
+            methodMetadata = new ReferencePropertyMethodMetadata(beanPropertyMethod, new RelationMetadata(metadataFactory.createRelationMetadata(beanPropertyMethod)), metadataFactory.getRelationDirection(beanPropertyMethod), metadataFactory.createReferencePropertyMetadata(beanPropertyMethod));
         } else {
             if (Enum.class.isAssignableFrom(beanPropertyMethod.getType())) {
-                methodMetadata = new EnumPropertyMethodMetadata(beanPropertyMethod, beanPropertyMethod.getType(), datastore.createEnumPropertyMetadata(beanPropertyMethod));
+                methodMetadata = new EnumPropertyMethodMetadata(beanPropertyMethod, beanPropertyMethod.getType(), metadataFactory.createEnumPropertyMetadata(beanPropertyMethod));
             } else {
-                methodMetadata = new PrimitivePropertyMethodMetadata(beanPropertyMethod, datastore.createPrimitvePropertyMetadata(beanPropertyMethod));
+                methodMetadata = new PrimitivePropertyMethodMetadata(beanPropertyMethod, metadataFactory.createPrimitvePropertyMetadata(beanPropertyMethod));
             }
         }
         return methodMetadata;

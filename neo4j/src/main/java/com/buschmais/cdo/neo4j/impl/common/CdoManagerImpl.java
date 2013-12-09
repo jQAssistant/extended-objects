@@ -5,20 +5,20 @@ import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import com.buschmais.cdo.neo4j.spi.TypeSet;
-import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 
 import javax.validation.ConstraintViolation;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Set;
 
-public class CdoManagerImpl implements CdoManager {
+public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements CdoManager {
 
     private final CdoTransaction cdoTransaction;
-    private final DatastoreSession<Long, Node, Long, Relationship, ?, ?, ?> datastoreSession;
-    private final InstanceManager<Long, Node> instanceManager;
+    private final DatastoreSession<EntityId, Entity, RelationId, Relation, ?, ?, ?> datastoreSession;
+    private final InstanceManager<EntityId, Entity> instanceManager;
     private final InstanceValidator instanceValidator;
 
-    public CdoManagerImpl(CdoTransaction cdoTransaction, DatastoreSession<Long, Node, Long, Relationship, ?, ?, ?> datastoreSession, InstanceManager instanceManager, InstanceValidator instanceValidator) {
+    public CdoManagerImpl(CdoTransaction cdoTransaction, DatastoreSession<EntityId, Entity, RelationId, Relation, ?, ?, ?> datastoreSession, InstanceManager instanceManager, InstanceValidator instanceValidator) {
         this.cdoTransaction = cdoTransaction;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
@@ -37,7 +37,7 @@ public class CdoManagerImpl implements CdoManager {
 
     @Override
     public <T> ResultIterable<T> find(final Class<T> type, final Object value) {
-        final ResultIterator<Node> iterator = datastoreSession.find(type, value);
+        final ResultIterator<Entity> iterator = datastoreSession.find(type, value);
         return new AbstractResultIterable<T>() {
             @Override
             public ResultIterator<T> iterator() {
@@ -50,8 +50,8 @@ public class CdoManagerImpl implements CdoManager {
 
                     @Override
                     public T next() {
-                        Node node = iterator.next();
-                        return instanceManager.getInstance(node);
+                        Entity entity = iterator.next();
+                        return instanceManager.getInstance(entity);
                     }
 
                     @Override
@@ -71,8 +71,8 @@ public class CdoManagerImpl implements CdoManager {
     @Override
     public CompositeObject create(Class type, Class<?>... types) {
         TypeSet effectiveTypes = getEffectiveTypes(type, types);
-        Node node = datastoreSession.create(effectiveTypes);
-        return instanceManager.getInstance(node);
+        Entity entity = datastoreSession.create(effectiveTypes);
+        return instanceManager.getInstance(entity);
     }
 
     public <T> T create(Class<T> type) {
@@ -81,12 +81,12 @@ public class CdoManagerImpl implements CdoManager {
 
     @Override
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
-        Node node = instanceManager.getEntity(instance);
-        TypeSet types = datastoreSession.getTypes(node);
+        Entity entity = instanceManager.getEntity(instance);
+        TypeSet types = datastoreSession.getTypes(entity);
         TypeSet effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
-        datastoreSession.migrate(node, types, effectiveTargetTypes);
+        datastoreSession.migrate(entity, types, effectiveTargetTypes);
         instanceManager.removeInstance(instance);
-        CompositeObject migratedInstance = instanceManager.getInstance(node);
+        CompositeObject migratedInstance = instanceManager.getInstance(entity);
         if (migrationStrategy != null) {
             migrationStrategy.migrate(instance, migratedInstance.as(targetType));
         }
@@ -111,10 +111,10 @@ public class CdoManagerImpl implements CdoManager {
 
     @Override
     public <T> void delete(T instance) {
-        Node node = instanceManager.getEntity(instance);
+        Entity entity = instanceManager.getEntity(instance);
         instanceManager.removeInstance(instance);
         instanceManager.destroyInstance(instance);
-        datastoreSession.delete(node);
+        datastoreSession.delete(entity);
     }
 
     @Override

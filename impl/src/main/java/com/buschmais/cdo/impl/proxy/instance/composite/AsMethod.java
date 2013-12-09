@@ -6,6 +6,7 @@ public class AsMethod<Entity> implements ProxyMethod<Entity> {
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
-        return ((Class<?>) args[0]).cast(instance);
+        Class<?> targetType = (Class<?>) args[0];
+        return targetType.cast(instance);
     }
 }

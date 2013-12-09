@@ -3,13 +3,15 @@ package com.buschmais.cdo.neo4j.impl;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
 import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastoreSession;
+import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.IndexedPropertyMethodMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.EntityMetadata;
+import com.buschmais.cdo.neo4j.impl.node.metadata.TypeMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.MetadataProvider;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.schema.IndexDefinition;
@@ -36,10 +38,10 @@ public class EmbeddedNeo4jCdoManagerFactoryImpl extends AbstractNeo4jCdoManagerF
         EmbeddedNeo4jDatastoreSession session = datastore.createSession(metadataProvider);
         GraphDatabaseService graphDatabaseService = session.getGraphDatabaseService();
         try (Transaction transaction = graphDatabaseService.beginTx()) {
-            for (EntityMetadata entityMetadata : metadataProvider.getRegisteredNodeMetadata()) {
-                IndexedPropertyMethodMetadata indexedPropertyMethodMetadata = entityMetadata.getIndexedProperty();
+            for (TypeMetadata<NodeMetadata> typeMetadata : metadataProvider.getRegisteredMetadata()) {
+                IndexedPropertyMethodMetadata indexedPropertyMethodMetadata = typeMetadata.getIndexedProperty();
                 if (indexedPropertyMethodMetadata != null && indexedPropertyMethodMetadata.isCreate()) {
-                    Label label = entityMetadata.getLabel();
+                    Label label = typeMetadata.getDatastoreMetadata().getLabel();
                     PrimitivePropertyMethodMetadata propertyMethodMetadata = indexedPropertyMethodMetadata.getPropertyMethodMetadata();
                     if (label != null && propertyMethodMetadata != null) {
                         reCreateIndex(graphDatabaseService, label, propertyMethodMetadata);
