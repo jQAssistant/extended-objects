@@ -4,7 +4,6 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.cdo.impl.proxy.instance.composite.AsMethod;
-import com.buschmais.cdo.neo4j.api.proxy.NodeProxyMethod;
 import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.common.PropertyManager;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
@@ -19,11 +18,10 @@ import com.buschmais.cdo.neo4j.impl.node.proxy.method.property.*;
 import com.buschmais.cdo.neo4j.impl.node.proxy.method.resultof.ResultOfMethod;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import com.buschmais.cdo.spi.proxy.ProxyMethod;
-import org.neo4j.graphdb.Node;
 
 import java.lang.reflect.Method;
 
-public class EntityProxyMethodService extends AbstractProxyMethodService<Node, NodeProxyMethod> {
+public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Entity, M> {
 
     public EntityProxyMethodService(MetadataProvider metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, DatastoreSession datastoreSession) {
         for (TypeMetadata<?> typeMetadata : metadataProvider.getRegisteredMetadata()) {
@@ -77,9 +75,9 @@ public class EntityProxyMethodService extends AbstractProxyMethodService<Node, N
                 }
             }
         }
-        addMethod(new AsMethod<Node>(), CompositeObject.class, "as", Class.class);
-        addMethod(new HashCodeMethod(), Object.class, "hashCode");
-        addMethod(new EqualsMethod(instanceManager), Object.class, "equals", Object.class);
-        addMethod(new ToStringMethod(instanceManager), Object.class, "toString");
+        addMethod(new AsMethod<Entity>(), CompositeObject.class, "as", Class.class);
+        addMethod(new HashCodeMethod<Entity>(datastoreSession), Object.class, "hashCode");
+        addMethod(new EqualsMethod<Entity>(instanceManager, datastoreSession), Object.class, "equals", Object.class);
+        addMethod(new ToStringMethod<Entity>(datastoreSession), Object.class, "toString");
     }
 }

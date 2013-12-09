@@ -2,17 +2,16 @@ package com.buschmais.cdo.neo4j.impl.node.proxy.method.resultof;
 
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.api.annotation.ResultOf;
-import com.buschmais.cdo.neo4j.api.proxy.NodeProxyMethod;
 import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.ResultOfMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
-import org.neo4j.graphdb.Node;
+import com.buschmais.cdo.spi.proxy.ProxyMethod;
 
 import java.util.Collections;
 import java.util.List;
 
-public class ResultOfMethod implements NodeProxyMethod {
+public class ResultOfMethod<Entity> implements ProxyMethod<Entity> {
 
     private ResultOfMethodMetadata resultOfMethodMetadata;
     private InstanceManager instanceManager;
@@ -25,7 +24,7 @@ public class ResultOfMethod implements NodeProxyMethod {
     }
 
     @Override
-    public Object invoke(Node entity, Object instance, Object[] args) {
+    public Object invoke(Entity entity, Object instance, Object[] args) {
         CypherTypeQueryImpl query = new CypherTypeQueryImpl(resultOfMethodMetadata.getQuery(), datastoreSession, instanceManager, Collections.<Class<?>>emptyList());
         String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
         query.withParameter(usingThisAs, instance);

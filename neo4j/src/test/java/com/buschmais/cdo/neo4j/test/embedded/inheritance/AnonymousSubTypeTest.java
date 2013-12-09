@@ -17,7 +17,7 @@ public class AnonymousSubTypeTest extends AbstractEmbeddedCdoManagerTest {
     }
 
     @Test
-    public void anonymousSuperType() {
+    public void anonymousSubType() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
         D b = cdoManager.create(D.class);

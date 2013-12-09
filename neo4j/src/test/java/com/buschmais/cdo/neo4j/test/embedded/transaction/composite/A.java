@@ -2,7 +2,7 @@ package com.buschmais.cdo.neo4j.test.embedded.transaction.composite;
 
 import com.buschmais.cdo.neo4j.api.annotation.ImplementedBy;
 import com.buschmais.cdo.neo4j.api.annotation.Label;
-import com.buschmais.cdo.neo4j.api.proxy.NodeProxyMethod;
+import com.buschmais.cdo.spi.proxy.ProxyMethod;
 import org.neo4j.graphdb.Node;
 
 @Label("A")
@@ -18,7 +18,7 @@ public interface A {
     @ImplementedBy(ThrowRuntimeException.class)
     void throwRuntimeException(String value);
 
-    class ThrowException implements NodeProxyMethod {
+    class ThrowException implements ProxyMethod<Node> {
         @Override
         public Object invoke(Node node, Object instance, Object[] args) throws Exception {
             ((A) instance).setValue((String) args[0]);
@@ -26,7 +26,7 @@ public interface A {
         }
     }
 
-    class ThrowRuntimeException implements NodeProxyMethod {
+    class ThrowRuntimeException implements ProxyMethod<Node> {
         @Override
         public Object invoke(Node node, Object instance, Object[] args) {
             ((A) instance).setValue((String) args[0]);
