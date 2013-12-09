@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 
-public abstract class AbstractCypherQueryImpl<QL> implements Query {
+public class CdoQueryImpl<QL> implements Query {
 
     private QL expression;
     private DatastoreSession datastoreSession;
@@ -20,7 +20,7 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
     private Collection<Class<?>> types;
     private Map<String, Object> parameters = null;
 
-    public AbstractCypherQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager, Collection<Class<?>> types) {
+    public CdoQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager, Collection<Class<?>> types) {
         this.expression = expression;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
@@ -50,7 +50,6 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
 
     @Override
     public <T> Result<T> execute() {
-        String query = getQuery();
         Map<String, Object> effectiveParameters = new HashMap<>();
         if (parameters != null) {
             for (Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
@@ -62,17 +61,17 @@ public abstract class AbstractCypherQueryImpl<QL> implements Query {
                 effectiveParameters.put(name, value);
             }
         }
-        ResultIterator<Map<String, Object>> iterator = datastoreSession.execute(query, effectiveParameters);
-        SortedSet<Class<?>> resultTypes = getResultTypes(expression, types);
+        ResultIterator<Map<String, Object>> iterator = datastoreSession.execute(expression, effectiveParameters);
+        SortedSet<Class<?>> resultTypes = getResultTypes();
         return new QueryResultIterableImpl(instanceManager, iterator, resultTypes);
     }
 
-    protected QL getExpression() {
-        return expression;
+    private TypeSet getResultTypes() {
+        TypeSet resultTypes = new TypeSet();
+        resultTypes.addAll(types);
+        if (expression instanceof Class<?>) {
+            resultTypes.add((Class<?>) expression);
+        }
+        return resultTypes;
     }
-
-    protected abstract String getQuery();
-
-    protected abstract TypeSet getResultTypes(QL expression, Collection<Class<?>> types);
-
 }

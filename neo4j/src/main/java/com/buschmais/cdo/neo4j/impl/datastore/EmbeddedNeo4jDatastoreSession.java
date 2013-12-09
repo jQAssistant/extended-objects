@@ -63,8 +63,8 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
     }
 
     @Override
-    public ResultIterator<Map<String, Object>> execute(String query, Map<String, Object> parameters) {
-        ExecutionResult executionResult = executionEngine.execute(query, parameters);
+    public <QL> ResultIterator<Map<String, Object>> execute(QL expression, Map<String, Object> parameters) {
+        ExecutionResult executionResult = executionEngine.execute(getCypher(expression), parameters);
         return new ResourceResultIterator(executionResult.iterator());
     }
 }

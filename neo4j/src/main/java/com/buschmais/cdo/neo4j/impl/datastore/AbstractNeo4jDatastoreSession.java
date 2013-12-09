@@ -2,16 +2,16 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
+import com.buschmais.cdo.neo4j.api.annotation.Cypher;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.*;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.*;
-import com.buschmais.cdo.neo4j.spi.DatastoreMetadataProvider;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import com.buschmais.cdo.neo4j.spi.TypeSet;
 import org.neo4j.graphdb.*;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, Long, Relationship, PrimitivePropertyMetadata, EnumPropertyMetadata, RelationshipMetadata> {
@@ -88,6 +88,20 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     @Override
     public void delete(Node node) {
         node.delete();
+    }
+
+    protected <QL> String getCypher(QL expression) {
+        if (expression instanceof String) {
+            return (String) expression;
+        } else if (expression instanceof Class<?>) {
+            Class<?> typeExpression = (Class) expression;
+            Cypher cypher = typeExpression.getAnnotation(Cypher.class);
+            if (cypher == null) {
+                throw new CdoException(typeExpression.getName() + " must be annotated with " + Cypher.class.getName());
+            }
+            return cypher.value();
+        }
+        throw new CdoException("Unsupported query expression " + expression);
     }
 
     // Relations

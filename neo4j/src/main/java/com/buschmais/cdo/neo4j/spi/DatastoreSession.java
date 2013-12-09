@@ -1,5 +1,6 @@
 package com.buschmais.cdo.neo4j.spi;
 
+import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.neo4j.impl.node.metadata.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
@@ -35,7 +36,7 @@ public interface DatastoreSession<EntityId, Entity, RelationId, Relation, Primit
 
     ResultIterator<Entity> find(Class<?> type, Object value);
 
-    ResultIterator<Map<String, Object>> execute(String query, Map<String, Object> parameters);
+    <QL> ResultIterator<Map<String, Object>> execute(QL query, Map<String, Object> parameters);
 
     void migrate(Entity entity, TypeSet types, TypeSet targetTypes);
 

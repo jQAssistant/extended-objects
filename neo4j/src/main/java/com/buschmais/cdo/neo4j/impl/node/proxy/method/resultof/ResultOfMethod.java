@@ -4,7 +4,7 @@ import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.api.annotation.ResultOf;
 import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
 import com.buschmais.cdo.neo4j.impl.node.metadata.ResultOfMethodMetadata;
-import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
+import com.buschmais.cdo.neo4j.impl.query.CdoQueryImpl;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import com.buschmais.cdo.spi.proxy.ProxyMethod;
 
@@ -25,7 +25,7 @@ public class ResultOfMethod<Entity> implements ProxyMethod<Entity> {
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
-        CypherTypeQueryImpl query = new CypherTypeQueryImpl(resultOfMethodMetadata.getQuery(), datastoreSession, instanceManager, Collections.<Class<?>>emptyList());
+        CdoQueryImpl<Class<?>> query = new CdoQueryImpl(resultOfMethodMetadata.getQuery(), datastoreSession, instanceManager, Collections.<Class<?>>emptyList());
         String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
         query.withParameter(usingThisAs, instance);
         List<ResultOf.Parameter> parameters = resultOfMethodMetadata.getParameters();

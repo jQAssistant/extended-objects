@@ -1,11 +1,9 @@
 package com.buschmais.cdo.neo4j.impl.common;
 
 import com.buschmais.cdo.api.*;
-import com.buschmais.cdo.neo4j.impl.query.CypherStringQueryImpl;
-import com.buschmais.cdo.neo4j.impl.query.CypherTypeQueryImpl;
+import com.buschmais.cdo.neo4j.impl.query.CdoQueryImpl;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import com.buschmais.cdo.neo4j.spi.TypeSet;
-import org.neo4j.graphdb.Relationship;
 
 import javax.validation.ConstraintViolation;
 import java.util.Arrays;
@@ -119,12 +117,7 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
 
     @Override
     public <QL> Query createQuery(QL query, Class<?>... types) {
-        if (query instanceof String) {
-            return new CypherStringQueryImpl(String.class.cast(query), datastoreSession, instanceManager, Arrays.asList(types));
-        } else if (query instanceof Class<?>) {
-            return new CypherTypeQueryImpl(Class.class.cast(query), datastoreSession, instanceManager, Arrays.asList(types));
-        }
-        throw new CdoException("Unsupported query language of type " + query.getClass().getName());
+        return new CdoQueryImpl(query, datastoreSession, instanceManager, Arrays.asList(types) );
     }
 
     @Override
