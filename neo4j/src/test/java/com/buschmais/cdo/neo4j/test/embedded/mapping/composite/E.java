@@ -2,12 +2,12 @@ package com.buschmais.cdo.neo4j.test.embedded.mapping.composite;
 
 import com.buschmais.cdo.neo4j.api.annotation.Label;
 import com.buschmais.cdo.neo4j.api.annotation.Relation;
-import com.buschmais.cdo.neo4j.api.annotation.ResultOf;
+import com.buschmais.cdo.api.annotation.ResultOf;
 
 import java.util.List;
 
 import static com.buschmais.cdo.api.Query.Result;
-import static com.buschmais.cdo.neo4j.api.annotation.ResultOf.Parameter;
+import static com.buschmais.cdo.api.annotation.ResultOf.Parameter;
 
 @Label("E")
 public interface E {

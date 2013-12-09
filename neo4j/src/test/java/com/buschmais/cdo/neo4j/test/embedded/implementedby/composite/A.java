@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.test.embedded.implementedby.composite;
 
-import com.buschmais.cdo.neo4j.api.annotation.ImplementedBy;
+import com.buschmais.cdo.api.annotation.ImplementedBy;
 import com.buschmais.cdo.neo4j.api.annotation.Label;
 
 @Label("A")

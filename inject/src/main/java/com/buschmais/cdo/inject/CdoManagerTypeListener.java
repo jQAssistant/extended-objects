@@ -3,11 +3,11 @@ package com.buschmais.cdo.inject;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 
+import com.buschmais.cdo.neo4j.impl.AbstractCdoManagerFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.neo4j.impl.AbstractNeo4jCdoManagerFactoryImpl;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
@@ -15,7 +15,7 @@ import com.google.inject.spi.TypeListener;
 public class CdoManagerTypeListener implements TypeListener {
 
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(AbstractNeo4jCdoManagerFactoryImpl.class);
+			.getLogger(AbstractCdoManagerFactoryImpl.class);
 
 	@Override
 	public <T> void hear(TypeLiteral<T> literal, TypeEncounter<T> encounter) {

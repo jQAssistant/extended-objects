@@ -4,24 +4,24 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.neo4j.api.annotation.Label;
 import com.buschmais.cdo.neo4j.api.annotation.Property;
 import com.buschmais.cdo.neo4j.api.annotation.Relation;
-import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
-import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
+import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
+import com.buschmais.cdo.spi.reflection.BeanMethod;
+import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.EnumPropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.RelationshipMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.IndexedPropertyMethodMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.TypeMetadata;
-import com.buschmais.cdo.neo4j.spi.Datastore;
-import com.buschmais.cdo.neo4j.spi.DatastoreMetadataProvider;
+import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.datastore.Datastore;
+import com.buschmais.cdo.spi.datastore.DatastoreMetadataProvider;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
-import org.neo4j.graphdb.Node;
 
 import java.util.*;
 
-import static com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata.Direction;
+import static com.buschmais.cdo.spi.metadata.RelationMetadata.Direction;
 
 public abstract class AbstractNeo4jDatastore<DS extends AbstractNeo4jDatastoreSession> implements Datastore<DS> {
 

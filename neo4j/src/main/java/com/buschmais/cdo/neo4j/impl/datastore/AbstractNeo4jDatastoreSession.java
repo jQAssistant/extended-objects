@@ -2,15 +2,15 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
+import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import com.buschmais.cdo.neo4j.api.annotation.Cypher;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.*;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.RelationshipMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.*;
-import com.buschmais.cdo.neo4j.spi.DatastoreSession;
-import com.buschmais.cdo.neo4j.spi.TypeSet;
+import com.buschmais.cdo.spi.metadata.*;
+import com.buschmais.cdo.spi.datastore.DatastoreSession;
+import com.buschmais.cdo.spi.datastore.TypeSet;
 import org.neo4j.graphdb.*;
 
-import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -76,8 +76,8 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public TypeSet getTypes(Node entity) {
-        return metadataProvider.getDatastoreMetadataProvider().getTypes(entity);
+    public boolean isEntity(Object o) {
+        return Node.class.isAssignableFrom(o.getClass());
     }
 
     @Override

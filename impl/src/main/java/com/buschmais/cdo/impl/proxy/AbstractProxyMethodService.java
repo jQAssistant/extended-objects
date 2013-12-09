@@ -1,7 +1,7 @@
 package com.buschmais.cdo.impl.proxy;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.spi.proxy.ProxyMethod;
+import com.buschmais.cdo.api.proxy.ProxyMethod;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ public class AbstractProxyMethodService<E, M extends ProxyMethod<?>> implements 
     public Object invoke(E element, Object instance, Method method, Object[] args) throws Exception {
         ProxyMethod<E> proxyMethod = proxyMethods.get(method);
         if (proxyMethod == null) {
-            throw new CdoException("Cannot find proxy for method " + method.getName());
+            throw new CdoException("Cannot find query for method " + method.getName());
         }
         return proxyMethod.invoke(element, instance, args);
     }

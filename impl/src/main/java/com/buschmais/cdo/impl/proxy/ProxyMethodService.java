@@ -1,6 +1,6 @@
 package com.buschmais.cdo.impl.proxy;
 
-import com.buschmais.cdo.spi.proxy.ProxyMethod;
+import com.buschmais.cdo.api.proxy.ProxyMethod;
 
 import java.lang.reflect.Method;
 

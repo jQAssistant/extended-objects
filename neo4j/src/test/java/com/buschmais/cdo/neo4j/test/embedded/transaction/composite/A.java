@@ -1,8 +1,8 @@
 package com.buschmais.cdo.neo4j.test.embedded.transaction.composite;
 
-import com.buschmais.cdo.neo4j.api.annotation.ImplementedBy;
+import com.buschmais.cdo.api.annotation.ImplementedBy;
 import com.buschmais.cdo.neo4j.api.annotation.Label;
-import com.buschmais.cdo.spi.proxy.ProxyMethod;
+import com.buschmais.cdo.api.proxy.ProxyMethod;
 import org.neo4j.graphdb.Node;
 
 @Label("A")

@@ -5,13 +5,12 @@ import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
 import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastoreSession;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.IndexedPropertyMethodMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.TypeMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.MetadataProvider;
-import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.metadata.MetadataProvider;
+import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.schema.IndexDefinition;
@@ -20,9 +19,9 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 
-public class EmbeddedNeo4jCdoManagerFactoryImpl extends AbstractNeo4jCdoManagerFactoryImpl<EmbeddedNeo4jDatastore> {
+public class EmbeddedNeo4jCdoManagerFactoryImpl extends AbstractCdoManagerFactoryImpl<EmbeddedNeo4jDatastore> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNeo4jCdoManagerFactoryImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCdoManagerFactoryImpl.class);
 
     public EmbeddedNeo4jCdoManagerFactoryImpl(CdoUnit cdoUnit) {
         super(cdoUnit);

@@ -1,9 +1,9 @@
 package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.TypeMetadata;
-import com.buschmais.cdo.neo4j.spi.DatastoreMetadataProvider;
-import com.buschmais.cdo.neo4j.spi.TypeSet;
+import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.datastore.DatastoreMetadataProvider;
+import com.buschmais.cdo.spi.datastore.TypeSet;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.slf4j.Logger;

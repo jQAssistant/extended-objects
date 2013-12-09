@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.test.embedded.implementedby.composite;
 
-import com.buschmais.cdo.spi.proxy.ProxyMethod;
+import com.buschmais.cdo.api.proxy.ProxyMethod;
 import org.neo4j.graphdb.Node;
 
 public class SetMethod implements ProxyMethod<Node> {

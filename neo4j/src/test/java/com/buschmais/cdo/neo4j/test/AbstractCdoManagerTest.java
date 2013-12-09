@@ -5,7 +5,7 @@ import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
-import com.buschmais.cdo.neo4j.impl.AbstractNeo4jCdoManagerFactoryImpl;
+import com.buschmais.cdo.neo4j.impl.AbstractCdoManagerFactoryImpl;
 import org.junit.After;
 import org.junit.Before;
 
@@ -26,7 +26,7 @@ public abstract class AbstractCdoManagerTest {
         dropDatabase();
     }
 
-    protected abstract AbstractNeo4jCdoManagerFactoryImpl getNeo4jCdoManagerFactory(Class<?>[] types) throws MalformedURLException;
+    protected abstract AbstractCdoManagerFactoryImpl getNeo4jCdoManagerFactory(Class<?>[] types) throws MalformedURLException;
 
     protected abstract Class<?>[] getTypes();
 

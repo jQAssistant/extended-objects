@@ -3,7 +3,7 @@ package com.buschmais.cdo.impl.proxy;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
-import com.buschmais.cdo.spi.proxy.ProxyMethod;
+import com.buschmais.cdo.api.proxy.ProxyMethod;
 
 import java.lang.reflect.Method;
 

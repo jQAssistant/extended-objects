@@ -2,7 +2,8 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
-import com.buschmais.cdo.neo4j.impl.node.metadata.MetadataProvider;
+import com.buschmais.cdo.spi.datastore.DatastoreTransaction;
+import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import org.neo4j.rest.graphdb.RestAPI;
 import org.neo4j.rest.graphdb.RestGraphDatabase;
 import org.neo4j.rest.graphdb.query.RestCypherQueryEngine;

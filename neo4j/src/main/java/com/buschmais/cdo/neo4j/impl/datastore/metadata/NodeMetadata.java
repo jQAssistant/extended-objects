@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.datastore.metadata;
 
-import com.buschmais.cdo.neo4j.impl.node.metadata.IndexedPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
 import org.neo4j.graphdb.Label;
 
 import java.util.Set;

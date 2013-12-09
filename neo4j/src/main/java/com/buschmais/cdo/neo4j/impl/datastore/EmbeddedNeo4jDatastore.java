@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.datastore;
 
-import com.buschmais.cdo.neo4j.impl.node.metadata.MetadataProvider;
+import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 public class EmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedNeo4jDatastoreSession> {
