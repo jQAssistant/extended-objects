@@ -1,13 +1,13 @@
 package com.buschmais.cdo.neo4j.impl.node.metadata;
 
-import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
 
-import static com.buschmais.cdo.neo4j.impl.node.metadata.RelationshipMetadata.Direction;
+import static com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata.Direction;
 
-public class CollectionPropertyMethodMetadata<DatastoreMetadata> extends AbstractRelationshipPropertyMethodMetadata<DatastoreMetadata> {
+public class CollectionPropertyMethodMetadata<DatastoreMetadata> extends AbstractRelationPropertyMethodMetadata<DatastoreMetadata> {
 
-    public CollectionPropertyMethodMetadata(BeanPropertyMethod beanPropertyMethod, RelationshipMetadata relationshipType, Direction direction) {
-        super(beanPropertyMethod, relationshipType, direction);
+    public CollectionPropertyMethodMetadata(PropertyMethod beanPropertyMethod, RelationMetadata relationshipType, Direction direction, DatastoreMetadata datastoreMetadata) {
+        super(beanPropertyMethod, relationshipType, direction, datastoreMetadata);
     }
 
 }

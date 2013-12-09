@@ -8,8 +8,9 @@ public abstract class AbstractMethodMetadata<B extends BeanMethod, DatastoreMeta
 
     private DatastoreMetadata datastoreMetadata;
 
-    protected AbstractMethodMetadata(B beanMethod) {
+    protected AbstractMethodMetadata(B beanMethod, DatastoreMetadata datastoreMetadata) {
         this.beanMethod = beanMethod;
+        this.datastoreMetadata = datastoreMetadata;
     }
 
     public B getBeanMethod() {

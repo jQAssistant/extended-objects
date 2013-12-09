@@ -1,17 +1,10 @@
 package com.buschmais.cdo.neo4j.impl.node.metadata;
 
-import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
 
 public class PrimitivePropertyMethodMetadata<DatastoreMetadata> extends AbstractPropertyMethodMetadata<DatastoreMetadata> {
 
-    private String propertyName;
-
-    protected PrimitivePropertyMethodMetadata(BeanPropertyMethod beanPropertyMethod, String propertyName) {
-        super(beanPropertyMethod);
-        this.propertyName = propertyName;
-    }
-
-    public String getPropertyName() {
-        return propertyName;
+    protected PrimitivePropertyMethodMetadata(PropertyMethod beanPropertyMethod, DatastoreMetadata datastoreMetadata) {
+        super(beanPropertyMethod,datastoreMetadata);
     }
 }

@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.node.metadata;
 
-import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
 
 public class IndexedPropertyMethodMetadata<DatastoreMetadata> extends AbstractPropertyMethodMetadata<DatastoreMetadata> {
 
@@ -8,13 +8,13 @@ public class IndexedPropertyMethodMetadata<DatastoreMetadata> extends AbstractPr
 
     private boolean create;
 
-    protected IndexedPropertyMethodMetadata(BeanPropertyMethod beanPropertyMethod, PrimitivePropertyMethodMetadata propertyMethodMetadata, boolean create) {
-        super(beanPropertyMethod);
+    protected IndexedPropertyMethodMetadata(PropertyMethod beanPropertyMethod, PrimitivePropertyMethodMetadata propertyMethodMetadata, boolean create, DatastoreMetadata datastoreMetadata) {
+        super(beanPropertyMethod, datastoreMetadata);
         this.propertyMethodMetadata = propertyMethodMetadata;
         this.create = create;
     }
 
-    public PrimitivePropertyMethodMetadata getPropertyMethodMetadata() {
+    public <IndexedDatastoreMetadata> PrimitivePropertyMethodMetadata<IndexedDatastoreMetadata> getPropertyMethodMetadata() {
         return propertyMethodMetadata;
     }
 

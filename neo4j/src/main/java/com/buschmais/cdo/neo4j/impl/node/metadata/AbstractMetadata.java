@@ -8,12 +8,16 @@ public abstract class AbstractMetadata<DatastoreMetadata> {
 
     private DatastoreMetadata datastoreMetadata;
 
-    protected AbstractMetadata(Collection<AbstractMethodMetadata> properties) {
+    protected AbstractMetadata(Collection<AbstractMethodMetadata> properties, DatastoreMetadata datastoreMetadata) {
         this.properties = properties;
+        this.datastoreMetadata = datastoreMetadata;
     }
 
     public Collection<AbstractMethodMetadata> getProperties() {
         return properties;
     }
 
+    public DatastoreMetadata getDatastoreMetadata() {
+        return datastoreMetadata;
+    }
 }

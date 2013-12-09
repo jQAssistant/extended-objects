@@ -3,8 +3,7 @@ package com.buschmais.cdo.neo4j.spi;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.neo4j.impl.node.metadata.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.RelationshipMetadata;
-import org.neo4j.graphdb.Node;
+import com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata;
 
 import java.util.Map;
 
@@ -54,13 +53,13 @@ public interface DatastoreSession<EntityId, Entity, RelationId, Relation, Primit
     void setEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyDatastoreMetadata> metadata, Object value);
 
     // Relations
-    boolean hasRelation(Entity source, RelationshipMetadata<RelationDatastoreMetadata> metadata, RelationshipMetadata.Direction direction);
+    boolean hasRelation(Entity source, RelationMetadata<RelationDatastoreMetadata> metadata, RelationMetadata.Direction direction);
 
-    Relation getSingleRelation(Entity source, RelationshipMetadata<RelationDatastoreMetadata> metadata, RelationshipMetadata.Direction direction);
+    Relation getSingleRelation(Entity source, RelationMetadata<RelationDatastoreMetadata> metadata, RelationMetadata.Direction direction);
 
-    Iterable<Relation> getRelations(Entity source, RelationshipMetadata<RelationDatastoreMetadata> metadata, RelationshipMetadata.Direction direction);
+    Iterable<Relation> getRelations(Entity source, RelationMetadata<RelationDatastoreMetadata> metadata, RelationMetadata.Direction direction);
 
-    Relation createRelation(Entity source, RelationshipMetadata<RelationDatastoreMetadata> metadata, RelationshipMetadata.Direction direction, Entity target);
+    Relation createRelation(Entity source, RelationMetadata<RelationDatastoreMetadata> metadata, RelationMetadata.Direction direction, Entity target);
 
     void deleteRelation(Relation relation);
 

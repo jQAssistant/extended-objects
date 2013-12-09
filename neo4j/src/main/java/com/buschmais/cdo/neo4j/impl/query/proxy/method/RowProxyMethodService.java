@@ -5,8 +5,9 @@ import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.cdo.impl.proxy.instance.composite.AsMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.UserDefinedMethod;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethodProvider;
-import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.EqualsMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.HashCodeMethod;
 import com.buschmais.cdo.neo4j.impl.query.proxy.method.object.ToStringMethod;
@@ -22,14 +23,14 @@ import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 public class RowProxyMethodService extends AbstractProxyMethodService<Map<String, Object>, RowProxyMethod> {
 
     public RowProxyMethodService(SortedSet<Class<?>> types) {
-        BeanMethodProvider beanMethodProvider = new BeanMethodProvider();
+        BeanMethodProvider beanMethodProvider = BeanMethodProvider.newInstance();
         for (Class<?> type : types) {
             Collection<BeanMethod> beanMethodsOfType = beanMethodProvider.getMethods(type);
             for (BeanMethod beanMethod : beanMethodsOfType) {
-                if (!(beanMethod instanceof BeanPropertyMethod) || !BeanPropertyMethod.MethodType.GETTER.equals(((BeanPropertyMethod) beanMethod).getMethodType())) {
+                if (!(beanMethod instanceof PropertyMethod)) {
                     throw new CdoException("Only get methods are supported for projections: '" + beanMethod.getMethod().getName() + "'.");
                 }
-                BeanPropertyMethod beanPropertyMethod = (BeanPropertyMethod) beanMethod;
+                PropertyMethod beanPropertyMethod = (PropertyMethod) beanMethod;
                 GetMethod proxyMethod = new GetMethod(beanPropertyMethod.getName(), beanPropertyMethod.getType());
                 addProxyMethod(proxyMethod, beanPropertyMethod.getMethod());
             }

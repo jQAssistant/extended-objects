@@ -2,8 +2,7 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
-import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
-import com.buschmais.cdo.neo4j.spi.DatastoreSession;
+import com.buschmais.cdo.neo4j.impl.node.metadata.MetadataProvider;
 import org.neo4j.rest.graphdb.RestAPI;
 import org.neo4j.rest.graphdb.RestGraphDatabase;
 import org.neo4j.rest.graphdb.query.RestCypherQueryEngine;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<RestGraphDatabase> {
 
-    public RestNeo4jDatastoreSession(RestGraphDatabase graphDatabaseService, NodeMetadataProvider metadataProvider) {
+    public RestNeo4jDatastoreSession(RestGraphDatabase graphDatabaseService, MetadataProvider metadataProvider) {
         super(graphDatabaseService, metadataProvider);
     }
 

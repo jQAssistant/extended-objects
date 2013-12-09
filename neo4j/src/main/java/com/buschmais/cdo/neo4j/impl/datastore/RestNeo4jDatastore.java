@@ -1,21 +1,19 @@
 package com.buschmais.cdo.neo4j.impl.datastore;
 
-import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
+import com.buschmais.cdo.neo4j.impl.node.metadata.MetadataProvider;
 import com.buschmais.cdo.neo4j.spi.Datastore;
 import org.neo4j.rest.graphdb.RestGraphDatabase;
 
-public class RestNeo4jDatastore implements Datastore<RestNeo4jDatastoreSession> {
+public class RestNeo4jDatastore extends  AbstractNeo4jDatastore<RestNeo4jDatastoreSession> {
 
     private String url;
-    private NodeMetadataProvider metadataProvider;
 
-    public RestNeo4jDatastore(String url, NodeMetadataProvider metadataProvider) {
+    public RestNeo4jDatastore(String url) {
         this.url = url;
-        this.metadataProvider = metadataProvider;
     }
 
     @Override
-    public RestNeo4jDatastoreSession createSession() {
+    public RestNeo4jDatastoreSession createSession(MetadataProvider metadataProvider) {
         return new RestNeo4jDatastoreSession(new RestGraphDatabase(url), metadataProvider);
     }
 

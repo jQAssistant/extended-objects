@@ -2,6 +2,7 @@ package com.buschmais.cdo.neo4j.impl.node.metadata;
 
 import com.buschmais.cdo.neo4j.api.annotation.ResultOf;
 import com.buschmais.cdo.neo4j.impl.common.reflection.BeanMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.UserDefinedMethod;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMet
     private boolean singleResult;
 
     public ResultOfMethodMetadata(BeanMethod beanMethod, Class<?> query, String usingThisAs, List<ResultOf.Parameter> parameters, boolean singleResult) {
-        super(beanMethod);
+        super(beanMethod, null);
 
         this.query = query;
         this.usingThisAs = usingThisAs;

@@ -2,10 +2,9 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
+import com.buschmais.cdo.neo4j.impl.datastore.metadata.*;
+import com.buschmais.cdo.neo4j.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.cdo.neo4j.impl.node.metadata.*;
-import com.buschmais.cdo.neo4j.impl.node.metadata.neo4j.EnumPropertyMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.neo4j.PrimitivePropertyMetadata;
-import com.buschmais.cdo.neo4j.impl.node.metadata.neo4j.RelationPropertyMetadata;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import com.buschmais.cdo.neo4j.spi.TypeSet;
 import org.neo4j.graphdb.*;
@@ -14,12 +13,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, Long, Relationship, PrimitivePropertyMetadata, EnumPropertyMetadata, RelationPropertyMetadata> {
+public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, Long, Relationship, PrimitivePropertyMetadata, EnumPropertyMetadata, RelationshipMetadata> {
 
     private GDS graphDatabaseService;
-    private NodeMetadataProvider metadataProvider;
+    private MetadataProvider metadataProvider;
 
-    public AbstractNeo4jDatastoreSession(GDS graphDatabaseService, NodeMetadataProvider metadataProvider) {
+    public AbstractNeo4jDatastoreSession(GDS graphDatabaseService, MetadataProvider metadataProvider) {
         this.graphDatabaseService = graphDatabaseService;
         this.metadataProvider = metadataProvider;
     }
@@ -33,7 +32,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         Node node = getGraphDatabaseService().createNode();
         Set<Label> labels = new HashSet<>();
         for (Class<?> currentType : types) {
-            labels.addAll(metadataProvider.getNodeMetadata(currentType).getAggregatedLabels());
+            labels.addAll(metadataProvider.getEntityMetadata(currentType).getAggregatedLabels());
         }
         for (Label label : labels) {
             node.addLabel(label);
@@ -43,16 +42,17 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
 
     @Override
     public ResultIterator<Node> find(Class<?> type, Object value) {
-        NodeMetadata nodeMetadata = metadataProvider.getNodeMetadata(type);
-        Label label = nodeMetadata.getLabel();
+        EntityMetadata entityMetadata = metadataProvider.getEntityMetadata(type);
+        Label label = entityMetadata.getLabel();
         if (label == null) {
             throw new CdoException("Type " + type.getName() + " has no label.");
         }
-        IndexedPropertyMethodMetadata indexedProperty = nodeMetadata.getIndexedProperty();
+        IndexedPropertyMethodMetadata indexedProperty = entityMetadata.getIndexedProperty();
         if (indexedProperty == null) {
-            throw new CdoException("Type " + nodeMetadata.getType().getName() + " has no indexed property.");
+            throw new CdoException("Type " + entityMetadata.getType().getName() + " has no indexed property.");
         }
-        ResourceIterable<Node> nodesByLabelAndProperty = getGraphDatabaseService().findNodesByLabelAndProperty(label, indexedProperty.getPropertyMethodMetadata().getPropertyName(), value);
+        PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
+        ResourceIterable<Node> nodesByLabelAndProperty = getGraphDatabaseService().findNodesByLabelAndProperty(label, propertyMethodMetadata.getDatastoreMetadata().getName(), value);
         ResourceIterator<Node> iterator = nodesByLabelAndProperty.iterator();
         return new ResourceResultIterator(iterator);
     }
@@ -61,12 +61,12 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     public void migrate(Node entity, TypeSet types, TypeSet targetTypes) {
         Set<Label> labels = new HashSet<>();
         for (Class<?> type : types) {
-            NodeMetadata nodeMetadata = metadataProvider.getNodeMetadata(type);
-            labels.addAll(nodeMetadata.getAggregatedLabels());
+            EntityMetadata entityMetadata = metadataProvider.getEntityMetadata(type);
+            labels.addAll(entityMetadata.getAggregatedLabels());
         }
         Set<Label> targetLabels = new HashSet<>();
         for (Class<?> currentType : targetTypes) {
-            NodeMetadata targetMetadata = metadataProvider.getNodeMetadata(currentType);
+            EntityMetadata targetMetadata = metadataProvider.getEntityMetadata(currentType);
             targetLabels.addAll(targetMetadata.getAggregatedLabels());
         }
         Set<Label> labelsToRemove = new HashSet<>(labels);
@@ -91,11 +91,11 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         // Get all types matching the labels
         Set<Class<?>> types = new HashSet<>();
         for (Label label : labels) {
-            Set<NodeMetadata> nodeMetadataOfLabel = metadataProvider.getNodeMetadata(label);
-            if (nodeMetadataOfLabel != null) {
-                for (NodeMetadata nodeMetadata : nodeMetadataOfLabel) {
-                    if (labels.containsAll(nodeMetadata.getAggregatedLabels())) {
-                        types.add(nodeMetadata.getType());
+            Set<EntityMetadata> entityMetadataOfLabel = metadataProvider.getEntityMetadata(label);
+            if (entityMetadataOfLabel != null) {
+                for (EntityMetadata entityMetadata : entityMetadataOfLabel) {
+                    if (labels.containsAll(entityMetadata.getAggregatedLabels())) {
+                        types.add(entityMetadata.getType());
                     }
                 }
             }
@@ -130,27 +130,27 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     // Relations
 
     @Override
-    public boolean hasRelation(Node source, RelationshipMetadata<RelationPropertyMetadata> metadata, RelationshipMetadata.Direction direction) {
-        return source.hasRelationship(metadata.getRelationshipType(), getDirection(direction));
+    public boolean hasRelation(Node source, com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata<RelationshipMetadata> metadata, com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata.Direction direction) {
+        return source.hasRelationship(metadata.getDatastoreMetadata().getRelationshipType(), getDirection(direction));
     }
 
     @Override
-    public Relationship getSingleRelation(Node source, RelationshipMetadata<RelationPropertyMetadata> metadata, RelationshipMetadata.Direction direction) {
-        return source.getSingleRelationship(metadata.getRelationshipType(), getDirection(direction));
+    public Relationship getSingleRelation(Node source, com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata<RelationshipMetadata> metadata, com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata.Direction direction) {
+        return source.getSingleRelationship(metadata.getDatastoreMetadata().getRelationshipType(), getDirection(direction));
     }
 
     @Override
-    public Iterable<Relationship> getRelations(Node source, RelationshipMetadata<RelationPropertyMetadata> metadata, RelationshipMetadata.Direction direction) {
-        return source.getRelationships(metadata.getRelationshipType(), getDirection(direction));
+    public Iterable<Relationship> getRelations(Node source, com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata<RelationshipMetadata> metadata, com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata.Direction direction) {
+        return source.getRelationships(metadata.getDatastoreMetadata().getRelationshipType(), getDirection(direction));
     }
 
     @Override
-    public Relationship createRelation(Node source, RelationshipMetadata<RelationPropertyMetadata> metadata, RelationshipMetadata.Direction direction, Node target) {
+    public Relationship createRelation(Node source, com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata<RelationshipMetadata> metadata, com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata.Direction direction, Node target) {
         switch (direction) {
             case OUTGOING:
-                return source.createRelationshipTo(target, metadata.getRelationshipType());
+                return source.createRelationshipTo(target, metadata.getDatastoreMetadata().getRelationshipType());
             case INCOMING:
-                return target.createRelationshipTo(source, metadata.getRelationshipType());
+                return target.createRelationshipTo(source, metadata.getDatastoreMetadata().getRelationshipType());
             default:
                 throw new CdoException("Unsupported direction " + direction);
         }
@@ -173,7 +173,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
 
-    private Direction getDirection(RelationshipMetadata.Direction direction) {
+    private Direction getDirection(com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata.Direction direction) {
         switch (direction) {
             case OUTGOING:
                 return Direction.OUTGOING;
@@ -188,22 +188,22 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
 
     @Override
     public void removeProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
-        node.removeProperty(metadata.getPropertyName());
+        node.removeProperty(metadata.getDatastoreMetadata().getName());
     }
 
     @Override
     public boolean hasProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
-        return node.hasProperty(metadata.getPropertyName());
+        return node.hasProperty(metadata.getDatastoreMetadata().getName());
     }
 
     @Override
     public void setProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata, Object value) {
-        node.setProperty(metadata.getPropertyName(), value);
+        node.setProperty(metadata.getDatastoreMetadata().getName(), value);
     }
 
     @Override
     public Object getProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
-        return node.getProperty(metadata.getPropertyName());
+        return node.getProperty(metadata.getDatastoreMetadata().getName());
     }
 
     @Override

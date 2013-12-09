@@ -7,7 +7,7 @@ import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.neo4j.impl.common.*;
 import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
-import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
+import com.buschmais.cdo.neo4j.impl.node.metadata.MetadataProvider;
 import com.buschmais.cdo.neo4j.spi.Datastore;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl<D extends Datastore> im
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNeo4jCdoManagerFactoryImpl.class);
 
     private URL url;
-    private NodeMetadataProvider nodeMetadataProvider;
+    private MetadataProvider metadataProvider;
     private ClassLoader classLoader;
     private D datastore;
     private ValidatorFactory validatorFactory;
@@ -31,7 +31,6 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl<D extends Datastore> im
 
     protected AbstractNeo4jCdoManagerFactoryImpl(CdoUnit cdoUnit) {
         this.url = cdoUnit.getUrl();
-        nodeMetadataProvider = new NodeMetadataProvider(cdoUnit.getTypes());
         this.transactionAttribute = cdoUnit.getTransactionAttribute();
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         classLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();
@@ -42,25 +41,26 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl<D extends Datastore> im
                 return contextClassLoader.loadClass(name);
             }
         };
-        this.datastore = createDatastore(url, nodeMetadataProvider);
+        this.datastore = createDatastore(url);
+        metadataProvider = new MetadataProvider(cdoUnit.getTypes(), datastore);
         try {
             this.validatorFactory = Validation.buildDefaultValidatorFactory();
         } catch (ValidationException e) {
             LOGGER.debug("Cannot find validation provider.", e);
             LOGGER.info("No JSR 303 Bean Validation provider available.");
         }
-        this.init(datastore, nodeMetadataProvider);
+        this.init(datastore, metadataProvider);
     }
 
     @Override
     public CdoManager createCdoManager() {
-        DatastoreSession datastoreSession = datastore.createSession();
+        DatastoreSession datastoreSession = datastore.createSession(metadataProvider);
         CdoTransaction cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction());
         TransactionalCache cache = new TransactionalCache();
         InstanceValidator instanceValidator = new InstanceValidator(validatorFactory, cache);
         cdoTransaction.registerSynchronization(new ValidatorSynchronization(instanceValidator));
         cdoTransaction.registerSynchronization(new CacheSynchronization(cache));
-        InstanceManager instanceManager = new InstanceManager(cdoTransaction, nodeMetadataProvider, datastoreSession, classLoader, cache, transactionAttribute);
+        InstanceManager instanceManager = new InstanceManager(cdoTransaction, metadataProvider, datastoreSession, classLoader, cache, transactionAttribute);
         return new CdoManagerImpl(cdoTransaction, datastoreSession, instanceManager, instanceValidator);
     }
 
@@ -70,8 +70,8 @@ public abstract class AbstractNeo4jCdoManagerFactoryImpl<D extends Datastore> im
         datastore.close();
     }
 
-    protected abstract D createDatastore(URL url, NodeMetadataProvider metadataProvider);
+    protected abstract D createDatastore(URL url);
 
-    protected abstract void init(D datastore, NodeMetadataProvider nodeMetadataProvider);
+    protected abstract void init(D datastore, MetadataProvider metadataProvider);
 
 }

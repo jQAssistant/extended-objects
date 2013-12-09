@@ -1,23 +1,12 @@
 package com.buschmais.cdo.neo4j.impl.common.reflection;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-public class BeanMethod {
+public interface BeanMethod {
 
-    private Method method;
+    Method getMethod();
 
-    public BeanMethod(Method method) {
-        this.method = method;
-    }
+    public <T extends Annotation> T getAnnotation(Class<T> type);
 
-    public Method getMethod() {
-        return method;
-    }
-
-    @Override
-    public String toString() {
-        return "BeanMethod{" +
-                "method=" + method +
-                '}';
-    }
 }

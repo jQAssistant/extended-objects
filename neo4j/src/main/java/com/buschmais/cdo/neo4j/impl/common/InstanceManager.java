@@ -7,9 +7,9 @@ import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.proxy.ProxyMethodService;
 import com.buschmais.cdo.impl.proxy.TransactionProxyMethodService;
-import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
+import com.buschmais.cdo.neo4j.impl.node.metadata.MetadataProvider;
 import com.buschmais.cdo.impl.proxy.instance.InstanceInvocationHandler;
-import com.buschmais.cdo.neo4j.impl.node.proxy.method.NodeProxyMethodService;
+import com.buschmais.cdo.neo4j.impl.node.proxy.method.EntityProxyMethodService;
 import com.buschmais.cdo.neo4j.spi.DatastoreSession;
 
 import java.lang.reflect.InvocationHandler;
@@ -26,12 +26,12 @@ public class InstanceManager<EntityId, Entity> {
     private final TransactionalCache cache;
     private final ProxyMethodService<Entity, ?> proxyMethodService;
 
-    public InstanceManager(CdoTransaction cdoTransaction, NodeMetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, ?, ?, ?, ?> datastoreSession, ClassLoader classLoader, TransactionalCache cache, CdoUnit.TransactionAttribute transactionAttribute) {
+    public InstanceManager(CdoTransaction cdoTransaction, MetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, ?, ?, ?, ?> datastoreSession, ClassLoader classLoader, TransactionalCache cache, CdoUnit.TransactionAttribute transactionAttribute) {
         this.datastoreSession = datastoreSession;
         this.classLoader = classLoader;
         this.cache = cache;
         PropertyManager propertyManager = new PropertyManager(datastoreSession);
-        proxyMethodService = new TransactionProxyMethodService(new NodeProxyMethodService(metadataProvider, this, propertyManager, datastoreSession), cdoTransaction, transactionAttribute);
+        proxyMethodService = new TransactionProxyMethodService(new EntityProxyMethodService(metadataProvider, this, propertyManager, datastoreSession), cdoTransaction, transactionAttribute);
     }
 
     public <T> T getInstance(Entity entity) {

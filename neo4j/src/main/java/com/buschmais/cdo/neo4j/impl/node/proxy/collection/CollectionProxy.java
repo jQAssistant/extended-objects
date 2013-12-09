@@ -1,7 +1,7 @@
 package com.buschmais.cdo.neo4j.impl.node.proxy.collection;
 
 import com.buschmais.cdo.neo4j.impl.common.InstanceManager;
-import com.buschmais.cdo.neo4j.impl.node.metadata.RelationshipMetadata;
+import com.buschmais.cdo.neo4j.impl.node.metadata.RelationMetadata;
 import com.buschmais.cdo.neo4j.impl.common.PropertyManager;
 
 import java.util.AbstractCollection;
@@ -10,12 +10,12 @@ import java.util.Iterator;
 public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instance> {
 
     private Entity entity;
-    private RelationshipMetadata metadata;
-    private RelationshipMetadata.Direction direction;
+    private RelationMetadata metadata;
+    private RelationMetadata.Direction direction;
     private InstanceManager<?, Entity> instanceManager;
     private PropertyManager<?, Entity, ?, ?> propertyManager;
 
-    public CollectionProxy(Entity entity, RelationshipMetadata metadata, RelationshipMetadata.Direction direction, InstanceManager instanceManager, PropertyManager propertyManager) {
+    public CollectionProxy(Entity entity, RelationMetadata metadata, RelationMetadata.Direction direction, InstanceManager instanceManager, PropertyManager propertyManager) {
         this.entity = entity;
         this.metadata = metadata;
         this.direction = direction;

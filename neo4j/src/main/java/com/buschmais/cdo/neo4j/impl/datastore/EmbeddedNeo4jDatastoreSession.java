@@ -2,7 +2,7 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
-import com.buschmais.cdo.neo4j.impl.node.metadata.NodeMetadataProvider;
+import com.buschmais.cdo.neo4j.impl.node.metadata.MetadataProvider;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -51,7 +51,7 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
     private final ExecutionEngine executionEngine;
 
 
-    public EmbeddedNeo4jDatastoreSession(GraphDatabaseService graphDatabaseService, NodeMetadataProvider metadataProvider) {
+    public EmbeddedNeo4jDatastoreSession(GraphDatabaseService graphDatabaseService, MetadataProvider metadataProvider) {
         super(graphDatabaseService, metadataProvider);
         datastoreTransaction = new EmbeddedNeo4jDatastoreTransaction();
         executionEngine = new ExecutionEngine(graphDatabaseService);

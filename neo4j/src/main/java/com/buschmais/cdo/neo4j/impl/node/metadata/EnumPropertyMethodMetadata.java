@@ -1,14 +1,14 @@
 package com.buschmais.cdo.neo4j.impl.node.metadata;
 
 
-import com.buschmais.cdo.neo4j.impl.common.reflection.BeanPropertyMethod;
+import com.buschmais.cdo.neo4j.impl.common.reflection.PropertyMethod;
 
 public class EnumPropertyMethodMetadata<DatastoreMetadata> extends AbstractPropertyMethodMetadata<DatastoreMetadata> {
 
     private Class<? extends Enum<?>> enumerationType;
 
-    protected EnumPropertyMethodMetadata(BeanPropertyMethod beanPropertyMethod, Class<? extends Enum<?>> enumerationType) {
-        super(beanPropertyMethod);
+    protected EnumPropertyMethodMetadata(PropertyMethod beanPropertyMethod, Class<? extends Enum<?>> enumerationType, DatastoreMetadata datastoreMetadata) {
+        super(beanPropertyMethod, datastoreMetadata);
         this.enumerationType = enumerationType;
     }
 
