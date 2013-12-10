@@ -15,4 +15,5 @@ public interface Datastore<DS extends DatastoreSession> {
 
     void close();
 
+    void init(MetadataProvider metadataProvider);
 }

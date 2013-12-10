@@ -3,7 +3,7 @@ package com.buschmais.cdo.impl;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.CdoTransaction;
-import com.buschmais.cdo.api.bootstrap.CdoUnit;
+import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.cache.CacheSynchronization;
 import com.buschmais.cdo.impl.validation.InstanceValidator;
 import com.buschmais.cdo.impl.validation.ValidatorSynchronization;
@@ -18,21 +18,21 @@ import org.slf4j.LoggerFactory;
 import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
-import java.net.URL;
 
-public abstract class AbstractCdoManagerFactoryImpl<D extends Datastore> implements CdoManagerFactory {
+public class CdoManagerFactoryImpl implements CdoManagerFactory {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCdoManagerFactoryImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CdoManagerFactoryImpl.class);
 
-    private URL url;
+    private CdoUnit cdoUnit;
     private MetadataProvider metadataProvider;
     private ClassLoader classLoader;
-    private D datastore;
+    private Datastore<?> datastore;
     private ValidatorFactory validatorFactory;
-    private CdoUnit.TransactionAttribute transactionAttribute;
+    private TransactionAttribute transactionAttribute;
 
-    protected AbstractCdoManagerFactoryImpl(CdoUnit cdoUnit) {
-        this.url = cdoUnit.getUrl();
+    public CdoManagerFactoryImpl(CdoUnit cdoUnit, Datastore<?> datastore) {
+        this.cdoUnit = cdoUnit;
+        this.datastore = datastore;
         this.transactionAttribute = cdoUnit.getTransactionAttribute();
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         classLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();
@@ -43,7 +43,6 @@ public abstract class AbstractCdoManagerFactoryImpl<D extends Datastore> impleme
                 return contextClassLoader.loadClass(name);
             }
         };
-        this.datastore = createDatastore(url);
         metadataProvider = new MetadataProviderImpl(cdoUnit.getTypes(), datastore);
         try {
             this.validatorFactory = Validation.buildDefaultValidatorFactory();
@@ -51,7 +50,7 @@ public abstract class AbstractCdoManagerFactoryImpl<D extends Datastore> impleme
             LOGGER.debug("Cannot find validation provider.", e);
             LOGGER.info("No JSR 303 Bean Validation provider available.");
         }
-        this.init(datastore, metadataProvider);
+        datastore.init(metadataProvider);
     }
 
     @Override
@@ -66,14 +65,12 @@ public abstract class AbstractCdoManagerFactoryImpl<D extends Datastore> impleme
         return new CdoManagerImpl(metadataProvider, cdoTransaction, datastoreSession, instanceManager, instanceValidator);
     }
 
-
     @Override
     public void close() {
         datastore.close();
     }
 
-    protected abstract D createDatastore(URL url);
-
-    protected abstract void init(D datastore, MetadataProvider metadataProvider);
-
+    public CdoUnit getCdoUnit() {
+        return cdoUnit;
+    }
 }

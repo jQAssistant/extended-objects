@@ -2,9 +2,9 @@
     <cdo-unit name="testUnit">
         <description>This is a test unit.</description>
         <url>file://foo</url>
-        <provider>com.buschmais.cdo.api.test.bootstrap.provider.TestCdoProvider</provider>
+        <provider>com.buschmais.cdo.impl.test.bootstrap.provider.TestCdoProvider</provider>
         <types>
-            <type>com.buschmais.cdo.api.test.bootstrap.composite.A</type>
+            <type>com.buschmais.cdo.impl.test.bootstrap.composite.A</type>
         </types>
         <validation-mode>NONE</validation-mode>
         <properties>
@@ -13,9 +13,9 @@
     </cdo-unit>
     <cdo-unit name="testUnitWithBlankOptionals">
         <url>file://foo</url>
-        <provider>com.buschmais.cdo.api.test.bootstrap.provider.TestCdoProvider</provider>
+        <provider>com.buschmais.cdo.impl.test.bootstrap.provider.TestCdoProvider</provider>
         <types>
-            <type>com.buschmais.cdo.api.test.bootstrap.composite.A</type>
+            <type>com.buschmais.cdo.impl.test.bootstrap.composite.A</type>
         </types>
     </cdo-unit>
 </v1:cdo>

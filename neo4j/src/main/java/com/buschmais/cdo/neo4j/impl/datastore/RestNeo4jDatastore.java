@@ -12,6 +12,10 @@ public class RestNeo4jDatastore extends  AbstractNeo4jDatastore<RestNeo4jDatasto
     }
 
     @Override
+    public void init(MetadataProvider metadataProvider) {
+    }
+
+    @Override
     public RestNeo4jDatastoreSession createSession(MetadataProvider metadataProvider) {
         return new RestNeo4jDatastoreSession(new RestGraphDatabase(url), metadataProvider);
     }
@@ -19,4 +23,5 @@ public class RestNeo4jDatastore extends  AbstractNeo4jDatastore<RestNeo4jDatasto
     @Override
     public void close() {
     }
+
 }

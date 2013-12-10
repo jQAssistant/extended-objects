@@ -1,7 +1,6 @@
 package com.buschmais.cdo.impl.cache;
 
 import com.buschmais.cdo.api.CdoTransaction;
-import com.buschmais.cdo.impl.cache.TransactionalCache;
 
 public class CacheSynchronization implements CdoTransaction.Synchronization{
 

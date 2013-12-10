@@ -1,7 +1,7 @@
 package com.buschmais.cdo.api;
 
 /**
- * Defines the interface for {@link com.buschmais.cdo.api.CdoManager} transactions.
+ * Defines the interface for {@link CdoManager} transactions.
  */
 public interface CdoTransaction {
 
@@ -27,7 +27,7 @@ public interface CdoTransaction {
     void rollback();
 
     /**
-     * Determine the state of the transaction associated with this {@link com.buschmais.cdo.api.CdoManager}.
+     * Determine the state of the transaction associated with this {@link CdoManager}.
      *
      * @return <code>true</code> if there  is an active transaction.
      */

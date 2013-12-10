@@ -1,7 +1,5 @@
 package com.buschmais.cdo.impl.proxy.query;
 
-import com.buschmais.cdo.impl.proxy.query.RowProxyMethodService;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;

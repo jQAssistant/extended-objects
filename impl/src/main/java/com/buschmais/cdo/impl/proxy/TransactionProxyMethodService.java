@@ -1,8 +1,9 @@
 package com.buschmais.cdo.impl.proxy;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.CdoTransaction;
-import com.buschmais.cdo.api.bootstrap.CdoUnit;
+import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 
 import java.lang.reflect.Method;
@@ -13,9 +14,9 @@ public class TransactionProxyMethodService<E, M extends ProxyMethod<?>> implemen
 
     private CdoTransaction cdoTransaction;
 
-    private CdoUnit.TransactionAttribute transactionAttribute;
+    private CdoManagerFactory.TransactionAttribute transactionAttribute;
 
-    public TransactionProxyMethodService(ProxyMethodService<E, M> delegate, CdoTransaction cdoTransaction, CdoUnit.TransactionAttribute transactionAttribute) {
+    public TransactionProxyMethodService(ProxyMethodService<E, M> delegate, CdoTransaction cdoTransaction, CdoManagerFactory.TransactionAttribute transactionAttribute) {
         this.delegate = delegate;
         this.cdoTransaction = cdoTransaction;
         this.transactionAttribute = transactionAttribute;

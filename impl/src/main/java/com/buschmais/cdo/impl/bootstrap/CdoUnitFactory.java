@@ -1,8 +1,10 @@
-package com.buschmais.cdo.api.bootstrap;
+package com.buschmais.cdo.impl.bootstrap;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.schema.v1.Cdo;
+import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.schema.v1.*;
+import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
+import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -14,8 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import static com.buschmais.cdo.api.bootstrap.CdoUnit.TransactionAttribute.MANDATORY;
-import static com.buschmais.cdo.api.bootstrap.CdoUnit.TransactionAttribute.REQUIRES;
+import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
 
 public class CdoUnitFactory {
 
@@ -72,43 +73,43 @@ public class CdoUnitFactory {
                 throw new CdoException("Cannot convert '" + urlName + "' to url.");
             }
             String providerName = cdoUnitType.getProvider();
-            Class<? extends CdoProvider> provider = ClassHelper.getType(providerName);
+            Class<? extends CdoDatastoreProvider> provider = ClassHelper.getType(providerName);
             Set<Class<?>> types = new HashSet<>();
             for (String typeName : cdoUnitType.getTypes().getType()) {
                 types.add(ClassHelper.getType(typeName));
             }
             ValidationModeType validationModeType = cdoUnitType.getValidationMode();
-            CdoUnit.ValidationMode validationMode;
+            CdoManagerFactory.ValidationMode validationMode;
             if (validationModeType != null) {
                 switch (validationModeType) {
                     case NONE:
-                        validationMode = CdoUnit.ValidationMode.NONE;
+                        validationMode = CdoManagerFactory.ValidationMode.NONE;
                         break;
                     case AUTO:
-                        validationMode = CdoUnit.ValidationMode.AUTO;
+                        validationMode = CdoManagerFactory.ValidationMode.AUTO;
                         break;
                     default:
                         throw new CdoException("Unknown validation mode type " + validationModeType);
                 }
             } else {
-                validationMode = CdoUnit.ValidationMode.AUTO;
+                validationMode = CdoManagerFactory.ValidationMode.AUTO;
             }
             TransactionAttributeType transactionAttributeType = cdoUnitType.getTransactionAttribute();
-            CdoUnit.TransactionAttribute transactionAttribute;
+            TransactionAttribute transactionAttribute;
             if (transactionAttributeType != null) {
                 switch (transactionAttributeType) {
                     case MANDATORY:
-                        transactionAttribute = MANDATORY;
+                        transactionAttribute = TransactionAttribute.MANDATORY;
                         break;
                     case REQUIRES:
-                        transactionAttribute = REQUIRES;
+                        transactionAttribute = TransactionAttribute.REQUIRES;
                         break;
                     default:
                         throw new CdoException("Unknown transaction attribute type " + transactionAttributeType);
                 }
             }
             else {
-                transactionAttribute = MANDATORY;
+                transactionAttribute = TransactionAttribute.MANDATORY;
             }
             Properties properties = new Properties();
             PropertiesType propertiesType = cdoUnitType.getProperties();

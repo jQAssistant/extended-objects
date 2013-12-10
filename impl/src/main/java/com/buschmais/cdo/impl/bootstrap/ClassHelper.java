@@ -1,4 +1,4 @@
-package com.buschmais.cdo.api.bootstrap;
+package com.buschmais.cdo.impl.bootstrap;
 
 import com.buschmais.cdo.api.CdoException;
 

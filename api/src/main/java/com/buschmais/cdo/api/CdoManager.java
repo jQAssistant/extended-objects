@@ -69,7 +69,7 @@ public interface CdoManager {
      * @param <T>               The property type.
      * @param <M>               The migrated property type. Note that it be assignable to at least one of the interfaces specified for types.
      * @param instance          The instance.
-     * @param migrationStrategy The {@link com.buschmais.cdo.api.CdoManager.MigrationStrategy} to be used to migrate data (e.g. properties) to the new type.
+     * @param migrationStrategy The {@link CdoManager.MigrationStrategy} to be used to migrate data (e.g. properties) to the new type.
      * @param targetType        The target interface which shall be implemented by the migrated instance.
      * @param targetTypes       More target interfaces which shall be implemented by the migrated instance.
      * @return The migrated instance.
@@ -82,7 +82,7 @@ public interface CdoManager {
      * @param <T>               The property type.
      * @param <M>               The migrated property type. Note that it be assignable to at least one of the interfaces specified for types.
      * @param instance          The instance.
-     * @param migrationStrategy The {@link com.buschmais.cdo.api.CdoManager.MigrationStrategy} to be used to migrate data (e.g. properties) to the target type.
+     * @param migrationStrategy The {@link CdoManager.MigrationStrategy} to be used to migrate data (e.g. properties) to the target type.
      * @param targetType        The target interface which shall be implemented by the migrated instance.
      * @return The migrated instance.
      */

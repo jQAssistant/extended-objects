@@ -1,22 +1,27 @@
 package com.buschmais.cdo.neo4j.api;
 
-import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.api.bootstrap.CdoProvider;
-import com.buschmais.cdo.api.bootstrap.CdoUnit;
-import com.buschmais.cdo.neo4j.impl.EmbeddedNeo4jCdoManagerFactoryImpl;
+import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
+import com.buschmais.cdo.spi.bootstrap.CdoUnit;
+import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
+import com.buschmais.cdo.neo4j.impl.datastore.RestNeo4jDatastore;
+import com.buschmais.cdo.spi.datastore.Datastore;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.net.URL;
 
-public class Neo4jCdoProvider implements CdoProvider {
+public class Neo4jCdoProvider implements CdoDatastoreProvider {
 
     @Override
-    public CdoManagerFactory createCdoManagerFactory(CdoUnit cdoUnit) {
+    public Datastore<?> createDatastore(CdoUnit cdoUnit) {
         URL url = cdoUnit.getUrl();
         String protocol = url.getProtocol().toLowerCase();
         if ("file".equals(protocol)) {
-            return new EmbeddedNeo4jCdoManagerFactoryImpl(cdoUnit);
+            GraphDatabaseService graphDatabaseService = new GraphDatabaseFactory().newEmbeddedDatabase(url.getPath());
+            return new EmbeddedNeo4jDatastore(graphDatabaseService);
+        } else if ("http".equals(protocol) || "https".equals(protocol)) {
+            return new RestNeo4jDatastore(url.toExternalForm());
         }
-        throw new CdoException("Unsupported url protocol '" + protocol + "' in CDO unit '" + cdoUnit.getName() + "'.");
+        return null;
     }
 }

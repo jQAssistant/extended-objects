@@ -1,9 +1,10 @@
 package com.buschmais.cdo.impl;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
-import com.buschmais.cdo.api.bootstrap.CdoUnit;
+import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.proxy.ProxyMethodService;
 import com.buschmais.cdo.impl.proxy.TransactionProxyMethodService;
@@ -19,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
+
 public class InstanceManager<EntityId, Entity> {
 
     private final MetadataProvider metadataProvider;
@@ -27,7 +30,7 @@ public class InstanceManager<EntityId, Entity> {
     private final TransactionalCache cache;
     private final ProxyMethodService<Entity, ?> proxyMethodService;
 
-    public InstanceManager(CdoTransaction cdoTransaction, MetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, ?> datastoreSession, ClassLoader classLoader, TransactionalCache cache, CdoUnit.TransactionAttribute transactionAttribute) {
+    public InstanceManager(CdoTransaction cdoTransaction, MetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, ?> datastoreSession, ClassLoader classLoader, TransactionalCache cache, TransactionAttribute transactionAttribute) {
         this.metadataProvider = metadataProvider;
         this.datastoreSession = datastoreSession;
         this.classLoader = classLoader;

@@ -1,7 +1,8 @@
 package com.buschmais.cdo.neo4j.test.embedded.transaction;
 
 import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.api.bootstrap.CdoUnit;
+import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.transaction.composite.A;
 import org.junit.Assert;
@@ -18,8 +19,8 @@ public class TransactionAttributeRequiresTest extends AbstractEmbeddedCdoManager
     }
 
     @Override
-    protected CdoUnit.TransactionAttribute getTransactionAttribute() {
-        return CdoUnit.TransactionAttribute.REQUIRES;
+    protected CdoManagerFactory.TransactionAttribute getTransactionAttribute() {
+        return CdoManagerFactory.TransactionAttribute.REQUIRES;
     }
 
     @Test

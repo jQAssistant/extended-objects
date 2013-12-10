@@ -3,8 +3,6 @@ package com.buschmais.cdo.impl.proxy.instance.composite;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 
-import java.util.Arrays;
-
 public class AsMethod<Entity> implements ProxyMethod<Entity> {
 
     @Override

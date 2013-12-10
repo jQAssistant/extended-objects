@@ -30,7 +30,7 @@ public interface Query {
      * Execute the query.
      *
      * @param <T> The expected return type.
-     * @return The {@link com.buschmais.cdo.api.Query.Result} of the query.
+     * @return The {@link Query.Result} of the query.
      */
     <T> Result<T> execute();
 
@@ -39,7 +39,7 @@ public interface Query {
      *
      * @param <T> The type of the elements contained in the result.
      */
-    public interface Result<T> extends com.buschmais.cdo.api.ResultIterable<T>, AutoCloseable, Closeable {
+    public interface Result<T> extends ResultIterable<T>, AutoCloseable, Closeable {
 
         /**
          * Defines the interface which is implemented by all instances contained in a {@link ResultIterable} and which allows access to a column in a row.

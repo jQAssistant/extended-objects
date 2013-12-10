@@ -1,19 +1,15 @@
-package com.buschmais.cdo.api.bootstrap;
+package com.buschmais.cdo.spi.bootstrap;
+
+import com.buschmais.cdo.api.CdoManagerFactory;
 
 import java.net.URL;
 import java.util.Properties;
 import java.util.Set;
 
+import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
+import static com.buschmais.cdo.api.CdoManagerFactory.ValidationMode;
+
 public class CdoUnit {
-
-    public enum ValidationMode {
-        NONE, AUTO;
-    }
-
-    public enum TransactionAttribute {
-        MANDATORY,
-        REQUIRES;
-    }
 
     private String name;
 
@@ -21,7 +17,7 @@ public class CdoUnit {
 
     private URL url;
 
-    private Class<? extends CdoProvider> provider;
+    private Class<? extends CdoDatastoreProvider> provider;
 
     private Set<Class<?>> types;
 
@@ -31,7 +27,7 @@ public class CdoUnit {
 
     private Properties properties;
 
-    public CdoUnit(String name, String description, URL url, Class<? extends CdoProvider> provider, Set<Class<?>> types, ValidationMode validationMode, TransactionAttribute transactionAttribute, Properties properties) {
+    public CdoUnit(String name, String description, URL url, Class<? extends CdoDatastoreProvider> provider, Set<Class<?>> types, ValidationMode validationMode, TransactionAttribute transactionAttribute, Properties properties) {
         this.name = name;
         this.description = description;
         this.url = url;
@@ -54,7 +50,7 @@ public class CdoUnit {
         return url;
     }
 
-    public Class<? extends CdoProvider> getProvider() {
+    public Class<? extends CdoDatastoreProvider> getProvider() {
         return provider;
     }
 
