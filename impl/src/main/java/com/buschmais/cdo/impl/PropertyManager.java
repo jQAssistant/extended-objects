@@ -1,6 +1,7 @@
 package com.buschmais.cdo.impl;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.metadata.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
@@ -15,15 +16,16 @@ import java.util.Iterator;
  */
 public class PropertyManager<EntityId, Entity, RelationId, Relation> {
 
-    private DatastoreSession<EntityId, Entity, RelationId, Relation, ?, ?, ?> datastoreSession;
+    //private DatastoreSession<EntityId, Entity, RelationId, Relation>
+     DatastorePropertyManager<Entity, Relation,?,?,?> datastorePropertyManager;
 
     /**
      * Constructor.
      *
-     * @param datastoreSession
+     * @param datastorePropertyManager
      */
-    public PropertyManager(DatastoreSession<EntityId, Entity, RelationId, Relation, ?, ?, ?> datastoreSession) {
-        this.datastoreSession = datastoreSession;
+    public PropertyManager(DatastoreSession<EntityId, Entity, RelationId, Relation> datastorePropertyManager) {
+        this.datastorePropertyManager = datastorePropertyManager.getDatastorePropertyManager();
     }
 
     /**
@@ -33,7 +35,7 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @return The target node or <code>null</code>.
      */
     public Entity getSingleRelation(Entity source, RelationMetadata metadata, RelationMetadata.Direction direction) {
-        Relation relation = datastoreSession.getSingleRelation(source, metadata, direction);
+        Relation relation = datastorePropertyManager.getSingleRelation(source, metadata, direction);
         return relation != null ? getRelativeTarget(relation, direction) : null;
     }
 
@@ -44,7 +46,7 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @return An iterator delivering all target nodes.
      */
     public Iterator<Entity> getRelations(Entity source, RelationMetadata metadata, final RelationMetadata.Direction direction) {
-        Iterable<Relation> relations = datastoreSession.getRelations(source, metadata, direction);
+        Iterable<Relation> relations = datastorePropertyManager.getRelations(source, metadata, direction);
         final Iterator<Relation> iterator = relations.iterator();
         return new Iterator<Entity>() {
             @Override
@@ -72,12 +74,12 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @param target The target source or <code>null</code>.
      */
     public void createSingleRelation(Entity source, RelationMetadata metadata, RelationMetadata.Direction direction, Entity target) {
-        if (datastoreSession.hasRelation(source, metadata, direction)) {
-            Relation relation = datastoreSession.getSingleRelation(source, metadata, direction);
-            datastoreSession.deleteRelation(relation);
+        if (datastorePropertyManager.hasRelation(source, metadata, direction)) {
+            Relation relation = datastorePropertyManager.getSingleRelation(source, metadata, direction);
+            datastorePropertyManager.deleteRelation(relation);
         }
         if (target != null) {
-            datastoreSession.createRelation(source, metadata, direction, target);
+            datastorePropertyManager.createRelation(source, metadata, direction, target);
         }
     }
 
@@ -88,7 +90,7 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @param target The target source.
      */
     public void createRelation(Entity source, RelationMetadata metadata, RelationMetadata.Direction direction, Entity target) {
-        datastoreSession.createRelation(source, metadata, direction, target);
+        datastorePropertyManager.createRelation(source, metadata, direction, target);
     }
 
     /**
@@ -99,10 +101,10 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @return <code>true</code> if an existing relationship has been removed.
      */
     public boolean removeRelation(Entity source, RelationMetadata metadata, RelationMetadata.Direction direction, Entity target) {
-        Iterable<Relation> relations = datastoreSession.getRelations(source, metadata, direction);
+        Iterable<Relation> relations = datastorePropertyManager.getRelations(source, metadata, direction);
         for (Relation relation : relations) {
             if (getRelativeTarget(relation, direction).equals(target)) {
-                datastoreSession.deleteRelation(relation);
+                datastorePropertyManager.deleteRelation(relation);
                 return true;
             }
         }
@@ -115,44 +117,44 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @param source The entity.
      */
     public void removeRelations(Entity source, RelationMetadata metadata, RelationMetadata.Direction direction) {
-        Iterable<Relation> relations = datastoreSession.getRelations(source, metadata, direction);
+        Iterable<Relation> relations = datastorePropertyManager.getRelations(source, metadata, direction);
         for (Relation relation : relations) {
-            datastoreSession.deleteRelation(relation);
+            datastorePropertyManager.deleteRelation(relation);
         }
     }
 
     private Entity getRelativeTarget(Relation relation, RelationMetadata.Direction direction) {
         switch (direction) {
             case OUTGOING:
-                return datastoreSession.getTarget(relation);
+                return datastorePropertyManager.getTarget(relation);
             case INCOMING:
-                return datastoreSession.getSource(relation);
+                return datastorePropertyManager.getSource(relation);
             default:
                 throw new CdoException("Unsupported direction: " + direction);
         }
     }
 
     public void setProperty(Entity entity, PrimitivePropertyMethodMetadata metadata, Object value) {
-        datastoreSession.setProperty(entity, metadata, value);
+        datastorePropertyManager.setProperty(entity, metadata, value);
     }
 
     public boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
-        return datastoreSession.hasProperty(entity, metadata);
+        return datastorePropertyManager.hasProperty(entity, metadata);
     }
 
     public void removeProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
-        datastoreSession.removeProperty(entity, metadata);
+        datastorePropertyManager.removeProperty(entity, metadata);
     }
 
     public Object getProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
-        return datastoreSession.getProperty(entity, metadata);
+        return datastorePropertyManager.getProperty(entity, metadata);
     }
 
     public Enum<?> getEnumProperty(Entity entity, EnumPropertyMethodMetadata metadata) {
-        return datastoreSession.getEnumProperty(entity, metadata);
+        return datastorePropertyManager.getEnumProperty(entity, metadata);
     }
 
     public void setEnumProperty(Entity entity, EnumPropertyMethodMetadata metadata, Object value) {
-        datastoreSession.setEnumProperty(entity, metadata, value);
+        datastorePropertyManager.setEnumProperty(entity, metadata, value);
     }
 }

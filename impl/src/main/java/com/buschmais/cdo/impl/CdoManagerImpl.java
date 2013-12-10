@@ -15,11 +15,11 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
 
     private final MetadataProvider metadataProvider;
     private final CdoTransaction cdoTransaction;
-    private final DatastoreSession<EntityId, Entity, RelationId, Relation, ?, ?, ?> datastoreSession;
+    private final DatastoreSession<EntityId, Entity, RelationId, Relation> datastoreSession;
     private final InstanceManager<EntityId, Entity> instanceManager;
     private final InstanceValidator instanceValidator;
 
-    public CdoManagerImpl(MetadataProvider metadataProvider, CdoTransaction cdoTransaction, DatastoreSession<EntityId, Entity, RelationId, Relation, ?, ?, ?> datastoreSession, InstanceManager instanceManager, InstanceValidator instanceValidator) {
+    public CdoManagerImpl(MetadataProvider metadataProvider, CdoTransaction cdoTransaction, DatastoreSession<EntityId, Entity, RelationId, Relation> datastoreSession, InstanceManager instanceManager, InstanceValidator instanceValidator) {
         this.metadataProvider = metadataProvider;
         this.cdoTransaction = cdoTransaction;
         this.datastoreSession = datastoreSession;

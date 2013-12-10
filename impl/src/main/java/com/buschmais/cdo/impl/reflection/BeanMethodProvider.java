@@ -32,15 +32,15 @@ public final class BeanMethodProvider {
             if (methodName.startsWith("get") && parameterTypes.length == 0 && !void.class.equals(returnType)) {
                 String name = StringUtils.uncapitalize(methodName.substring(3));
                 getters.put(name, method);
-                addType(name, returnType);
+                addType(type, name, returnType);
             } else if (methodName.startsWith("is") && parameterTypes.length == 0 && !void.class.equals(returnType)) {
                 String name = StringUtils.uncapitalize(methodName.substring(2));
                 getters.put(name, method);
-                addType(name, returnType);
+                addType(type, name, returnType);
             } else if (methodName.startsWith("set") && parameterTypes.length == 1 && void.class.equals(returnType) && methodName.startsWith("set")) {
                 String name = StringUtils.uncapitalize(methodName.substring(3));
                 setters.put(name, method);
-                addType(name, parameterTypes[0]);
+                addType(type, name, parameterTypes[0]);
             } else {
                 methods.add(method);
             }
@@ -69,10 +69,10 @@ public final class BeanMethodProvider {
         return beanMethods;
     }
 
-    private void addType(String name, Class<?> type) {
+    private void addType(Class<?> declaringType, String name, Class<?> type) {
         Class<?> existingType = types.put(name, type);
         if (existingType != null && !existingType.equals(type)) {
-            throw new CdoException("Get and set methods for property '" + name + "' do not declare the same type.");
+            throw new CdoException("Get and set methods for property '" + name + "' of type '" + declaringType.getName() + "' do not declare the same type: " + existingType.getName() + " <> " + type.getName());
         }
     }
 }

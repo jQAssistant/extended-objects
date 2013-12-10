@@ -8,9 +8,9 @@ public class EqualsMethod<Entity> implements ProxyMethod<Entity> {
 
     private InstanceManager<?, Entity> instanceManager;
 
-    private DatastoreSession<?, Entity, ?, ?, ?, ?, ?> datastoreSession;
+    private DatastoreSession<?, Entity, ?, ?> datastoreSession;
 
-    public EqualsMethod(InstanceManager<?, Entity> instanceManager, DatastoreSession<?, Entity, ?, ?, ?, ?, ?> datastoreSession) {
+    public EqualsMethod(InstanceManager<?, Entity> instanceManager, DatastoreSession<?, Entity, ?, ?> datastoreSession) {
         this.instanceManager = instanceManager;
         this.datastoreSession = datastoreSession;
     }

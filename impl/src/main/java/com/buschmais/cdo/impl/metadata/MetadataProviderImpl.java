@@ -40,18 +40,20 @@ public class MetadataProviderImpl implements MetadataProvider {
         };
         List<Class<?>> allTypes = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
         LOGGER.debug("Processing types {}", allTypes);
-        BeanMethodProvider beanMethodProvider = BeanMethodProvider.newInstance();
         Map<Class<?>, Collection<BeanMethod>> typeMethods = new HashMap<>();
         for (Class<?> type : allTypes) {
             if (!type.isInterface()) {
                 throw new CdoException("Type " + type.getName() + " is not an interface.");
             }
-            typeMethods.put(type, beanMethodProvider.getMethods(type));
+            typeMethods.put(type, BeanMethodProvider.newInstance().getMethods(type));
         }
+        List<TypeMetadata> typeMetadata = new ArrayList<>();
         for (Class<?> type : allTypes) {
-            createMetadata(type, typeMethods.get(type), typeMethods.keySet());
+            TypeMetadata metadata = createMetadata(type, typeMethods.get(type), typeMethods.keySet());
+            entityMetadataByType.put(type, metadata);
+            typeMetadata.add(metadata);
         }
-        datastoreMetadataProvider = datastore.createMetadataProvider(entityMetadataByType.values());
+        datastoreMetadataProvider = datastore.createMetadataProvider(typeMetadata);
         entityMetadataByType.put(CompositeObject.class, new TypeMetadata(CompositeObject.class, Collections.<AbstractMethodMetadata>emptyList(), null, null));
 
     }
@@ -75,7 +77,7 @@ public class MetadataProviderImpl implements MetadataProvider {
         return typeMetadata;
     }
 
-    private void createMetadata(Class<?> type, Collection<BeanMethod> beanMethods, Set<Class<?>> types) {
+    private TypeMetadata createMetadata(Class<?> type, Collection<BeanMethod> beanMethods, Set<Class<?>> types) {
         LOGGER.debug("Processing type {}", type.getName());
         Collection<AbstractMethodMetadata> methodMetadataList = new ArrayList<>();
         // Collect the getter methods as they provide annotations holding meta information also to be applied to setters
@@ -96,14 +98,14 @@ public class MetadataProviderImpl implements MetadataProvider {
             Indexed indexedAnnotation = beanMethod.getAnnotation(Indexed.class);
             if (indexedAnnotation != null) {
                 if (!(methodMetadata instanceof PrimitivePropertyMethodMetadata)) {
-                    throw new CdoException("Only primitve properties are allowed to be annotated with " + Indexed.class.getName());
+                    throw new CdoException("Only primitive properties are allowed to be annotated with " + Indexed.class.getName());
                 }
                 indexedProperty = new IndexedPropertyMethodMetadata((PropertyMethod) beanMethod, (PrimitivePropertyMethodMetadata) methodMetadata, indexedAnnotation.create(), metadataFactory.createIndexedPropertyMetadata((PropertyMethod) beanMethod));
             }
             methodMetadataList.add(methodMetadata);
         }
         TypeMetadata typeMetadata = new TypeMetadata(type, methodMetadataList, indexedProperty, metadataFactory.createEntityMetadata(type, entityMetadataByType));
-        entityMetadataByType.put(type, typeMetadata);
+        return typeMetadata;
     }
 
     private AbstractMethodMetadata createPropertyMethodMetadata(Set<Class<?>> types, PropertyMethod beanPropertyMethod) {

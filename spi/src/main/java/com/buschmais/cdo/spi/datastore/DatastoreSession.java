@@ -1,17 +1,12 @@
 package com.buschmais.cdo.spi.datastore;
 
 import com.buschmais.cdo.api.ResultIterator;
-import com.buschmais.cdo.spi.metadata.EnumPropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.RelationMetadata;
 
 import java.util.Map;
 
-public interface DatastoreSession<EntityId, Entity, RelationId, Relation, PrimitivePropertyDatastoreMetadata, EnumPropertyDatastoreMetadata, RelationDatastoreMetadata> {
+public interface DatastoreSession<EntityId, Entity, RelationId, Relation> {
 
     DatastoreTransaction getDatastoreTransaction();
-
-    // Entities
 
     boolean isEntity(Object o);
 
@@ -27,31 +22,8 @@ public interface DatastoreSession<EntityId, Entity, RelationId, Relation, Primit
 
     void migrate(Entity entity, TypeSet types, TypeSet targetTypes);
 
-    //Properties
-    void setProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyDatastoreMetadata> metadata, Object value);
+    // properties
 
-    boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyDatastoreMetadata> metadata);
+    DatastorePropertyManager getDatastorePropertyManager();
 
-    void removeProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyDatastoreMetadata> metadata);
-
-    Object getProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyDatastoreMetadata> metadata);
-
-    Enum<?> getEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyDatastoreMetadata> metadata);
-
-    void setEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyDatastoreMetadata> metadata, Object value);
-
-    // Relations
-    boolean hasRelation(Entity source, RelationMetadata<RelationDatastoreMetadata> metadata, RelationMetadata.Direction direction);
-
-    Relation getSingleRelation(Entity source, RelationMetadata<RelationDatastoreMetadata> metadata, RelationMetadata.Direction direction);
-
-    Iterable<Relation> getRelations(Entity source, RelationMetadata<RelationDatastoreMetadata> metadata, RelationMetadata.Direction direction);
-
-    Relation createRelation(Entity source, RelationMetadata<RelationDatastoreMetadata> metadata, RelationMetadata.Direction direction, Entity target);
-
-    void deleteRelation(Relation relation);
-
-    Entity getTarget(Relation relation);
-
-    Entity getSource(Relation relation);
 }
