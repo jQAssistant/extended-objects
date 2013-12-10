@@ -1,6 +1,6 @@
 package com.buschmais.cdo.neo4j.test.embedded;
 
-import com.buschmais.cdo.neo4j.impl.AbstractCdoManagerFactoryImpl;
+import com.buschmais.cdo.impl.AbstractCdoManagerFactoryImpl;
 import com.buschmais.cdo.neo4j.impl.EmbeddedNeo4jCdoManagerFactoryImpl;
 import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
 

@@ -1,17 +1,14 @@
-package com.buschmais.cdo.neo4j.impl;
+package com.buschmais.cdo.impl;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
-import com.buschmais.cdo.impl.CdoManagerImpl;
-import com.buschmais.cdo.impl.CdoTransactionImpl;
 import com.buschmais.cdo.impl.cache.CacheSynchronization;
 import com.buschmais.cdo.impl.validation.InstanceValidator;
 import com.buschmais.cdo.impl.validation.ValidatorSynchronization;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.metadata.MetadataProviderImpl;
-import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;

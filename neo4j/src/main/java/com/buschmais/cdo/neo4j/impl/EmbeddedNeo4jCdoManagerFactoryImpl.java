@@ -1,6 +1,7 @@
 package com.buschmais.cdo.neo4j.impl;
 
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
+import com.buschmais.cdo.impl.AbstractCdoManagerFactoryImpl;
 import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
 import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastoreSession;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.IndexedPropertyMetadata;

@@ -1,6 +1,7 @@
 package com.buschmais.cdo.neo4j.impl;
 
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
+import com.buschmais.cdo.impl.AbstractCdoManagerFactoryImpl;
 import com.buschmais.cdo.neo4j.impl.datastore.RestNeo4jDatastore;
 import com.buschmais.cdo.spi.metadata.MetadataProvider;
 

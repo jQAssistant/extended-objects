@@ -5,7 +5,7 @@ import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
-import com.buschmais.cdo.neo4j.impl.AbstractCdoManagerFactoryImpl;
+import com.buschmais.cdo.impl.AbstractCdoManagerFactoryImpl;
 import org.junit.After;
 import org.junit.Before;
 

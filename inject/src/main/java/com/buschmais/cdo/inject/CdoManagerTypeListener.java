@@ -3,7 +3,7 @@ package com.buschmais.cdo.inject;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 
-import com.buschmais.cdo.neo4j.impl.AbstractCdoManagerFactoryImpl;
+import com.buschmais.cdo.impl.AbstractCdoManagerFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
