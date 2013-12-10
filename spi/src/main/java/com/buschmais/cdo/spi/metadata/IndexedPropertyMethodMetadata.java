@@ -6,19 +6,13 @@ public class IndexedPropertyMethodMetadata<DatastoreMetadata> extends AbstractPr
 
     private PrimitivePropertyMethodMetadata propertyMethodMetadata;
 
-    private boolean create;
-
-    public IndexedPropertyMethodMetadata(PropertyMethod beanPropertyMethod, PrimitivePropertyMethodMetadata propertyMethodMetadata, boolean create, DatastoreMetadata datastoreMetadata) {
+    public IndexedPropertyMethodMetadata(PropertyMethod beanPropertyMethod, PrimitivePropertyMethodMetadata propertyMethodMetadata, DatastoreMetadata datastoreMetadata) {
         super(beanPropertyMethod, datastoreMetadata);
         this.propertyMethodMetadata = propertyMethodMetadata;
-        this.create = create;
     }
 
     public <IndexedDatastoreMetadata> PrimitivePropertyMethodMetadata<IndexedDatastoreMetadata> getPropertyMethodMetadata() {
         return propertyMethodMetadata;
     }
 
-    public boolean isCreate() {
-        return create;
-    }
 }

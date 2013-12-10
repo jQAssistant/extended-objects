@@ -3,9 +3,9 @@ package com.buschmais.cdo.impl.metadata;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.annotation.ImplementedBy;
-import com.buschmais.cdo.api.annotation.Indexed;
 import com.buschmais.cdo.api.annotation.ResultOf;
 import com.buschmais.cdo.impl.reflection.BeanMethodProvider;
+import com.buschmais.cdo.spi.annotation.IndexDefinition;
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataProvider;
@@ -95,12 +95,12 @@ public class MetadataProviderImpl implements MetadataProvider {
             } else {
                 methodMetadata = new UnsupportedOperationMethodMetadata((UserMethod) beanMethod);
             }
-            Indexed indexedAnnotation = beanMethod.getAnnotation(Indexed.class);
+            Annotation indexedAnnotation = beanMethod.getByMetaAnnotation(IndexDefinition.class);
             if (indexedAnnotation != null) {
                 if (!(methodMetadata instanceof PrimitivePropertyMethodMetadata)) {
-                    throw new CdoException("Only primitive properties are allowed to be annotated with " + Indexed.class.getName());
+                    throw new CdoException("Only primitive properties are allowed to be used for indexing.");
                 }
-                indexedProperty = new IndexedPropertyMethodMetadata((PropertyMethod) beanMethod, (PrimitivePropertyMethodMetadata) methodMetadata, indexedAnnotation.create(), metadataFactory.createIndexedPropertyMetadata((PropertyMethod) beanMethod));
+                indexedProperty = new IndexedPropertyMethodMetadata((PropertyMethod) beanMethod, (PrimitivePropertyMethodMetadata) methodMetadata, metadataFactory.createIndexedPropertyMetadata((PropertyMethod) beanMethod));
             }
             methodMetadataList.add(methodMetadata);
         }

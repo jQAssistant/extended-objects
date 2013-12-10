@@ -2,7 +2,7 @@ package com.buschmais.cdo.neo4j.test.rest.crud;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.api.annotation.Indexed;
+import com.buschmais.cdo.neo4j.api.annotation.Indexed;
 import com.buschmais.cdo.neo4j.api.annotation.Label;
 import com.buschmais.cdo.neo4j.test.rest.AbstractRestCdoManagerTest;
 import org.junit.Assert;

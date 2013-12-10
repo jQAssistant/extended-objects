@@ -22,7 +22,7 @@ public interface DatastoreMetadataFactory<EntityMetadata> {
 
     <EnumPropertyMetadata> EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod beanPropertyMethod);
 
-    <ImplementedByMetadata> ImplementedByMetadata createIndexedPropertyMetadata(PropertyMethod beanMethod);
+    <IndexedPropertyMetadata> IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod beanMethod);
 
     <RelationMetadata> RelationMetadata createRelationMetadata(PropertyMethod beanPropertyMethod);
 

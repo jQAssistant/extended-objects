@@ -56,7 +56,10 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         if (label == null) {
             throw new CdoException("Type " + type.getName() + " has no label.");
         }
-        IndexedPropertyMethodMetadata indexedProperty = typeMetadata.getIndexedProperty();
+        IndexedPropertyMethodMetadata<?> indexedProperty = typeMetadata.getDatastoreMetadata().getIndexedProperty();
+        if (indexedProperty == null) {
+            indexedProperty = typeMetadata.getIndexedProperty();
+        }
         if (indexedProperty == null) {
             throw new CdoException("Type " + typeMetadata.getType().getName() + " has no indexed property.");
         }

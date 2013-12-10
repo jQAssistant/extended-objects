@@ -1,7 +1,6 @@
 package com.buschmais.cdo.neo4j.api.annotation;
 
 import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.api.annotation.Indexed;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

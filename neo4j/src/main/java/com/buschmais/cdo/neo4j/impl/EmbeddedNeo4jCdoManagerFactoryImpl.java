@@ -3,6 +3,7 @@ package com.buschmais.cdo.neo4j.impl;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
 import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastoreSession;
+import com.buschmais.cdo.neo4j.impl.datastore.metadata.IndexedPropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
 import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
@@ -38,8 +39,8 @@ public class EmbeddedNeo4jCdoManagerFactoryImpl extends AbstractCdoManagerFactor
         GraphDatabaseService graphDatabaseService = session.getGraphDatabaseService();
         try (Transaction transaction = graphDatabaseService.beginTx()) {
             for (TypeMetadata<NodeMetadata> typeMetadata : metadataProvider.getRegisteredMetadata()) {
-                IndexedPropertyMethodMetadata indexedPropertyMethodMetadata = typeMetadata.getIndexedProperty();
-                if (indexedPropertyMethodMetadata != null && indexedPropertyMethodMetadata.isCreate()) {
+                IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedPropertyMethodMetadata = typeMetadata.getIndexedProperty();
+                if (indexedPropertyMethodMetadata != null && indexedPropertyMethodMetadata.getDatastoreMetadata().isCreate()) {
                     Label label = typeMetadata.getDatastoreMetadata().getLabel();
                     PrimitivePropertyMethodMetadata propertyMethodMetadata = indexedPropertyMethodMetadata.getPropertyMethodMetadata();
                     if (label != null && propertyMethodMetadata != null) {
