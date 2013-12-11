@@ -1,10 +1,9 @@
 package com.buschmais.cdo.impl.bootstrap;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CdoUnitValidationHandler implements ValidationEventHandler {
 
@@ -26,7 +25,7 @@ public class CdoUnitValidationHandler implements ValidationEventHandler {
         }
     }
 
-    public boolean passesValidation() {
+    public boolean isValid() {
         return this.errorMessages.size() == 0;
     }
 

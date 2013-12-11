@@ -23,7 +23,7 @@
         <xs:sequence>
             <xs:element name="description" type="xs:string" minOccurs="0"/>
             <xs:element name="url" type="xs:anyURI" minOccurs="0"/>
-            <xs:element name="provider" type="cdo:NotEmptyStringType" minOccurs="0"/>
+            <xs:element name="provider" type="cdo:NonEmptyStringType" minOccurs="1"/>
             <xs:element name="types" type="cdo:TypesType" minOccurs="1"/>
             <xs:element name="validation-mode" type="cdo:ValidationModeType" minOccurs="0"/>
             <xs:element name="transaction-attribute" type="cdo:TransactionAttributeType" minOccurs="0"/>
@@ -34,7 +34,7 @@
 
     <xs:complexType name="TypesType">
         <xs:sequence>
-            <xs:element name="type" type="cdo:NotEmptyStringType" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="type" type="cdo:NonEmptyStringType" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -52,8 +52,8 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="NotEmptyStringType">
-        <xs:restriction base="xs:string">
+    <xs:simpleType name="NonEmptyStringType">
+    <xs:restriction base="xs:string">
             <xs:minLength value="1"/>
         </xs:restriction>
     </xs:simpleType>

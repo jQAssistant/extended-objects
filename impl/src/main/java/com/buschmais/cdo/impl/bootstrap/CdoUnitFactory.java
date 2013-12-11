@@ -1,18 +1,10 @@
 package com.buschmais.cdo.impl.bootstrap;
 
-import static com.buschmais.cdo.api.bootstrap.CdoUnit.TransactionAttribute.MANDATORY;
-import static com.buschmais.cdo.api.bootstrap.CdoUnit.TransactionAttribute.REQUIRES;
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.schema.v1.*;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import com.buschmais.cdo.spi.bootstrap.CdoUnit;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
+import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -21,12 +13,14 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
-import org.xml.sax.SAXException;
-
-import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.schema.v1.Cdo;
-import com.buschmais.cdo.schema.v1.*;
+import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
+import static com.buschmais.cdo.api.CdoManagerFactory.ValidationMode;
 
 public class CdoUnitFactory {
 
@@ -74,7 +68,7 @@ public class CdoUnitFactory {
                 unmarshaller.setSchema(cdoXsd);
                 unmarshaller.setEventHandler(validationHandler);
                 Cdo cdoXmlContent = unmarshaller.unmarshal(new StreamSource(is), Cdo.class).getValue();
-                if (validationHandler.passesValidation()) {
+                if (validationHandler.isValid()) {
                     return cdoXmlContent;
                 } else {
                     throw new CdoException("Invalid cdo.xml descriptor detected: "
@@ -92,7 +86,7 @@ public class CdoUnitFactory {
             String name = cdoUnitType.getName();
             String description = cdoUnitType.getDescription();
             String urlName = cdoUnitType.getUrl();
-            URL url = null;
+            URL url;
             try {
                 url = new URL(urlName);
             } catch (MalformedURLException e) {
@@ -105,20 +99,20 @@ public class CdoUnitFactory {
                 types.add(ClassHelper.getType(typeName));
             }
             ValidationModeType validationModeType = cdoUnitType.getValidationMode();
-            CdoManagerFactory.ValidationMode validationMode;
+            ValidationMode validationMode;
             if (validationModeType != null) {
                 switch (validationModeType) {
                     case NONE:
-                        validationMode = CdoManagerFactory.ValidationMode.NONE;
+                        validationMode = ValidationMode.NONE;
                         break;
                     case AUTO:
-                        validationMode = CdoManagerFactory.ValidationMode.AUTO;
+                        validationMode = ValidationMode.AUTO;
                         break;
                     default:
                         throw new CdoException("Unknown validation mode type " + validationModeType);
                 }
             } else {
-                validationMode = CdoManagerFactory.ValidationMode.AUTO;
+                validationMode = ValidationMode.AUTO;
             }
             TransactionAttributeType transactionAttributeType = cdoUnitType.getTransactionAttribute();
             TransactionAttribute transactionAttribute;
@@ -154,9 +148,5 @@ public class CdoUnitFactory {
             throw new CdoException("CDO unit with name '" + name + "' does not exist.");
         }
         return cdoUnit;
-    }
-
-    public Collection<CdoUnit> getCdoUnits() {
-        return Collections.unmodifiableCollection(cdoUnits.values());
     }
 }
