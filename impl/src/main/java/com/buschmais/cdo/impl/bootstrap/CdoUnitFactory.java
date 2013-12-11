@@ -1,22 +1,32 @@
 package com.buschmais.cdo.impl.bootstrap;
 
+import static com.buschmais.cdo.api.bootstrap.CdoUnit.TransactionAttribute.MANDATORY;
+import static com.buschmais.cdo.api.bootstrap.CdoUnit.TransactionAttribute.REQUIRES;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.schema.v1.*;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+
+import org.xml.sax.SAXException;
+
+import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.schema.v1.Cdo;
+import com.buschmais.cdo.schema.v1.*;
 
 public class CdoUnitFactory {
 
@@ -32,16 +42,22 @@ public class CdoUnitFactory {
             classLoader = CdoUnitFactory.class.getClassLoader();
         }
         JAXBContext cdoContext;
+        SchemaFactory xsdFactory;
+        Schema cdoXsd;
         try {
             cdoContext = JAXBContext.newInstance(ObjectFactory.class);
+            xsdFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            cdoXsd = xsdFactory.newSchema(new StreamSource(classLoader.getResourceAsStream("META-INF/xsd/cdo-1.0.xsd")));
         } catch (JAXBException e) {
             throw new CdoException("Cannot create JAXBContext for reading cdo.xml descriptors.", e);
+        } catch (SAXException e) {
+            throw new CdoException("Cannot create Schema for validation of cdo.xml descriptors.", e);
         }
         try {
             Enumeration<URL> resources = classLoader.getResources("META-INF/cdo.xml");
             while (resources.hasMoreElements()) {
                 URL url = resources.nextElement();
-                com.buschmais.cdo.schema.v1.Cdo cdo = readCdoDescriptor(cdoContext, url);
+                com.buschmais.cdo.schema.v1.Cdo cdo = readCdoDescriptor(cdoContext, url, cdoXsd);
                 getCdoUnits(cdo);
             }
         } catch (IOException e) {
@@ -49,11 +65,21 @@ public class CdoUnitFactory {
         }
     }
 
-    private com.buschmais.cdo.schema.v1.Cdo readCdoDescriptor(JAXBContext cdoContext, URL url) throws IOException {
+    private com.buschmais.cdo.schema.v1.Cdo readCdoDescriptor(JAXBContext cdoContext, URL url, Schema cdoXsd)
+            throws IOException {
         try (InputStream is = url.openStream()) {
             try {
                 Unmarshaller unmarshaller = cdoContext.createUnmarshaller();
-                return unmarshaller.unmarshal(new StreamSource(is), com.buschmais.cdo.schema.v1.Cdo.class).getValue();
+                CdoUnitValidationHandler validationHandler = new CdoUnitValidationHandler();
+                unmarshaller.setSchema(cdoXsd);
+                unmarshaller.setEventHandler(validationHandler);
+                Cdo cdoXmlContent = unmarshaller.unmarshal(new StreamSource(is), Cdo.class).getValue();
+                if (validationHandler.passesValidation()) {
+                    return cdoXmlContent;
+                } else {
+                    throw new CdoException("Invalid cdo.xml descriptor detected: "
+                            + validationHandler.getValidationMessages());
+                }
             } catch (JAXBException e) {
                 throw new CdoException("Cannot create JAXB unmarshaller for reading cdo.xml descriptors.");
             }
@@ -107,8 +133,7 @@ public class CdoUnitFactory {
                     default:
                         throw new CdoException("Unknown transaction attribute type " + transactionAttributeType);
                 }
-            }
-            else {
+            } else {
                 transactionAttribute = TransactionAttribute.MANDATORY;
             }
             Properties properties = new Properties();
