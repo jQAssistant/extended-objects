@@ -94,6 +94,7 @@
                         <artifactId>logback-classic</artifactId>
                     </exclusion>
                 </exclusions>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.neo4j.app</groupId>
@@ -110,6 +111,7 @@
                         <artifactId>logback-classic</artifactId>
                     </exclusion>
                 </exclusions>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.neo4j</groupId>
@@ -152,26 +154,8 @@
             <artifactId>neo4j</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.neo4j.app</groupId>
-            <artifactId>neo4j-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.neo4j.app</groupId>
-            <artifactId>neo4j-server</artifactId>
-            <classifier>static-web</classifier>
-        </dependency>
-        <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-rest-graphdb</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>5.0.1.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -184,16 +168,27 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
+        <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j.app</groupId>
+            <artifactId>neo4j-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j.app</groupId>
+            <artifactId>neo4j-server</artifactId>
+            <classifier>static-web</classifier>
         </dependency>
     </dependencies>
 
