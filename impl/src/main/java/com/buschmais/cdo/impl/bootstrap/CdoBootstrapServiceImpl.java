@@ -1,5 +1,6 @@
 package com.buschmais.cdo.impl.bootstrap;
 
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.bootstrap.CdoBootstrapService;
 import com.buschmais.cdo.impl.CdoManagerFactoryImpl;
@@ -11,7 +12,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
 
 import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
 
@@ -38,6 +38,9 @@ public class CdoBootstrapServiceImpl implements CdoBootstrapService {
     }
 
     private CdoManagerFactory createCdoManagerFactory(CdoUnit cdoUnit, Class<? extends CdoDatastoreProvider> providerType) {
+        if (providerType == null) {
+            throw new CdoException("No provider specified for CDO unit '" + cdoUnit.getName() + "'.");
+        }
         CdoDatastoreProvider cdoDatastoreProvider = ClassHelper.newInstance(providerType);
         Datastore<?> datastore = cdoDatastoreProvider.createDatastore(cdoUnit);
         return new CdoManagerFactoryImpl(cdoUnit, datastore);

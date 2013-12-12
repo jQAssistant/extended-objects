@@ -12,7 +12,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.neo4j_version>2.0.0-RC1</org.neo4j_version>
+        <org.neo4j_version>2.0.0</org.neo4j_version>
     </properties>
 
     <repositories>
