@@ -4,16 +4,16 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
-import com.buschmais.cdo.impl.proxy.instance.composite.AsMethod;
-import com.buschmais.cdo.spi.reflection.BeanMethod;
-import com.buschmais.cdo.impl.reflection.BeanMethodProvider;
-import com.buschmais.cdo.spi.reflection.GetPropertyMethod;
-import com.buschmais.cdo.spi.reflection.PropertyMethod;
+import com.buschmais.cdo.impl.proxy.query.composite.AsMethod;
 import com.buschmais.cdo.impl.proxy.query.object.EqualsMethod;
 import com.buschmais.cdo.impl.proxy.query.object.HashCodeMethod;
 import com.buschmais.cdo.impl.proxy.query.object.ToStringMethod;
 import com.buschmais.cdo.impl.proxy.query.property.GetMethod;
 import com.buschmais.cdo.impl.proxy.query.row.GetColumnsMethod;
+import com.buschmais.cdo.impl.reflection.BeanMethodProvider;
+import com.buschmais.cdo.spi.reflection.BeanMethod;
+import com.buschmais.cdo.spi.reflection.GetPropertyMethod;
+import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
 import java.util.Collection;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class RowProxyMethodService extends AbstractProxyMethodService<Map<String
                 addProxyMethod(proxyMethod, beanPropertyMethod.getMethod());
             }
         }
-        addMethod(new AsMethod<Map<String, Object>>(getInstanceManager()), CompositeObject.class, "as", Class.class);
+        addMethod(new AsMethod<Map<String, Object>>(), CompositeObject.class, "as", Class.class);
         addMethod(new com.buschmais.cdo.impl.proxy.query.row.GetMethod(), CompositeRowObject.class, "get", String.class, Class.class);
         addMethod(new GetColumnsMethod(), CompositeRowObject.class, "getColumns");
         addMethod(new HashCodeMethod(), Object.class, "hashCode");
