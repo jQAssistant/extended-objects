@@ -74,11 +74,13 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
     public CompositeObject create(Class type, Class<?>... types) {
         TypeSet effectiveTypes = getEffectiveTypes(type, types);
         Entity entity = datastoreSession.create(effectiveTypes);
-        return instanceManager.getInstance(entity);
+        CompositeObject instance = instanceManager.getInstance(entity);
+        return instance;
     }
 
     public <T> T create(Class<T> type) {
-        return create(type, new Class<?>[0]).as(type);
+        T instance = create(type, new Class<?>[0]).as(type);
+        return instance;
     }
 
     @Override

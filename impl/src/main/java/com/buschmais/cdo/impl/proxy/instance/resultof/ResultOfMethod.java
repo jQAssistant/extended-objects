@@ -27,7 +27,7 @@ public class ResultOfMethod<Entity> implements ProxyMethod<Entity> {
     public Object invoke(Entity entity, Object instance, Object[] args) {
         CdoQueryImpl<Class<?>> query = new CdoQueryImpl(resultOfMethodMetadata.getQuery(), datastoreSession, instanceManager, Collections.<Class<?>>emptyList());
         String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
-        query.withParameter(usingThisAs, instance);
+        query.withParameter(usingThisAs, instanceManager.getInstance(entity));
         List<ResultOf.Parameter> parameters = resultOfMethodMetadata.getParameters();
         for (int i = 0; i < parameters.size(); i++) {
             query.withParameter(parameters.get(i).value(), args[i]);

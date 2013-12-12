@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Entity, M> {
 
     public EntityProxyMethodService(MetadataProvider metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, DatastoreSession datastoreSession) {
+        super(instanceManager);
         for (TypeMetadata<?> typeMetadata : metadataProvider.getRegisteredMetadata()) {
             for (AbstractMethodMetadata methodMetadata : typeMetadata.getProperties()) {
                 BeanMethod beanMethod = methodMetadata.getBeanMethod();
@@ -75,7 +76,7 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
                 }
             }
         }
-        addMethod(new AsMethod<Entity>(), CompositeObject.class, "as", Class.class);
+        addMethod(new AsMethod<Entity>(getInstanceManager()), CompositeObject.class, "as", Class.class);
         addMethod(new HashCodeMethod<Entity>(datastoreSession), Object.class, "hashCode");
         addMethod(new EqualsMethod<Entity>(instanceManager, datastoreSession), Object.class, "equals", Object.class);
         addMethod(new ToStringMethod<Entity>(datastoreSession), Object.class, "toString");

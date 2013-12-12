@@ -13,7 +13,7 @@ public interface A {
     void setValue(String value);
 
     @ImplementedBy(ThrowException.class)
-    void throwException(String value);
+    void throwException(String value) throws Exception;
 
     @ImplementedBy(ThrowRuntimeException.class)
     void throwRuntimeException(String value);

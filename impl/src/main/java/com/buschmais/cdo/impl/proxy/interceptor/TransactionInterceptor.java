@@ -1,40 +1,44 @@
-package com.buschmais.cdo.impl.proxy;
+package com.buschmais.cdo.impl.proxy.interceptor;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.CdoTransaction;
+import com.buschmais.cdo.impl.proxy.ProxyMethodService;
 import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
-public class TransactionProxyMethodService<E, M extends ProxyMethod<?>> implements ProxyMethodService<E, M> {
+import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
 
-    private ProxyMethodService<E, M> delegate;
+public class TransactionInterceptor<T> extends AbstractCdoInterceptor<T> {
 
     private CdoTransaction cdoTransaction;
 
-    private CdoManagerFactory.TransactionAttribute transactionAttribute;
+    private TransactionAttribute transactionAttribute;
 
-    public TransactionProxyMethodService(ProxyMethodService<E, M> delegate, CdoTransaction cdoTransaction, CdoManagerFactory.TransactionAttribute transactionAttribute) {
-        this.delegate = delegate;
+    public TransactionInterceptor(T delegate, CdoTransaction cdoTransaction, TransactionAttribute transactionAttribute) {
+        super(delegate);
         this.cdoTransaction = cdoTransaction;
         this.transactionAttribute = transactionAttribute;
     }
 
     @Override
-    public Object invoke(E element, Object instance, Method method, Object[] args) throws Exception {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         switch (transactionAttribute) {
             case MANDATORY:
                 if (!this.cdoTransaction.isActive()) {
                     throw new CdoException("An active transaction is MANDATORY when calling method '" + method.getName());
                 }
-                return delegate.invoke(element, instance, method, args);
+                return invoke(method, args);
             case REQUIRES: {
                 if (!this.cdoTransaction.isActive()) {
                     try {
                         this.cdoTransaction.begin();
-                        Object result = delegate.invoke(element, instance, method, args);
+                        Object result = invoke(method, args);
                         this.cdoTransaction.commit();
                         return result;
                     } catch (RuntimeException e) {
@@ -44,11 +48,21 @@ public class TransactionProxyMethodService<E, M extends ProxyMethod<?>> implemen
                         this.cdoTransaction.commit();
                         throw e;
                     }
+                } else {
+                    return invoke(method, args);
                 }
-                return delegate.invoke(element, instance, method, args);
             }
-            default:
+            default: {
                 throw new CdoException("Unsupported transaction attribute " + transactionAttribute);
+            }
+        }
+    }
+
+    private Object invoke(Method method, Object[] args) throws Throwable {
+        try {
+            return method.invoke(getDelegate(), args);
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
         }
     }
 }

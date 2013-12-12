@@ -24,7 +24,7 @@ class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Qu
         this.datastoreSession = datastoreSession;
         this.iterator = iterator;
         this.types = types;
-        this.rowProxyMethodService = new RowProxyMethodService(types);
+        this.rowProxyMethodService = new RowProxyMethodService(types ,instanceManager);
     }
 
     @Override
