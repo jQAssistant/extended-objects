@@ -1,6 +1,8 @@
 package com.buschmais.cdo.impl.proxy.instance;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 import com.buschmais.cdo.impl.InstanceManager;
@@ -23,7 +25,7 @@ import java.lang.reflect.Method;
 
 public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Entity, M> {
 
-    public EntityProxyMethodService(MetadataProvider metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, DatastoreSession datastoreSession) {
+    public EntityProxyMethodService(MetadataProvider metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, CdoTransaction cdoTransaction, CdoManagerFactory.TransactionAttribute transactionAttribute, DatastoreSession datastoreSession) {
         super(instanceManager);
         for (TypeMetadata<?> typeMetadata : metadataProvider.getRegisteredMetadata()) {
             for (AbstractMethodMetadata methodMetadata : typeMetadata.getProperties()) {
@@ -68,7 +70,7 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
                         }
                     } else if (methodMetadata instanceof CollectionPropertyMethodMetadata) {
                         if (beanPropertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new CollectionPropertyGetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
+                            addProxyMethod(new CollectionPropertyGetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager, cdoTransaction, transactionAttribute), method);
                         } else if (beanPropertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new CollectionPropertySetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
                         }

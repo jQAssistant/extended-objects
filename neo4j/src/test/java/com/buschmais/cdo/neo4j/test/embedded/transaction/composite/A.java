@@ -5,12 +5,16 @@ import com.buschmais.cdo.neo4j.api.annotation.Label;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 import org.neo4j.graphdb.Node;
 
+import java.util.List;
+
 @Label("A")
 public interface A {
 
     String getValue();
 
     void setValue(String value);
+
+    List<B> getListOfB();
 
     @ImplementedBy(ThrowException.class)
     void throwException(String value) throws Exception;

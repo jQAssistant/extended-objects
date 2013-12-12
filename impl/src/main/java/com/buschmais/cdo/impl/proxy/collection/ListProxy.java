@@ -2,9 +2,10 @@ package com.buschmais.cdo.impl.proxy.collection;
 
 import java.util.AbstractSequentialList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
-public class ListProxy<Instance> extends AbstractSequentialList<Instance> {
+public class ListProxy<Instance> extends AbstractSequentialList<Instance> implements List<Instance> {
 
     private CollectionProxy<Instance, ?> collectionProxy;
 

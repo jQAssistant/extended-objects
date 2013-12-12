@@ -40,7 +40,7 @@ public class InstanceManager<EntityId, Entity> {
         this.cdoTransaction = cdoTransaction;
         this.transactionAttribute = transactionAttribute;
         PropertyManager propertyManager = new PropertyManager(datastoreSession);
-        proxyMethodService = new EntityProxyMethodService(metadataProvider, this, propertyManager, datastoreSession);
+        proxyMethodService = new EntityProxyMethodService(metadataProvider, this, propertyManager, cdoTransaction, transactionAttribute, datastoreSession);
     }
 
     public <T> T getInstance(Entity entity) {

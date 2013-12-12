@@ -2,6 +2,7 @@ package com.buschmais.cdo.neo4j.test.embedded.transaction;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.neo4j.test.embedded.transaction.composite.B;
 import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.transaction.composite.A;
@@ -15,7 +16,7 @@ public class TransactionAttributeRequiresTest extends AbstractEmbeddedCdoManager
 
     @Override
     protected Class<?>[] getTypes() {
-        return new Class<?>[]{A.class};
+        return new Class<?>[]{A.class, B.class};
     }
 
     @Override
@@ -27,21 +28,20 @@ public class TransactionAttributeRequiresTest extends AbstractEmbeddedCdoManager
     public void withoutTransactionContext() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
-        A a = cdoManager.create(A.class);
-        a.setValue("value1");
+        A a = createA(cdoManager);
         cdoManager.currentTransaction().commit();
         assertThat(cdoManager.currentTransaction().isActive(), equalTo(false));
         assertThat(a.getValue(), equalTo("value1"));
         a.setValue("value2");
         assertThat(a.getValue(), equalTo("value2"));
+        assertThat(a.getListOfB().size(),equalTo(2));
     }
 
     @Test
     public void withTransactionContext() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
-        A a = cdoManager.create(A.class);
-        a.setValue("value1");
+        A a = createA(cdoManager);
         cdoManager.currentTransaction().commit();
         cdoManager.currentTransaction().begin();
         assertThat(cdoManager.currentTransaction().isActive(), equalTo(true));
@@ -61,8 +61,7 @@ public class TransactionAttributeRequiresTest extends AbstractEmbeddedCdoManager
     public void commitOnException() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
-        A a = cdoManager.create(A.class);
-        a.setValue("value1");
+        A a = createA(cdoManager);
         cdoManager.currentTransaction().commit();
         assertThat(a.getValue(), equalTo("value1"));
         try {
@@ -78,8 +77,7 @@ public class TransactionAttributeRequiresTest extends AbstractEmbeddedCdoManager
     public void rollbackOnRuntimeException() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
-        A a = cdoManager.create(A.class);
-        a.setValue("value1");
+        A a = createA(cdoManager);
         cdoManager.currentTransaction().commit();
         assertThat(a.getValue(), equalTo("value1"));
         try {
@@ -90,4 +88,17 @@ public class TransactionAttributeRequiresTest extends AbstractEmbeddedCdoManager
         assertThat(cdoManager.currentTransaction().isActive(), equalTo(false));
         assertThat(a.getValue(), equalTo("value1"));
     }
+
+    private A createA(CdoManager cdoManager) {
+        A a = cdoManager.create(A.class);
+        a.setValue("value1");
+        B b1 = cdoManager.create(B.class);
+        b1.setValue(1);
+        a.getListOfB().add(b1);
+        B b2 = cdoManager.create(B.class);
+        b2.setValue(2);
+        a.getListOfB().add(b2);
+        return a;
+    }
+
 }
