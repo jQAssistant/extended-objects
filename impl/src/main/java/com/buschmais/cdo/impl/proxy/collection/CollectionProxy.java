@@ -5,9 +5,10 @@ import com.buschmais.cdo.impl.PropertyManager;
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
 
 import java.util.AbstractCollection;
+import java.util.Collection;
 import java.util.Iterator;
 
-public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instance> {
+public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instance> implements Collection<Instance> {
 
     private Entity entity;
     private RelationMetadata metadata;

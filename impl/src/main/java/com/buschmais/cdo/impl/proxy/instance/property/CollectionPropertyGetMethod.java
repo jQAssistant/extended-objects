@@ -40,8 +40,10 @@ public class CollectionPropertyGetMethod<Entity> extends AbstractPropertyMethod<
             collection = new SetProxy<>(collectionProxy);
         } else if (List.class.isAssignableFrom(collectionPropertyMetadata.getBeanMethod().getType())) {
             collection = new ListProxy<>(collectionProxy);
+        } else if (Collection.class.isAssignableFrom(collectionPropertyMetadata.getBeanMethod().getType())) {
+            collection = collectionProxy;
         } else {
-        throw new CdoException("Unsupported collection type " + collectionPropertyMetadata.getBeanMethod().getType());
+            throw new CdoException("Unsupported collection type " + collectionPropertyMetadata.getBeanMethod().getType());
         }
         Collection<?> result = InterceptorFactory.addInterceptor(collection, new TransactionInterceptor(collection, cdoTransaction, transactionAttribute));
         return result;
