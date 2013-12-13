@@ -134,6 +134,11 @@ public interface CdoManager {
     <DS> DS getDatastoreSession(Class<DS> sessionType);
 
     /**
+     * Flushes all pending changes to the datastore.
+     */
+    void flush();
+
+    /**
      * Defines the interface of strategies for migration between different composite object types.
      *
      * @param <T> The instance type.

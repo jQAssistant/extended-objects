@@ -22,6 +22,8 @@ public interface DatastoreSession<EntityId, Entity, RelationId, Relation> {
 
     void migrate(Entity entity, TypeSet types, TypeSet targetTypes);
 
+    void flush(Iterable<Entity> entities);
+
     // properties
 
     DatastorePropertyManager getDatastorePropertyManager();
