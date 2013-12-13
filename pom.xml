@@ -47,6 +47,7 @@
     </developers>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jqassistant.version>1.0.0-M1</jqassistant.version>
     </properties>
 
@@ -193,7 +194,7 @@
                 <version>2.4</version>
             </dependency>
             <dependency>
-            <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>5.0.1.Final</version>
                 <scope>test</scope>
@@ -224,6 +225,7 @@
         <module>api</module>
         <module>impl</module>
         <module>neo4j</module>
+        <module>json</module>
         <module>doc</module>
         <module>inject</module>
     </modules>

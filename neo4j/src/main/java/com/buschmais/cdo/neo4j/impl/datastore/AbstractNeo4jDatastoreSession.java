@@ -2,13 +2,16 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
-import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import com.buschmais.cdo.neo4j.api.annotation.Cypher;
-import com.buschmais.cdo.neo4j.impl.datastore.metadata.*;
-import com.buschmais.cdo.spi.metadata.*;
+import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
+import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
+import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.TypeSet;
+import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.MetadataProvider;
+import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.TypeMetadata;
 import org.neo4j.graphdb.*;
 
 import java.util.HashSet;
@@ -98,6 +101,10 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     @Override
     public void delete(Node node) {
         node.delete();
+    }
+
+    @Override
+    public void flush(Iterable<Node> nodes) {
     }
 
     protected <QL> String getCypher(QL expression) {

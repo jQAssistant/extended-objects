@@ -3,16 +3,16 @@ package com.buschmais.cdo.impl;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.CdoTransaction;
-import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
-import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.cache.CacheSynchronization;
+import com.buschmais.cdo.impl.cache.TransactionalCache;
+import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
+import com.buschmais.cdo.impl.metadata.MetadataProviderImpl;
 import com.buschmais.cdo.impl.validation.InstanceValidator;
 import com.buschmais.cdo.impl.validation.ValidatorSynchronization;
-import com.buschmais.cdo.impl.cache.TransactionalCache;
-import com.buschmais.cdo.impl.metadata.MetadataProviderImpl;
-import com.buschmais.cdo.spi.metadata.MetadataProvider;
+import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
+import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,9 +62,10 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
         InstanceValidator instanceValidator = new InstanceValidator(validatorFactory, cache);
         cdoTransaction.registerSynchronization(new ValidatorSynchronization(instanceValidator));
         cdoTransaction.registerSynchronization(new CacheSynchronization(cache));
+        cdoTransaction.registerSynchronization(new DatastoreFlushSynchronization(cache, datastoreSession));
         InterceptorFactory interceptorFactory = new InterceptorFactory(cdoTransaction, transactionAttribute);
         InstanceManager instanceManager = new InstanceManager(metadataProvider, datastoreSession, classLoader, cache, interceptorFactory);
-        return new CdoManagerImpl(metadataProvider, cdoTransaction, datastoreSession, instanceManager, interceptorFactory, instanceValidator);
+        return new CdoManagerImpl(metadataProvider, cache, cdoTransaction, datastoreSession, instanceManager, interceptorFactory, instanceValidator);
     }
 
     @Override
