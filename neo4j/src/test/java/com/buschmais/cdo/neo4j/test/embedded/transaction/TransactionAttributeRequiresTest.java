@@ -6,6 +6,7 @@ import com.buschmais.cdo.neo4j.test.embedded.transaction.composite.B;
 import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.transaction.composite.A;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,7 +35,12 @@ public class TransactionAttributeRequiresTest extends AbstractEmbeddedCdoManager
         assertThat(a.getValue(), equalTo("value1"));
         a.setValue("value2");
         assertThat(a.getValue(), equalTo("value2"));
-        assertThat(a.getListOfB().size(),equalTo(2));
+        assertThat(a.getListOfB().size(), equalTo(2));
+        int i = 1;
+        for (B b : a.getListOfB()) {
+            assertThat(b.getValue(), equalTo(i));
+            i++;
+        }
     }
 
     @Test

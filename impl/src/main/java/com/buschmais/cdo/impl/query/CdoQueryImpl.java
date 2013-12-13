@@ -4,6 +4,7 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.TypeSet;
 
@@ -17,13 +18,15 @@ public class CdoQueryImpl<QL> implements Query {
     private QL expression;
     private DatastoreSession datastoreSession;
     private InstanceManager instanceManager;
+    private InterceptorFactory interceptorFactory;
     private Collection<Class<?>> types;
     private Map<String, Object> parameters = null;
 
-    public CdoQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager, Collection<Class<?>> types) {
+    public CdoQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager, InterceptorFactory interceptorFactory, Collection<Class<?>> types) {
         this.expression = expression;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
+        this.interceptorFactory = interceptorFactory;
         this.types = types;
     }
 
@@ -63,7 +66,7 @@ public class CdoQueryImpl<QL> implements Query {
         }
         ResultIterator<Map<String, Object>> iterator = datastoreSession.execute(expression, effectiveParameters);
         SortedSet<Class<?>> resultTypes = getResultTypes();
-        return new QueryResultIterableImpl(instanceManager, datastoreSession, iterator, resultTypes);
+        return new QueryResultIterableImpl(instanceManager, interceptorFactory, datastoreSession, iterator, resultTypes);
     }
 
     private TypeSet getResultTypes() {

@@ -3,8 +3,7 @@ package com.buschmais.cdo.impl;
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.spi.datastore.DatastoreTransaction;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CdoTransactionImpl implements CdoTransaction {
 
@@ -50,6 +49,11 @@ public class CdoTransactionImpl implements CdoTransaction {
     @Override
     public void registerSynchronization(Synchronization synchronization) {
         synchronizations.add(synchronization);
+    }
+
+    @Override
+    public void unregisterSynchronization(Synchronization synchronization) {
+        synchronizations.remove(synchronization);
     }
 
 

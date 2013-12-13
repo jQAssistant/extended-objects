@@ -1,12 +1,11 @@
 package com.buschmais.cdo.impl.proxy.instance;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;
+import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.cdo.impl.proxy.instance.composite.AsMethod;
 import com.buschmais.cdo.impl.proxy.instance.object.EqualsMethod;
@@ -25,7 +24,7 @@ import java.lang.reflect.Method;
 
 public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Entity, M> {
 
-    public EntityProxyMethodService(MetadataProvider metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, CdoTransaction cdoTransaction, CdoManagerFactory.TransactionAttribute transactionAttribute, DatastoreSession datastoreSession) {
+    public EntityProxyMethodService(MetadataProvider metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager,InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
         super(instanceManager);
         for (TypeMetadata<?> typeMetadata : metadataProvider.getRegisteredMetadata()) {
             for (AbstractMethodMetadata methodMetadata : typeMetadata.getProperties()) {
@@ -45,7 +44,7 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
                 }
                 if (methodMetadata instanceof ResultOfMethodMetadata) {
                     ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata) methodMetadata;
-                    addProxyMethod(new ResultOfMethod(resultOfMethodMetadata, instanceManager, datastoreSession), beanMethod.getMethod());
+                    addProxyMethod(new ResultOfMethod(resultOfMethodMetadata, instanceManager, interceptorFactory, datastoreSession), beanMethod.getMethod());
                 }
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
                     PropertyMethod beanPropertyMethod = (PropertyMethod) beanMethod;
@@ -70,7 +69,7 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
                         }
                     } else if (methodMetadata instanceof CollectionPropertyMethodMetadata) {
                         if (beanPropertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new CollectionPropertyGetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager, cdoTransaction, transactionAttribute), method);
+                            addProxyMethod(new CollectionPropertyGetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager, interceptorFactory), method);
                         } else if (beanPropertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new CollectionPropertySetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
                         }

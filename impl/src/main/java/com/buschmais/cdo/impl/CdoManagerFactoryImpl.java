@@ -3,6 +3,7 @@ package com.buschmais.cdo.impl;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.CdoTransaction;
+import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.cache.CacheSynchronization;
 import com.buschmais.cdo.impl.validation.InstanceValidator;
@@ -61,8 +62,9 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
         InstanceValidator instanceValidator = new InstanceValidator(validatorFactory, cache);
         cdoTransaction.registerSynchronization(new ValidatorSynchronization(instanceValidator));
         cdoTransaction.registerSynchronization(new CacheSynchronization(cache));
-        InstanceManager instanceManager = new InstanceManager(cdoTransaction, metadataProvider, datastoreSession, classLoader, cache, transactionAttribute);
-        return new CdoManagerImpl(metadataProvider, cdoTransaction, datastoreSession, instanceManager, instanceValidator);
+        InterceptorFactory interceptorFactory = new InterceptorFactory(cdoTransaction, transactionAttribute);
+        InstanceManager instanceManager = new InstanceManager(metadataProvider, datastoreSession, classLoader, cache, interceptorFactory);
+        return new CdoManagerImpl(metadataProvider, cdoTransaction, datastoreSession, instanceManager, interceptorFactory, instanceValidator);
     }
 
     @Override

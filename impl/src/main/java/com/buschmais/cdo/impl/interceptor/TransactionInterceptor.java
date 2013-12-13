@@ -1,16 +1,10 @@
-package com.buschmais.cdo.impl.proxy.interceptor;
+package com.buschmais.cdo.impl.interceptor;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.CdoTransaction;
-import com.buschmais.cdo.impl.proxy.ProxyMethodService;
-import com.buschmais.cdo.spi.bootstrap.CdoUnit;
-import com.buschmais.cdo.api.proxy.ProxyMethod;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
 
