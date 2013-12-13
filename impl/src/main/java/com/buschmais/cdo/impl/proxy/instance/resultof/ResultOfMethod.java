@@ -1,5 +1,6 @@
 package com.buschmais.cdo.impl.proxy.instance.resultof;
 
+import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.annotation.ResultOf;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
@@ -16,19 +17,21 @@ public class ResultOfMethod<Entity> implements ProxyMethod<Entity> {
 
     private ResultOfMethodMetadata resultOfMethodMetadata;
     private InstanceManager instanceManager;
+    private CdoTransaction cdoTransaction;
     private InterceptorFactory interceptorFactory;
     private DatastoreSession datastoreSession;
 
-    public ResultOfMethod(ResultOfMethodMetadata resultOfMethodMetadata, InstanceManager instanceManager, InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
+    public ResultOfMethod(ResultOfMethodMetadata resultOfMethodMetadata, InstanceManager instanceManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
         this.resultOfMethodMetadata = resultOfMethodMetadata;
         this.instanceManager = instanceManager;
+        this.cdoTransaction = cdoTransaction;
         this.interceptorFactory = interceptorFactory;
         this.datastoreSession = datastoreSession;
     }
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
-        CdoQueryImpl<Class<?>> query = new CdoQueryImpl(resultOfMethodMetadata.getQuery(), datastoreSession, instanceManager, interceptorFactory, Collections.<Class<?>>emptyList());
+        CdoQueryImpl<Class<?>> query = new CdoQueryImpl(resultOfMethodMetadata.getQuery(), datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Collections.<Class<?>>emptyList());
         String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
         query.withParameter(usingThisAs, instanceManager.getInstance(entity));
         List<ResultOf.Parameter> parameters = resultOfMethodMetadata.getParameters();

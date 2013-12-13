@@ -2,6 +2,7 @@ package com.buschmais.cdo.impl.bootstrap;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.api.ValidationMode;
 import com.buschmais.cdo.api.bootstrap.CdoBootstrapService;
 import com.buschmais.cdo.impl.CdoManagerFactoryImpl;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
@@ -13,7 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 
-import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
+import com.buschmais.cdo.api.TransactionAttribute;
 
 public class CdoBootstrapServiceImpl implements CdoBootstrapService {
 
@@ -31,7 +32,7 @@ public class CdoBootstrapServiceImpl implements CdoBootstrapService {
     }
 
     @Override
-    public CdoManagerFactory createCdoManagerFactory(URL url, Class<?> provider, Class<?>[] types, CdoManagerFactory.ValidationMode validationMode, TransactionAttribute transactionAttribute, Properties properties) {
+    public CdoManagerFactory createCdoManagerFactory(URL url, Class<?> provider, Class<?>[] types, ValidationMode validationMode, TransactionAttribute transactionAttribute, Properties properties) {
         Class<? extends CdoDatastoreProvider> providerType = (Class<? extends CdoDatastoreProvider>) provider;
         CdoUnit cdoUnit = new CdoUnit("default", "Default CDO unit.", url, providerType, new HashSet<>(Arrays.asList(types)), validationMode, transactionAttribute, properties);
         return createCdoManagerFactory(cdoUnit, providerType);

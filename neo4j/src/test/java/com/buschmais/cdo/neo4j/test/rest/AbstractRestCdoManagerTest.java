@@ -1,6 +1,7 @@
 package com.buschmais.cdo.neo4j.test.rest;
 
 import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.api.ValidationMode;
 import com.buschmais.cdo.api.bootstrap.Cdo;
 import com.buschmais.cdo.neo4j.api.Neo4jCdoProvider;
 import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
@@ -21,7 +22,7 @@ public abstract class AbstractRestCdoManagerTest extends AbstractCdoManagerTest 
 
     @Override
     protected CdoManagerFactory getNeo4jCdoManagerFactory(Class<?>[] types) throws MalformedURLException {
-        return Cdo.createCdoManagerFactory(new URL("http://localhost:7474/db/data"), Neo4jCdoProvider.class, types, CdoManagerFactory.ValidationMode.AUTO, getTransactionAttribute(), new Properties());
+        return Cdo.createCdoManagerFactory(new URL("http://localhost:7474/db/data"), Neo4jCdoProvider.class, types, ValidationMode.AUTO, getTransactionAttribute(), new Properties());
     }
 
     @BeforeClass

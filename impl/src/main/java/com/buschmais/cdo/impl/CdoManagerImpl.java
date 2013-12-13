@@ -2,6 +2,7 @@ package com.buschmais.cdo.impl;
 
 import com.buschmais.cdo.api.*;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
+import com.buschmais.cdo.impl.transaction.TransactionalResultIterable;
 import com.buschmais.cdo.impl.validation.InstanceValidator;
 import com.buschmais.cdo.impl.query.CdoQueryImpl;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
@@ -43,10 +44,10 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
     @Override
     public <T> ResultIterable<T> find(final Class<T> type, final Object value) {
         final ResultIterator<Entity> iterator = datastoreSession.find(type, value);
-        return new AbstractResultIterable<T>() {
+        return new TransactionalResultIterable<T>(new AbstractResultIterable<T>() {
             @Override
             public ResultIterator<T> iterator() {
-                return interceptorFactory.addInterceptor(new ResultIterator<T>() {
+                return new ResultIterator<T>() {
 
                     @Override
                     public boolean hasNext() {
@@ -68,9 +69,9 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
                     public void close() {
                         iterator.close();
                     }
-                });
+                };
             }
-        };
+        }, cdoTransaction);
     }
 
     @Override
@@ -126,7 +127,7 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
 
     @Override
     public <QL> Query createQuery(QL query, Class<?>... types) {
-        return new CdoQueryImpl(query, datastoreSession, instanceManager, interceptorFactory, Arrays.asList(types));
+        return interceptorFactory.addInterceptor(new CdoQueryImpl(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(types)));
     }
 
     @Override

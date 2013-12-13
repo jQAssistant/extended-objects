@@ -19,8 +19,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
-import static com.buschmais.cdo.api.CdoManagerFactory.ValidationMode;
+import com.buschmais.cdo.api.TransactionAttribute;
+
+import com.buschmais.cdo.api.ValidationMode;
 
 public class CdoUnitFactory {
 
@@ -114,21 +115,21 @@ public class CdoUnitFactory {
             } else {
                 validationMode = ValidationMode.AUTO;
             }
-            TransactionAttributeType transactionAttributeType = cdoUnitType.getTransactionAttribute();
-            TransactionAttribute transactionAttribute;
-            if (transactionAttributeType != null) {
-                switch (transactionAttributeType) {
+            TransactionAttributeType defaultTransactionAttributeType = cdoUnitType.getDefaultTransactionAttribute();
+            TransactionAttribute defaultTransactionAttribute;
+            if (defaultTransactionAttributeType != null) {
+                switch (defaultTransactionAttributeType) {
                     case MANDATORY:
-                        transactionAttribute = TransactionAttribute.MANDATORY;
+                        defaultTransactionAttribute = TransactionAttribute.MANDATORY;
                         break;
                     case REQUIRES:
-                        transactionAttribute = TransactionAttribute.REQUIRES;
+                        defaultTransactionAttribute = TransactionAttribute.REQUIRES;
                         break;
                     default:
-                        throw new CdoException("Unknown transaction attribute type " + transactionAttributeType);
+                        throw new CdoException("Unknown transaction attribute type " + defaultTransactionAttributeType);
                 }
             } else {
-                transactionAttribute = TransactionAttribute.MANDATORY;
+                defaultTransactionAttribute = TransactionAttribute.MANDATORY;
             }
             Properties properties = new Properties();
             PropertiesType propertiesType = cdoUnitType.getProperties();
@@ -137,7 +138,7 @@ public class CdoUnitFactory {
                     properties.setProperty(propertyType.getName(), propertyType.getValue());
                 }
             }
-            CdoUnit cdoUnit = new CdoUnit(name, description, url, provider, types, validationMode, transactionAttribute, properties);
+            CdoUnit cdoUnit = new CdoUnit(name, description, url, provider, types, validationMode, defaultTransactionAttribute, properties);
             cdoUnits.put(name, cdoUnit);
         }
     }

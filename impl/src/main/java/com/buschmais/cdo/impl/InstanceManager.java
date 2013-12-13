@@ -7,7 +7,6 @@ import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.proxy.ProxyMethodService;
 import com.buschmais.cdo.impl.interceptor.CdoInterceptor;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
-import com.buschmais.cdo.impl.interceptor.TransactionInterceptor;
 import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import com.buschmais.cdo.impl.proxy.instance.InstanceInvocationHandler;
 import com.buschmais.cdo.impl.proxy.instance.EntityProxyMethodService;
@@ -20,8 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
-
 public class InstanceManager<EntityId, Entity> {
 
     private final MetadataProvider metadataProvider;
@@ -31,14 +28,14 @@ public class InstanceManager<EntityId, Entity> {
     private final ProxyMethodService<Entity, ?> proxyMethodService;
     private final InterceptorFactory interceptorFactory;
 
-    public InstanceManager(MetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, ?> datastoreSession, ClassLoader classLoader, TransactionalCache cache, InterceptorFactory interceptorFactory) {
+    public InstanceManager(MetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, ?> datastoreSession, ClassLoader classLoader, CdoTransaction cdoTransaction, TransactionalCache cache, InterceptorFactory interceptorFactory) {
         this.metadataProvider = metadataProvider;
         this.datastoreSession = datastoreSession;
         this.classLoader = classLoader;
         this.cache = cache;
         PropertyManager propertyManager = new PropertyManager(datastoreSession);
         this.interceptorFactory = interceptorFactory;
-        proxyMethodService = new EntityProxyMethodService(metadataProvider, this, propertyManager, interceptorFactory, datastoreSession);
+        proxyMethodService = new EntityProxyMethodService(metadataProvider, this, propertyManager, cdoTransaction, interceptorFactory, datastoreSession);
     }
 
     public <T> T getInstance(Entity entity) {

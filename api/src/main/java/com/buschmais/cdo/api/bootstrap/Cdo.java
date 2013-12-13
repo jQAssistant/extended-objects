@@ -7,8 +7,9 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ServiceLoader;
 
-import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
-import static com.buschmais.cdo.api.CdoManagerFactory.ValidationMode;
+import com.buschmais.cdo.api.TransactionAttribute;
+
+import com.buschmais.cdo.api.ValidationMode;
 
 public class Cdo {
 

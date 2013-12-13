@@ -1,6 +1,7 @@
 package com.buschmais.cdo.impl.proxy.instance;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 import com.buschmais.cdo.impl.InstanceManager;
@@ -24,7 +25,7 @@ import java.lang.reflect.Method;
 
 public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Entity, M> {
 
-    public EntityProxyMethodService(MetadataProvider metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager,InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
+    public EntityProxyMethodService(MetadataProvider metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager,CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
         super(instanceManager);
         for (TypeMetadata<?> typeMetadata : metadataProvider.getRegisteredMetadata()) {
             for (AbstractMethodMetadata methodMetadata : typeMetadata.getProperties()) {
@@ -44,7 +45,7 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
                 }
                 if (methodMetadata instanceof ResultOfMethodMetadata) {
                     ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata) methodMetadata;
-                    addProxyMethod(new ResultOfMethod(resultOfMethodMetadata, instanceManager, interceptorFactory, datastoreSession), beanMethod.getMethod());
+                    addProxyMethod(new ResultOfMethod(resultOfMethodMetadata, instanceManager, cdoTransaction, interceptorFactory, datastoreSession), beanMethod.getMethod());
                 }
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
                     PropertyMethod beanPropertyMethod = (PropertyMethod) beanMethod;

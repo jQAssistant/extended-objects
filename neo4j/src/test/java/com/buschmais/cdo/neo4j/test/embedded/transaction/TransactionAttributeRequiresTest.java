@@ -1,12 +1,10 @@
 package com.buschmais.cdo.neo4j.test.embedded.transaction;
 
 import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.api.TransactionAttribute;
 import com.buschmais.cdo.neo4j.test.embedded.transaction.composite.B;
-import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.transaction.composite.A;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,8 +19,8 @@ public class TransactionAttributeRequiresTest extends AbstractEmbeddedCdoManager
     }
 
     @Override
-    protected CdoManagerFactory.TransactionAttribute getTransactionAttribute() {
-        return CdoManagerFactory.TransactionAttribute.REQUIRES;
+    protected TransactionAttribute getTransactionAttribute() {
+        return TransactionAttribute.REQUIRES;
     }
 
     @Test
@@ -32,7 +30,8 @@ public class TransactionAttributeRequiresTest extends AbstractEmbeddedCdoManager
         A a = createA(cdoManager);
         assertThat(a.getValue(), equalTo("value1"));
         assertThat(cdoManager.find(A.class, "value1").getSingleResult(), equalTo(a));
-//        assertThat((A) cdoManager.createQuery(A.ByValue.class).withParameter("value", "value1").execute().getSingleResult(), equalTo(a));
+        assertThat(((A.ByValue) cdoManager.createQuery(A.ByValue.class).withParameter("value", "value1").execute().getSingleResult()).getA(), equalTo(a));
+        assertThat(a.getByValue("value1").getA(), equalTo(a));
         a.setValue("value2");
         assertThat(a.getValue(), equalTo("value2"));
         assertThat(a.getListOfB().size(), equalTo(2));

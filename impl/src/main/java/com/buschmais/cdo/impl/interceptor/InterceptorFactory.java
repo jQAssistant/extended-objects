@@ -1,8 +1,8 @@
 package com.buschmais.cdo.impl.interceptor;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.CdoTransaction;
+import com.buschmais.cdo.api.TransactionAttribute;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -11,9 +11,9 @@ import java.util.Arrays;
 public class InterceptorFactory {
 
     private CdoTransaction cdoTransaction;
-    private CdoManagerFactory.TransactionAttribute transactionAttribute;
+    private TransactionAttribute transactionAttribute;
 
-    public InterceptorFactory(CdoTransaction cdoTransaction, CdoManagerFactory.TransactionAttribute transactionAttribute) {
+    public InterceptorFactory(CdoTransaction cdoTransaction, TransactionAttribute transactionAttribute) {
         this.cdoTransaction = cdoTransaction;
         this.transactionAttribute = transactionAttribute;
     }

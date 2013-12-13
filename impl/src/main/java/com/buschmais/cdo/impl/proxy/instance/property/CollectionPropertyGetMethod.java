@@ -1,21 +1,17 @@
 package com.buschmais.cdo.impl.proxy.instance.property;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;
 import com.buschmais.cdo.impl.proxy.collection.CollectionProxy;
 import com.buschmais.cdo.impl.proxy.collection.ListProxy;
 import com.buschmais.cdo.impl.proxy.collection.SetProxy;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
-import com.buschmais.cdo.impl.interceptor.TransactionInterceptor;
 import com.buschmais.cdo.spi.metadata.CollectionPropertyMethodMetadata;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
-import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
 
 public class CollectionPropertyGetMethod<Entity> extends AbstractPropertyMethod<Entity, CollectionPropertyMethodMetadata> {
 
