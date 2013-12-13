@@ -64,7 +64,7 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
         cdoTransaction.registerSynchronization(new CacheSynchronization(cache));
         InterceptorFactory interceptorFactory = new InterceptorFactory(cdoTransaction, transactionAttribute);
         InstanceManager instanceManager = new InstanceManager(metadataProvider, datastoreSession, classLoader, cache, interceptorFactory);
-        return new CdoManagerImpl(metadataProvider, cdoTransaction, datastoreSession, instanceManager, interceptorFactory, instanceValidator);
+        return interceptorFactory.addInterceptor(new CdoManagerImpl(metadataProvider, cdoTransaction, datastoreSession, instanceManager, interceptorFactory, instanceValidator));
     }
 
     @Override

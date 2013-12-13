@@ -28,11 +28,11 @@ public class TransactionAttributeRequiresTest extends AbstractEmbeddedCdoManager
     @Test
     public void withoutTransactionContext() {
         CdoManager cdoManager = getCdoManager();
-        cdoManager.currentTransaction().begin();
-        A a = createA(cdoManager);
-        cdoManager.currentTransaction().commit();
         assertThat(cdoManager.currentTransaction().isActive(), equalTo(false));
+        A a = createA(cdoManager);
         assertThat(a.getValue(), equalTo("value1"));
+        assertThat(cdoManager.find(A.class, "value1").getSingleResult(), equalTo(a));
+//        assertThat((A) cdoManager.createQuery(A.ByValue.class).withParameter("value", "value1").execute().getSingleResult(), equalTo(a));
         a.setValue("value2");
         assertThat(a.getValue(), equalTo("value2"));
         assertThat(a.getListOfB().size(), equalTo(2));

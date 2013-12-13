@@ -46,7 +46,7 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
         return new AbstractResultIterable<T>() {
             @Override
             public ResultIterator<T> iterator() {
-                return new ResultIterator<T>() {
+                return interceptorFactory.addInterceptor(new ResultIterator<T>() {
 
                     @Override
                     public boolean hasNext() {
@@ -68,7 +68,7 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
                     public void close() {
                         iterator.close();
                     }
-                };
+                });
             }
         };
     }
@@ -126,7 +126,7 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
 
     @Override
     public <QL> Query createQuery(QL query, Class<?>... types) {
-        return new CdoQueryImpl(query, datastoreSession, instanceManager, interceptorFactory, Arrays.asList(types) );
+        return new CdoQueryImpl(query, datastoreSession, instanceManager, interceptorFactory, Arrays.asList(types));
     }
 
     @Override
