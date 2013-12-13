@@ -4,11 +4,13 @@ import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.bootstrap.Cdo;
 import com.buschmais.cdo.store.json.test.bootstrap.composite.A;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class JsonFileDatastoreBootstrapTest {
 
     @Test
+    @Ignore
     public void bootstrap() {
         CdoManagerFactory cdoManagerFactory = Cdo.createCdoManagerFactory("JsonFileDatastore");
         CdoManager cdoManager = cdoManagerFactory.createCdoManager();

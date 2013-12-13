@@ -1,7 +1,9 @@
 package com.buschmais.cdo.impl;
 
 import com.buschmais.cdo.api.*;
+import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
+import com.buschmais.cdo.impl.transaction.TransactionalResultIterable;
 import com.buschmais.cdo.impl.validation.InstanceValidator;
 import com.buschmais.cdo.impl.query.CdoQueryImpl;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
@@ -14,6 +16,7 @@ import java.util.Set;
 
 public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements CdoManager {
 
+    private final TransactionalCache cache;
     private final MetadataProvider metadataProvider;
     private final CdoTransaction cdoTransaction;
     private final DatastoreSession<EntityId, Entity, RelationId, Relation> datastoreSession;
@@ -21,9 +24,10 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
     private final InterceptorFactory interceptorFactory;
     private final InstanceValidator instanceValidator;
 
-    public CdoManagerImpl(MetadataProvider metadataProvider, CdoTransaction cdoTransaction, DatastoreSession<EntityId, Entity, RelationId, Relation> datastoreSession, InstanceManager instanceManager, InterceptorFactory interceptorFactory, InstanceValidator instanceValidator) {
+    public CdoManagerImpl(MetadataProvider metadataProvider, CdoTransaction cdoTransaction, TransactionalCache cache, DatastoreSession<EntityId, Entity, RelationId, Relation> datastoreSession, InstanceManager instanceManager, InterceptorFactory interceptorFactory, InstanceValidator instanceValidator) {
         this.metadataProvider = metadataProvider;
         this.cdoTransaction = cdoTransaction;
+        this.cache = cache;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
         this.interceptorFactory = interceptorFactory;
@@ -43,7 +47,7 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
     @Override
     public <T> ResultIterable<T> find(final Class<T> type, final Object value) {
         final ResultIterator<Entity> iterator = datastoreSession.find(type, value);
-        return new AbstractResultIterable<T>() {
+        return new TransactionalResultIterable<T>(new AbstractResultIterable<T>() {
             @Override
             public ResultIterator<T> iterator() {
                 return new ResultIterator<T>() {
@@ -70,7 +74,7 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
                     }
                 };
             }
-        };
+        }, cdoTransaction);
     }
 
     @Override
@@ -126,7 +130,7 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
 
     @Override
     public <QL> Query createQuery(QL query, Class<?>... types) {
-        return new CdoQueryImpl(query, datastoreSession, instanceManager, interceptorFactory, Arrays.asList(types) );
+        return interceptorFactory.addInterceptor(new CdoQueryImpl(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(types)));
     }
 
     @Override
@@ -137,6 +141,11 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
     @Override
     public <DS> DS getDatastoreSession(Class<DS> sessionType) {
         return sessionType.cast(datastoreSession);
+    }
+
+    @Override
+    public void flush() {
+        datastoreSession.flush(cache.values());
     }
 
     private TypeSet getEffectiveTypes(Class<?> type, Class<?>... types) {
