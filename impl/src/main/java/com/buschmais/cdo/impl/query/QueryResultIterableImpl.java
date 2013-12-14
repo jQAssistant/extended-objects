@@ -59,6 +59,9 @@ class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Qu
             }
 
             private Object decodeValue(Object value) {
+                if (value==null) {
+                    return value;
+                }
                 Object decodedValue;
                 if (datastoreSession.isEntity(value)) {
                     return instanceManager.getInstance(value);
