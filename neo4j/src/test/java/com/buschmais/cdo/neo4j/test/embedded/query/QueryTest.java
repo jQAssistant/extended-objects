@@ -90,4 +90,14 @@ public class QueryTest extends AbstractEmbeddedCdoManagerTest {
         cdoManager.currentTransaction().commit();
     }
 
+	@Test
+	public void optionalMatch() {
+		CdoManager cdoManager = getCdoManager();
+		cdoManager.currentTransaction().begin();
+		Result<CompositeRowObject> row = getCdoManager().createQuery(
+				"OPTIONAL MATCH (a:A) WHERE a.name = 'X' return a").execute();
+		A a = row.getSingleResult().get("a", A.class);
+		assertThat(a, equalTo(null));
+		cdoManager.currentTransaction().commit();
+	}
 }
