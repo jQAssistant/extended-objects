@@ -37,12 +37,12 @@ public class JsonFileDatastorePropertyManager implements DatastorePropertyManage
     }
 
     @Override
-    public void setEnumProperty(ObjectNode jsonNodes, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata, Object value) {
+    public void setEnumProperty(ObjectNode jsonNodes, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata, Enum<?> value) {
 
     }
 
     @Override
-    public boolean hasRelation(ObjectNode source, RelationMetadata<JsonRelationPropertyMetadata> metadata, RelationMetadata.Direction direction) {
+    public boolean hasSingleRelation(ObjectNode source, RelationMetadata<JsonRelationPropertyMetadata> metadata, RelationMetadata.Direction direction) {
         return false;
     }
 

@@ -13,7 +13,7 @@ import org.neo4j.graphdb.*;
 public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Relationship, PrimitivePropertyMetadata, EnumPropertyMetadata, RelationshipMetadata> {
 
     @Override
-    public boolean hasRelation(Node source, RelationMetadata<RelationshipMetadata> metadata, RelationMetadata.Direction direction) {
+    public boolean hasSingleRelation(Node source, RelationMetadata<RelationshipMetadata> metadata, RelationMetadata.Direction direction) {
         return source.hasRelationship(metadata.getDatastoreMetadata().getRelationshipType(), getDirection(direction));
     }
 
@@ -100,7 +100,7 @@ public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Rela
     }
 
     @Override
-    public void setEnumProperty(Node node, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata, Object value) {
+    public void setEnumProperty(Node node, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata, Enum<?> value) {
         for (Enum<?> enumerationValue : metadata.getEnumerationType().getEnumConstants()) {
             Label label = DynamicLabel.label(enumerationValue.name());
             if (enumerationValue.equals(value)) {

@@ -41,48 +41,48 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
     }
 
     @Override
-    public <CollectionPropertyMetadata> CollectionPropertyMetadata createCollectionPropertyMetadata(PropertyMethod beanPropertyMethod) {
+    public <CollectionPropertyMetadata> CollectionPropertyMetadata createCollectionPropertyMetadata(PropertyMethod propertyMethod) {
         return null;
     }
 
     @Override
-    public <ReferencePropertyMetadata> ReferencePropertyMetadata createReferencePropertyMetadata(PropertyMethod beanPropertyMethod) {
+    public <ReferencePropertyMetadata> ReferencePropertyMetadata createReferencePropertyMetadata(PropertyMethod propertyMethod) {
         return null;
     }
 
     @Override
-    public PrimitivePropertyMetadata createPrimitvePropertyMetadata(PropertyMethod beanPropertyMethod) {
-        Property property = beanPropertyMethod.getPropertyAnnotation(Property.class);
-        String name = property != null ? property.value() : beanPropertyMethod.getName();
+    public PrimitivePropertyMetadata createPrimitvePropertyMetadata(PropertyMethod propertyMethod) {
+        Property property = propertyMethod.getPropertyAnnotation(Property.class);
+        String name = property != null ? property.value() : propertyMethod.getName();
         return new PrimitivePropertyMetadata(name);
     }
 
     @Override
-    public EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod beanPropertyMethod) {
-        Property property = beanPropertyMethod.getPropertyAnnotation(Property.class);
-        String name = property != null ? property.value() : beanPropertyMethod.getName();
+    public EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod propertyMethod) {
+        Property property = propertyMethod.getPropertyAnnotation(Property.class);
+        String name = property != null ? property.value() : propertyMethod.getName();
         return new EnumPropertyMetadata(name);
     }
 
     @Override
-    public IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod beanMethod) {
-        Indexed indexed = beanMethod.getAnnotation(Indexed.class);
+    public IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod propertyMethod) {
+        Indexed indexed = propertyMethod.getAnnotation(Indexed.class);
         return new IndexedPropertyMetadata(indexed.create());
     }
 
     @Override
-    public RelationshipMetadata createRelationMetadata(PropertyMethod beanPropertyMethod) {
-        Relation relation = beanPropertyMethod.getPropertyAnnotation(Relation.class);
-        String name = relation != null ? relation.value() : StringUtils.capitalize(beanPropertyMethod.getName());
+    public RelationshipMetadata createRelationMetadata(PropertyMethod propertyMethod) {
+        Relation relation = propertyMethod.getPropertyAnnotation(Relation.class);
+        String name = relation != null ? relation.value() : StringUtils.capitalize(propertyMethod.getName());
         DynamicRelationshipType relationshipType = DynamicRelationshipType.withName(name);
         return new RelationshipMetadata(relationshipType);
     }
 
-    public RelationMetadata.Direction getRelationDirection(PropertyMethod beanPropertyMethod) {
-        Relation.Incoming incoming = beanPropertyMethod.getPropertyAnnotation(Relation.Incoming.class);
-        Relation.Outgoing outgoing = beanPropertyMethod.getPropertyAnnotation(Relation.Outgoing.class);
+    public RelationMetadata.Direction getRelationDirection(PropertyMethod propertyMethod) {
+        Relation.Incoming incoming = propertyMethod.getPropertyAnnotation(Relation.Incoming.class);
+        Relation.Outgoing outgoing = propertyMethod.getPropertyAnnotation(Relation.Outgoing.class);
         if (incoming != null && outgoing != null) {
-            throw new CdoException("A relation property must be either incoming or outgoing: '" + beanPropertyMethod.getName() + "'");
+            throw new CdoException("A relation property must be either incoming or outgoing: '" + propertyMethod.getName() + "'");
         }
         if (incoming != null) {
             return RelationMetadata.Direction.INCOMING;

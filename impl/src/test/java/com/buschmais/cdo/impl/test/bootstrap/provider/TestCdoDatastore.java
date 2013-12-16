@@ -33,37 +33,37 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
             }
 
             @Override
-            public <CollectionPropertyMetadata> CollectionPropertyMetadata createCollectionPropertyMetadata(PropertyMethod beanPropertyMethod) {
+            public <CollectionPropertyMetadata> CollectionPropertyMetadata createCollectionPropertyMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 
             @Override
-            public <ReferencePropertyMetadata> ReferencePropertyMetadata createReferencePropertyMetadata(PropertyMethod beanPropertyMethod) {
+            public <ReferencePropertyMetadata> ReferencePropertyMetadata createReferencePropertyMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 
             @Override
-            public <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPrimitvePropertyMetadata(PropertyMethod beanPropertyMethod) {
+            public <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPrimitvePropertyMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 
             @Override
-            public <EnumPropertyMetadata> EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod beanPropertyMethod) {
+            public <EnumPropertyMetadata> EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 
             @Override
-            public <IndexedPropertyMetadata> IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod beanMethod) {
+            public <IndexedPropertyMetadata> IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 
             @Override
-            public <RelationMetadata> RelationMetadata createRelationMetadata(PropertyMethod beanPropertyMethod) {
+            public <RelationMetadata> RelationMetadata createRelationMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 
             @Override
-            public RelationMetadata.Direction getRelationDirection(PropertyMethod beanPropertyMethod) {
+            public RelationMetadata.Direction getRelationDirection(PropertyMethod propertyMethod) {
                 return null;
             }
         };

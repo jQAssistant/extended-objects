@@ -12,7 +12,7 @@ public class EnumPropertySetMethod<Entity> extends AbstractPropertyMethod<Entity
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
-        Object value = args[0];
+        Enum<?> value = (Enum<?>) args[0];
         getPropertyManager().setEnumProperty(entity, getMetadata(), value);
         return null;
     }
