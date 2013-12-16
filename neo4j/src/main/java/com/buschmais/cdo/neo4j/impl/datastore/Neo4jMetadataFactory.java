@@ -10,47 +10,33 @@ import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
-import com.buschmais.cdo.spi.reflection.BeanMethod;
+import com.buschmais.cdo.spi.reflection.TypeMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
 
-import java.util.Comparator;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label> {
 
     @Override
     public NodeMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata<NodeMetadata>> metadataByType) {
         Label labelAnnotation = type.getAnnotation(Label.class);
-        SortedSet<org.neo4j.graphdb.Label> aggregatedLabels = new TreeSet<>(new Comparator<org.neo4j.graphdb.Label>() {
-            @Override
-            public int compare(org.neo4j.graphdb.Label o1, org.neo4j.graphdb.Label o2) {
-                return o1.name().compareTo(o2.name());
-            }
-        });
         org.neo4j.graphdb.Label label = null;
         IndexedPropertyMethodMetadata<?> indexedProperty = null;
         if (labelAnnotation != null) {
             label = DynamicLabel.label(labelAnnotation.value());
-            aggregatedLabels.add(label);
             Class<?> usingIndexOf = labelAnnotation.usingIndexedPropertyOf();
             if (!Object.class.equals(usingIndexOf)) {
                 indexedProperty = metadataByType.get(usingIndexOf).getIndexedProperty();
             }
         }
-        for (Class<?> implementedInterface : type.getInterfaces()) {
-            TypeMetadata<NodeMetadata> superTypeMetadata = metadataByType.get(implementedInterface);
-            aggregatedLabels.addAll(superTypeMetadata.getDatastoreMetadata().getAggregatedLabels());
-        }
-        return new NodeMetadata(label, aggregatedLabels, indexedProperty);
+        return new NodeMetadata(label, indexedProperty);
     }
 
     @Override
-    public <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(BeanMethod beanMethod) {
+    public <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(TypeMethod typeMethod) {
         return null;
     }
 

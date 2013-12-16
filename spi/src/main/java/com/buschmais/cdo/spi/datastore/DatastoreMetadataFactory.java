@@ -2,7 +2,7 @@ package com.buschmais.cdo.spi.datastore;
 
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
-import com.buschmais.cdo.spi.reflection.BeanMethod;
+import com.buschmais.cdo.spi.reflection.TypeMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
 import java.util.Map;
@@ -12,7 +12,7 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
 
     EntityMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType);
 
-    <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(BeanMethod beanMethod);
+    <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(TypeMethod typeMethod);
 
     <CollectionPropertyMetadata> CollectionPropertyMetadata createCollectionPropertyMetadata(PropertyMethod beanPropertyMethod);
 

@@ -6,7 +6,7 @@ import com.buschmais.cdo.spi.datastore.*;
 import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
-import com.buschmais.cdo.spi.reflection.BeanMethod;
+import com.buschmais.cdo.spi.reflection.TypeMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
 import java.util.Map;
@@ -28,7 +28,7 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
             }
 
             @Override
-            public <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(BeanMethod beanMethod) {
+            public <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(TypeMethod typeMethod) {
                 return null;
             }
 

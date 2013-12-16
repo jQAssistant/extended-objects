@@ -105,4 +105,9 @@ public class TypeResolver<Discriminator> {
         }
         return uniqueTypes;
     }
+
+    public Set<Discriminator> getDiscriminators(TypeMetadata<? extends DatastoreEntityMetadata<Discriminator>> typeMetadata) {
+        Set<Discriminator> discriminators = aggregatedDiscriminators.get(typeMetadata);
+        return discriminators != null ? discriminators : Collections.<Discriminator>emptySet();
+    }
 }

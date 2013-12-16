@@ -1,8 +1,8 @@
 package com.buschmais.cdo.spi.metadata;
 
-import com.buschmais.cdo.spi.reflection.BeanMethod;
+import com.buschmais.cdo.spi.reflection.TypeMethod;
 
-public abstract class AbstractMethodMetadata<B extends BeanMethod, DatastoreMetadata> {
+public abstract class AbstractMethodMetadata<B extends TypeMethod, DatastoreMetadata> {
 
     private B beanMethod;
 

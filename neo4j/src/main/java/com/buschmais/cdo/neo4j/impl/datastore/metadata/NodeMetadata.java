@@ -10,23 +10,16 @@ public class NodeMetadata implements DatastoreEntityMetadata<Label> {
 
     private Label label;
 
-    private Set<Label> aggregatedLabels;
-
     private IndexedPropertyMethodMetadata<?> indexedProperty;
 
-    public NodeMetadata(Label label, Set<Label> aggregatedLabels, IndexedPropertyMethodMetadata<?> indexedProperty) {
+    public NodeMetadata(Label label, IndexedPropertyMethodMetadata<?> indexedProperty) {
         this.label = label;
-        this.aggregatedLabels = aggregatedLabels;
         this.indexedProperty = indexedProperty;
     }
 
     @Override
     public Label getDiscriminator() {
         return label;
-    }
-
-    public Set<Label> getAggregatedLabels() {
-        return aggregatedLabels;
     }
 
     public IndexedPropertyMethodMetadata<?> getIndexedProperty() {

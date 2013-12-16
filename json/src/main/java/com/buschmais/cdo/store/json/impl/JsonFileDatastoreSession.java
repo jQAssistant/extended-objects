@@ -47,7 +47,7 @@ public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNo
 
     @Override
     public Set<String> getDiscriminators(ObjectNode jsonNodes) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNo
     }
 
     @Override
-    public ObjectNode create(TypeSet types) {
+    public ObjectNode create(TypeSet types, Set<String> discriminators) {
         ObjectNode rootNode = mapper.createObjectNode();
         ArrayNode typesNode = mapper.createArrayNode();
         String typePropertyName = null;
@@ -64,8 +64,7 @@ public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNo
             TypeMetadata<JsonNodeMetadata> entityMetadata = metadataProvider.getEntityMetadata(type);
             JsonNodeMetadata datastoreMetadata = entityMetadata.getDatastoreMetadata();
             typePropertyName = datastoreMetadata.getTypeProperty();
-            Collection<String> typeNames = datastoreMetadata.getAggregatedTypeNames();
-            for (String typeName : typeNames) {
+            for (String typeName : discriminators) {
                 typesNode.add(typeName);
             }
         }

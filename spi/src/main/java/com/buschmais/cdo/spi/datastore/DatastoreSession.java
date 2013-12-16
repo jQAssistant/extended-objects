@@ -15,7 +15,7 @@ public interface DatastoreSession<EntityId, Entity, Discriminator, RelationId, R
 
     EntityId getId(Entity entity);
 
-    Entity create(TypeSet types);
+    Entity create(TypeSet types, Set<Discriminator> discriminators);
 
     void delete(Entity node);
 

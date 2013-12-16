@@ -39,14 +39,9 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public Node create(TypeSet types) {
+    public Node create(TypeSet types, Set<Label> discriminators) {
         Node node = getGraphDatabaseService().createNode();
-        Set<Label> labels = new HashSet<>();
-        for (Class<?> currentType : types) {
-            TypeMetadata<NodeMetadata> entityMetadata = metadataProvider.getEntityMetadata(currentType);
-            labels.addAll(entityMetadata.getDatastoreMetadata().getAggregatedLabels());
-        }
-        for (Label label : labels) {
+        for (Label label : discriminators) {
             node.addLabel(label);
         }
         return node;
@@ -74,8 +69,8 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
 
     @Override
     public void migrate(Node entity, TypeSet types, TypeSet targetTypes) {
-        Set<Label> labels = getLabels(types);
-        Set<Label> targetLabels = getLabels(targetTypes);
+        Set<Label> labels = metadataProvider.getDiscriminators(types);
+        Set<Label> targetLabels = metadataProvider.getDiscriminators(targetTypes);
         Set<Label> labelsToRemove = new HashSet<>(labels);
         labelsToRemove.removeAll(targetLabels);
         for (Label label : labelsToRemove) {
@@ -126,18 +121,6 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         Set<Label> labels = new HashSet<>();
         for (Label label : node.getLabels()) {
             labels.add(label);
-        }
-        return labels;
-    }
-
-    private Set<Label> getLabels(TypeSet types) {
-        Set<Label> labels = new HashSet<>();
-        for (Class<?> type : types) {
-            TypeMetadata<NodeMetadata> typeMetadata = metadataProvider.getEntityMetadata(type);
-            NodeMetadata datastoreMetadata = typeMetadata.getDatastoreMetadata();
-            if (datastoreMetadata != null) {
-                labels.addAll(datastoreMetadata.getAggregatedLabels());
-            }
         }
         return labels;
     }

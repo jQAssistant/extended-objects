@@ -1,11 +1,11 @@
 package com.buschmais.cdo.spi.metadata;
 
 import com.buschmais.cdo.api.annotation.ResultOf;
-import com.buschmais.cdo.spi.reflection.BeanMethod;
+import com.buschmais.cdo.spi.reflection.TypeMethod;
 
 import java.util.List;
 
-public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMetadata<BeanMethod, DatastoreMetadata> {
+public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMetadata<TypeMethod, DatastoreMetadata> {
 
     private Class<?> query;
 
@@ -15,8 +15,8 @@ public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMet
 
     private boolean singleResult;
 
-    public ResultOfMethodMetadata(BeanMethod beanMethod, Class<?> query, String usingThisAs, List<ResultOf.Parameter> parameters, boolean singleResult) {
-        super(beanMethod, null);
+    public ResultOfMethodMetadata(TypeMethod typeMethod, Class<?> query, String usingThisAs, List<ResultOf.Parameter> parameters, boolean singleResult) {
+        super(typeMethod, null);
 
         this.query = query;
         this.usingThisAs = usingThisAs;

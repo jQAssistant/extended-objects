@@ -10,6 +10,8 @@ public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata
 
     TypeSet getTypes(Set<Discriminator> discriminators);
 
+    Set<Discriminator> getDiscriminators(TypeSet types);
+
     Collection<TypeMetadata<EntityMetadata>> getRegisteredMetadata();
 
     TypeMetadata<EntityMetadata> getEntityMetadata(Class<?> type);

@@ -3,11 +3,11 @@ package com.buschmais.cdo.spi.reflection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-public abstract class AbstractBeanMethod implements BeanMethod {
+public abstract class AbstractTypeMethod implements TypeMethod {
 
     private Method method;
 
-    protected AbstractBeanMethod(Method method) {
+    protected AbstractTypeMethod(Method method) {
         this.method = method;
     }
 
@@ -30,7 +30,7 @@ public abstract class AbstractBeanMethod implements BeanMethod {
 
     @Override
     public String toString() {
-        return "AbstractBeanMethod{" +
+        return "AbstractTypeMethod{" +
                 "method=" + method.getDeclaringClass() + "#" + method +
                 '}';
     }
