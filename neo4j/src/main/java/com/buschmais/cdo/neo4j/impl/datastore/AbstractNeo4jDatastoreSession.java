@@ -17,7 +17,7 @@ import org.neo4j.graphdb.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, Long, Relationship> {
+public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, Label, Long, Relationship> {
 
     private GDS graphDatabaseService;
     private MetadataProvider metadataProvider;
@@ -55,7 +55,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     @Override
     public ResultIterator<Node> find(Class<?> type, Object value) {
         TypeMetadata<NodeMetadata> typeMetadata = metadataProvider.getEntityMetadata(type);
-        Label label = typeMetadata.getDatastoreMetadata().getLabel();
+        Label label = typeMetadata.getDatastoreMetadata().getDiscriminator();
         if (label == null) {
             throw new CdoException("Type " + type.getName() + " has no label.");
         }
@@ -119,6 +119,15 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
             return cypher.value();
         }
         throw new CdoException("Unsupported query expression " + expression);
+    }
+
+    @Override
+    public Set<Label> getDiscriminators(Node node) {
+        Set<Label> labels = new HashSet<>();
+        for (Label label : node.getLabels()) {
+            labels.add(label);
+        }
+        return labels;
     }
 
     private Set<Label> getLabels(TypeSet types) {

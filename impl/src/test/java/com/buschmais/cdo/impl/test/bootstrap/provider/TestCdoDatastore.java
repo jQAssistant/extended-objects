@@ -1,5 +1,6 @@
 package com.buschmais.cdo.impl.test.bootstrap.provider;
 
+import com.buschmais.cdo.impl.test.bootstrap.provider.metadata.TestEntityMetadata;
 import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.spi.datastore.*;
 import com.buschmais.cdo.spi.metadata.MetadataProvider;
@@ -8,10 +9,9 @@ import com.buschmais.cdo.spi.metadata.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.BeanMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
-import java.util.Collection;
 import java.util.Map;
 
-public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D> {
+public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D, TestEntityMetadata, String> {
 
     private CdoUnit cdoUnit;
 
@@ -20,11 +20,11 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
     }
 
     @Override
-    public DatastoreMetadataFactory<?> getMetadataFactory() {
-        return new DatastoreMetadataFactory<Object>() {
+    public DatastoreMetadataFactory<TestEntityMetadata, String> getMetadataFactory() {
+        return new DatastoreMetadataFactory<TestEntityMetadata, String>() {
             @Override
-            public Object createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata> metadataByType) {
-                return null;
+            public TestEntityMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata<TestEntityMetadata>> metadataByType) {
+                return new TestEntityMetadata(type.getName());
             }
 
             @Override
@@ -64,16 +64,6 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
 
             @Override
             public RelationMetadata.Direction getRelationDirection(PropertyMethod beanPropertyMethod) {
-                return null;
-            }
-        };
-    }
-
-    @Override
-    public DatastoreMetadataProvider createMetadataProvider(Collection<TypeMetadata> entityTypes) {
-        return new DatastoreMetadataProvider() {
-            @Override
-            public TypeSet getTypes(Object o) {
                 return null;
             }
         };

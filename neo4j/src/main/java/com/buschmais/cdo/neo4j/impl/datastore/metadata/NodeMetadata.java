@@ -1,11 +1,12 @@
 package com.buschmais.cdo.neo4j.impl.datastore.metadata;
 
+import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
 import org.neo4j.graphdb.Label;
 
 import java.util.Set;
 
-public class NodeMetadata {
+public class NodeMetadata implements DatastoreEntityMetadata<Label> {
 
     private Label label;
 
@@ -19,7 +20,8 @@ public class NodeMetadata {
         this.indexedProperty = indexedProperty;
     }
 
-    public Label getLabel() {
+    @Override
+    public Label getDiscriminator() {
         return label;
     }
 
@@ -30,4 +32,5 @@ public class NodeMetadata {
     public IndexedPropertyMethodMetadata<?> getIndexedProperty() {
         return indexedProperty;
     }
+
 }

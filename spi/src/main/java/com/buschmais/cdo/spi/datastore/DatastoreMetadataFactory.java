@@ -7,10 +7,10 @@ import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
 import java.util.Map;
 
-public interface DatastoreMetadataFactory<EntityMetadata> {
+public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntityMetadata<Discriminator> , Discriminator> {
     // Metadata
 
-    EntityMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata> metadataByType);
+    EntityMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType);
 
     <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(BeanMethod beanMethod);
 

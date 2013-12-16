@@ -19,9 +19,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
-public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNode, Long, JsonRelation> {
+public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNode, String, Long, JsonRelation> {
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -42,6 +43,11 @@ public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNo
     @Override
     public boolean isEntity(Object o) {
         return JsonNode.class.isAssignableFrom(o.getClass());
+    }
+
+    @Override
+    public Set<String> getDiscriminators(ObjectNode jsonNodes) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

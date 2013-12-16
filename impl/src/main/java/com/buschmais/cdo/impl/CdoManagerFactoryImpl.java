@@ -30,11 +30,11 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
     private CdoUnit cdoUnit;
     private MetadataProvider metadataProvider;
     private ClassLoader classLoader;
-    private Datastore<?> datastore;
+    private Datastore<?, ?, ?> datastore;
     private ValidatorFactory validatorFactory;
     private TransactionAttribute defaultTransactionAttribute;
 
-    public CdoManagerFactoryImpl(CdoUnit cdoUnit, Datastore<?> datastore) {
+    public CdoManagerFactoryImpl(CdoUnit cdoUnit, Datastore<?, ?, ?> datastore) {
         this.cdoUnit = cdoUnit;
         this.datastore = datastore;
         this.defaultTransactionAttribute = cdoUnit.getDefaultTransactionAttribute();

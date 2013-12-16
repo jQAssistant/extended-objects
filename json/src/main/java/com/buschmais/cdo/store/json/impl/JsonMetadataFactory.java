@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class JsonMetadataFactory implements DatastoreMetadataFactory<JsonNodeMetadata> {
+public class JsonMetadataFactory implements DatastoreMetadataFactory<JsonNodeMetadata, String> {
 
     @Override
-    public JsonNodeMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata> metadataByType) {
+    public JsonNodeMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata<JsonNodeMetadata>> metadataByType) {
         List<String> aggregatedTypeNames = new ArrayList<>();
         aggregatedTypeNames.add(type.getName());
         for (Class<?> superType : type.getInterfaces()) {

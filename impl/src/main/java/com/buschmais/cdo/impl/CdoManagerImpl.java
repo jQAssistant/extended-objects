@@ -19,12 +19,12 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
     private final TransactionalCache cache;
     private final MetadataProvider metadataProvider;
     private final CdoTransaction cdoTransaction;
-    private final DatastoreSession<EntityId, Entity, RelationId, Relation> datastoreSession;
+    private final DatastoreSession<EntityId, Entity, ?, RelationId, Relation> datastoreSession;
     private final InstanceManager<EntityId, Entity> instanceManager;
     private final InterceptorFactory interceptorFactory;
     private final InstanceValidator instanceValidator;
 
-    public CdoManagerImpl(MetadataProvider metadataProvider, CdoTransaction cdoTransaction, TransactionalCache cache, DatastoreSession<EntityId, Entity, RelationId, Relation> datastoreSession, InstanceManager instanceManager, InterceptorFactory interceptorFactory, InstanceValidator instanceValidator) {
+    public CdoManagerImpl(MetadataProvider metadataProvider, CdoTransaction cdoTransaction, TransactionalCache cache, DatastoreSession<EntityId, Entity, ?, RelationId, Relation> datastoreSession, InstanceManager instanceManager, InterceptorFactory interceptorFactory, InstanceValidator instanceValidator) {
         this.metadataProvider = metadataProvider;
         this.cdoTransaction = cdoTransaction;
         this.cache = cache;
@@ -93,7 +93,8 @@ public class CdoManagerImpl<EntityId, Entity, RelationId, Relation> implements C
     @Override
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
         Entity entity = instanceManager.getEntity(instance);
-        TypeSet types = metadataProvider.getDatastoreMetadataProvider().getTypes(entity);
+        Set<?> discriminators = datastoreSession.getDiscriminators(entity);
+        TypeSet types = metadataProvider.getTypes(discriminators);
         TypeSet effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
         datastoreSession.migrate(entity, types, effectiveTargetTypes);
         instanceManager.removeInstance(instance);

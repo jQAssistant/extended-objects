@@ -16,15 +16,14 @@ import java.util.Iterator;
  */
 public class PropertyManager<EntityId, Entity, RelationId, Relation> {
 
-    //private DatastoreSession<EntityId, Entity, RelationId, Relation>
-     DatastorePropertyManager<Entity, Relation,?,?,?> datastorePropertyManager;
+    DatastorePropertyManager<Entity, Relation, ?, ?, ?> datastorePropertyManager;
 
     /**
      * Constructor.
      *
      * @param datastorePropertyManager
      */
-    public PropertyManager(DatastoreSession<EntityId, Entity, RelationId, Relation> datastorePropertyManager) {
+    public PropertyManager(DatastoreSession<EntityId, Entity, ?, RelationId, Relation> datastorePropertyManager) {
         this.datastorePropertyManager = datastorePropertyManager.getDatastorePropertyManager();
     }
 

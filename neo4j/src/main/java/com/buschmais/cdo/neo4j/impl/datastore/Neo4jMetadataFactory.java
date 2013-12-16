@@ -21,10 +21,10 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata> {
+public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label> {
 
     @Override
-    public NodeMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata> metadataByType) {
+    public NodeMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata<NodeMetadata>> metadataByType) {
         Label labelAnnotation = type.getAnnotation(Label.class);
         SortedSet<org.neo4j.graphdb.Label> aggregatedLabels = new TreeSet<>(new Comparator<org.neo4j.graphdb.Label>() {
             @Override

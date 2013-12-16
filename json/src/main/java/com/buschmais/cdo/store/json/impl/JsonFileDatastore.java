@@ -5,11 +5,12 @@ import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataProvider;
 import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
 
 import java.io.File;
 import java.util.Collection;
 
-public class JsonFileDatastore implements Datastore<JsonFileDatastoreSession> {
+public class JsonFileDatastore implements Datastore<JsonFileDatastoreSession, JsonNodeMetadata, String> {
 
     private File directory;
 
@@ -19,13 +20,8 @@ public class JsonFileDatastore implements Datastore<JsonFileDatastoreSession> {
     }
 
     @Override
-    public DatastoreMetadataFactory<?> getMetadataFactory() {
+    public DatastoreMetadataFactory<JsonNodeMetadata, String> getMetadataFactory() {
         return new JsonMetadataFactory();
-    }
-
-    @Override
-    public DatastoreMetadataProvider createMetadataProvider(Collection<TypeMetadata> entityTypes) {
-        return new JsonFileDatastoreMetadataProvider(entityTypes);
     }
 
     @Override

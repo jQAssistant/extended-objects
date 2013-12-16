@@ -43,7 +43,7 @@ public class CdoBootstrapServiceImpl implements CdoBootstrapService {
             throw new CdoException("No provider specified for CDO unit '" + cdoUnit.getName() + "'.");
         }
         CdoDatastoreProvider cdoDatastoreProvider = ClassHelper.newInstance(providerType);
-        Datastore<?> datastore = cdoDatastoreProvider.createDatastore(cdoUnit);
+        Datastore<?, ?, ?> datastore = cdoDatastoreProvider.createDatastore(cdoUnit);
         return new CdoManagerFactoryImpl(cdoUnit, datastore);
     }
 

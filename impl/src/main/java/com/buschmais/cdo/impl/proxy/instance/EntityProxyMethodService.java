@@ -14,6 +14,7 @@ import com.buschmais.cdo.impl.proxy.instance.object.HashCodeMethod;
 import com.buschmais.cdo.impl.proxy.instance.object.ToStringMethod;
 import com.buschmais.cdo.impl.proxy.instance.property.*;
 import com.buschmais.cdo.impl.proxy.instance.resultof.ResultOfMethod;
+import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.metadata.*;
 import com.buschmais.cdo.spi.reflection.BeanMethod;
@@ -25,7 +26,7 @@ import java.lang.reflect.Method;
 
 public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Entity, M> {
 
-    public EntityProxyMethodService(MetadataProvider metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager,CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
+    public EntityProxyMethodService(MetadataProvider<?, ?> metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
         super(instanceManager);
         for (TypeMetadata<?> typeMetadata : metadataProvider.getRegisteredMetadata()) {
             for (AbstractMethodMetadata methodMetadata : typeMetadata.getProperties()) {

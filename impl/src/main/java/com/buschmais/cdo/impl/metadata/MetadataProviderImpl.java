@@ -7,8 +7,9 @@ import com.buschmais.cdo.api.annotation.ResultOf;
 import com.buschmais.cdo.impl.reflection.BeanMethodProvider;
 import com.buschmais.cdo.spi.annotation.IndexDefinition;
 import com.buschmais.cdo.spi.datastore.Datastore;
+import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
-import com.buschmais.cdo.spi.datastore.DatastoreMetadataProvider;
+import com.buschmais.cdo.spi.datastore.TypeSet;
 import com.buschmais.cdo.spi.metadata.*;
 import com.buschmais.cdo.spi.reflection.BeanMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
@@ -22,15 +23,15 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class MetadataProviderImpl implements MetadataProvider {
+public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> implements MetadataProvider<EntityMetadata, Discriminator> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TypeMetadata.class);
-    private DatastoreMetadataFactory<?> metadataFactory;
-    private DatastoreMetadataProvider datastoreMetadataProvider;
+    private DatastoreMetadataFactory<EntityMetadata, Discriminator> metadataFactory;
+    private TypeResolver<Discriminator> typeResolver;
 
-    private Map<Class<?>, TypeMetadata> entityMetadataByType = new HashMap<>();
+    private Map<Class<?>, TypeMetadata<EntityMetadata>> entityMetadataByType = new HashMap<>();
 
-    public MetadataProviderImpl(Collection<Class<?>> types, Datastore<?> datastore) {
+    public MetadataProviderImpl(Collection<Class<?>> types, Datastore<?, EntityMetadata, Discriminator> datastore) {
         this.metadataFactory = datastore.getMetadataFactory();
         DependencyResolver.DependencyProvider<Class<?>> classDependencyProvider = new DependencyResolver.DependencyProvider<Class<?>>() {
             @Override
@@ -53,18 +54,18 @@ public class MetadataProviderImpl implements MetadataProvider {
             entityMetadataByType.put(type, metadata);
             typeMetadata.add(metadata);
         }
-        datastoreMetadataProvider = datastore.createMetadataProvider(typeMetadata);
+        typeResolver = new TypeResolver(entityMetadataByType);
         entityMetadataByType.put(CompositeObject.class, new TypeMetadata(CompositeObject.class, Collections.<AbstractMethodMetadata>emptyList(), null, null));
 
     }
 
     @Override
-    public DatastoreMetadataProvider getDatastoreMetadataProvider() {
-        return datastoreMetadataProvider;
+    public TypeSet getTypes(Set<Discriminator> discriminators) {
+        return typeResolver.getTypes(discriminators);
     }
 
     @Override
-    public Collection<TypeMetadata> getRegisteredMetadata() {
+    public Collection<TypeMetadata<EntityMetadata>> getRegisteredMetadata() {
         return entityMetadataByType.values();
     }
 
@@ -104,7 +105,8 @@ public class MetadataProviderImpl implements MetadataProvider {
             }
             methodMetadataList.add(methodMetadata);
         }
-        TypeMetadata typeMetadata = new TypeMetadata(type, methodMetadataList, indexedProperty, metadataFactory.createEntityMetadata(type, entityMetadataByType));
+        DatastoreEntityMetadata<Discriminator> datastoreEntityMetadata = metadataFactory.createEntityMetadata(type, entityMetadataByType);
+        TypeMetadata typeMetadata = new TypeMetadata(type, methodMetadataList, indexedProperty, datastoreEntityMetadata);
         return typeMetadata;
     }
 

@@ -14,6 +14,8 @@ import org.neo4j.graphdb.schema.IndexDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+
 public class EmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedNeo4jDatastoreSession> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmbeddedNeo4jDatastore.class);
@@ -30,14 +32,14 @@ public class EmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedNeo4j
     }
 
     @Override
-    public void init(MetadataProvider metadataProvider) {
+    public void init(MetadataProvider<NodeMetadata, Label> metadataProvider) {
         EmbeddedNeo4jDatastoreSession session = createSession(metadataProvider);
         GraphDatabaseService graphDatabaseService = session.getGraphDatabaseService();
         try (Transaction transaction = graphDatabaseService.beginTx()) {
             for (TypeMetadata<NodeMetadata> typeMetadata : metadataProvider.getRegisteredMetadata()) {
                 IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedPropertyMethodMetadata = typeMetadata.getIndexedProperty();
                 if (indexedPropertyMethodMetadata != null && indexedPropertyMethodMetadata.getDatastoreMetadata().isCreate()) {
-                    Label label = typeMetadata.getDatastoreMetadata().getLabel();
+                    Label label = typeMetadata.getDatastoreMetadata().getDiscriminator();
                     PrimitivePropertyMethodMetadata propertyMethodMetadata = indexedPropertyMethodMetadata.getPropertyMethodMetadata();
                     if (label != null && propertyMethodMetadata != null) {
                         reCreateIndex(graphDatabaseService, label, propertyMethodMetadata);
@@ -49,7 +51,7 @@ public class EmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedNeo4j
     }
 
     private void reCreateIndex(GraphDatabaseService graphDatabaseService, Label label, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
-        PrimitivePropertyMetadata primitivePropertyMetadata = ((PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata>)propertyMethodMetadata).getDatastoreMetadata();
+        PrimitivePropertyMetadata primitivePropertyMetadata = ((PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata>) propertyMethodMetadata).getDatastoreMetadata();
         IndexDefinition index = findIndex(graphDatabaseService, label, primitivePropertyMetadata);
         if (propertyMethodMetadata != null && index == null) {
             LOGGER.info("Creating index for label {} on property '{}'.", label, primitivePropertyMetadata.getName());

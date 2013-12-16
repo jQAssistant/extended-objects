@@ -3,12 +3,15 @@ package com.buschmais.cdo.spi.datastore;
 import com.buschmais.cdo.api.ResultIterator;
 
 import java.util.Map;
+import java.util.Set;
 
-public interface DatastoreSession<EntityId, Entity, RelationId, Relation> {
+public interface DatastoreSession<EntityId, Entity, Discriminator, RelationId, Relation> {
 
     DatastoreTransaction getDatastoreTransaction();
 
     boolean isEntity(Object o);
+
+    Set<Discriminator> getDiscriminators(Entity entity);
 
     EntityId getId(Entity entity);
 
