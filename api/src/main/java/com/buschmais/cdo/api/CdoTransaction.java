@@ -5,6 +5,7 @@ package com.buschmais.cdo.api;
  */
 public interface CdoTransaction {
 
+
     public interface Synchronization {
         void beforeCompletion();
 
@@ -39,4 +40,11 @@ public interface CdoTransaction {
      * @param synchronization The a {@link Synchronization}.
      */
     void registerSynchronization(Synchronization synchronization);
+
+    /**
+     * Unregister a {@link Synchronization}.
+     *
+     * @param synchronization The a {@link Synchronization}.
+     */
+    void unregisterSynchronization(Synchronization synchronization);
 }

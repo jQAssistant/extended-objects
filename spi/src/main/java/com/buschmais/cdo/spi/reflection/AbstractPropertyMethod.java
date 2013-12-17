@@ -3,7 +3,7 @@ package com.buschmais.cdo.spi.reflection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-public abstract class AbstractPropertyMethod extends AbstractBeanMethod implements PropertyMethod {
+public abstract class AbstractPropertyMethod extends AbstractTypeMethod implements PropertyMethod {
 
     private String name = null;
     private Class<?> type = null;

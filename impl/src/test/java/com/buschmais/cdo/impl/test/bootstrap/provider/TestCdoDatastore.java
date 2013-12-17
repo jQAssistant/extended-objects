@@ -1,17 +1,17 @@
 package com.buschmais.cdo.impl.test.bootstrap.provider;
 
+import com.buschmais.cdo.impl.test.bootstrap.provider.metadata.TestEntityMetadata;
 import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.spi.datastore.*;
 import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
-import com.buschmais.cdo.spi.reflection.BeanMethod;
+import com.buschmais.cdo.spi.reflection.TypeMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
-import java.util.Collection;
 import java.util.Map;
 
-public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D> {
+public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D, TestEntityMetadata, String> {
 
     private CdoUnit cdoUnit;
 
@@ -20,60 +20,50 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
     }
 
     @Override
-    public DatastoreMetadataFactory<?> getMetadataFactory() {
-        return new DatastoreMetadataFactory<Object>() {
+    public DatastoreMetadataFactory<TestEntityMetadata, String> getMetadataFactory() {
+        return new DatastoreMetadataFactory<TestEntityMetadata, String>() {
             @Override
-            public Object createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata> metadataByType) {
+            public TestEntityMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata<TestEntityMetadata>> metadataByType) {
+                return new TestEntityMetadata(type.getName());
+            }
+
+            @Override
+            public <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(TypeMethod typeMethod) {
                 return null;
             }
 
             @Override
-            public <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(BeanMethod beanMethod) {
+            public <CollectionPropertyMetadata> CollectionPropertyMetadata createCollectionPropertyMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 
             @Override
-            public <CollectionPropertyMetadata> CollectionPropertyMetadata createCollectionPropertyMetadata(PropertyMethod beanPropertyMethod) {
+            public <ReferencePropertyMetadata> ReferencePropertyMetadata createReferencePropertyMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 
             @Override
-            public <ReferencePropertyMetadata> ReferencePropertyMetadata createReferencePropertyMetadata(PropertyMethod beanPropertyMethod) {
+            public <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPrimitvePropertyMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 
             @Override
-            public <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPrimitvePropertyMetadata(PropertyMethod beanPropertyMethod) {
+            public <EnumPropertyMetadata> EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 
             @Override
-            public <EnumPropertyMetadata> EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod beanPropertyMethod) {
+            public <IndexedPropertyMetadata> IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 
             @Override
-            public <IndexedPropertyMetadata> IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod beanMethod) {
+            public <RelationMetadata> RelationMetadata createRelationMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 
             @Override
-            public <RelationMetadata> RelationMetadata createRelationMetadata(PropertyMethod beanPropertyMethod) {
-                return null;
-            }
-
-            @Override
-            public RelationMetadata.Direction getRelationDirection(PropertyMethod beanPropertyMethod) {
-                return null;
-            }
-        };
-    }
-
-    @Override
-    public DatastoreMetadataProvider createMetadataProvider(Collection<TypeMetadata> entityTypes) {
-        return new DatastoreMetadataProvider() {
-            @Override
-            public TypeSet getTypes(Object o) {
+            public RelationMetadata.Direction getRelationDirection(PropertyMethod propertyMethod) {
                 return null;
             }
         };

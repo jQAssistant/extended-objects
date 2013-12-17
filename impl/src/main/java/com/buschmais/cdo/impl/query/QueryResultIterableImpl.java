@@ -4,6 +4,7 @@ import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.impl.AbstractResultIterable;
 import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.impl.proxy.query.RowInvocationHandler;
 import com.buschmais.cdo.impl.proxy.query.RowProxyMethodService;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
@@ -18,9 +19,11 @@ class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Qu
     private ResultIterator<Map<String, Object>> iterator;
     private SortedSet<Class<?>> types;
     private RowProxyMethodService rowProxyMethodService;
+    private InterceptorFactory interceptorFactory;
 
-    QueryResultIterableImpl(InstanceManager instanceManager, DatastoreSession datastoreSession, ResultIterator<Map<String, Object>> iterator, SortedSet<Class<?>> types) {
+    QueryResultIterableImpl(InstanceManager instanceManager, InterceptorFactory interceptorFactory, DatastoreSession datastoreSession, ResultIterator<Map<String, Object>> iterator, SortedSet<Class<?>> types) {
         this.instanceManager = instanceManager;
+        this.interceptorFactory = interceptorFactory;
         this.datastoreSession = datastoreSession;
         this.iterator = iterator;
         this.types = types;
@@ -56,6 +59,9 @@ class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Qu
             }
 
             private Object decodeValue(Object value) {
+                if (value==null) {
+                    return value;
+                }
                 Object decodedValue;
                 if (datastoreSession.isEntity(value)) {
                     return instanceManager.getInstance(value);

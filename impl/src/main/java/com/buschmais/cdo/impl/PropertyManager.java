@@ -16,15 +16,14 @@ import java.util.Iterator;
  */
 public class PropertyManager<EntityId, Entity, RelationId, Relation> {
 
-    //private DatastoreSession<EntityId, Entity, RelationId, Relation>
-     DatastorePropertyManager<Entity, Relation,?,?,?> datastorePropertyManager;
+    DatastorePropertyManager<Entity, Relation, ?, ?, ?> datastorePropertyManager;
 
     /**
      * Constructor.
      *
      * @param datastorePropertyManager
      */
-    public PropertyManager(DatastoreSession<EntityId, Entity, RelationId, Relation> datastorePropertyManager) {
+    public PropertyManager(DatastoreSession<EntityId, Entity, ?, RelationId, Relation> datastorePropertyManager) {
         this.datastorePropertyManager = datastorePropertyManager.getDatastorePropertyManager();
     }
 
@@ -74,7 +73,7 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @param target The target source or <code>null</code>.
      */
     public void createSingleRelation(Entity source, RelationMetadata metadata, RelationMetadata.Direction direction, Entity target) {
-        if (datastorePropertyManager.hasRelation(source, metadata, direction)) {
+        if (datastorePropertyManager.hasSingleRelation(source, metadata, direction)) {
             Relation relation = datastorePropertyManager.getSingleRelation(source, metadata, direction);
             datastorePropertyManager.deleteRelation(relation);
         }
@@ -154,7 +153,7 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
         return datastorePropertyManager.getEnumProperty(entity, metadata);
     }
 
-    public void setEnumProperty(Entity entity, EnumPropertyMethodMetadata metadata, Object value) {
+    public void setEnumProperty(Entity entity, EnumPropertyMethodMetadata metadata, Enum<?> value) {
         datastorePropertyManager.setEnumProperty(entity, metadata, value);
     }
 }

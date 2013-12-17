@@ -1,9 +1,12 @@
 package com.buschmais.cdo.impl.query;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
+import com.buschmais.cdo.impl.transaction.TransactionalQueryResultIterable;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.TypeSet;
 
@@ -17,13 +20,17 @@ public class CdoQueryImpl<QL> implements Query {
     private QL expression;
     private DatastoreSession datastoreSession;
     private InstanceManager instanceManager;
+    private CdoTransaction cdoTransaction;
+    private InterceptorFactory interceptorFactory;
     private Collection<Class<?>> types;
     private Map<String, Object> parameters = null;
 
-    public CdoQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager, Collection<Class<?>> types) {
+    public CdoQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, Collection<Class<?>> types) {
         this.expression = expression;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
+        this.cdoTransaction = cdoTransaction;
+        this.interceptorFactory = interceptorFactory;
         this.types = types;
     }
 
@@ -36,7 +43,7 @@ public class CdoQueryImpl<QL> implements Query {
         if (oldValue != null) {
             throw new CdoException("Parameter '" + name + "' has alread been assigned to value '" + value + "'.");
         }
-        return this;
+        return interceptorFactory.addInterceptor(this);
     }
 
     @Override
@@ -45,7 +52,7 @@ public class CdoQueryImpl<QL> implements Query {
             throw new CdoException(("Parameters have already beed assigned: " + parameters));
         }
         this.parameters = parameters;
-        return this;
+        return interceptorFactory.addInterceptor(this);
     }
 
     @Override
@@ -63,7 +70,8 @@ public class CdoQueryImpl<QL> implements Query {
         }
         ResultIterator<Map<String, Object>> iterator = datastoreSession.execute(expression, effectiveParameters);
         SortedSet<Class<?>> resultTypes = getResultTypes();
-        return new QueryResultIterableImpl(instanceManager, datastoreSession, iterator, resultTypes);
+        QueryResultIterableImpl queryResultIterable = new QueryResultIterableImpl(instanceManager, interceptorFactory, datastoreSession, iterator, resultTypes);
+        return new TransactionalQueryResultIterable(queryResultIterable,cdoTransaction);
     }
 
     private TypeSet getResultTypes() {

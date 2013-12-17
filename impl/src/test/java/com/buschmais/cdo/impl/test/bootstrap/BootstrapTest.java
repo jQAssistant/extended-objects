@@ -9,7 +9,7 @@ import com.buschmais.cdo.impl.test.bootstrap.composite.A;
 import com.buschmais.cdo.impl.test.bootstrap.provider.TestCdoProvider;
 import org.junit.Test;
 
-import static com.buschmais.cdo.api.CdoManagerFactory.ValidationMode.*;
+import static com.buschmais.cdo.api.ValidationMode.*;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;

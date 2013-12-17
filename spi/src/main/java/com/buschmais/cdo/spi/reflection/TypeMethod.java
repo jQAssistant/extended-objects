@@ -3,7 +3,7 @@ package com.buschmais.cdo.spi.reflection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-public interface BeanMethod {
+public interface TypeMethod {
 
     Method getMethod();
 

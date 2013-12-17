@@ -1,0 +1,10 @@
+<v1:cdo version="1.0" xmlns:v1="http://buschmais.com/cdo/schema/v1.0">
+    <cdo-unit name="JsonFileDatastore">
+        <description>This is a test unit for the JSON file datastore.</description>
+        <url>file:target/json/store</url>
+        <provider>com.buschmais.cdo.store.json.api.JsonFileStoreProvider</provider>
+        <types>
+            <type>com.buschmais.cdo.store.json.test.bootstrap.composite.A</type>
+        </types>
+    </cdo-unit>
+</v1:cdo>

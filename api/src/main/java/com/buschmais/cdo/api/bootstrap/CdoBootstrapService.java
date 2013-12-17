@@ -1,14 +1,15 @@
 package com.buschmais.cdo.api.bootstrap;
 
 import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.api.TransactionAttribute;
+import com.buschmais.cdo.api.ValidationMode;
 
 import java.net.URL;
 import java.util.Properties;
-import java.util.Set;
 
 public interface CdoBootstrapService {
 
     CdoManagerFactory createCdoManagerFactory(String unit);
 
-    CdoManagerFactory createCdoManagerFactory(URL url, Class<?> provider, Class<?>[] types, CdoManagerFactory.ValidationMode validationMode, CdoManagerFactory.TransactionAttribute transactionAttribute, Properties properties);
+    CdoManagerFactory createCdoManagerFactory(URL url, Class<?> provider, Class<?>[] types, ValidationMode validationMode, TransactionAttribute transactionAttribute, Properties properties);
 }

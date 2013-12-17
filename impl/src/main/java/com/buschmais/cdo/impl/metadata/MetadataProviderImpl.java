@@ -7,10 +7,11 @@ import com.buschmais.cdo.api.annotation.ResultOf;
 import com.buschmais.cdo.impl.reflection.BeanMethodProvider;
 import com.buschmais.cdo.spi.annotation.IndexDefinition;
 import com.buschmais.cdo.spi.datastore.Datastore;
+import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
-import com.buschmais.cdo.spi.datastore.DatastoreMetadataProvider;
+import com.buschmais.cdo.spi.datastore.TypeSet;
 import com.buschmais.cdo.spi.metadata.*;
-import com.buschmais.cdo.spi.reflection.BeanMethod;
+import com.buschmais.cdo.spi.reflection.TypeMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.UserMethod;
 import org.slf4j.Logger;
@@ -22,15 +23,15 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class MetadataProviderImpl implements MetadataProvider {
+public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> implements MetadataProvider<EntityMetadata, Discriminator> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TypeMetadata.class);
-    private DatastoreMetadataFactory<?> metadataFactory;
-    private DatastoreMetadataProvider datastoreMetadataProvider;
+    private DatastoreMetadataFactory<EntityMetadata, Discriminator> metadataFactory;
+    private TypeResolver<Discriminator> typeResolver;
 
-    private Map<Class<?>, TypeMetadata> entityMetadataByType = new HashMap<>();
+    private Map<Class<?>, TypeMetadata<EntityMetadata>> entityMetadataByType = new HashMap<>();
 
-    public MetadataProviderImpl(Collection<Class<?>> types, Datastore<?> datastore) {
+    public MetadataProviderImpl(Collection<Class<?>> types, Datastore<?, EntityMetadata, Discriminator> datastore) {
         this.metadataFactory = datastore.getMetadataFactory();
         DependencyResolver.DependencyProvider<Class<?>> classDependencyProvider = new DependencyResolver.DependencyProvider<Class<?>>() {
             @Override
@@ -40,7 +41,7 @@ public class MetadataProviderImpl implements MetadataProvider {
         };
         List<Class<?>> allTypes = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
         LOGGER.debug("Processing types {}", allTypes);
-        Map<Class<?>, Collection<BeanMethod>> typeMethods = new HashMap<>();
+        Map<Class<?>, Collection<TypeMethod>> typeMethods = new HashMap<>();
         for (Class<?> type : allTypes) {
             if (!type.isInterface()) {
                 throw new CdoException("Type " + type.getName() + " is not an interface.");
@@ -53,18 +54,29 @@ public class MetadataProviderImpl implements MetadataProvider {
             entityMetadataByType.put(type, metadata);
             typeMetadata.add(metadata);
         }
-        datastoreMetadataProvider = datastore.createMetadataProvider(typeMetadata);
+        typeResolver = new TypeResolver(entityMetadataByType);
         entityMetadataByType.put(CompositeObject.class, new TypeMetadata(CompositeObject.class, Collections.<AbstractMethodMetadata>emptyList(), null, null));
 
     }
 
     @Override
-    public DatastoreMetadataProvider getDatastoreMetadataProvider() {
-        return datastoreMetadataProvider;
+    public TypeSet getTypes(Set<Discriminator> discriminators) {
+        return typeResolver.getTypes(discriminators);
     }
 
     @Override
-    public Collection<TypeMetadata> getRegisteredMetadata() {
+    public Set<Discriminator> getDiscriminators(TypeSet types) {
+        Set<Discriminator> discriminators = new HashSet<>();
+        for (Class<?> type : types) {
+            TypeMetadata<EntityMetadata> typeMetadata = this.entityMetadataByType.get(type);
+            Set<Discriminator> discriminatorsOfType = typeResolver.getDiscriminators(typeMetadata);
+            discriminators.addAll(discriminatorsOfType);
+        }
+        return discriminators;
+    }
+
+    @Override
+    public Collection<TypeMetadata<EntityMetadata>> getRegisteredMetadata() {
         return entityMetadataByType.values();
     }
 
@@ -77,34 +89,35 @@ public class MetadataProviderImpl implements MetadataProvider {
         return typeMetadata;
     }
 
-    private TypeMetadata createMetadata(Class<?> type, Collection<BeanMethod> beanMethods, Set<Class<?>> types) {
+    private TypeMetadata createMetadata(Class<?> type, Collection<TypeMethod> typeMethods, Set<Class<?>> types) {
         LOGGER.debug("Processing type {}", type.getName());
         Collection<AbstractMethodMetadata> methodMetadataList = new ArrayList<>();
         // Collect the getter methods as they provide annotations holding meta information also to be applied to setters
         IndexedPropertyMethodMetadata indexedProperty = null;
-        for (BeanMethod beanMethod : beanMethods) {
+        for (TypeMethod typeMethod : typeMethods) {
             AbstractMethodMetadata methodMetadata;
-            ResultOf resultOf = beanMethod.getAnnotation(ResultOf.class);
-            ImplementedBy implementedBy = beanMethod.getAnnotation(ImplementedBy.class);
+            ResultOf resultOf = typeMethod.getAnnotation(ResultOf.class);
+            ImplementedBy implementedBy = typeMethod.getAnnotation(ImplementedBy.class);
             if (implementedBy != null) {
-                methodMetadata = new ImplementedByMethodMetadata(beanMethod, implementedBy.value(), metadataFactory.createImplementedByMetadata(beanMethod));
+                methodMetadata = new ImplementedByMethodMetadata(typeMethod, implementedBy.value(), metadataFactory.createImplementedByMetadata(typeMethod));
             } else if (resultOf != null) {
-                methodMetadata = createResultOfMetadata(beanMethod, resultOf);
-            } else if (beanMethod instanceof PropertyMethod) {
-                methodMetadata = createPropertyMethodMetadata(types, (PropertyMethod) beanMethod);
+                methodMetadata = createResultOfMetadata(typeMethod, resultOf);
+            } else if (typeMethod instanceof PropertyMethod) {
+                methodMetadata = createPropertyMethodMetadata(types, (PropertyMethod) typeMethod);
             } else {
-                methodMetadata = new UnsupportedOperationMethodMetadata((UserMethod) beanMethod);
+                methodMetadata = new UnsupportedOperationMethodMetadata((UserMethod) typeMethod);
             }
-            Annotation indexedAnnotation = beanMethod.getByMetaAnnotation(IndexDefinition.class);
+            Annotation indexedAnnotation = typeMethod.getByMetaAnnotation(IndexDefinition.class);
             if (indexedAnnotation != null) {
                 if (!(methodMetadata instanceof PrimitivePropertyMethodMetadata)) {
                     throw new CdoException("Only primitive properties are allowed to be used for indexing.");
                 }
-                indexedProperty = new IndexedPropertyMethodMetadata((PropertyMethod) beanMethod, (PrimitivePropertyMethodMetadata) methodMetadata, metadataFactory.createIndexedPropertyMetadata((PropertyMethod) beanMethod));
+                indexedProperty = new IndexedPropertyMethodMetadata((PropertyMethod) typeMethod, (PrimitivePropertyMethodMetadata) methodMetadata, metadataFactory.createIndexedPropertyMetadata((PropertyMethod) typeMethod));
             }
             methodMetadataList.add(methodMetadata);
         }
-        TypeMetadata typeMetadata = new TypeMetadata(type, methodMetadataList, indexedProperty, metadataFactory.createEntityMetadata(type, entityMetadataByType));
+        DatastoreEntityMetadata<Discriminator> datastoreEntityMetadata = metadataFactory.createEntityMetadata(type, entityMetadataByType);
+        TypeMetadata typeMetadata = new TypeMetadata(type, methodMetadataList, indexedProperty, datastoreEntityMetadata);
         return typeMetadata;
     }
 
@@ -124,8 +137,8 @@ public class MetadataProviderImpl implements MetadataProvider {
         return methodMetadata;
     }
 
-    private AbstractMethodMetadata createResultOfMetadata(BeanMethod beanMethod, ResultOf resultOf) {
-        Method method = beanMethod.getMethod();
+    private AbstractMethodMetadata createResultOfMetadata(TypeMethod typeMethod, ResultOf resultOf) {
+        Method method = typeMethod.getMethod();
         // Determine query type
         Class<?> queryType = resultOf.query();
         Class<?> returnType = method.getReturnType();
@@ -156,6 +169,6 @@ public class MetadataProviderImpl implements MetadataProvider {
             parameters.add(parameter);
         }
         boolean singleResult = !Iterable.class.isAssignableFrom(returnType);
-        return new ResultOfMethodMetadata(beanMethod, queryType, resultOf.usingThisAs(), parameters, singleResult);
+        return new ResultOfMethodMetadata(typeMethod, queryType, resultOf.usingThisAs(), parameters, singleResult);
     }
 }

@@ -13,7 +13,7 @@ import java.net.URL;
 public class Neo4jCdoProvider implements CdoDatastoreProvider {
 
     @Override
-    public Datastore<?> createDatastore(CdoUnit cdoUnit) {
+    public Datastore<?, ?, ?> createDatastore(CdoUnit cdoUnit) {
         URL url = cdoUnit.getUrl();
         String protocol = url.getProtocol().toLowerCase();
         if ("file".equals(protocol)) {

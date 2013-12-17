@@ -1,7 +1,7 @@
 package com.buschmais.cdo.impl.reflection;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.spi.reflection.BeanMethod;
+import com.buschmais.cdo.spi.reflection.TypeMethod;
 import com.buschmais.cdo.spi.reflection.GetPropertyMethod;
 import com.buschmais.cdo.spi.reflection.SetPropertyMethod;
 import com.buschmais.cdo.spi.reflection.UserMethod;
@@ -24,7 +24,7 @@ public final class BeanMethodProvider {
         return new BeanMethodProvider();
     }
 
-    public Collection<BeanMethod> getMethods(Class<?> type) {
+    public Collection<TypeMethod> getMethods(Class<?> type) {
         for (Method method : type.getDeclaredMethods()) {
             String methodName = method.getName();
             Class<?> returnType = method.getReturnType();
@@ -45,14 +45,14 @@ public final class BeanMethodProvider {
                 methods.add(method);
             }
         }
-        List<BeanMethod> beanMethods = new ArrayList<>();
+        List<TypeMethod> typeMethods = new ArrayList<>();
         Map<String, GetPropertyMethod> getPropertyMethods = new HashMap<>();
         for (Map.Entry<String, Method> methodEntry : getters.entrySet()) {
             String name = methodEntry.getKey();
             Method getter = methodEntry.getValue();
             Class<?> propertyType = types.get(name);
             GetPropertyMethod getPropertyMethod = new GetPropertyMethod(getter, name, propertyType);
-            beanMethods.add(getPropertyMethod);
+            typeMethods.add(getPropertyMethod);
             getPropertyMethods.put(name, getPropertyMethod);
         }
         for (Map.Entry<String, Method> methodEntry : setters.entrySet()) {
@@ -61,12 +61,12 @@ public final class BeanMethodProvider {
             GetPropertyMethod getPropertyMethod = getPropertyMethods.get(name);
             Class<?> propertyType = types.get(name);
             SetPropertyMethod setPropertyMethod = new SetPropertyMethod(setter, getPropertyMethod, name, propertyType);
-            beanMethods.add(setPropertyMethod);
+            typeMethods.add(setPropertyMethod);
         }
         for (Method method : methods) {
-            beanMethods.add(new UserMethod(method));
+            typeMethods.add(new UserMethod(method));
         }
-        return beanMethods;
+        return typeMethods;
     }
 
     private void addType(Class<?> declaringType, String name, Class<?> type) {

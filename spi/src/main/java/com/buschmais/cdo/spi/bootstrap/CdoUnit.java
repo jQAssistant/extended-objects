@@ -1,13 +1,12 @@
 package com.buschmais.cdo.spi.bootstrap;
 
-import com.buschmais.cdo.api.CdoManagerFactory;
-
 import java.net.URL;
 import java.util.Properties;
 import java.util.Set;
 
-import static com.buschmais.cdo.api.CdoManagerFactory.TransactionAttribute;
-import static com.buschmais.cdo.api.CdoManagerFactory.ValidationMode;
+import com.buschmais.cdo.api.TransactionAttribute;
+
+import com.buschmais.cdo.api.ValidationMode;
 
 public class CdoUnit {
 
@@ -23,18 +22,18 @@ public class CdoUnit {
 
     private ValidationMode validationMode;
 
-    private TransactionAttribute transactionAttribute;
+    private TransactionAttribute defaultTransactionAttribute;
 
     private Properties properties;
 
-    public CdoUnit(String name, String description, URL url, Class<? extends CdoDatastoreProvider> provider, Set<Class<?>> types, ValidationMode validationMode, TransactionAttribute transactionAttribute, Properties properties) {
+    public CdoUnit(String name, String description, URL url, Class<? extends CdoDatastoreProvider> provider, Set<Class<?>> types, ValidationMode validationMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
         this.name = name;
         this.description = description;
         this.url = url;
         this.provider = provider;
         this.types = types;
         this.validationMode = validationMode;
-        this.transactionAttribute = transactionAttribute;
+        this.defaultTransactionAttribute = defaultTransactionAttribute;
         this.properties = properties;
     }
 
@@ -62,8 +61,8 @@ public class CdoUnit {
         return validationMode;
     }
 
-    public TransactionAttribute getTransactionAttribute() {
-        return transactionAttribute;
+    public TransactionAttribute getDefaultTransactionAttribute() {
+        return defaultTransactionAttribute;
     }
 
     public Properties getProperties() {

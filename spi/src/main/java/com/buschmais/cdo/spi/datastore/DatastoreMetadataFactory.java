@@ -2,29 +2,84 @@ package com.buschmais.cdo.spi.datastore;
 
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
-import com.buschmais.cdo.spi.reflection.BeanMethod;
+import com.buschmais.cdo.spi.reflection.TypeMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
 import java.util.Map;
 
-public interface DatastoreMetadataFactory<EntityMetadata> {
-    // Metadata
+/**
+ * The metadata factory of the datastore.
+ * <p>This factory is used on initialization to determine datastore specific entity, property, enumeration and relation metadata.</p>
+ *
+ * @param <EntityMetadata> The type of entities used by the datastore.
+ * @param <Discriminator>  The type of entity discriminators used by the datastore.
+ */
+public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> {
 
-    EntityMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata> metadataByType);
+    /**
+     * Create the datastore specific entity metadata for the given type.
+     *
+     * @param type           The type.
+     * @param metadataByType A map containing all registered type and their generic metadata.
+     * @return An instance of datastore specific entity metadata.
+     */
+    EntityMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType);
 
-    <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(BeanMethod beanMethod);
+    /**
+     * Create the datastore specific metadata for a method annotated with {@link com.buschmais.cdo.api.annotation.ImplementedBy}.
+     *
+     * @param typeMethod The method.
+     * @return An instance of datastore specific method metadata.
+     */
+    <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(TypeMethod typeMethod);
 
-    <CollectionPropertyMetadata> CollectionPropertyMetadata createCollectionPropertyMetadata(PropertyMethod beanPropertyMethod);
+    /**
+     * Create the datastore specific metadata for a property representing a collection of entities.
+     *
+     * @param propertyMethod The method.
+     * @return An instance of datastore specific method metadata.
+     */
+    <CollectionPropertyMetadata> CollectionPropertyMetadata createCollectionPropertyMetadata(PropertyMethod propertyMethod);
 
-    <ReferencePropertyMetadata> ReferencePropertyMetadata createReferencePropertyMetadata(PropertyMethod beanPropertyMethod);
+    /**
+     * Create the datastore specific metadata for a property representing a reference to an entity.
+     *
+     * @param propertyMethod The method.
+     * @return An instance of datastore specific method metadata.
+     */
+    <ReferencePropertyMetadata> ReferencePropertyMetadata createReferencePropertyMetadata(PropertyMethod propertyMethod);
 
-    <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPrimitvePropertyMetadata(PropertyMethod beanPropertyMethod);
+    /**
+     * Create the datastore specific metadata for a property representing primitive value.
+     *
+     * @param propertyMethod The method.
+     * @return An instance of datastore specific method metadata.
+     */
+    <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPrimitvePropertyMetadata(PropertyMethod propertyMethod);
 
-    <EnumPropertyMetadata> EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod beanPropertyMethod);
+    /**
+     * Create the datastore specific metadata for a property representing an enumeration value.
+     *
+     * @param propertyMethod The method.
+     * @return An instance of datastore specific method metadata.
+     */
+    <EnumPropertyMetadata> EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod propertyMethod);
 
-    <IndexedPropertyMetadata> IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod beanMethod);
+    /**
+     * Create the datastore specific metadata for a property representing an indexed property.
+     *
+     * @param propertyMethod The method.
+     * @return An instance of datastore specific method metadata.
+     */
+    <IndexedPropertyMetadata> IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod propertyMethod);
 
-    <RelationMetadata> RelationMetadata createRelationMetadata(PropertyMethod beanPropertyMethod);
+    /**
+     * Create the datastore specific metadata for a relation.
+     *
+     * @param propertyMethod The method.
+     * @return An instance of datastore specific method metadata.
+     */
+    <RelationMetadata> RelationMetadata createRelationMetadata(PropertyMethod propertyMethod);
 
-    RelationMetadata.Direction getRelationDirection(PropertyMethod beanPropertyMethod);
+    RelationMetadata.Direction getRelationDirection(PropertyMethod propertyMethod);
 }

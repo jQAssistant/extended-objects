@@ -1,4 +1,4 @@
-package com.buschmais.cdo.impl.proxy.interceptor;
+package com.buschmais.cdo.impl.interceptor;
 
 import java.lang.reflect.InvocationHandler;
 

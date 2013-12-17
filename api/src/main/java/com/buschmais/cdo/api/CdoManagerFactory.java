@@ -5,15 +5,6 @@ package com.buschmais.cdo.api;
  */
 public interface CdoManagerFactory {
 
-    public enum ValidationMode {
-        NONE, AUTO;
-    }
-
-    public enum TransactionAttribute {
-        MANDATORY,
-        REQUIRES;
-    }
-
     /**
      * Create a {@link CdoManager} instance.
      *

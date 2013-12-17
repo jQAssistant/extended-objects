@@ -1,4 +1,4 @@
-package com.buschmais.cdo.impl.proxy.interceptor;
+package com.buschmais.cdo.impl.interceptor;
 
 public abstract class AbstractCdoInterceptor<T> implements CdoInterceptor<T> {
 

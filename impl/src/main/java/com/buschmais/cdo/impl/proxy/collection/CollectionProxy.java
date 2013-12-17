@@ -2,30 +2,34 @@ package com.buschmais.cdo.impl.proxy.collection;
 
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;
+import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
 
 import java.util.AbstractCollection;
+import java.util.Collection;
 import java.util.Iterator;
 
-public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instance> {
+public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instance> implements Collection<Instance> {
 
     private Entity entity;
     private RelationMetadata metadata;
     private RelationMetadata.Direction direction;
     private InstanceManager<?, Entity> instanceManager;
     private PropertyManager<?, Entity, ?, ?> propertyManager;
+    private InterceptorFactory interceptorFactory;
 
-    public CollectionProxy(Entity entity, RelationMetadata metadata, RelationMetadata.Direction direction, InstanceManager instanceManager, PropertyManager propertyManager) {
+    public CollectionProxy(Entity entity, RelationMetadata metadata, RelationMetadata.Direction direction, InstanceManager instanceManager, PropertyManager propertyManager, InterceptorFactory interceptorFactory) {
         this.entity = entity;
         this.metadata = metadata;
         this.direction = direction;
         this.instanceManager = instanceManager;
         this.propertyManager = propertyManager;
+        this.interceptorFactory = interceptorFactory;
     }
 
     public Iterator<Instance> iterator() {
         final Iterator<Entity> iterator = propertyManager.getRelations(entity, metadata, direction);
-        return new Iterator<Instance>() {
+        return interceptorFactory.addInterceptor(new Iterator<Instance>() {
 
             @Override
             public boolean hasNext() {
@@ -41,7 +45,7 @@ public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instan
             public void remove() {
                 throw new UnsupportedOperationException("Remove not supported");
             }
-        };
+        });
     }
 
     public int size() {

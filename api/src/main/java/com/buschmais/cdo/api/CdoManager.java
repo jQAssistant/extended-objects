@@ -1,13 +1,26 @@
 package com.buschmais.cdo.api;
 
 import javax.validation.ConstraintViolation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Set;
+
+import static com.buschmais.cdo.api.TransactionAttribute.NOT_SUPPORTED;
 
 /**
  * Defines methods to manage the lifecycle of property instances, query execution and transaction management.
  */
 public interface CdoManager {
 
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Transaction {
+        TransactionAttribute value();
+    }
+
+    @Transaction(NOT_SUPPORTED)
     CdoTransaction currentTransaction();
 
     Set<ConstraintViolation<Object>> validate();
@@ -108,6 +121,7 @@ public interface CdoManager {
     /**
      * Close the {@CdoManager}.
      */
+    @Transaction(NOT_SUPPORTED)
     void close();
 
     /**
@@ -118,6 +132,11 @@ public interface CdoManager {
      * @return The expected session type.
      */
     <DS> DS getDatastoreSession(Class<DS> sessionType);
+
+    /**
+     * Flushes all pending changes to the datastore.
+     */
+    void flush();
 
     /**
      * Defines the interface of strategies for migration between different composite object types.
