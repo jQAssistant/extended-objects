@@ -48,12 +48,8 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public ResultIterator<Node> find(Class<?> type, Object value) {
+    public ResultIterator<Node> find(Class<?> type, Label discriminator, Object value) {
         TypeMetadata<NodeMetadata> typeMetadata = metadataProvider.getEntityMetadata(type);
-        Label label = typeMetadata.getDatastoreMetadata().getDiscriminator();
-        if (label == null) {
-            throw new CdoException("Type " + type.getName() + " has no label.");
-        }
         IndexedPropertyMethodMetadata<?> indexedProperty = typeMetadata.getDatastoreMetadata().getIndexedProperty();
         if (indexedProperty == null) {
             indexedProperty = typeMetadata.getIndexedProperty();
@@ -62,22 +58,20 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
             throw new CdoException("Type " + typeMetadata.getType().getName() + " has no indexed property.");
         }
         PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
-        ResourceIterable<Node> nodesByLabelAndProperty = getGraphDatabaseService().findNodesByLabelAndProperty(label, propertyMethodMetadata.getDatastoreMetadata().getName(), value);
+        ResourceIterable<Node> nodesByLabelAndProperty = getGraphDatabaseService().findNodesByLabelAndProperty(discriminator, propertyMethodMetadata.getDatastoreMetadata().getName(), value);
         ResourceIterator<Node> iterator = nodesByLabelAndProperty.iterator();
         return new ResourceResultIterator(iterator);
     }
 
     @Override
-    public void migrate(Node entity, TypeSet types, TypeSet targetTypes) {
-        Set<Label> labels = metadataProvider.getDiscriminators(types);
-        Set<Label> targetLabels = metadataProvider.getDiscriminators(targetTypes);
-        Set<Label> labelsToRemove = new HashSet<>(labels);
-        labelsToRemove.removeAll(targetLabels);
+    public void migrate(Node entity, TypeSet types, Set<Label> discriminators, TypeSet targetTypes, Set<Label> targetDiscriminators) {
+        Set<Label> labelsToRemove = new HashSet<>(discriminators);
+        labelsToRemove.removeAll(targetDiscriminators);
         for (Label label : labelsToRemove) {
             entity.removeLabel(label);
         }
-        Set<Label> labelsToAdd = new HashSet<>(targetLabels);
-        labelsToAdd.removeAll(labels);
+        Set<Label> labelsToAdd = new HashSet<>(targetDiscriminators);
+        labelsToAdd.removeAll(discriminators);
         for (Label label : labelsToAdd) {
             entity.addLabel(label);
         }
@@ -94,8 +88,8 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public void delete(Node node) {
-        node.delete();
+    public void delete(Node entity) {
+        entity.delete();
     }
 
     @Override

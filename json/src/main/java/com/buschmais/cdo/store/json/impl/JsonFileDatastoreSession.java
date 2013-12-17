@@ -75,12 +75,12 @@ public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNo
     }
 
     @Override
-    public void delete(ObjectNode node) {
+    public void delete(ObjectNode entity) {
 
     }
 
     @Override
-    public ResultIterator<ObjectNode> find(Class<?> type, Object value) {
+    public ResultIterator<ObjectNode> find(Class<?> type, String discriminator, Object value) {
         return null;
     }
 
@@ -90,7 +90,7 @@ public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNo
     }
 
     @Override
-    public void migrate(ObjectNode jsonNode, TypeSet types, TypeSet targetTypes) {
+    public void migrate(ObjectNode jsonNode, TypeSet types, Set<String> discriminators, TypeSet targetTypes, Set<String> targetDiscriminators) {
 
     }
 

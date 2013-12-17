@@ -6,12 +6,17 @@ import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.impl.transaction.TransactionalResultIterable;
 import com.buschmais.cdo.impl.validation.InstanceValidator;
 import com.buschmais.cdo.impl.query.CdoQueryImpl;
+import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.TypeSet;
+import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.MetadataProvider;
+import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.TypeMetadata;
 
 import javax.validation.ConstraintViolation;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 public class CdoManagerImpl<EntityId, Entity, Discriminator, RelationId, Relation> implements CdoManager {
@@ -46,7 +51,12 @@ public class CdoManagerImpl<EntityId, Entity, Discriminator, RelationId, Relatio
 
     @Override
     public <T> ResultIterable<T> find(final Class<T> type, final Object value) {
-        final ResultIterator<Entity> iterator = datastoreSession.find(type, value);
+        TypeMetadata<DatastoreEntityMetadata<Discriminator>> typeMetadata = metadataProvider.getEntityMetadata(type);
+        Discriminator discriminator = typeMetadata.getDatastoreMetadata().getDiscriminator();
+        if (discriminator == null) {
+            throw new CdoException("Type " + type.getName() + " has no discriminator (i.e. cannot be identified in datastore).");
+        }
+        final ResultIterator<Entity> iterator = datastoreSession.find(type, discriminator, value);
         return new TransactionalResultIterable<T>(new AbstractResultIterable<T>() {
             @Override
             public ResultIterator<T> iterator() {
@@ -97,7 +107,8 @@ public class CdoManagerImpl<EntityId, Entity, Discriminator, RelationId, Relatio
         Set<Discriminator> discriminators = datastoreSession.getDiscriminators(entity);
         TypeSet types = metadataProvider.getTypes(discriminators);
         TypeSet effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
-        datastoreSession.migrate(entity, types, effectiveTargetTypes);
+        Set<Discriminator> targetDiscriminators = metadataProvider.getDiscriminators(effectiveTargetTypes);
+        datastoreSession.migrate(entity, types, discriminators, effectiveTargetTypes, targetDiscriminators);
         instanceManager.removeInstance(instance);
         CompositeObject migratedInstance = instanceManager.getInstance(entity);
         if (migrationStrategy != null) {
