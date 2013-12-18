@@ -6,18 +6,14 @@ import java.util.Collection;
 
 public class JsonNodeMetadata implements DatastoreEntityMetadata<String> {
 
-    private String typeProperty;
+    private String discriminator;
 
-    public JsonNodeMetadata(String typeProperty) {
-        this.typeProperty = typeProperty;
-    }
-
-    public String getTypeProperty() {
-        return typeProperty;
+    public JsonNodeMetadata(String discriminator) {
+        this.discriminator = discriminator;
     }
 
     @Override
     public String getDiscriminator() {
-        return null;
+        return discriminator;
     }
 }

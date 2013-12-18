@@ -6,9 +6,21 @@ package com.buschmais.cdo.api;
 public interface CdoTransaction {
 
 
+    /**
+     * Defines a transaction lifecycle callback which can be registered.
+     */
     public interface Synchronization {
+
+        /**
+         * Called before the transaction is completed.
+         */
         void beforeCompletion();
 
+        /**
+         * Called after the transaction has been completed.
+         *
+         * @param committed <code>true</code> if the transaction as been committed, <code>false</code> if the transaction was rolled back.
+         */
         void afterCompletion(boolean committed);
     }
 

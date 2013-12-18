@@ -40,6 +40,9 @@ public class InstanceManager<EntityId, Entity> {
 
     public <T> T getInstance(Entity entity) {
         Set<?> discriminators = datastoreSession.getDiscriminators(entity);
+        if (discriminators == null || discriminators.isEmpty()) {
+            throw new CdoException("Cannot determine type discriminators for entity '" + entity + "'");
+        }
         TypeMetadataSet<?> types = metadataProvider.getTypes(discriminators);
         EntityId id = datastoreSession.getId(entity);
         Object instance = cache.get(id);

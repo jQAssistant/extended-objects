@@ -13,7 +13,7 @@ public class JsonMetadataFactory implements DatastoreMetadataFactory<JsonNodeMet
 
     @Override
     public JsonNodeMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata<JsonNodeMetadata>> metadataByType) {
-        return new JsonNodeMetadata("type");
+        return new JsonNodeMetadata(type.getName());
     }
 
     @Override

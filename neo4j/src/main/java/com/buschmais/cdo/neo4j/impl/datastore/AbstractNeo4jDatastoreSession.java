@@ -89,7 +89,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public void flush(Iterable<Node> nodes) {
+    public void flush(Node node) {
     }
 
     protected <QL> String getCypher(QL expression) {

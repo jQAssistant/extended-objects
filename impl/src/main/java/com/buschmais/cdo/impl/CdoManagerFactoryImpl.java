@@ -2,7 +2,6 @@ package com.buschmais.cdo.impl;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.TransactionAttribute;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.spi.bootstrap.CdoUnit;
@@ -19,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CdoManagerFactoryImpl implements CdoManagerFactory {
 
@@ -61,13 +58,12 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
         DatastoreSession datastoreSession = datastore.createSession();
         TransactionalCache<?> cache = new TransactionalCache();
         InstanceValidator instanceValidator = new InstanceValidator(validatorFactory, cache);
-        List<CdoTransaction.Synchronization> defaultSynchronizations = new ArrayList<>();
-        defaultSynchronizations.add(new ValidatorSynchronization(instanceValidator));
-        defaultSynchronizations.add(new CacheSynchronization(cache));
-        defaultSynchronizations.add(new DatastoreFlushSynchronization(cache, datastoreSession));
-        CdoTransaction cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction(), defaultSynchronizations);
+        CdoTransactionImpl cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction());
         InterceptorFactory interceptorFactory = new InterceptorFactory(cdoTransaction, defaultTransactionAttribute);
         InstanceManager instanceManager = new InstanceManager(metadataProvider, datastoreSession, classLoader, cdoTransaction, cache, interceptorFactory);
+        // Register default synchronizations.
+        cdoTransaction.registerDefaultSynchronization(new ValidatorSynchronization(instanceValidator));
+        cdoTransaction.registerDefaultSynchronization(new CacheSynchronization(instanceManager, cache, datastoreSession));
         return interceptorFactory.addInterceptor(new CdoManagerImpl(metadataProvider, cdoTransaction, cache, datastoreSession, instanceManager, interceptorFactory, instanceValidator));
     }
 

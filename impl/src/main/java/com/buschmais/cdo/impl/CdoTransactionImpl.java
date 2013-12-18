@@ -9,12 +9,11 @@ public class CdoTransactionImpl implements CdoTransaction {
 
     private DatastoreTransaction datastoreTransaction;
 
-    private Iterable<Synchronization> defaultSynchronizations;
+    private List<Synchronization> defaultSynchronizations = new ArrayList<>();
     private List<Synchronization> synchronizations = new ArrayList<>();
 
-    public CdoTransactionImpl(DatastoreTransaction datastoreTransaction, Iterable<Synchronization> defaultSynchronizations) {
+    public CdoTransactionImpl(DatastoreTransaction datastoreTransaction) {
         this.datastoreTransaction = datastoreTransaction;
-        this.defaultSynchronizations = defaultSynchronizations;
     }
 
     @Override
@@ -58,6 +57,13 @@ public class CdoTransactionImpl implements CdoTransaction {
         synchronizations.remove(synchronization);
     }
 
+    public void registerDefaultSynchronization(Synchronization synchronization) {
+        defaultSynchronizations.add(synchronization);
+    }
+
+    public void unregisterDefaultSynchronization(Synchronization synchronization) {
+        defaultSynchronizations.remove(synchronization);
+    }
 
     private void beforeCompletion() {
         executeSynchronizations(new SynchronizationOperation() {

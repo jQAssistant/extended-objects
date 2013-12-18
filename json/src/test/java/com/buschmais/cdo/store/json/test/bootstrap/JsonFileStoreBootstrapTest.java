@@ -7,12 +7,11 @@ import com.buschmais.cdo.store.json.test.bootstrap.composite.A;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class JsonFileDatastoreBootstrapTest {
+public class JsonFileStoreBootstrapTest {
 
     @Test
-    @Ignore
     public void bootstrap() {
-        CdoManagerFactory cdoManagerFactory = Cdo.createCdoManagerFactory("JsonFileDatastore");
+        CdoManagerFactory cdoManagerFactory = Cdo.createCdoManagerFactory("JsonFileStore");
         CdoManager cdoManager = cdoManagerFactory.createCdoManager();
         cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);

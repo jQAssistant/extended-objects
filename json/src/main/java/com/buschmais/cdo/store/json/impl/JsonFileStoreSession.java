@@ -16,23 +16,27 @@ import org.codehaus.jackson.node.ObjectNode;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNode, JsonNodeMetadata, String, Long, JsonRelation> {
+public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, JsonNodeMetadata, String, Long, JsonRelation> {
+
+    private static final String ID_PROPERTY = "id";
+    private static final String TYPES_PROPERTY = "types";
 
     private ObjectMapper mapper = new ObjectMapper();
 
     private File directory;
 
-    public JsonFileDatastoreSession(File directory) {
+    public JsonFileStoreSession(File directory) {
         this.directory = directory;
     }
 
     @Override
     public DatastoreTransaction getDatastoreTransaction() {
-        return new JsonFileDatastoreTransaction();
+        return new JsonFileStoreTransaction();
     }
 
     @Override
@@ -42,35 +46,40 @@ public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNo
 
     @Override
     public Set<String> getDiscriminators(ObjectNode jsonNodes) {
-        return null;
+        ArrayNode typesNode = (ArrayNode) jsonNodes.get(TYPES_PROPERTY);
+        Set<String> discriminators = new HashSet<>();
+        for (JsonNode jsonNode : typesNode) {
+            discriminators.add(jsonNode.getTextValue());
+        }
+
+        return discriminators;
     }
 
     @Override
     public UUID getId(ObjectNode jsonNode) {
-        return UUID.fromString(jsonNode.get("id").asText());
+        return UUID.fromString(jsonNode.get(ID_PROPERTY).asText());
     }
 
     @Override
     public ObjectNode create(TypeMetadataSet<JsonNodeMetadata> types, Set<String> discriminators) {
         ObjectNode rootNode = mapper.createObjectNode();
         ArrayNode typesNode = mapper.createArrayNode();
-        String typePropertyName = null;
-        for (TypeMetadata<JsonNodeMetadata> typeMetadata : types) {
-            JsonNodeMetadata datastoreMetadata = typeMetadata.getDatastoreMetadata();
-            typePropertyName = datastoreMetadata.getTypeProperty();
-            for (String typeName : discriminators) {
-                typesNode.add(typeName);
-            }
+        for (String typeName : discriminators) {
+            typesNode.add(typeName);
         }
-        rootNode.put(typePropertyName, typesNode);
+        rootNode.put(TYPES_PROPERTY, typesNode);
         UUID uuid = UUID.randomUUID();
-        rootNode.put("id", uuid.toString());
+        rootNode.put(ID_PROPERTY, uuid.toString());
         return rootNode;
     }
 
     @Override
     public void delete(ObjectNode entity) {
-
+        File file = getFile(entity);
+        if (!file.exists()) {
+            throw new CdoException("Cannot delete entity '" + entity + "' as it does not exist.");
+        }
+        file.delete();
     }
 
     @Override
@@ -85,25 +94,32 @@ public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNo
 
     @Override
     public void migrate(ObjectNode jsonNode, TypeMetadataSet<JsonNodeMetadata> types, Set<String> discriminators, TypeMetadataSet<JsonNodeMetadata> targetTypes, Set<String> targetDiscriminators) {
-
     }
 
     @Override
-    public void flush(Iterable<ObjectNode> objectNodes) {
-        for (ObjectNode objectNode : objectNodes) {
-            String id = getId(objectNode).toString();
-            File file = new File(directory, id + ".com.buschmais.cdo.store.json");
-            try {
-                mapper.writeValue(new FileWriter(file), objectNode);
-            } catch (IOException e) {
-                throw new CdoException("Cannot write file " + file.getName());
-            }
+    public void flush(ObjectNode objectNode) {
+        File file = getFile(objectNode);
+        try {
+            mapper.writeValue(new FileWriter(file), objectNode);
+        } catch (IOException e) {
+            throw new CdoException("Cannot write file " + file.getName());
         }
-
     }
 
     @Override
     public DatastorePropertyManager getDatastorePropertyManager() {
-        return new JsonFileDatastorePropertyManager();
+        return new JsonFileStorePropertyManager();
     }
+
+    /**
+     * Return the file for the given root object node.
+     *
+     * @param objectNode The object node.
+     * @return The file.
+     */
+    private File getFile(ObjectNode objectNode) {
+        String id = getId(objectNode).toString();
+        return new File(directory, id + ".json");
+    }
+
 }

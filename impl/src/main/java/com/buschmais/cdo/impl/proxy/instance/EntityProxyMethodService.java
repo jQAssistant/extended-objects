@@ -30,7 +30,7 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
         super(instanceManager);
         for (TypeMetadata<?> typeMetadata : metadataProvider.getRegisteredMetadata()) {
             for (AbstractMethodMetadata methodMetadata : typeMetadata.getProperties()) {
-                TypeMethod typeMethod = methodMetadata.getBeanMethod();
+                TypeMethod typeMethod = methodMetadata.getTypeMethod();
                 if (methodMetadata instanceof UnsupportedOperationMethodMetadata) {
                     addProxyMethod(new UnsupportedOperationMethod((UnsupportedOperationMethodMetadata) methodMetadata), typeMethod.getMethod());
                 } else if (methodMetadata instanceof ImplementedByMethodMetadata) {

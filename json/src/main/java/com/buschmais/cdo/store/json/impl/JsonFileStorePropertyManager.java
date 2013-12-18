@@ -1,43 +1,50 @@
 package com.buschmais.cdo.store.json.impl;
 
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.metadata.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
+import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.store.json.impl.metadata.JsonEnumPropertyMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonPrimitivePropertyMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonRelationPropertyMetadata;
 import org.codehaus.jackson.node.ObjectNode;
 
-public class JsonFileDatastorePropertyManager implements DatastorePropertyManager<ObjectNode, JsonRelation, JsonPrimitivePropertyMetadata, JsonEnumPropertyMetadata, JsonRelationPropertyMetadata> {
+public class JsonFileStorePropertyManager implements DatastorePropertyManager<ObjectNode, JsonRelation, JsonPrimitivePropertyMetadata, JsonEnumPropertyMetadata, JsonRelationPropertyMetadata> {
 
     @Override
-    public void setProperty(ObjectNode jsonNodes, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {
-
+    public void setProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {
+        Class<?> type = metadata.getTypeMethod().getType();
+        if (String.class.equals(type)) {
+            objectNode.put(metadata.getTypeMethod().getName(), (String) value);
+        } else {
+            throw new CdoException("Unsupported type " + type + " for property " + metadata.getTypeMethod().getName());
+        }
     }
 
     @Override
-    public boolean hasProperty(ObjectNode jsonNodes, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
-        return false;
+    public boolean hasProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+        return objectNode.has(metadata.getTypeMethod().getName());
     }
 
     @Override
-    public void removeProperty(ObjectNode jsonNodes, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
-
+    public void removeProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+        objectNode.remove(metadata.getTypeMethod().getName());
     }
 
     @Override
-    public Object getProperty(ObjectNode jsonNodes, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+    public Object getProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+        return objectNode.get(metadata.getTypeMethod().getName());
+    }
+
+    @Override
+    public Enum<?> getEnumProperty(ObjectNode objectNode, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata) {
         return null;
     }
 
     @Override
-    public Enum<?> getEnumProperty(ObjectNode jsonNodes, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata) {
-        return null;
-    }
-
-    @Override
-    public void setEnumProperty(ObjectNode jsonNodes, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata, Enum<?> value) {
+    public void setEnumProperty(ObjectNode objectNode, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata, Enum<?> value) {
 
     }
 

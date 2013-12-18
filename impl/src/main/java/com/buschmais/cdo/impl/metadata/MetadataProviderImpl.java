@@ -28,7 +28,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TypeMetadata.class);
     private DatastoreMetadataFactory<EntityMetadata, Discriminator> metadataFactory;
-    private TypeResolver<EntityMetadata, Discriminator> typeResolver;
+    private TypeMetadataResolver<EntityMetadata, Discriminator> typeMetadataResolver;
 
     private Map<Class<?>, TypeMetadata<EntityMetadata>> entityMetadataByType = new HashMap<>();
 
@@ -55,21 +55,21 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             entityMetadataByType.put(type, metadata);
             typeMetadata.add(metadata);
         }
-        typeResolver = new TypeResolver(entityMetadataByType);
+        typeMetadataResolver = new TypeMetadataResolver(entityMetadataByType);
         entityMetadataByType.put(CompositeObject.class, new TypeMetadata(CompositeObject.class, Collections.<AbstractMethodMetadata>emptyList(), null, null));
 
     }
 
     @Override
     public TypeMetadataSet getTypes(Set<Discriminator> discriminators) {
-        return typeResolver.getTypes(discriminators);
+        return typeMetadataResolver.getTypes(discriminators);
     }
 
     @Override
     public Set<Discriminator> getDiscriminators(TypeMetadataSet<EntityMetadata> types) {
         Set<Discriminator> discriminators = new HashSet<>();
         for (TypeMetadata<EntityMetadata> typeMetadata : types) {
-            Set<Discriminator> discriminatorsOfType = typeResolver.getDiscriminators(typeMetadata);
+            Set<Discriminator> discriminatorsOfType = typeMetadataResolver.getDiscriminators(typeMetadata);
             discriminators.addAll(discriminatorsOfType);
         }
         return discriminators;

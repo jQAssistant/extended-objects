@@ -13,6 +13,7 @@ import com.buschmais.cdo.spi.metadata.TypeMetadata;
 
 import javax.validation.ConstraintViolation;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 
 public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator, RelationId, Relation> implements CdoManager {
@@ -154,7 +155,11 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public void flush() {
-        datastoreSession.flush(cache.values());
+        Collection instances = cache.values();
+        for (Object instance : instances) {
+            Entity entity = instanceManager.getEntity(instance);
+            datastoreSession.flush(entity);
+        }
     }
 
     private TypeMetadataSet<EntityMetadata> getEffectiveTypes(Class<?> type, Class<?>... types) {

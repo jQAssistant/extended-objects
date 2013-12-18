@@ -13,9 +13,9 @@ import java.util.*;
  *
  * @param <Discriminator> The discriminator type of the datastore (e.g. Neo4j labels or strings for JSON stores).
  */
-public class TypeResolver<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> {
+public class TypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TypeResolver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TypeMetadataResolver.class);
 
     private Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType;
     private Map<TypeMetadata<EntityMetadata>, Set<Discriminator>> aggregatedDiscriminators = new HashMap<>();
@@ -26,8 +26,8 @@ public class TypeResolver<EntityMetadata extends DatastoreEntityMetadata<Discrim
      *
      * @param metadataByType A map of all types with their metadata.
      */
-    public TypeResolver(Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType) {
-        LOGGER.info("Type metadata = '{}'", metadataByType);
+    public TypeMetadataResolver(Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType) {
+        LOGGER.debug("Type metadata = '{}'", metadataByType);
         this.metadataByType = metadataByType;
         for (TypeMetadata typeMetadata : metadataByType.values()) {
             Set<Discriminator> discriminators = getAggregatedDiscriminators(typeMetadata);

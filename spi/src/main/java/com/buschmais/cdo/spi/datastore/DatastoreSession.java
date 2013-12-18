@@ -96,11 +96,11 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
     void migrate(Entity entity, TypeMetadataSet<EntityMetadata> types, Set<Discriminator> discriminators, TypeMetadataSet<EntityMetadata> targetTypes, Set<Discriminator> targetDiscriminators);
 
     /**
-     * Flush the given entities to the datastore.
+     * Flush the given entity to the datastore.
      *
-     * @param entities The entities to flush.
+     * @param entity The entity to flush.
      */
-    void flush(Iterable<Entity> entities);
+    void flush(Entity entity);
 
 
     /**
