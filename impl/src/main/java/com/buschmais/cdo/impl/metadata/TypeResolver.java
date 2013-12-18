@@ -31,7 +31,7 @@ public class TypeResolver<EntityMetadata extends DatastoreEntityMetadata<Discrim
         this.metadataByType = metadataByType;
         for (TypeMetadata typeMetadata : metadataByType.values()) {
             Set<Discriminator> discriminators = getAggregatedDiscriminators(typeMetadata);
-            LOGGER.info("Aggregated discriminators of '{}' = '{}'", typeMetadata, discriminators);
+            LOGGER.debug("Aggregated discriminators of '{}' = '{}'", typeMetadata, discriminators);
         }
         for (TypeMetadata<EntityMetadata> typeMetadata : metadataByType.values()) {
             Set<Discriminator> discriminators = aggregatedDiscriminators.get(typeMetadata);
@@ -44,7 +44,7 @@ public class TypeResolver<EntityMetadata extends DatastoreEntityMetadata<Discrim
                 typeMetadataOfDiscriminator.add(typeMetadata);
             }
         }
-        LOGGER.info("Type metadata by discriminators: '{}'", typeMetadataByDiscriminator);
+        LOGGER.debug("Type metadata by discriminators: '{}'", typeMetadataByDiscriminator);
     }
 
     /**
