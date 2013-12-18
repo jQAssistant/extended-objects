@@ -5,8 +5,7 @@ import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.DatastoreTransaction;
-import com.buschmais.cdo.spi.datastore.TypeSet;
-import com.buschmais.cdo.spi.metadata.MetadataProvider;
+import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
 import org.codehaus.jackson.JsonNode;
@@ -17,21 +16,17 @@ import org.codehaus.jackson.node.ObjectNode;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNode, String, Long, JsonRelation> {
+public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNode, JsonNodeMetadata, String, Long, JsonRelation> {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    private MetadataProvider metadataProvider;
-
     private File directory;
 
-    public JsonFileDatastoreSession(MetadataProvider metadataProvider, File directory) {
-        this.metadataProvider = metadataProvider;
+    public JsonFileDatastoreSession(File directory) {
         this.directory = directory;
     }
 
@@ -56,13 +51,12 @@ public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNo
     }
 
     @Override
-    public ObjectNode create(TypeSet types, Set<String> discriminators) {
+    public ObjectNode create(TypeMetadataSet<JsonNodeMetadata> types, Set<String> discriminators) {
         ObjectNode rootNode = mapper.createObjectNode();
         ArrayNode typesNode = mapper.createArrayNode();
         String typePropertyName = null;
-        for (Class<?> type : types) {
-            TypeMetadata<JsonNodeMetadata> entityMetadata = metadataProvider.getEntityMetadata(type);
-            JsonNodeMetadata datastoreMetadata = entityMetadata.getDatastoreMetadata();
+        for (TypeMetadata<JsonNodeMetadata> typeMetadata : types) {
+            JsonNodeMetadata datastoreMetadata = typeMetadata.getDatastoreMetadata();
             typePropertyName = datastoreMetadata.getTypeProperty();
             for (String typeName : discriminators) {
                 typesNode.add(typeName);
@@ -80,7 +74,7 @@ public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNo
     }
 
     @Override
-    public ResultIterator<ObjectNode> find(Class<?> type, String discriminator, Object value) {
+    public ResultIterator<ObjectNode> find(TypeMetadata<JsonNodeMetadata> type, String discriminator, Object value) {
         return null;
     }
 
@@ -90,7 +84,7 @@ public class JsonFileDatastoreSession implements DatastoreSession<UUID, ObjectNo
     }
 
     @Override
-    public void migrate(ObjectNode jsonNode, TypeSet types, Set<String> discriminators, TypeSet targetTypes, Set<String> targetDiscriminators) {
+    public void migrate(ObjectNode jsonNode, TypeMetadataSet<JsonNodeMetadata> types, Set<String> discriminators, TypeMetadataSet<JsonNodeMetadata> targetTypes, Set<String> targetDiscriminators) {
 
     }
 

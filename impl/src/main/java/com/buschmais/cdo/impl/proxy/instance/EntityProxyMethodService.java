@@ -5,6 +5,7 @@ import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.MetadataProvider;
 import com.buschmais.cdo.impl.PropertyManager;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;

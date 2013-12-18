@@ -4,12 +4,13 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.annotation.ImplementedBy;
 import com.buschmais.cdo.api.annotation.ResultOf;
+import com.buschmais.cdo.impl.MetadataProvider;
 import com.buschmais.cdo.impl.reflection.BeanMethodProvider;
 import com.buschmais.cdo.spi.annotation.IndexDefinition;
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
-import com.buschmais.cdo.spi.datastore.TypeSet;
+import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.*;
 import com.buschmais.cdo.spi.reflection.TypeMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
@@ -27,7 +28,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TypeMetadata.class);
     private DatastoreMetadataFactory<EntityMetadata, Discriminator> metadataFactory;
-    private TypeResolver<Discriminator> typeResolver;
+    private TypeResolver<EntityMetadata, Discriminator> typeResolver;
 
     private Map<Class<?>, TypeMetadata<EntityMetadata>> entityMetadataByType = new HashMap<>();
 
@@ -60,15 +61,14 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     }
 
     @Override
-    public TypeSet getTypes(Set<Discriminator> discriminators) {
+    public TypeMetadataSet getTypes(Set<Discriminator> discriminators) {
         return typeResolver.getTypes(discriminators);
     }
 
     @Override
-    public Set<Discriminator> getDiscriminators(TypeSet types) {
+    public Set<Discriminator> getDiscriminators(TypeMetadataSet<EntityMetadata> types) {
         Set<Discriminator> discriminators = new HashSet<>();
-        for (Class<?> type : types) {
-            TypeMetadata<EntityMetadata> typeMetadata = this.entityMetadataByType.get(type);
+        for (TypeMetadata<EntityMetadata> typeMetadata : types) {
             Set<Discriminator> discriminatorsOfType = typeResolver.getDiscriminators(typeMetadata);
             discriminators.addAll(discriminatorsOfType);
         }

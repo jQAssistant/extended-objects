@@ -4,7 +4,6 @@ import com.buschmais.cdo.neo4j.impl.datastore.metadata.IndexedPropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
 import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -27,16 +26,16 @@ public class EmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedNeo4j
     }
 
     @Override
-    public EmbeddedNeo4jDatastoreSession createSession(MetadataProvider metadataProvider) {
-        return new EmbeddedNeo4jDatastoreSession(graphDatabaseService, metadataProvider);
+    public EmbeddedNeo4jDatastoreSession createSession() {
+        return new EmbeddedNeo4jDatastoreSession(graphDatabaseService);
     }
 
     @Override
-    public void init(MetadataProvider<NodeMetadata, Label> metadataProvider) {
-        EmbeddedNeo4jDatastoreSession session = createSession(metadataProvider);
+    public void init(Collection<TypeMetadata<NodeMetadata>> registeredMetadata) {
+        EmbeddedNeo4jDatastoreSession session = createSession();
         GraphDatabaseService graphDatabaseService = session.getGraphDatabaseService();
         try (Transaction transaction = graphDatabaseService.beginTx()) {
-            for (TypeMetadata<NodeMetadata> typeMetadata : metadataProvider.getRegisteredMetadata()) {
+            for (TypeMetadata<NodeMetadata> typeMetadata : registeredMetadata) {
                 IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedPropertyMethodMetadata = typeMetadata.getIndexedProperty();
                 if (indexedPropertyMethodMetadata != null && indexedPropertyMethodMetadata.getDatastoreMetadata().isCreate()) {
                     Label label = typeMetadata.getDatastoreMetadata().getDiscriminator();

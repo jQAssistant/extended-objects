@@ -1,6 +1,7 @@
 package com.buschmais.cdo.spi.datastore;
 
 import com.buschmais.cdo.api.ResultIterator;
+import com.buschmais.cdo.spi.metadata.TypeMetadata;
 
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +15,7 @@ import java.util.Set;
  * @param <RelationId>    The type of relation ids used by the datastore.
  * @param <Relation>      The type of relations used by the datastore.
  */
-public interface DatastoreSession<EntityId, Entity, Discriminator, RelationId, Relation> {
+public interface DatastoreSession<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator, RelationId, Relation> {
 
     /**
      * Return the instance of the datastore transaction associated with the session.
@@ -54,7 +55,7 @@ public interface DatastoreSession<EntityId, Entity, Discriminator, RelationId, R
      * @param discriminators The set of discriminators.
      * @return The created entity.
      */
-    Entity create(TypeSet types, Set<Discriminator> discriminators);
+    Entity create(TypeMetadataSet<EntityMetadata> types, Set<Discriminator> discriminators);
 
     /**
      * Delete an entity.
@@ -71,7 +72,7 @@ public interface DatastoreSession<EntityId, Entity, Discriminator, RelationId, R
      * @param value         The primitive value (e.g. indexed value).
      * @return An iterator returning matching entities.
      */
-    ResultIterator<Entity> find(Class<?> type, Discriminator discriminator, Object value);
+    ResultIterator<Entity> find(TypeMetadata<EntityMetadata> type, Discriminator discriminator, Object value);
 
     /**
      * Execute a query.
@@ -92,7 +93,7 @@ public interface DatastoreSession<EntityId, Entity, Discriminator, RelationId, R
      * @param targetTypes          The entity types after migration.
      * @param targetDiscriminators The discriminators of the entity after migration.
      */
-    void migrate(Entity entity, TypeSet types, Set<Discriminator> discriminators, TypeSet targetTypes, Set<Discriminator> targetDiscriminators);
+    void migrate(Entity entity, TypeMetadataSet<EntityMetadata> types, Set<Discriminator> discriminators, TypeMetadataSet<EntityMetadata> targetTypes, Set<Discriminator> targetDiscriminators);
 
     /**
      * Flush the given entities to the datastore.

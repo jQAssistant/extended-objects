@@ -8,12 +8,8 @@ import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.impl.transaction.TransactionalQueryResultIterable;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
-import com.buschmais.cdo.spi.datastore.TypeSet;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedSet;
+import java.util.*;
 
 public class CdoQueryImpl<QL> implements Query {
 
@@ -74,8 +70,13 @@ public class CdoQueryImpl<QL> implements Query {
         return new TransactionalQueryResultIterable(queryResultIterable,cdoTransaction);
     }
 
-    private TypeSet getResultTypes() {
-        TypeSet resultTypes = new TypeSet();
+    private SortedSet<Class<?>> getResultTypes() {
+        SortedSet<Class<?>> resultTypes = new TreeSet<>(new Comparator<Class<?>>() {
+            @Override
+            public int compare(Class<?> o1, Class<?> o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
         resultTypes.addAll(types);
         if (expression instanceof Class<?>) {
             resultTypes.add((Class<?>) expression);

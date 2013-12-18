@@ -8,7 +8,7 @@ public class DatastoreFlushSynchronization implements CdoTransaction.Synchroniza
 
     private TransactionalCache transactionalCache;
 
-    private DatastoreSession<?, ?, ?, ?, ?> datastoreSession;
+    private DatastoreSession<?, ?, ?, ?, ?, ?> datastoreSession;
 
     public DatastoreFlushSynchronization(TransactionalCache<?> cache, DatastoreSession datastoreSession) {
         this.transactionalCache = cache;

@@ -3,12 +3,12 @@ package com.buschmais.cdo.impl.test.bootstrap.provider;
 import com.buschmais.cdo.impl.test.bootstrap.provider.metadata.TestEntityMetadata;
 import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.spi.datastore.*;
-import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.TypeMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D, TestEntityMetadata, String> {
@@ -70,7 +70,7 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
     }
 
     @Override
-    public D createSession(MetadataProvider metadataProvider) {
+    public D createSession() {
         return null;
     }
 
@@ -79,7 +79,7 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
     }
 
     @Override
-    public void init(MetadataProvider metadataProvider) {
+    public void init(Collection<TypeMetadata<TestEntityMetadata>> registeredMetadata) {
     }
 
     public CdoUnit getCdoUnit() {

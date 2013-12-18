@@ -4,7 +4,6 @@ import com.buschmais.cdo.neo4j.api.annotation.Label;
 import com.buschmais.cdo.neo4j.api.annotation.Relation;
 
 import java.util.List;
-import java.util.Set;
 
 import static com.buschmais.cdo.neo4j.api.annotation.Relation.Outgoing;
 

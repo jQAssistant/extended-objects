@@ -7,7 +7,6 @@ import com.buschmais.cdo.neo4j.test.embedded.mapping.composite.H;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
 

@@ -7,8 +7,7 @@ import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.proxy.ProxyMethodService;
 import com.buschmais.cdo.impl.interceptor.CdoInterceptor;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
-import com.buschmais.cdo.spi.datastore.TypeSet;
-import com.buschmais.cdo.spi.metadata.MetadataProvider;
+import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.impl.proxy.instance.InstanceInvocationHandler;
 import com.buschmais.cdo.impl.proxy.instance.EntityProxyMethodService;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
@@ -23,13 +22,13 @@ import java.util.Set;
 public class InstanceManager<EntityId, Entity> {
 
     private final MetadataProvider metadataProvider;
-    private final DatastoreSession<EntityId, Entity, ?, ?, ?> datastoreSession;
+    private final DatastoreSession<EntityId, Entity, ?, ?, ?, ?> datastoreSession;
     private final ClassLoader classLoader;
     private final TransactionalCache cache;
     private final ProxyMethodService<Entity, ?> proxyMethodService;
     private final InterceptorFactory interceptorFactory;
 
-    public InstanceManager(MetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, ?, ?> datastoreSession, ClassLoader classLoader, CdoTransaction cdoTransaction, TransactionalCache cache, InterceptorFactory interceptorFactory) {
+    public InstanceManager(MetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, ?, ?, ?> datastoreSession, ClassLoader classLoader, CdoTransaction cdoTransaction, TransactionalCache cache, InterceptorFactory interceptorFactory) {
         this.metadataProvider = metadataProvider;
         this.datastoreSession = datastoreSession;
         this.classLoader = classLoader;
@@ -41,12 +40,12 @@ public class InstanceManager<EntityId, Entity> {
 
     public <T> T getInstance(Entity entity) {
         Set<?> discriminators = datastoreSession.getDiscriminators(entity);
-        TypeSet types = metadataProvider.getTypes(discriminators);
+        TypeMetadataSet<?> types = metadataProvider.getTypes(discriminators);
         EntityId id = datastoreSession.getId(entity);
         Object instance = cache.get(id);
         if (instance == null) {
             InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(entity, proxyMethodService);
-            instance = createInstance(invocationHandler, types, CompositeObject.class);
+            instance = createInstance(invocationHandler, types.toClasses(), CompositeObject.class);
             cache.put(id, instance);
         }
         return (T) instance;

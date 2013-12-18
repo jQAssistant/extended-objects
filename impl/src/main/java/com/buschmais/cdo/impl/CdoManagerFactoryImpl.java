@@ -11,7 +11,6 @@ import com.buschmais.cdo.impl.validation.InstanceValidator;
 import com.buschmais.cdo.impl.validation.ValidatorSynchronization;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.metadata.MetadataProviderImpl;
-import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import org.slf4j.Logger;
@@ -54,12 +53,12 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
             LOGGER.debug("Cannot find validation provider.", e);
             LOGGER.info("No JSR 303 Bean Validation provider available.");
         }
-        datastore.init(metadataProvider);
+        datastore.init(metadataProvider.getRegisteredMetadata());
     }
 
     @Override
     public CdoManager createCdoManager() {
-        DatastoreSession datastoreSession = datastore.createSession(metadataProvider);
+        DatastoreSession datastoreSession = datastore.createSession();
         TransactionalCache<?> cache = new TransactionalCache();
         InstanceValidator instanceValidator = new InstanceValidator(validatorFactory, cache);
         List<CdoTransaction.Synchronization> defaultSynchronizations = new ArrayList<>();

@@ -2,12 +2,12 @@ package com.buschmais.cdo.neo4j.test.embedded.transaction;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManager;
+import com.buschmais.cdo.api.TransactionAttribute;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.transaction.composite.A;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.buschmais.cdo.api.TransactionAttribute;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 

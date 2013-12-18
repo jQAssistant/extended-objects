@@ -7,9 +7,8 @@ import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
-import com.buschmais.cdo.spi.datastore.TypeSet;
+import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
 import org.neo4j.graphdb.*;
@@ -17,15 +16,13 @@ import org.neo4j.graphdb.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, Label, Long, Relationship> {
+public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, NodeMetadata, Label, Long, Relationship> {
 
     private GDS graphDatabaseService;
-    private MetadataProvider metadataProvider;
     private Neo4jPropertyManager propertyManager;
 
-    public AbstractNeo4jDatastoreSession(GDS graphDatabaseService, MetadataProvider metadataProvider) {
+    public AbstractNeo4jDatastoreSession(GDS graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
-        this.metadataProvider = metadataProvider;
         this.propertyManager = new Neo4jPropertyManager();
     }
 
@@ -39,7 +36,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public Node create(TypeSet types, Set<Label> discriminators) {
+    public Node create(TypeMetadataSet<NodeMetadata> types, Set<Label> discriminators) {
         Node node = getGraphDatabaseService().createNode();
         for (Label label : discriminators) {
             node.addLabel(label);
@@ -48,8 +45,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public ResultIterator<Node> find(Class<?> type, Label discriminator, Object value) {
-        TypeMetadata<NodeMetadata> typeMetadata = metadataProvider.getEntityMetadata(type);
+    public ResultIterator<Node> find(TypeMetadata<NodeMetadata> typeMetadata, Label discriminator, Object value) {
         IndexedPropertyMethodMetadata<?> indexedProperty = typeMetadata.getDatastoreMetadata().getIndexedProperty();
         if (indexedProperty == null) {
             indexedProperty = typeMetadata.getIndexedProperty();
@@ -64,7 +60,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public void migrate(Node entity, TypeSet types, Set<Label> discriminators, TypeSet targetTypes, Set<Label> targetDiscriminators) {
+    public void migrate(Node entity, TypeMetadataSet<NodeMetadata> types, Set<Label> discriminators, TypeMetadataSet<NodeMetadata> targetTypes, Set<Label> targetDiscriminators) {
         Set<Label> labelsToRemove = new HashSet<>(discriminators);
         labelsToRemove.removeAll(targetDiscriminators);
         for (Label label : labelsToRemove) {

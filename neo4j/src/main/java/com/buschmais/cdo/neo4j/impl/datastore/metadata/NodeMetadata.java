@@ -4,8 +4,6 @@ import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
 import org.neo4j.graphdb.Label;
 
-import java.util.Set;
-
 public class NodeMetadata implements DatastoreEntityMetadata<Label> {
 
     private Label label;
