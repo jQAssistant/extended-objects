@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -8,7 +7,7 @@
     </parent>
     <groupId>com.buschmais.cdo</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>pom</packaging>
 
     <name>Composite Data Objects</name>
@@ -128,14 +127,14 @@
                 <executions>
                     <execution>
                         <id>scan</id>
-                        <phase/>
+                        <phase />
                         <goals>
                             <goal>scan</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>analyze</id>
-                        <phase/>
+                        <phase />
                         <goals>
                             <goal>analyze</goal>
                         </goals>
