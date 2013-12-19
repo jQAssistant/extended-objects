@@ -5,13 +5,14 @@ import com.buschmais.cdo.spi.reflection.AnnotatedType;
 
 import java.util.Collection;
 
-public class TypeMetadata<DatastoreMetadata extends DatastoreEntityMetadata<?>> extends AbstractMetadata<DatastoreMetadata> {
+public class TypeMetadata<DatastoreMetadata extends DatastoreEntityMetadata<?>> extends AbstractMetadata<TypeMetadata<DatastoreMetadata>, DatastoreMetadata> {
 
     private AnnotatedType annotatedType;
+
     private IndexedPropertyMethodMetadata indexedProperty;
 
-    public TypeMetadata(AnnotatedType annotatedType, Collection<AbstractMethodMetadata> properties, IndexedPropertyMethodMetadata indexedProperty, DatastoreMetadata datastoreMetadata) {
-        super(properties, datastoreMetadata);
+    public TypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata<DatastoreMetadata>> superTypeMetadatas, Collection<AbstractMethodMetadata> methodMetadatas, IndexedPropertyMethodMetadata indexedProperty, DatastoreMetadata datastoreMetadata) {
+        super(superTypeMetadatas, methodMetadatas, datastoreMetadata);
         this.annotatedType = annotatedType;
         this.indexedProperty = indexedProperty;
     }

@@ -40,23 +40,23 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 return new HashSet<>(Arrays.asList(dependent.getInterfaces()));
             }
         };
-        List<Class<?>> allTypes = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
-        LOGGER.debug("Processing types {}", allTypes);
-        Map<Class<?>, Collection<AnnotatedMethod>> typeMethods = new HashMap<>();
-        for (Class<?> type : allTypes) {
-            if (!type.isInterface()) {
-                throw new CdoException("Type " + type.getName() + " is not an interface.");
+        List<Class<?>> allClasses = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
+        LOGGER.debug("Processing types {}", allClasses);
+        Map<Class<?>, Collection<AnnotatedMethod>> annotatedMethodsByClass = new HashMap<>();
+        for (Class<?> currentClass : allClasses) {
+            if (!currentClass.isInterface()) {
+                throw new CdoException("Type " + currentClass.getName() + " is not an interface.");
             }
-            typeMethods.put(type, BeanMethodProvider.newInstance().getMethods(type));
+            annotatedMethodsByClass.put(currentClass, BeanMethodProvider.newInstance().getMethods(currentClass));
         }
         List<TypeMetadata> typeMetadata = new ArrayList<>();
-        for (Class<?> type : allTypes) {
-            TypeMetadata metadata = createMetadata(type, typeMethods.get(type), typeMethods.keySet());
-            entityMetadataByType.put(type, metadata);
+        for (Class<?> currentClass : allClasses) {
+            TypeMetadata metadata = createMetadata(currentClass, annotatedMethodsByClass.get(currentClass), annotatedMethodsByClass.keySet());
+            entityMetadataByType.put(currentClass, metadata);
             typeMetadata.add(metadata);
         }
         typeMetadataResolver = new TypeMetadataResolver(entityMetadataByType);
-        entityMetadataByType.put(CompositeObject.class, new TypeMetadata(new AnnotatedType(CompositeObject.class), Collections.<AbstractMethodMetadata>emptyList(), null, null));
+        entityMetadataByType.put(CompositeObject.class, new TypeMetadata(new AnnotatedType(CompositeObject.class), Collections.emptyList(), Collections.<AbstractMethodMetadata>emptyList(), null, null));
 
     }
 
@@ -89,36 +89,40 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         return typeMetadata;
     }
 
-    private TypeMetadata createMetadata(Class<?> classToRegister, Collection<AnnotatedMethod> typeMethods, Set<Class<?>> types) {
+    private TypeMetadata createMetadata(Class<?> classToRegister, Collection<AnnotatedMethod> annotatedMethods, Set<Class<?>> types) {
         LOGGER.debug("Processing classToRegister {}", classToRegister.getName());
         Collection<AbstractMethodMetadata> methodMetadataList = new ArrayList<>();
         // Collect the getter methods as they provide annotations holding meta information also to be applied to setters
         IndexedPropertyMethodMetadata indexedProperty = null;
-        for (AnnotatedMethod typeMethod : typeMethods) {
+        for (AnnotatedMethod annotatedMethod : annotatedMethods) {
             AbstractMethodMetadata methodMetadata;
-            ResultOf resultOf = typeMethod.getAnnotation(ResultOf.class);
-            ImplementedBy implementedBy = typeMethod.getAnnotation(ImplementedBy.class);
+            ResultOf resultOf = annotatedMethod.getAnnotation(ResultOf.class);
+            ImplementedBy implementedBy = annotatedMethod.getAnnotation(ImplementedBy.class);
             if (implementedBy != null) {
-                methodMetadata = new ImplementedByMethodMetadata(typeMethod, implementedBy.value(), metadataFactory.createImplementedByMetadata(typeMethod));
+                methodMetadata = new ImplementedByMethodMetadata(annotatedMethod, implementedBy.value(), metadataFactory.createImplementedByMetadata(annotatedMethod));
             } else if (resultOf != null) {
-                methodMetadata = createResultOfMetadata(typeMethod, resultOf);
-            } else if (typeMethod instanceof PropertyMethod) {
-                methodMetadata = createPropertyMethodMetadata(types, (PropertyMethod) typeMethod);
+                methodMetadata = createResultOfMetadata(annotatedMethod, resultOf);
+            } else if (annotatedMethod instanceof PropertyMethod) {
+                methodMetadata = createPropertyMethodMetadata(types, (PropertyMethod) annotatedMethod);
             } else {
-                methodMetadata = new UnsupportedOperationMethodMetadata((UserMethod) typeMethod);
+                methodMetadata = new UnsupportedOperationMethodMetadata((UserMethod) annotatedMethod);
             }
-            Annotation indexedAnnotation = typeMethod.getByMetaAnnotation(IndexDefinition.class);
+            Annotation indexedAnnotation = annotatedMethod.getByMetaAnnotation(IndexDefinition.class);
             if (indexedAnnotation != null) {
                 if (!(methodMetadata instanceof PrimitivePropertyMethodMetadata)) {
                     throw new CdoException("Only primitive properties are allowed to be used for indexing.");
                 }
-                indexedProperty = new IndexedPropertyMethodMetadata((PropertyMethod) typeMethod, (PrimitivePropertyMethodMetadata) methodMetadata, metadataFactory.createIndexedPropertyMetadata((PropertyMethod) typeMethod));
+                indexedProperty = new IndexedPropertyMethodMetadata((PropertyMethod) annotatedMethod, (PrimitivePropertyMethodMetadata) methodMetadata, metadataFactory.createIndexedPropertyMetadata((PropertyMethod) annotatedMethod));
             }
             methodMetadataList.add(methodMetadata);
         }
         AnnotatedType annotatedType = new AnnotatedType(classToRegister);
+        List<TypeMetadata<EntityMetadata>> superTypes = new ArrayList<>();
+        for (Class<?> i : classToRegister.getInterfaces()) {
+            superTypes.add(this.entityMetadataByType.get(i));
+        }
         DatastoreEntityMetadata<Discriminator> datastoreEntityMetadata = metadataFactory.createEntityMetadata(annotatedType, entityMetadataByType);
-        TypeMetadata typeMetadata = new TypeMetadata(annotatedType, methodMetadataList, indexedProperty, datastoreEntityMetadata);
+        TypeMetadata typeMetadata = new TypeMetadata(annotatedType, superTypes, methodMetadataList, indexedProperty, datastoreEntityMetadata);
         return typeMetadata;
     }
 

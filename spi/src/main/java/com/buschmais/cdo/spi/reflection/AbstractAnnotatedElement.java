@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 
 /**
  * Abstract base implementation for annotated elements.
+ *
  * @param <AE> The annotated element type.
  */
 public class AbstractAnnotatedElement<AE extends java.lang.reflect.AnnotatedElement> implements AnnotatedElement<AE> {
@@ -12,6 +13,7 @@ public class AbstractAnnotatedElement<AE extends java.lang.reflect.AnnotatedElem
 
     /**
      * Constructor.
+     *
      * @param annotated The annotated element.
      */
     protected AbstractAnnotatedElement(AE annotated) {
@@ -36,6 +38,20 @@ public class AbstractAnnotatedElement<AE extends java.lang.reflect.AnnotatedElem
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractAnnotatedElement that = (AbstractAnnotatedElement) o;
+        if (!annotated.equals(that.annotated)) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return annotated.hashCode();
     }
 
     @Override
