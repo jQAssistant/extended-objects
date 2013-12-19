@@ -6,8 +6,8 @@ import static com.buschmais.cdo.spi.metadata.RelationMetadata.Direction;
 
 public class CollectionPropertyMethodMetadata<DatastoreMetadata> extends AbstractRelationPropertyMethodMetadata<DatastoreMetadata> {
 
-    public CollectionPropertyMethodMetadata(PropertyMethod beanPropertyMethod, RelationMetadata relationshipType, Direction direction, DatastoreMetadata datastoreMetadata) {
-        super(beanPropertyMethod, relationshipType, direction, datastoreMetadata);
+    public CollectionPropertyMethodMetadata(PropertyMethod propertyMethod, RelationMetadata relationshipType, Direction direction, DatastoreMetadata datastoreMetadata) {
+        super(propertyMethod, relationshipType, direction, datastoreMetadata);
     }
 
 }

@@ -11,7 +11,7 @@ import com.buschmais.cdo.impl.proxy.query.object.ToStringMethod;
 import com.buschmais.cdo.impl.proxy.query.property.GetMethod;
 import com.buschmais.cdo.impl.proxy.query.row.GetColumnsMethod;
 import com.buschmais.cdo.impl.reflection.BeanMethodProvider;
-import com.buschmais.cdo.spi.reflection.TypeMethod;
+import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.GetPropertyMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
@@ -27,14 +27,14 @@ public class RowProxyMethodService extends AbstractProxyMethodService<Map<String
         super(instanceManager);
         BeanMethodProvider beanMethodProvider = BeanMethodProvider.newInstance();
         for (Class<?> type : types) {
-            Collection<TypeMethod> typeMethodsOfType = beanMethodProvider.getMethods(type);
-            for (TypeMethod typeMethod : typeMethodsOfType) {
+            Collection<AnnotatedMethod> typeMethodsOfType = beanMethodProvider.getMethods(type);
+            for (AnnotatedMethod typeMethod : typeMethodsOfType) {
                 if (!(typeMethod instanceof GetPropertyMethod)) {
-                    throw new CdoException("Only get methods are supported for projections: '" + typeMethod.getMethod().getName() + "'.");
+                    throw new CdoException("Only get methods are supported for projections: '" + typeMethod.getAnnotatedElement().getName() + "'.");
                 }
                 PropertyMethod beanPropertyMethod = (PropertyMethod) typeMethod;
                 GetMethod proxyMethod = new GetMethod(beanPropertyMethod.getName(), beanPropertyMethod.getType());
-                addProxyMethod(proxyMethod, beanPropertyMethod.getMethod());
+                addProxyMethod(proxyMethod, beanPropertyMethod.getAnnotatedElement());
             }
         }
         addMethod(new AsMethod<Map<String, Object>>(), CompositeObject.class, "as", Class.class);

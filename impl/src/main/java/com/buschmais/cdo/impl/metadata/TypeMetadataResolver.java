@@ -61,7 +61,7 @@ public class TypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata
             if (discriminator != null) {
                 discriminators.add(discriminator);
             }
-            for (Class<?> superType : typeMetadata.getType().getInterfaces()) {
+            for (Class<?> superType : typeMetadata.getAnnotatedType().getAnnotatedElement().getInterfaces()) {
                 TypeMetadata<EntityMetadata> superTypeMetadata = metadataByType.get(superType);
                 discriminators.addAll(getAggregatedDiscriminators(superTypeMetadata));
             }
@@ -94,8 +94,8 @@ public class TypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata
         for (TypeMetadata<EntityMetadata> typeMetadata : allTypeMetadatas) {
             boolean subtype = false;
             for (Iterator<TypeMetadata<EntityMetadata>> subTypeMetadataIterator = allTypeMetadatas.iterator(); subTypeMetadataIterator.hasNext() && !subtype; ) {
-                Class<?> otherType = subTypeMetadataIterator.next().getType();
-                if (!typeMetadata.getType().equals(otherType) && typeMetadata.getType().isAssignableFrom(otherType)) {
+                Class<?> otherType = subTypeMetadataIterator.next().getAnnotatedType().getAnnotatedElement();
+                if (!typeMetadata.getAnnotatedType().getAnnotatedElement().equals(otherType) && typeMetadata.getAnnotatedType().getAnnotatedElement().isAssignableFrom(otherType)) {
                     subtype = true;
                 }
             }

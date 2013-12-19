@@ -1,14 +1,14 @@
 package com.buschmais.cdo.spi.metadata;
 
 import com.buschmais.cdo.api.proxy.ProxyMethod;
-import com.buschmais.cdo.spi.reflection.TypeMethod;
+import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 
-public class ImplementedByMethodMetadata<DatastoreMetadata> extends AbstractMethodMetadata<TypeMethod, DatastoreMetadata> {
+public class ImplementedByMethodMetadata<DatastoreMetadata> extends AbstractMethodMetadata<AnnotatedMethod, DatastoreMetadata> {
 
     private Class<? extends ProxyMethod<?>> proxyMethodType;
 
-    public ImplementedByMethodMetadata(TypeMethod typeMethod, Class<? extends ProxyMethod<?>> proxyMethodType, DatastoreMetadata datastoreMetadata) {
-        super(typeMethod, datastoreMetadata);
+    public ImplementedByMethodMetadata(AnnotatedMethod annotatedMethod, Class<? extends ProxyMethod<?>> proxyMethodType, DatastoreMetadata datastoreMetadata) {
+        super(annotatedMethod, datastoreMetadata);
         this.proxyMethodType = proxyMethodType;
     }
 

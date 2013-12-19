@@ -1,22 +1,23 @@
 package com.buschmais.cdo.spi.metadata;
 
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
+import com.buschmais.cdo.spi.reflection.AnnotatedType;
 
 import java.util.Collection;
 
 public class TypeMetadata<DatastoreMetadata extends DatastoreEntityMetadata<?>> extends AbstractMetadata<DatastoreMetadata> {
 
-    private Class<?> type;
+    private AnnotatedType annotatedType;
     private IndexedPropertyMethodMetadata indexedProperty;
 
-    public TypeMetadata(Class<?> type, Collection<AbstractMethodMetadata> properties, IndexedPropertyMethodMetadata indexedProperty, DatastoreMetadata datastoreMetadata) {
+    public TypeMetadata(AnnotatedType annotatedType, Collection<AbstractMethodMetadata> properties, IndexedPropertyMethodMetadata indexedProperty, DatastoreMetadata datastoreMetadata) {
         super(properties, datastoreMetadata);
-        this.type = type;
+        this.annotatedType = annotatedType;
         this.indexedProperty = indexedProperty;
     }
 
-    public Class<?> getType() {
-        return type;
+    public AnnotatedType getAnnotatedType() {
+        return annotatedType;
     }
 
     public IndexedPropertyMethodMetadata getIndexedProperty() {
@@ -26,7 +27,7 @@ public class TypeMetadata<DatastoreMetadata extends DatastoreEntityMetadata<?>> 
     @Override
     public String toString() {
         return "TypeMetadata{" +
-                "type=" + type +
+                "type=" + annotatedType +
                 '}';
     }
 }

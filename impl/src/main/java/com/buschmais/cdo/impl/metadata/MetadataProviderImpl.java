@@ -12,7 +12,8 @@ import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.*;
-import com.buschmais.cdo.spi.reflection.TypeMethod;
+import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
+import com.buschmais.cdo.spi.reflection.AnnotatedType;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.UserMethod;
 import org.slf4j.Logger;
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.*;
 
 public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> implements MetadataProvider<EntityMetadata, Discriminator> {
@@ -42,7 +42,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         };
         List<Class<?>> allTypes = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
         LOGGER.debug("Processing types {}", allTypes);
-        Map<Class<?>, Collection<TypeMethod>> typeMethods = new HashMap<>();
+        Map<Class<?>, Collection<AnnotatedMethod>> typeMethods = new HashMap<>();
         for (Class<?> type : allTypes) {
             if (!type.isInterface()) {
                 throw new CdoException("Type " + type.getName() + " is not an interface.");
@@ -56,7 +56,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             typeMetadata.add(metadata);
         }
         typeMetadataResolver = new TypeMetadataResolver(entityMetadataByType);
-        entityMetadataByType.put(CompositeObject.class, new TypeMetadata(CompositeObject.class, Collections.<AbstractMethodMetadata>emptyList(), null, null));
+        entityMetadataByType.put(CompositeObject.class, new TypeMetadata(new AnnotatedType(CompositeObject.class), Collections.<AbstractMethodMetadata>emptyList(), null, null));
 
     }
 
@@ -89,12 +89,12 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         return typeMetadata;
     }
 
-    private TypeMetadata createMetadata(Class<?> type, Collection<TypeMethod> typeMethods, Set<Class<?>> types) {
-        LOGGER.debug("Processing type {}", type.getName());
+    private TypeMetadata createMetadata(Class<?> classToRegister, Collection<AnnotatedMethod> typeMethods, Set<Class<?>> types) {
+        LOGGER.debug("Processing classToRegister {}", classToRegister.getName());
         Collection<AbstractMethodMetadata> methodMetadataList = new ArrayList<>();
         // Collect the getter methods as they provide annotations holding meta information also to be applied to setters
         IndexedPropertyMethodMetadata indexedProperty = null;
-        for (TypeMethod typeMethod : typeMethods) {
+        for (AnnotatedMethod typeMethod : typeMethods) {
             AbstractMethodMetadata methodMetadata;
             ResultOf resultOf = typeMethod.getAnnotation(ResultOf.class);
             ImplementedBy implementedBy = typeMethod.getAnnotation(ImplementedBy.class);
@@ -116,8 +116,9 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             }
             methodMetadataList.add(methodMetadata);
         }
-        DatastoreEntityMetadata<Discriminator> datastoreEntityMetadata = metadataFactory.createEntityMetadata(type, entityMetadataByType);
-        TypeMetadata typeMetadata = new TypeMetadata(type, methodMetadataList, indexedProperty, datastoreEntityMetadata);
+        AnnotatedType annotatedType = new AnnotatedType(classToRegister);
+        DatastoreEntityMetadata<Discriminator> datastoreEntityMetadata = metadataFactory.createEntityMetadata(annotatedType, entityMetadataByType);
+        TypeMetadata typeMetadata = new TypeMetadata(annotatedType, methodMetadataList, indexedProperty, datastoreEntityMetadata);
         return typeMetadata;
     }
 
@@ -137,14 +138,14 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         return methodMetadata;
     }
 
-    private AbstractMethodMetadata createResultOfMetadata(TypeMethod typeMethod, ResultOf resultOf) {
-        Method method = typeMethod.getMethod();
+    private AbstractMethodMetadata createResultOfMetadata(AnnotatedMethod annotatedMethod, ResultOf resultOf) {
+        Method method = annotatedMethod.getAnnotatedElement();
         // Determine query type
         Class<?> queryType = resultOf.query();
         Class<?> returnType = method.getReturnType();
         if (Object.class.equals(queryType)) {
             if (Iterable.class.isAssignableFrom(returnType)) {
-                Type genericReturnType = method.getGenericReturnType();
+                java.lang.reflect.Type genericReturnType = method.getGenericReturnType();
                 if (genericReturnType instanceof ParameterizedType) {
                     ParameterizedType parameterizedType = (ParameterizedType) genericReturnType;
                     queryType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
@@ -169,6 +170,6 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             parameters.add(parameter);
         }
         boolean singleResult = !Iterable.class.isAssignableFrom(returnType);
-        return new ResultOfMethodMetadata(typeMethod, queryType, resultOf.usingThisAs(), parameters, singleResult);
+        return new ResultOfMethodMetadata(annotatedMethod, queryType, resultOf.usingThisAs(), parameters, singleResult);
     }
 }

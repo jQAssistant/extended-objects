@@ -1,20 +1,20 @@
 package com.buschmais.cdo.spi.metadata;
 
-import com.buschmais.cdo.spi.reflection.TypeMethod;
+import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 
-public abstract class AbstractMethodMetadata<B extends TypeMethod, DatastoreMetadata> {
+public abstract class AbstractMethodMetadata<B extends AnnotatedMethod, DatastoreMetadata> {
 
-    private B typeMethod;
+    private B annotateddMethod;
 
     private DatastoreMetadata datastoreMetadata;
 
-    protected AbstractMethodMetadata(B typeMethod, DatastoreMetadata datastoreMetadata) {
-        this.typeMethod = typeMethod;
+    protected AbstractMethodMetadata(B annotatedMethod, DatastoreMetadata datastoreMetadata) {
+        this.annotateddMethod = annotatedMethod;
         this.datastoreMetadata = datastoreMetadata;
     }
 
-    public B getTypeMethod() {
-        return typeMethod;
+    public B getAnnotateddMethod() {
+        return annotateddMethod;
     }
 
     public DatastoreMetadata getDatastoreMetadata() {
@@ -23,6 +23,6 @@ public abstract class AbstractMethodMetadata<B extends TypeMethod, DatastoreMeta
 
     @Override
     public String toString() {
-        return "AbstractMethodMetadata{" + "typeMethod=" + typeMethod + '}';
+        return "AbstractMethodMetadata{" + "annotateddMethod=" + annotateddMethod + '}';
     }
 }

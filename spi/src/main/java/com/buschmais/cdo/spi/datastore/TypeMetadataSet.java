@@ -19,7 +19,7 @@ public final class TypeMetadataSet<EntityMetadata extends DatastoreEntityMetadat
         super(new Comparator<TypeMetadata<?>>() {
             @Override
             public int compare(TypeMetadata<?> o1, TypeMetadata<?> o2) {
-                return o1.getType().getName().compareTo(o2.getType().getName());
+                return o1.getAnnotatedType().getAnnotatedElement().getName().compareTo(o2.getAnnotatedType().getAnnotatedElement().getName());
             }
         });
     }
@@ -27,7 +27,7 @@ public final class TypeMetadataSet<EntityMetadata extends DatastoreEntityMetadat
     public Set<Class<?>> toClasses() {
         Set<Class<?>> classes = new HashSet<>();
         for (TypeMetadata<EntityMetadata> typeMetadata : this) {
-            classes.add(typeMetadata.getType());
+            classes.add(typeMetadata.getAnnotatedType().getAnnotatedElement());
         }
         return classes;
     }

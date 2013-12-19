@@ -10,8 +10,9 @@ import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
-import com.buschmais.cdo.spi.reflection.TypeMethod;
+import com.buschmais.cdo.spi.reflection.AnnotatedType;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
@@ -21,8 +22,8 @@ import java.util.Map;
 public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label> {
 
     @Override
-    public NodeMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata<NodeMetadata>> metadataByType) {
-        Label labelAnnotation = type.getAnnotation(Label.class);
+    public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata<NodeMetadata>> metadataByType) {
+        Label labelAnnotation = annotatedType.getAnnotation(Label.class);
         org.neo4j.graphdb.Label label = null;
         IndexedPropertyMethodMetadata<?> indexedProperty = null;
         if (labelAnnotation != null) {
@@ -36,7 +37,7 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
     }
 
     @Override
-    public <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(TypeMethod typeMethod) {
+    public <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(AnnotatedMethod annotatedMethod) {
         return null;
     }
 
@@ -52,14 +53,14 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
 
     @Override
     public PrimitivePropertyMetadata createPrimitvePropertyMetadata(PropertyMethod propertyMethod) {
-        Property property = propertyMethod.getPropertyAnnotation(Property.class);
+        Property property = propertyMethod.getAnnotationOfProperty(Property.class);
         String name = property != null ? property.value() : propertyMethod.getName();
         return new PrimitivePropertyMetadata(name);
     }
 
     @Override
     public EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod propertyMethod) {
-        Property property = propertyMethod.getPropertyAnnotation(Property.class);
+        Property property = propertyMethod.getAnnotationOfProperty(Property.class);
         String name = property != null ? property.value() : propertyMethod.getName();
         return new EnumPropertyMetadata(name);
     }
@@ -72,15 +73,15 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
 
     @Override
     public RelationshipMetadata createRelationMetadata(PropertyMethod propertyMethod) {
-        Relation relation = propertyMethod.getPropertyAnnotation(Relation.class);
+        Relation relation = propertyMethod.getAnnotationOfProperty(Relation.class);
         String name = relation != null ? relation.value() : StringUtils.capitalize(propertyMethod.getName());
         DynamicRelationshipType relationshipType = DynamicRelationshipType.withName(name);
         return new RelationshipMetadata(relationshipType);
     }
 
     public RelationMetadata.Direction getRelationDirection(PropertyMethod propertyMethod) {
-        Relation.Incoming incoming = propertyMethod.getPropertyAnnotation(Relation.Incoming.class);
-        Relation.Outgoing outgoing = propertyMethod.getPropertyAnnotation(Relation.Outgoing.class);
+        Relation.Incoming incoming = propertyMethod.getAnnotationOfProperty(Relation.Incoming.class);
+        Relation.Outgoing outgoing = propertyMethod.getAnnotationOfProperty(Relation.Outgoing.class);
         if (incoming != null && outgoing != null) {
             throw new CdoException("A relation property must be either incoming or outgoing: '" + propertyMethod.getName() + "'");
         }

@@ -7,8 +7,8 @@ public class EnumPropertyMethodMetadata<DatastoreMetadata> extends AbstractPrope
 
     private Class<? extends Enum<?>> enumerationType;
 
-    public EnumPropertyMethodMetadata(PropertyMethod beanPropertyMethod, Class<? extends Enum<?>> enumerationType, DatastoreMetadata datastoreMetadata) {
-        super(beanPropertyMethod, datastoreMetadata);
+    public EnumPropertyMethodMetadata(PropertyMethod propertyMethod, Class<? extends Enum<?>> enumerationType, DatastoreMetadata datastoreMetadata) {
+        super(propertyMethod, datastoreMetadata);
         this.enumerationType = enumerationType;
     }
 

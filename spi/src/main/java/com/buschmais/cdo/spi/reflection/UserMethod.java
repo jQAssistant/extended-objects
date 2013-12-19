@@ -2,8 +2,16 @@ package com.buschmais.cdo.spi.reflection;
 
 import java.lang.reflect.Method;
 
-public class UserMethod extends AbstractTypeMethod {
+/**
+ * Represents a method which cannot be mapped to a property.
+ */
+public class UserMethod extends AbstractAnnotatedElement<Method> implements AnnotatedMethod {
 
+    /**
+     * Constructor.
+     *
+     * @param method The method.
+     */
     public UserMethod(Method method) {
         super(method);
     }

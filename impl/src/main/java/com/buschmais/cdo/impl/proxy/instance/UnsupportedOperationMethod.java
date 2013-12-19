@@ -15,7 +15,7 @@ public class UnsupportedOperationMethod<Entity> implements ProxyMethod<Entity> {
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
-        Method method = methodMetadata.getTypeMethod().getMethod();
+        Method method = methodMetadata.getAnnotateddMethod().getAnnotatedElement();
         throw new UnsupportedOperationException("Method '" + method.getName() + "' declared in '" + method.getDeclaringClass().getName() + "' is not mapped to an implementation.");
     }
 }

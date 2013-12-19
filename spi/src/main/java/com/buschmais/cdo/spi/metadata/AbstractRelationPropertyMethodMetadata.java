@@ -10,8 +10,8 @@ public abstract class AbstractRelationPropertyMethodMetadata<DatastoreMetadata> 
 
     private Direction direction;
 
-    public AbstractRelationPropertyMethodMetadata(PropertyMethod beanPropertyMethod, RelationMetadata relationMetadata, Direction direction, DatastoreMetadata datastoreMetadata) {
-        super(beanPropertyMethod, datastoreMetadata);
+    public AbstractRelationPropertyMethodMetadata(PropertyMethod propertyMethod, RelationMetadata relationMetadata, Direction direction, DatastoreMetadata datastoreMetadata) {
+        super(propertyMethod, datastoreMetadata);
         this.relationMetadata = relationMetadata;
         this.direction = direction;
     }
