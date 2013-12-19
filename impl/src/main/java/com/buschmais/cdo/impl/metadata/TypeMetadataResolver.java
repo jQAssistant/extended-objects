@@ -3,6 +3,7 @@ package com.buschmais.cdo.impl.metadata;
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.reflection.AnnotatedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,8 +62,7 @@ public class TypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata
             if (discriminator != null) {
                 discriminators.add(discriminator);
             }
-            for (Class<?> superType : typeMetadata.getAnnotatedType().getAnnotatedElement().getInterfaces()) {
-                TypeMetadata<EntityMetadata> superTypeMetadata = metadataByType.get(superType);
+            for (TypeMetadata<EntityMetadata> superTypeMetadata : typeMetadata.getSuperTypes()) {
                 discriminators.addAll(getAggregatedDiscriminators(superTypeMetadata));
             }
             aggregatedDiscriminators.put(typeMetadata, discriminators);
@@ -89,21 +89,22 @@ public class TypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata
                 }
             }
         }
-        // remove super allTypeMetadatas if sub types are already contained in the type set
-        TypeMetadataSet<EntityMetadata> uniqueTypeMetadatas = new TypeMetadataSet();
+        // remove all super types if their sub types are already contained in the type set
+        TypeMetadataSet<EntityMetadata> uniqueTypes = new TypeMetadataSet();
         for (TypeMetadata<EntityMetadata> typeMetadata : allTypeMetadatas) {
+            AnnotatedType annotatedType = typeMetadata.getAnnotatedType();
             boolean subtype = false;
-            for (Iterator<TypeMetadata<EntityMetadata>> subTypeMetadataIterator = allTypeMetadatas.iterator(); subTypeMetadataIterator.hasNext() && !subtype; ) {
-                Class<?> otherType = subTypeMetadataIterator.next().getAnnotatedType().getAnnotatedElement();
-                if (!typeMetadata.getAnnotatedType().getAnnotatedElement().equals(otherType) && typeMetadata.getAnnotatedType().getAnnotatedElement().isAssignableFrom(otherType)) {
+            for (Iterator<TypeMetadata<EntityMetadata>> subTypeIterator = allTypeMetadatas.iterator(); subTypeIterator.hasNext() && !subtype; ) {
+                AnnotatedType otherAnnotatedType = subTypeIterator.next().getAnnotatedType();
+                if (!annotatedType.equals(otherAnnotatedType) && annotatedType.getAnnotatedElement().isAssignableFrom(otherAnnotatedType.getAnnotatedElement())) {
                     subtype = true;
                 }
             }
             if (!subtype) {
-                uniqueTypeMetadatas.add(typeMetadata);
+                uniqueTypes.add(typeMetadata);
             }
         }
-        return uniqueTypeMetadatas;
+        return uniqueTypes;
     }
 
     public Set<Discriminator> getDiscriminators(TypeMetadata<EntityMetadata> typeMetadata) {
