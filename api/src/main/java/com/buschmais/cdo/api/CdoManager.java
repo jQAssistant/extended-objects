@@ -116,7 +116,7 @@ public interface CdoManager {
      * @param query The query expression.
      * @return The {@link Query}.
      */
-    Query createQuery(String query);
+    Query<CompositeRowObject> createQuery(String query);
 
     /**
      * Creates a typed {@link Query}.
@@ -154,7 +154,7 @@ public interface CdoManager {
      * @param types The additional types to be returned.
      * @return The {@link Query}.
      */
-    Query createQuery(Class<?> query, Class<?>... types);
+    Query<CompositeRowObject> createQuery(Class<?> query, Class<?>... types);
 
     /**
      * Close the {@CdoManager}.
