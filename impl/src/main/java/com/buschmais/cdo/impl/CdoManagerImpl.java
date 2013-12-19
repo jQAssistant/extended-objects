@@ -14,7 +14,10 @@ import com.buschmais.cdo.spi.metadata.TypeMetadata;
 import javax.validation.ConstraintViolation;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
+
+import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 
 public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator, RelationId, Relation> implements CdoManager {
 
@@ -139,7 +142,27 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
     }
 
     @Override
-    public <QL> Query createQuery(QL query, Class<?>... types) {
+    public Query<CompositeRowObject> createQuery(String query) {
+        return interceptorFactory.addInterceptor(new CdoQueryImpl(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Collections.emptyList()));
+    }
+
+    @Override
+    public <T> Query<T> createQuery(String query, Class<T> type) {
+        return interceptorFactory.addInterceptor(new CdoQueryImpl(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(new Class<?>[]{type})));
+    }
+
+    @Override
+    public Query<CompositeRowObject> createQuery(String query, Class<?> type, Class<?>... types) {
+        return interceptorFactory.addInterceptor(new CdoQueryImpl(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(types)));
+    }
+
+    @Override
+    public <T> Query<T> createQuery(Class<T> query) {
+        return interceptorFactory.addInterceptor(new CdoQueryImpl(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(new Class<?>[]{query})));
+    }
+
+    @Override
+    public Query<CompositeRowObject> createQuery(Class<?> query, Class<?>... types) {
         return interceptorFactory.addInterceptor(new CdoQueryImpl(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(types)));
     }
 

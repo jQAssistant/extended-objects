@@ -6,8 +6,10 @@ import java.util.Map;
 
 /**
  * Defines a query using a fluent API.
+ *
+ * @param <T> The return type of the query.
  */
-public interface Query {
+public interface Query<T> {
 
     /**
      * Bind a parameter value to the query.
@@ -29,10 +31,9 @@ public interface Query {
     /**
      * Execute the query.
      *
-     * @param <T> The expected return type.
      * @return The {@link Query.Result} of the query.
      */
-    <T> Result<T> execute();
+    Result<T> execute();
 
     /**
      * Defines the result of a query.

@@ -31,14 +31,14 @@ public class ResultOfMethod<Entity> implements ProxyMethod<Entity> {
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
-        CdoQueryImpl<Class<?>> query = new CdoQueryImpl(resultOfMethodMetadata.getQuery(), datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Collections.<Class<?>>emptyList());
+        CdoQueryImpl<?, Class<?>> query = new CdoQueryImpl(resultOfMethodMetadata.getQuery(), datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Collections.<Class<?>>emptyList());
         String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
         query.withParameter(usingThisAs, instanceManager.getInstance(entity));
         List<ResultOf.Parameter> parameters = resultOfMethodMetadata.getParameters();
         for (int i = 0; i < parameters.size(); i++) {
             query.withParameter(parameters.get(i).value(), args[i]);
         }
-        Query.Result<Object> result = query.execute();
+        Query.Result<?> result = query.execute();
         if (resultOfMethodMetadata.isSingleResult()) {
             return result.hasResult() ? result.getSingleResult() : null;
         }

@@ -7,6 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Set;
 
+import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 import static com.buschmais.cdo.api.TransactionAttribute.NOT_SUPPORTED;
 
 /**
@@ -112,11 +113,48 @@ public interface CdoManager {
     /**
      * Creates a {@link Query}.
      *
-     * @param <QL>  The type of the used query language.
+     * @param query The query expression.
+     * @return The {@link Query}.
+     */
+    Query createQuery(String query);
+
+    /**
+     * Creates a typed {@link Query}.
+     *
+     * @param <T>   The type to be returned.
+     * @param query The query expression.
+     * @param type  The type to be returned.
+     * @return The {@link Query}.
+     */
+    <T> Query<T> createQuery(String query, Class<T> type);
+
+    /**
+     * Creates a typed {@link Query}.
+     *
+     * @param query The query expression.
+     * @param type  The type to be returned.
      * @param types The types to be returned.
      * @return The {@link Query}.
      */
-    <QL> Query createQuery(QL query, Class<?>... types);
+    Query<CompositeRowObject> createQuery(String query, Class<?> type, Class<?>... types);
+
+    /**
+     * Creates a typed {@link Query}.
+     *
+     * @param <T>   The type to be returned.
+     * @param query The query type.
+     * @return The {@link Query}.
+     */
+    <T> Query<T> createQuery(Class<T> query);
+
+    /**
+     * Creates a typed {@link Query}.
+     *
+     * @param query The query type.
+     * @param types The additional types to be returned.
+     * @return The {@link Query}.
+     */
+    Query createQuery(Class<?> query, Class<?>... types);
 
     /**
      * Close the {@CdoManager}.

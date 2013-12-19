@@ -11,7 +11,7 @@ import com.buschmais.cdo.spi.datastore.DatastoreSession;
 
 import java.util.*;
 
-public class CdoQueryImpl<QL> implements Query {
+public class CdoQueryImpl<T, QL> implements Query<T> {
 
     private QL expression;
     private DatastoreSession datastoreSession;
@@ -52,7 +52,7 @@ public class CdoQueryImpl<QL> implements Query {
     }
 
     @Override
-    public <T> Result<T> execute() {
+    public Result<T> execute() {
         Map<String, Object> effectiveParameters = new HashMap<>();
         if (parameters != null) {
             for (Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
