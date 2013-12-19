@@ -14,13 +14,13 @@ abstract base types representing a specific aspect or role and defining these pr
 derive from these base types if the information is needed. This approach comes to its limits if more than one aspect
 shall be re-used in one Java POJO as multiple inheritance is not supported for classes in the Java language.
 
-Composite Data Objects (CDO) allows modeling types as interfaces by only specifying the required accessor methods
+Composite Data Objects (CDO) allows modeling types as interfaces by specifying the required accessor methods
 (i.e. getter and setter) and composing these types either statically or dynamically. The CDO API uses well-known
 concepts from existing persistence APIs (e.g. JPA, JDO) but extends them with functionality which is enabled by using
-interfaces to define data objects, e.g. type migration at runtime.
-The CDO core implementation itself is datastore-agnostic, i.e. it does not depend on specific concept like relational
-or graph databases, document stores etc but allows using them. Datastore specific implementations can be provided by
-implementing the SPI (service provider interface), the reference implementation is based on Neo4j.
+interfaces to define the data objects, e.g. type migration at runtime.
+The CDO implementation itself is datastore-agnostic, i.e. it does not depend on specific concept like relational
+or graph databases, document stores etc. but allows using them. Datastore specific implementations can be provided by
+implementing the SPI (service provider interface), the reference implementation is based on the graph database Neo4j.
 
 Static vs. Dynamic Composition
 ------------------------------
@@ -28,93 +28,248 @@ An example from a well known domain shall be used to explain the difference betw
 
 Person.java
 [source,java]
- public interface Person {
-   String getName();
-   void setName();
- }
+----
+public interface Person {
+  String getName();
+  void setName();
+}
+----
 
 Actor.java
 [source,java]
- public interface Actor extends Person {
-   List<Movie> getActedIn();
- }
+----
+public interface Actor extends Person {
+  List<Movie> getActedIn();
+}
+----
 
 Director.java
 [source,java]
- public interface Director extends Person {
-   List<Movie> getDirected();
- }
+----
+public interface Director extends Person {
+  List<Movie> getDirected();
+}
+----
 
 Movie.java
 [source,java]
- public interface Movie {
-   String getTitle();
-   void setTitle();
+----
+public interface Movie {
+  String getTitle();
+  void setTitle();
 
-   Director getDirectedBy();
-   void setDirectedBy(Director directedBy);
+  Director getDirectedBy();
+  void setDirectedBy(Director directedBy);
 
-   List<Actors> getActors();
- }
+  List<Actors> getActors();
+}
+----
 
 Using the CDO API the following use case can be implemented:
 
-IndianaJones.java
+RaidersOfTheLostArk.java
 [source,java]
- public class IndianaJones {
+----
+public class RaidersOfTheLostArk {
 
-   public static void main(String[] args) {
-     CdoManagerFactory cmf = Cdo.createCdoManagerFactory("movies");
-     CdoManager cm = cmf.createCdoManager();
-     cm.currentTransaction.begin();
-     Actor harrison = cm.create(Actor.class);
-     harrison.setName("Harrison Ford");
-     Directory steven = cm.create(Director.class);
-     steven.setName("Steven Spielberg");
-     Movie raiders = cm.create(Movie.class);
-     raiders.setTitle("Raiders Of The Lost Ark");
-     raiders.getActors().add(harrison);
-     raiders.setDirectedBy(steven);
-     cm.currentTransaction.commit();
-     cmf.close();
-   }
- }
+  public static void main(String[] args) {
+    // Bootstrap CDO, a file META-INF/cdo.xml is expected on the classpath
+    CdoManagerFactory cmf = Cdo.createCdoManagerFactory("movies");
 
-The types Actor and Director use a static composition as they extend from the type Person. But what happens if a person
-works as both an actor and director? Using static composition a new type would be created:
+    // Obtain a CdoManager (i.e. a connection to the datastore)
+    CdoManager cm = cmf.createCdoManager();
+
+    // Begin a transaction
+    cm.currentTransaction.begin();
+
+    // Create a data object representing an actor
+    Actor harrison = cm.create(Actor.class);
+    harrison.setName("Harrison Ford");
+
+    // Create a data object representing a director
+    Directory steven = cm.create(Director.class);
+    steven.setName("Steven Spielberg");
+
+    // Create a data object representing a movie
+    Movie raiders = cm.create(Movie.class);
+    raiders.setTitle("Raiders Of The Lost Ark");
+
+    // Set the relations between all the created data objects
+    raiders.setDirectedBy(steven);
+    raiders.getActors().add(harrison);
+
+    // Commit the transaction
+    cm.currentTransaction.commit();
+
+    // Close the CdoManager
+    cm.close();
+
+    // Close the CdoManagerFactory (on shutdown of the application)
+    cmf.close();
+  }
+}
+----
+
+The types Actor and Director use static composition by extending from the type Person. But what happens if a person
+works in both roles: actor and director? Using static composition a new type would be needed:
 
 DirectingActor.java
 [source,java]
- public interface DirectingActor extends Director, Actor {
- }
+----
+public interface DirectingActor extends Director, Actor {
+}
+----
 
+The situation gets even more complex if other roles (like screenwriter, composer, etc.) are added to the domain model.
+Each combination of roles must be represented by such a type. Dynamic compositon helps getting around this problem:
+
+TempleOfDoom.java
+[source,java]
+----
+public class TempleOfDoom {
+
+  public static void main(String[] args) {
+    CdoManagerFactory cmf = Cdo.createCdoManagerFactory("movies");
+    CdoManager cm = cmf.createCdoManager();
+    cm.currentTransaction.begin();
+    Actor harrison = cm.create(Actor.class);
+    harrison.setName("Harrison Ford");
+
+    // Create Steven as composite object with several roles
+    CompositeObject steven = cm.create(Director.class, Actor.class);
+
+    // Use Steven in the role of an actor
+    steven.as(Actor.class).setName("Steven Spielberg");
+
+    Movie temple = cm.create(Movie.class);
+    temple.setTitle("Temple Of Doom");
+
+    // Use Steven in the role of a director
+    temple.setDirectedBy(steven.as(Director.class));
+    temple.getActors().add(harrison);
+
+    // Steven also acted in "Temple Of Doom" (according to IMDB...)
+    temple.getActors().add(steven.as(Actor.class));
+    cm.currentTransaction.commit();
+    cmf.close();
+  }
+}
+----
+Migration
+---------
+There may be situations where an existing data object needs to be migrated to other types. Using the above example the
+fact that the director also acted in the movie might have been discovered after the data object has been created with
+the type Director. CDO offers a way to perform a migration at runtime and add or remove required roles (i.e. types):
+
+TempleOfDoom.java
+[source,java]
+----
+public class TempleOfDoom {
+
+  public static void main(String[] args) {
+    CdoManagerFactory cmf = Cdo.createCdoManagerFactory("movies");
+    CdoManager cm = cmf.createCdoManager();
+    cm.currentTransaction.begin();
+
+    // Create Steven as a director
+    CompositeObject steven = cm.create(Director.class);
+    steven.setName("Steven Spielberg");
+
+    Movie temple = cm.create(Movie.class);
+    temple.setTitle("Temple Of Doom");
+    temple.setDirectedBy(steven);
+    cm.currentTransaction.commit();
+
+    // Some days later a fan discovers that Steven also acted in Temple Of Doom
+    cm.currentTransaction.begin();
+    CompositeObject multiTalentedSteven = cm.migrate(steven, Director.class, Actor.class);
+    temple.getActors().add(multiTalentedSteven.as(Actor.class));
+
+    cm.currentTransaction.commit();
+    cmf.close();
+  }
+}
+----
 
 Mapping Composite Data Objects to Neo4j
 ---------------------------------------
 
-As a graph database Neo4j provides very good capabilities to model highly interconnected data structures consisting as
-nodes and relationships between them. With release 2.0 the concept of labels has been introduced. One or more number of
-labels can be added to a node:
+As a graph database Neo4j provides very powerful capabilities to store and query highly interconnected data structures
+consisting of nodes and relationships between them. With release 2.0 the concept of labels has been introduced. One or
+more number of labels can be added to a node:
 
 [source]
 ----
 create
-  (n:PERSON)
+  (a:PERSON:ACTOR)
 set
-  n.firstName="Dirk",
-  n.lastName="Mahler"
+  a.name="Harrison Ford"
 ----
 
-This makes it possible to write comprehensive queries:
+Using labels it is possible to write comprehensive queries using Cypher:
 
 [source]
 ----
 match
-  (n:PERSON)
+  (a:PERSON)
+where
+  a.name="Harrison Ford"
 return
-  n.firstName, n.lastName;
+  a.name;
 ----
 
-If a node has a label it can be assumed that this entity represents some specific type of data which enforces the
-presence of specific properties and relationships (e.g. firstName, lastName for persons).
+If a node has a label it can be assumed that it represents some type of data which requires the presence of specific
+properties and relationships (e.g. name for persons, acted_in relations to movies). This implies that a Neo4j label can
+be represented as a Java interface and vice versa.
 
+Person.java
+[source,java]
+----
+@Label("Person")
+public interface Person {
+  String getName();
+  void setName();
+}
+----
+
+Actor.java
+[source,java]
+----
+@Label("Actor")
+public interface Actor extends Person {
+  @Relation("ACTED_IN")
+  @Outgoing
+  List<Movie> getActedIn();
+}
+----
+
+Director.java
+[source,java]
+----
+@Label("Director")
+public interface Director extends Person {
+
+  @Relation("DIRECTED")
+  @Outgoing
+  List<Movie> getDirected();
+}
+----
+
+Movie.java
+[source,java]
+----
+@Label("Movie")
+public interface Movie {
+  String getTitle();
+  void setTitle();
+
+  @Relation("DIRECTED")
+  @Incoming
+  Director getDirectedBy();
+  void setDirectedBy(Director directedBy);
+
+  @Relation("ACTED_IN")
+  @Incoming
+  List<Actors> getActors();
+}
+----
