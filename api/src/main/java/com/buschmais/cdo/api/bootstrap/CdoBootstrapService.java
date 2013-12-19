@@ -11,5 +11,5 @@ public interface CdoBootstrapService {
 
     CdoManagerFactory createCdoManagerFactory(String unit);
 
-    CdoManagerFactory createCdoManagerFactory(URL url, Class<?> provider, Class<?>[] types, ValidationMode validationMode, TransactionAttribute transactionAttribute, Properties properties);
+    CdoManagerFactory createCdoManagerFactory(CdoUnit cdoUnit);
 }

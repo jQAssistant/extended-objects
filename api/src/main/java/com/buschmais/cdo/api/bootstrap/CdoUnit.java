@@ -1,6 +1,8 @@
-package com.buschmais.cdo.spi.bootstrap;
+package com.buschmais.cdo.api.bootstrap;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
@@ -8,6 +10,9 @@ import com.buschmais.cdo.api.TransactionAttribute;
 
 import com.buschmais.cdo.api.ValidationMode;
 
+/**
+ * Represents a CDO unit, i.e. a configuration for a {@link com.buschmais.cdo.api.CdoManagerFactory}.
+ */
 public class CdoUnit {
 
     private String name;
@@ -16,7 +21,7 @@ public class CdoUnit {
 
     private URL url;
 
-    private Class<? extends CdoDatastoreProvider> provider;
+    private Class<?> provider;
 
     private Set<Class<?>> types;
 
@@ -26,7 +31,7 @@ public class CdoUnit {
 
     private Properties properties;
 
-    public CdoUnit(String name, String description, URL url, Class<? extends CdoDatastoreProvider> provider, Set<Class<?>> types, ValidationMode validationMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
+    public CdoUnit(String name, String description, URL url, Class<?> provider, Set<Class<?>> types, ValidationMode validationMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
         this.name = name;
         this.description = description;
         this.url = url;
@@ -35,6 +40,10 @@ public class CdoUnit {
         this.validationMode = validationMode;
         this.defaultTransactionAttribute = defaultTransactionAttribute;
         this.properties = properties;
+    }
+
+    public CdoUnit(String name, String description, URL url, Class<?> provider, Class<?>[] types, ValidationMode validationMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
+        this(name, description, url, provider, new HashSet<>(Arrays.asList(types)), validationMode, defaultTransactionAttribute, properties);
     }
 
     public String getName() {
@@ -49,7 +58,7 @@ public class CdoUnit {
         return url;
     }
 
-    public Class<? extends CdoDatastoreProvider> getProvider() {
+    public Class<?> getProvider() {
         return provider;
     }
 

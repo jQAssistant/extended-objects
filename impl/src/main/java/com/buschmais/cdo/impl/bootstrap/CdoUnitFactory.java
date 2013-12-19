@@ -3,7 +3,7 @@ package com.buschmais.cdo.impl.bootstrap;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.schema.v1.*;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
-import com.buschmais.cdo.spi.bootstrap.CdoUnit;
+import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
