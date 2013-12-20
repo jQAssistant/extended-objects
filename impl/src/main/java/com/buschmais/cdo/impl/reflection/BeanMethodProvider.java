@@ -1,7 +1,7 @@
 package com.buschmais.cdo.impl.reflection;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.spi.reflection.TypeMethod;
+import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.GetPropertyMethod;
 import com.buschmais.cdo.spi.reflection.SetPropertyMethod;
 import com.buschmais.cdo.spi.reflection.UserMethod;
@@ -24,7 +24,7 @@ public final class BeanMethodProvider {
         return new BeanMethodProvider();
     }
 
-    public Collection<TypeMethod> getMethods(Class<?> type) {
+    public Collection<AnnotatedMethod> getMethods(Class<?> type) {
         for (Method method : type.getDeclaredMethods()) {
             String methodName = method.getName();
             Class<?> returnType = method.getReturnType();
@@ -45,7 +45,7 @@ public final class BeanMethodProvider {
                 methods.add(method);
             }
         }
-        List<TypeMethod> typeMethods = new ArrayList<>();
+        List<AnnotatedMethod> typeMethods = new ArrayList<>();
         Map<String, GetPropertyMethod> getPropertyMethods = new HashMap<>();
         for (Map.Entry<String, Method> methodEntry : getters.entrySet()) {
             String name = methodEntry.getKey();

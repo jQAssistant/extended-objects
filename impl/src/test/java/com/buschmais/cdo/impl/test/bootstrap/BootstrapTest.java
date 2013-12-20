@@ -4,7 +4,7 @@ package com.buschmais.cdo.impl.test.bootstrap;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.bootstrap.Cdo;
 import com.buschmais.cdo.impl.CdoManagerFactoryImpl;
-import com.buschmais.cdo.spi.bootstrap.CdoUnit;
+import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.test.bootstrap.composite.A;
 import com.buschmais.cdo.impl.test.bootstrap.provider.TestCdoProvider;
 import org.junit.Test;

@@ -3,17 +3,28 @@ package com.buschmais.cdo.spi.reflection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+/**
+ * Represents a set method.
+ */
 public class SetPropertyMethod extends AbstractPropertyMethod {
 
     private GetPropertyMethod getter;
 
+    /**
+     * Constructor.
+     *
+     * @param setter The set method.
+     * @param getter The corresponding {@link GetPropertyMethod}.
+     * @param name   The name of the property.
+     * @param type   The type of the property.
+     */
     public SetPropertyMethod(Method setter, GetPropertyMethod getter, String name, Class<?> type) {
         super(setter, name, type);
         this.getter = getter;
     }
 
     @Override
-    public <T extends Annotation> T getPropertyAnnotation(Class<T> type) {
+    public <T extends Annotation> T getAnnotationOfProperty(Class<T> type) {
         T annotation = getAnnotation(type);
         if (annotation == null) {
             annotation = getter.getAnnotation(type);

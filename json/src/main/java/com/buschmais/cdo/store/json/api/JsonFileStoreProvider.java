@@ -2,7 +2,7 @@ package com.buschmais.cdo.store.json.api;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
-import com.buschmais.cdo.spi.bootstrap.CdoUnit;
+import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.store.json.impl.JsonFileStore;
 import com.buschmais.cdo.store.json.impl.JsonFileStoreSession;

@@ -51,7 +51,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
             indexedProperty = typeMetadata.getIndexedProperty();
         }
         if (indexedProperty == null) {
-            throw new CdoException("Type " + typeMetadata.getType().getName() + " has no indexed property.");
+            throw new CdoException("Type " + typeMetadata.getAnnotatedType().getAnnotatedElement().getName() + " has no indexed property.");
         }
         PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
         ResourceIterable<Node> nodesByLabelAndProperty = getGraphDatabaseService().findNodesByLabelAndProperty(discriminator, propertyMethodMetadata.getDatastoreMetadata().getName(), value);

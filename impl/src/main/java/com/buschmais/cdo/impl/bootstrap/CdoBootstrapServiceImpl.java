@@ -6,7 +6,7 @@ import com.buschmais.cdo.api.ValidationMode;
 import com.buschmais.cdo.api.bootstrap.CdoBootstrapService;
 import com.buschmais.cdo.impl.CdoManagerFactoryImpl;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
-import com.buschmais.cdo.spi.bootstrap.CdoUnit;
+import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.spi.datastore.Datastore;
 
 import java.net.URL;
@@ -27,22 +27,19 @@ public class CdoBootstrapServiceImpl implements CdoBootstrapService {
     @Override
     public CdoManagerFactory createCdoManagerFactory(String name) {
         CdoUnit cdoUnit = cdoUnitFactory.getCdoUnit(name);
-        Class<? extends CdoDatastoreProvider> providerType = cdoUnit.getProvider();
-        return createCdoManagerFactory(cdoUnit, providerType);
+        return createCdoManagerFactory(cdoUnit);
     }
 
     @Override
-    public CdoManagerFactory createCdoManagerFactory(URL url, Class<?> provider, Class<?>[] types, ValidationMode validationMode, TransactionAttribute transactionAttribute, Properties properties) {
-        Class<? extends CdoDatastoreProvider> providerType = (Class<? extends CdoDatastoreProvider>) provider;
-        CdoUnit cdoUnit = new CdoUnit("default", "Default CDO unit.", url, providerType, new HashSet<>(Arrays.asList(types)), validationMode, transactionAttribute, properties);
-        return createCdoManagerFactory(cdoUnit, providerType);
-    }
-
-    private CdoManagerFactory createCdoManagerFactory(CdoUnit cdoUnit, Class<? extends CdoDatastoreProvider> providerType) {
+    public CdoManagerFactory createCdoManagerFactory(CdoUnit cdoUnit) {
+        Class<?> providerType = cdoUnit.getProvider();
         if (providerType == null) {
             throw new CdoException("No provider specified for CDO unit '" + cdoUnit.getName() + "'.");
         }
-        CdoDatastoreProvider cdoDatastoreProvider = ClassHelper.newInstance(providerType);
+        if (!CdoDatastoreProvider.class.isAssignableFrom(providerType)) {
+            throw new CdoException(providerType.getName() + " specified as CDO provider must implement " + CdoDatastoreProvider.class.getName());
+        }
+        CdoDatastoreProvider cdoDatastoreProvider = CdoDatastoreProvider.class.cast(ClassHelper.newInstance(providerType));
         Datastore<?, ?, ?> datastore = cdoDatastoreProvider.createDatastore(cdoUnit);
         return new CdoManagerFactoryImpl(cdoUnit, datastore);
     }

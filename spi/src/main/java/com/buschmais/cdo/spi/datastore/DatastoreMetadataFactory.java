@@ -2,8 +2,9 @@ package com.buschmais.cdo.spi.datastore;
 
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
-import com.buschmais.cdo.spi.reflection.TypeMethod;
+import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
+import com.buschmais.cdo.spi.reflection.AnnotatedType;
 
 import java.util.Map;
 
@@ -19,19 +20,19 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
     /**
      * Create the datastore specific entity metadata for the given type.
      *
-     * @param type           The type.
+     * @param annotatedType           The type.
      * @param metadataByType A map containing all registered type and their generic metadata.
      * @return An instance of datastore specific entity metadata.
      */
-    EntityMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType);
+    EntityMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType);
 
     /**
      * Create the datastore specific metadata for a method annotated with {@link com.buschmais.cdo.api.annotation.ImplementedBy}.
      *
-     * @param typeMethod The method.
+     * @param annotatedMethod The method.
      * @return An instance of datastore specific method metadata.
      */
-    <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(TypeMethod typeMethod);
+    <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(AnnotatedMethod annotatedMethod);
 
     /**
      * Create the datastore specific metadata for a property representing a collection of entities.

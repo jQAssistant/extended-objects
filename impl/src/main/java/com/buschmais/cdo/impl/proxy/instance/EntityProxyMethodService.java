@@ -17,7 +17,7 @@ import com.buschmais.cdo.impl.proxy.instance.property.*;
 import com.buschmais.cdo.impl.proxy.instance.resultof.ResultOfMethod;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.metadata.*;
-import com.buschmais.cdo.spi.reflection.TypeMethod;
+import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.GetPropertyMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.SetPropertyMethod;
@@ -30,14 +30,14 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
         super(instanceManager);
         for (TypeMetadata<?> typeMetadata : metadataProvider.getRegisteredMetadata()) {
             for (AbstractMethodMetadata methodMetadata : typeMetadata.getProperties()) {
-                TypeMethod typeMethod = methodMetadata.getTypeMethod();
+                AnnotatedMethod typeMethod = methodMetadata.getAnnotateddMethod();
                 if (methodMetadata instanceof UnsupportedOperationMethodMetadata) {
-                    addProxyMethod(new UnsupportedOperationMethod((UnsupportedOperationMethodMetadata) methodMetadata), typeMethod.getMethod());
+                    addProxyMethod(new UnsupportedOperationMethod((UnsupportedOperationMethodMetadata) methodMetadata), typeMethod.getAnnotatedElement());
                 } else if (methodMetadata instanceof ImplementedByMethodMetadata) {
                     ImplementedByMethodMetadata implementedByMethodMetadata = (ImplementedByMethodMetadata) methodMetadata;
                     Class<? extends ProxyMethod> proxyMethodType = implementedByMethodMetadata.getProxyMethodType();
                     try {
-                        addProxyMethod(proxyMethodType.newInstance(), typeMethod.getMethod());
+                        addProxyMethod(proxyMethodType.newInstance(), typeMethod.getAnnotatedElement());
                     } catch (InstantiationException e) {
                         throw new CdoException("Cannot instantiate query method of type " + proxyMethodType.getName(), e);
                     } catch (IllegalAccessException e) {
@@ -46,11 +46,11 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
                 }
                 if (methodMetadata instanceof ResultOfMethodMetadata) {
                     ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata) methodMetadata;
-                    addProxyMethod(new ResultOfMethod(resultOfMethodMetadata, instanceManager, cdoTransaction, interceptorFactory, datastoreSession), typeMethod.getMethod());
+                    addProxyMethod(new ResultOfMethod(resultOfMethodMetadata, instanceManager, cdoTransaction, interceptorFactory, datastoreSession), typeMethod.getAnnotatedElement());
                 }
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
                     PropertyMethod beanPropertyMethod = (PropertyMethod) typeMethod;
-                    Method method = beanPropertyMethod.getMethod();
+                    Method method = beanPropertyMethod.getAnnotatedElement();
                     if (methodMetadata instanceof PrimitivePropertyMethodMetadata) {
                         if (beanPropertyMethod instanceof GetPropertyMethod) {
                             addProxyMethod(new PrimitivePropertyGetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);

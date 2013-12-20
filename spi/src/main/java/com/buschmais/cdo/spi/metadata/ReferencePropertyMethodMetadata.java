@@ -4,8 +4,8 @@ import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
 public class ReferencePropertyMethodMetadata<DatastoreMetadata> extends AbstractRelationPropertyMethodMetadata<DatastoreMetadata> {
 
-    public ReferencePropertyMethodMetadata(PropertyMethod beanPropertyMethod, RelationMetadata relationshipType, RelationMetadata.Direction direction, DatastoreMetadata datastoreMetadata) {
-        super(beanPropertyMethod, relationshipType, direction, datastoreMetadata);
+    public ReferencePropertyMethodMetadata(PropertyMethod propertyMethod, RelationMetadata relationshipType, RelationMetadata.Direction direction, DatastoreMetadata datastoreMetadata) {
+        super(propertyMethod, relationshipType, direction, datastoreMetadata);
     }
 
 }

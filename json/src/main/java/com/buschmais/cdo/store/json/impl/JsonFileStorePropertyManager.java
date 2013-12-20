@@ -5,7 +5,6 @@ import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.metadata.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
-import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.store.json.impl.metadata.JsonEnumPropertyMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonPrimitivePropertyMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonRelationPropertyMetadata;
@@ -15,27 +14,27 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
 
     @Override
     public void setProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {
-        Class<?> type = metadata.getTypeMethod().getType();
+        Class<?> type = metadata.getAnnotateddMethod().getType();
         if (String.class.equals(type)) {
-            objectNode.put(metadata.getTypeMethod().getName(), (String) value);
+            objectNode.put(metadata.getAnnotateddMethod().getName(), (String) value);
         } else {
-            throw new CdoException("Unsupported type " + type + " for property " + metadata.getTypeMethod().getName());
+            throw new CdoException("Unsupported type " + type + " for property " + metadata.getAnnotateddMethod().getName());
         }
     }
 
     @Override
     public boolean hasProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
-        return objectNode.has(metadata.getTypeMethod().getName());
+        return objectNode.has(metadata.getAnnotateddMethod().getName());
     }
 
     @Override
     public void removeProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
-        objectNode.remove(metadata.getTypeMethod().getName());
+        objectNode.remove(metadata.getAnnotateddMethod().getName());
     }
 
     @Override
     public Object getProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
-        return objectNode.get(metadata.getTypeMethod().getName());
+        return objectNode.get(metadata.getAnnotateddMethod().getName());
     }
 
     @Override

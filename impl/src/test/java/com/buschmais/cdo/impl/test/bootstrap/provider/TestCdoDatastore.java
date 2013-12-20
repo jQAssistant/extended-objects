@@ -1,12 +1,13 @@
 package com.buschmais.cdo.impl.test.bootstrap.provider;
 
 import com.buschmais.cdo.impl.test.bootstrap.provider.metadata.TestEntityMetadata;
-import com.buschmais.cdo.spi.bootstrap.CdoUnit;
+import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.spi.datastore.*;
 import com.buschmais.cdo.spi.metadata.RelationMetadata;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
-import com.buschmais.cdo.spi.reflection.TypeMethod;
+import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
+import com.buschmais.cdo.spi.reflection.AnnotatedType;
 
 import java.util.Collection;
 import java.util.Map;
@@ -23,12 +24,12 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
     public DatastoreMetadataFactory<TestEntityMetadata, String> getMetadataFactory() {
         return new DatastoreMetadataFactory<TestEntityMetadata, String>() {
             @Override
-            public TestEntityMetadata createEntityMetadata(Class<?> type, Map<Class<?>, TypeMetadata<TestEntityMetadata>> metadataByType) {
-                return new TestEntityMetadata(type.getName());
+            public TestEntityMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata<TestEntityMetadata>> metadataByType) {
+                return new TestEntityMetadata(annotatedType.getAnnotatedElement().getName());
             }
 
             @Override
-            public <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(TypeMethod typeMethod) {
+            public <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(AnnotatedMethod annotatedMethod) {
                 return null;
             }
 
