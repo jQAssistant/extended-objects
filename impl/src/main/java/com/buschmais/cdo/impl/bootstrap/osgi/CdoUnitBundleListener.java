@@ -1,23 +1,21 @@
-package com.buschmais.cdo.api.bootstrap.osgi;
+package com.buschmais.cdo.impl.bootstrap.osgi;
 
 import java.net.URL;
 import java.util.Enumeration;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.buschmais.cdo.api.bootstrap.CdoUnit;
-import com.buschmais.cdo.api.bootstrap.CdoUnitFactory;
+public class CdoUnitBundleListener implements BundleActivator, BundleListener {
 
-public class CdoUnitDeployer implements BundleActivator, BundleListener {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(CdoUnitBundleListener.class);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CdoUnitDeployer.class);
-    
 	public void start(BundleContext context) throws Exception {
 		context.addBundleListener(this);
 	}
@@ -41,7 +39,9 @@ public class CdoUnitDeployer implements BundleActivator, BundleListener {
 		Enumeration<?> e = bundle.findEntries("META-INF", "cdo.xml", false);
 		if (e.hasMoreElements()) {
 			if (LOGGER.isInfoEnabled()) {
-				LOGGER.info("[CdoUnitDeployer] Deploying CdoUnit in bundle '{0}'", bundle.getSymbolicName());
+				LOGGER.info(
+						"[CdoUnitDeployer] Deploying CdoUnit in bundle '{0}'",
+						bundle.getSymbolicName());
 			}
 			URL cdoUnitUrl = (URL) e.nextElement();
 			String bundleLocation = bundle.getLocation();

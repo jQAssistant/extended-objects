@@ -17,6 +17,11 @@
                 <executions>
                     <execution>
                         <id>bundle-manifest</id>
+                        <configuration combine.children="append">
+                            <instructions>
+                                <Bundle-Activator>com.buschmais.cdo.impl.bootstrap.osgi.CdoUnitBundleListener</Bundle-Activator>
+                            </instructions>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -60,6 +65,12 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
+        </dependency>
+        <dependency>
+        	<groupId>org.osgi</groupId>
+        	<artifactId>org.osgi.core</artifactId>
+        	<version>4.3.1</version>
+        	<scope>provided</scope>
         </dependency>
     </dependencies>
 
