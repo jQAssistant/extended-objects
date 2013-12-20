@@ -1,7 +1,7 @@
 package com.buschmais.cdo.impl.metadata;
 
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.cdo.spi.datastore.TypeSet;
+import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.TypeMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,30 +13,30 @@ import java.util.*;
  *
  * @param <Discriminator> The discriminator type of the datastore (e.g. Neo4j labels or strings for JSON stores).
  */
-public class TypeResolver<Discriminator> {
+public class TypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TypeResolver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TypeMetadataResolver.class);
 
-    private Map<Class<?>, TypeMetadata<DatastoreEntityMetadata<Discriminator>>> metadataByType;
-    private Map<TypeMetadata<DatastoreEntityMetadata<Discriminator>>, Set<Discriminator>> aggregatedDiscriminators = new HashMap<>();
-    private Map<Discriminator, Set<TypeMetadata>> typeMetadataByDiscriminator = new HashMap<>();
+    private Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType;
+    private Map<TypeMetadata<EntityMetadata>, Set<Discriminator>> aggregatedDiscriminators = new HashMap<>();
+    private Map<Discriminator, Set<TypeMetadata<EntityMetadata>>> typeMetadataByDiscriminator = new HashMap<>();
 
     /**
      * Constructor.
      *
      * @param metadataByType A map of all types with their metadata.
      */
-    public TypeResolver(Map<Class<?>, TypeMetadata<DatastoreEntityMetadata<Discriminator>>> metadataByType) {
-        LOGGER.info("Type metadata = '{}'", metadataByType);
+    public TypeMetadataResolver(Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType) {
+        LOGGER.debug("Type metadata = '{}'", metadataByType);
         this.metadataByType = metadataByType;
         for (TypeMetadata typeMetadata : metadataByType.values()) {
             Set<Discriminator> discriminators = getAggregatedDiscriminators(typeMetadata);
             LOGGER.debug("Aggregated discriminators of '{}' = '{}'", typeMetadata, discriminators);
         }
-        for (TypeMetadata<DatastoreEntityMetadata<Discriminator>> typeMetadata : metadataByType.values()) {
+        for (TypeMetadata<EntityMetadata> typeMetadata : metadataByType.values()) {
             Set<Discriminator> discriminators = aggregatedDiscriminators.get(typeMetadata);
             for (Discriminator discriminator : discriminators) {
-                Set<TypeMetadata> typeMetadataOfDiscriminator = typeMetadataByDiscriminator.get(discriminator);
+                Set<TypeMetadata<EntityMetadata>> typeMetadataOfDiscriminator = typeMetadataByDiscriminator.get(discriminator);
                 if (typeMetadataOfDiscriminator == null) {
                     typeMetadataOfDiscriminator = new HashSet<>();
                     typeMetadataByDiscriminator.put(discriminator, typeMetadataOfDiscriminator);
@@ -53,7 +53,7 @@ public class TypeResolver<Discriminator> {
      * @param typeMetadata The type.
      * @return The set of discriminators.
      */
-    private Set<Discriminator> getAggregatedDiscriminators(TypeMetadata<DatastoreEntityMetadata<Discriminator>> typeMetadata) {
+    private Set<Discriminator> getAggregatedDiscriminators(TypeMetadata<EntityMetadata> typeMetadata) {
         Set<Discriminator> discriminators = aggregatedDiscriminators.get(typeMetadata);
         if (discriminators == null) {
             discriminators = new HashSet<>();
@@ -62,7 +62,7 @@ public class TypeResolver<Discriminator> {
                 discriminators.add(discriminator);
             }
             for (Class<?> superType : typeMetadata.getType().getInterfaces()) {
-                TypeMetadata<DatastoreEntityMetadata<Discriminator>> superTypeMetadata = metadataByType.get(superType);
+                TypeMetadata<EntityMetadata> superTypeMetadata = metadataByType.get(superType);
                 discriminators.addAll(getAggregatedDiscriminators(superTypeMetadata));
             }
             aggregatedDiscriminators.put(typeMetadata, discriminators);
@@ -71,42 +71,42 @@ public class TypeResolver<Discriminator> {
     }
 
     /**
-     * Return a {@link TypeSet} containing all types matching to the given entity discriminators.
+     * Return a {@link com.buschmais.cdo.spi.datastore.TypeMetadataSet} containing all types matching to the given entity discriminators.
      *
      * @param discriminators The discriminators.
-     * @return The {@link TypeSet}.
+     * @return The {@link com.buschmais.cdo.spi.datastore.TypeMetadataSet}.
      */
-    public TypeSet getTypes(Set<Discriminator> discriminators) {
+    public TypeMetadataSet getTypes(Set<Discriminator> discriminators) {
         // Get all types matching the discriminators
-        Set<Class<?>> allTypes = new HashSet<>();
+        Set<TypeMetadata<EntityMetadata>> allTypeMetadatas = new HashSet<>();
         for (Discriminator discriminator : discriminators) {
-            Set<TypeMetadata> typeMetadataOfDiscriminator = typeMetadataByDiscriminator.get(discriminator);
+            Set<TypeMetadata<EntityMetadata>> typeMetadataOfDiscriminator = typeMetadataByDiscriminator.get(discriminator);
             if (typeMetadataOfDiscriminator != null) {
-                for (TypeMetadata<DatastoreEntityMetadata<Discriminator>> typeMetadata : typeMetadataOfDiscriminator) {
+                for (TypeMetadata<EntityMetadata> typeMetadata : typeMetadataOfDiscriminator) {
                     if (discriminators.containsAll(aggregatedDiscriminators.get(typeMetadata))) {
-                        allTypes.add(typeMetadata.getType());
+                        allTypeMetadatas.add(typeMetadata);
                     }
                 }
             }
         }
-        // remove super allTypes if sub types are already contained in the type set
-        TypeSet uniqueTypes = new TypeSet();
-        for (Class<?> type : allTypes) {
+        // remove super allTypeMetadatas if sub types are already contained in the type set
+        TypeMetadataSet<EntityMetadata> uniqueTypeMetadatas = new TypeMetadataSet();
+        for (TypeMetadata<EntityMetadata> typeMetadata : allTypeMetadatas) {
             boolean subtype = false;
-            for (Iterator<Class<?>> subTypeIterator = allTypes.iterator(); subTypeIterator.hasNext() && !subtype; ) {
-                Class<?> otherType = subTypeIterator.next();
-                if (!type.equals(otherType) && type.isAssignableFrom(otherType)) {
+            for (Iterator<TypeMetadata<EntityMetadata>> subTypeMetadataIterator = allTypeMetadatas.iterator(); subTypeMetadataIterator.hasNext() && !subtype; ) {
+                Class<?> otherType = subTypeMetadataIterator.next().getType();
+                if (!typeMetadata.getType().equals(otherType) && typeMetadata.getType().isAssignableFrom(otherType)) {
                     subtype = true;
                 }
             }
             if (!subtype) {
-                uniqueTypes.add(type);
+                uniqueTypeMetadatas.add(typeMetadata);
             }
         }
-        return uniqueTypes;
+        return uniqueTypeMetadatas;
     }
 
-    public Set<Discriminator> getDiscriminators(TypeMetadata<? extends DatastoreEntityMetadata<Discriminator>> typeMetadata) {
+    public Set<Discriminator> getDiscriminators(TypeMetadata<EntityMetadata> typeMetadata) {
         Set<Discriminator> discriminators = aggregatedDiscriminators.get(typeMetadata);
         return discriminators != null ? discriminators : Collections.<Discriminator>emptySet();
     }

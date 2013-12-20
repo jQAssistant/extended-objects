@@ -5,6 +5,7 @@ import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.MetadataProvider;
 import com.buschmais.cdo.impl.PropertyManager;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
@@ -29,7 +30,7 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
         super(instanceManager);
         for (TypeMetadata<?> typeMetadata : metadataProvider.getRegisteredMetadata()) {
             for (AbstractMethodMetadata methodMetadata : typeMetadata.getProperties()) {
-                TypeMethod typeMethod = methodMetadata.getBeanMethod();
+                TypeMethod typeMethod = methodMetadata.getTypeMethod();
                 if (methodMetadata instanceof UnsupportedOperationMethodMetadata) {
                     addProxyMethod(new UnsupportedOperationMethod((UnsupportedOperationMethodMetadata) methodMetadata), typeMethod.getMethod());
                 } else if (methodMetadata instanceof ImplementedByMethodMetadata) {

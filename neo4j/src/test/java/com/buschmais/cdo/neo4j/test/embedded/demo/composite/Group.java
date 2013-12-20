@@ -1,8 +1,8 @@
 package com.buschmais.cdo.neo4j.test.embedded.demo.composite;
 
+import com.buschmais.cdo.api.annotation.ResultOf;
 import com.buschmais.cdo.neo4j.api.annotation.Cypher;
 import com.buschmais.cdo.neo4j.api.annotation.Label;
-import com.buschmais.cdo.api.annotation.ResultOf;
 
 import java.util.List;
 

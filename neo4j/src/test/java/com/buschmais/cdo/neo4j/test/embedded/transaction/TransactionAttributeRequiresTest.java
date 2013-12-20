@@ -2,9 +2,9 @@ package com.buschmais.cdo.neo4j.test.embedded.transaction;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.TransactionAttribute;
-import com.buschmais.cdo.neo4j.test.embedded.transaction.composite.B;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.transaction.composite.A;
+import com.buschmais.cdo.neo4j.test.embedded.transaction.composite.B;
 import org.junit.Assert;
 import org.junit.Test;
 

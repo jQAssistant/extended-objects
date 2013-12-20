@@ -1,9 +1,9 @@
 package com.buschmais.cdo.neo4j.api;
 
-import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
-import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
 import com.buschmais.cdo.neo4j.impl.datastore.RestNeo4jDatastore;
+import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
+import com.buschmais.cdo.spi.bootstrap.CdoUnit;
 import com.buschmais.cdo.spi.datastore.Datastore;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;

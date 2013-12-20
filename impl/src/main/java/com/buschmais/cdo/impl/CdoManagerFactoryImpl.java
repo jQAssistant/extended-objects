@@ -2,7 +2,6 @@ package com.buschmais.cdo.impl;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.TransactionAttribute;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.spi.bootstrap.CdoUnit;
@@ -11,7 +10,6 @@ import com.buschmais.cdo.impl.validation.InstanceValidator;
 import com.buschmais.cdo.impl.validation.ValidatorSynchronization;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.metadata.MetadataProviderImpl;
-import com.buschmais.cdo.spi.metadata.MetadataProvider;
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import org.slf4j.Logger;
@@ -20,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CdoManagerFactoryImpl implements CdoManagerFactory {
 
@@ -54,21 +50,20 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
             LOGGER.debug("Cannot find validation provider.", e);
             LOGGER.info("No JSR 303 Bean Validation provider available.");
         }
-        datastore.init(metadataProvider);
+        datastore.init(metadataProvider.getRegisteredMetadata());
     }
 
     @Override
     public CdoManager createCdoManager() {
-        DatastoreSession datastoreSession = datastore.createSession(metadataProvider);
+        DatastoreSession datastoreSession = datastore.createSession();
         TransactionalCache<?> cache = new TransactionalCache();
         InstanceValidator instanceValidator = new InstanceValidator(validatorFactory, cache);
-        List<CdoTransaction.Synchronization> defaultSynchronizations = new ArrayList<>();
-        defaultSynchronizations.add(new ValidatorSynchronization(instanceValidator));
-        defaultSynchronizations.add(new CacheSynchronization(cache));
-        defaultSynchronizations.add(new DatastoreFlushSynchronization(cache, datastoreSession));
-        CdoTransaction cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction(), defaultSynchronizations);
+        CdoTransactionImpl cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction());
         InterceptorFactory interceptorFactory = new InterceptorFactory(cdoTransaction, defaultTransactionAttribute);
         InstanceManager instanceManager = new InstanceManager(metadataProvider, datastoreSession, classLoader, cdoTransaction, cache, interceptorFactory);
+        // Register default synchronizations.
+        cdoTransaction.registerDefaultSynchronization(new ValidatorSynchronization(instanceValidator));
+        cdoTransaction.registerDefaultSynchronization(new CacheSynchronization(instanceManager, cache, datastoreSession));
         return interceptorFactory.addInterceptor(new CdoManagerImpl(metadataProvider, cdoTransaction, cache, datastoreSession, instanceManager, interceptorFactory, instanceValidator));
     }
 

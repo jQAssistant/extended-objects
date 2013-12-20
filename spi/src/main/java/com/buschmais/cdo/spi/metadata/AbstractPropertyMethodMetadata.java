@@ -4,8 +4,8 @@ import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
 public abstract class AbstractPropertyMethodMetadata<DatastoreMetadata> extends AbstractMethodMetadata<PropertyMethod, DatastoreMetadata> {
 
-    protected AbstractPropertyMethodMetadata(PropertyMethod beanMethod, DatastoreMetadata datastoreMetadata) {
-        super(beanMethod, datastoreMetadata);
+    protected AbstractPropertyMethodMetadata(PropertyMethod propertyMethod, DatastoreMetadata datastoreMetadata) {
+        super(propertyMethod, datastoreMetadata);
     }
 
 }

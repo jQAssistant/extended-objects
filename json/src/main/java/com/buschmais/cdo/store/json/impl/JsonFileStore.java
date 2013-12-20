@@ -2,16 +2,17 @@ package com.buschmais.cdo.store.json.impl;
 
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
-import com.buschmais.cdo.spi.metadata.MetadataProvider;
+import com.buschmais.cdo.spi.metadata.TypeMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
 
 import java.io.File;
+import java.util.Collection;
 
-public class JsonFileDatastore implements Datastore<JsonFileDatastoreSession, JsonNodeMetadata, String> {
+public class JsonFileStore implements Datastore<JsonFileStoreSession, JsonNodeMetadata, String> {
 
     private File directory;
 
-    public JsonFileDatastore(String directory) {
+    public JsonFileStore(String directory) {
         this.directory = new File(directory);
         this.directory.mkdirs();
     }
@@ -22,8 +23,8 @@ public class JsonFileDatastore implements Datastore<JsonFileDatastoreSession, Js
     }
 
     @Override
-    public JsonFileDatastoreSession createSession(MetadataProvider metadataProvider) {
-        return new JsonFileDatastoreSession(metadataProvider, directory);
+    public JsonFileStoreSession createSession() {
+        return new JsonFileStoreSession(directory);
     }
 
     @Override
@@ -31,6 +32,6 @@ public class JsonFileDatastore implements Datastore<JsonFileDatastoreSession, Js
     }
 
     @Override
-    public void init(MetadataProvider metadataProvider) {
+    public void init(Collection<TypeMetadata<JsonNodeMetadata>> registeredMetadata) {
     }
 }

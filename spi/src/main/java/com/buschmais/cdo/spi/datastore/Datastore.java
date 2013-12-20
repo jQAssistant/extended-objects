@@ -1,6 +1,8 @@
 package com.buschmais.cdo.spi.datastore;
 
-import com.buschmais.cdo.spi.metadata.MetadataProvider;
+import com.buschmais.cdo.spi.metadata.TypeMetadata;
+
+import java.util.Collection;
 
 /**
  * Defines the interface of a datastore.
@@ -11,12 +13,30 @@ import com.buschmais.cdo.spi.metadata.MetadataProvider;
  */
 public interface Datastore<DatastoreSession extends com.buschmais.cdo.spi.datastore.DatastoreSession, EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> {
 
-    void init(MetadataProvider<EntityMetadata, Discriminator> metadataProvider);
+    /**
+     * Initialize the datastore.
+     *
+     * @param registeredMetadata A collection of all registerted types.
+     */
+    void init(Collection<TypeMetadata<EntityMetadata>> registeredMetadata);
 
+    /**
+     * Return the datastore specific metadata factory.
+     *
+     * @return The metadata factory.
+     */
     DatastoreMetadataFactory<EntityMetadata, Discriminator> getMetadataFactory();
 
-    DatastoreSession createSession(MetadataProvider metadataProvider);
+    /**
+     * Create a datastore session, e.g. open a connection to the datastore.
+     *
+     * @return The session.
+     */
+    DatastoreSession createSession();
 
+    /**
+     * Close the datastore.
+     */
     void close();
 
 }

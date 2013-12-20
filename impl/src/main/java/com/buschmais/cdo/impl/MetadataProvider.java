@@ -1,16 +1,17 @@
-package com.buschmais.cdo.spi.metadata;
+package com.buschmais.cdo.impl;
 
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.cdo.spi.datastore.TypeSet;
+import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
+import com.buschmais.cdo.spi.metadata.TypeMetadata;
 
 import java.util.Collection;
 import java.util.Set;
 
 public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> {
 
-    TypeSet getTypes(Set<Discriminator> discriminators);
+    TypeMetadataSet<EntityMetadata> getTypes(Set<Discriminator> discriminators);
 
-    Set<Discriminator> getDiscriminators(TypeSet types);
+    Set<Discriminator> getDiscriminators(TypeMetadataSet<EntityMetadata> types);
 
     Collection<TypeMetadata<EntityMetadata>> getRegisteredMetadata();
 
