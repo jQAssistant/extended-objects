@@ -14,16 +14,11 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <configuration combine.children="append">
-                            <instructions>
-                                <Bundle-Activator>com.buschmais.cdo.impl.bootstrap.osgi.CdoUnitBundleListener</Bundle-Activator>
-                            </instructions>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration combine.children="append">
+                    <instructions>
+                        <Bundle-Activator>com.buschmais.cdo.impl.bootstrap.osgi.CdoUnitBundleListener</Bundle-Activator>
+                    </instructions>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
