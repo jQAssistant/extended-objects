@@ -138,7 +138,10 @@ public class CdoUnitFactory {
                 }
             }
             CdoUnit cdoUnit = new CdoUnit(name, description, url, provider, types, validationMode, defaultTransactionAttribute, properties);
-            cdoUnits.put(name, cdoUnit);
+            CdoUnit existingCdoUnit = cdoUnits.put(name, cdoUnit);
+            if (existingCdoUnit != null) {
+                throw new CdoException("Found more than one CDO unit with name '" + name + "'.");
+            }
         }
     }
 
