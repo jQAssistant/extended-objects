@@ -82,7 +82,6 @@ public class CdoUnitFactory {
     }
 
     private void getCdoUnits(Cdo cdo) {
-        cdoUnits = new HashMap<>();
         for (CdoUnitType cdoUnitType : cdo.getCdoUnit()) {
             String name = cdoUnitType.getName();
             String description = cdoUnitType.getDescription();
