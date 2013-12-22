@@ -1,8 +1,10 @@
 package com.buschmais.cdo.impl;
 
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.TransactionAttribute;
+import com.buschmais.cdo.impl.reflection.ClassHelper;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.cache.CacheSynchronization;
@@ -10,6 +12,7 @@ import com.buschmais.cdo.impl.validation.InstanceValidator;
 import com.buschmais.cdo.impl.validation.ValidatorSynchronization;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.metadata.MetadataProviderImpl;
+import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import org.slf4j.Logger;
@@ -30,9 +33,17 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
     private ValidatorFactory validatorFactory;
     private TransactionAttribute defaultTransactionAttribute;
 
-    public CdoManagerFactoryImpl(CdoUnit cdoUnit, Datastore<?, ?, ?> datastore) {
+    public CdoManagerFactoryImpl(CdoUnit cdoUnit) {
         this.cdoUnit = cdoUnit;
-        this.datastore = datastore;
+        Class<?> providerType = cdoUnit.getProvider();
+        if (providerType == null) {
+            throw new CdoException("No provider specified for CDO unit '" + cdoUnit.getName() + "'.");
+        }
+        if (!CdoDatastoreProvider.class.isAssignableFrom(providerType)) {
+            throw new CdoException(providerType.getName() + " specified as CDO provider must implement " + CdoDatastoreProvider.class.getName());
+        }
+        CdoDatastoreProvider cdoDatastoreProvider = CdoDatastoreProvider.class.cast(ClassHelper.newInstance(providerType));
+        datastore = cdoDatastoreProvider.createDatastore(cdoUnit);
         this.defaultTransactionAttribute = cdoUnit.getDefaultTransactionAttribute();
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         classLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();

@@ -1,13 +1,13 @@
-package com.buschmais.cdo.impl.bootstrap;
+package com.buschmais.cdo.impl.reflection;
 
 import com.buschmais.cdo.api.CdoException;
 
-final class ClassHelper {
+public final class ClassHelper {
 
     private ClassHelper() {
     }
 
-    static <T> Class<T> getType(String name) {
+    public static <T> Class<T> getType(String name) {
         Class<T> type;
         try {
             type = (Class<T>) Class.forName(name);
@@ -17,7 +17,7 @@ final class ClassHelper {
         return type;
     }
 
-    static <T> T newInstance(Class<T> type) {
+    public static <T> T newInstance(Class<T> type) {
         try {
             return type.newInstance();
         } catch (InstantiationException e) {
