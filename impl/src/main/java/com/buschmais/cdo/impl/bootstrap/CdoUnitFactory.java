@@ -1,6 +1,7 @@
 package com.buschmais.cdo.impl.bootstrap;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.impl.reflection.ClassHelper;
 import com.buschmais.cdo.schema.v1.*;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
@@ -25,39 +26,31 @@ import com.buschmais.cdo.api.ValidationMode;
 
 public class CdoUnitFactory {
 
-    private Map<String, CdoUnit> cdoUnits = new HashMap<>();
+    private static final CdoUnitFactory instance = new CdoUnitFactory();
 
-    public CdoUnitFactory() {
-        readCdoDescriptors();
-    }
+    private JAXBContext cdoContext;
+    private SchemaFactory xsdFactory;
+    private Schema cdoXsd;
 
-    private void readCdoDescriptors() {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader == null) {
-            classLoader = CdoUnitFactory.class.getClassLoader();
-        }
-        JAXBContext cdoContext;
-        SchemaFactory xsdFactory;
-        Schema cdoXsd;
+    private CdoUnitFactory() {
         try {
             cdoContext = JAXBContext.newInstance(ObjectFactory.class);
             xsdFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            cdoXsd = xsdFactory.newSchema(new StreamSource(classLoader.getResourceAsStream("META-INF/xsd/cdo-1.0.xsd")));
+            cdoXsd = xsdFactory.newSchema(new StreamSource(CdoUnitFactory.class.getResourceAsStream("/META-INF/xsd/cdo-1.0.xsd")));
         } catch (JAXBException e) {
             throw new CdoException("Cannot create JAXBContext for reading cdo.xml descriptors.", e);
         } catch (SAXException e) {
             throw new CdoException("Cannot create Schema for validation of cdo.xml descriptors.", e);
         }
-        try {
-            Enumeration<URL> resources = classLoader.getResources("META-INF/cdo.xml");
-            while (resources.hasMoreElements()) {
-                URL url = resources.nextElement();
-                com.buschmais.cdo.schema.v1.Cdo cdo = readCdoDescriptor(cdoContext, url, cdoXsd);
-                getCdoUnits(cdo);
-            }
-        } catch (IOException e) {
-            throw new CdoException("Cannot read cdo.xml descriptors.", e);
-        }
+    }
+
+    public static CdoUnitFactory getInstance() {
+        return instance;
+    }
+
+    public List<CdoUnit> getCdoUnits(URL url) throws IOException {
+        Cdo cdo = readCdoDescriptor(cdoContext, url, cdoXsd);
+        return getCdoUnits(cdo);
     }
 
     private com.buschmais.cdo.schema.v1.Cdo readCdoDescriptor(JAXBContext cdoContext, URL url, Schema cdoXsd)
@@ -81,8 +74,8 @@ public class CdoUnitFactory {
         }
     }
 
-    private void getCdoUnits(Cdo cdo) {
-        cdoUnits = new HashMap<>();
+    private List<CdoUnit> getCdoUnits(Cdo cdo) {
+        List<CdoUnit> cdoUnits = new LinkedList<>();
         for (CdoUnitType cdoUnitType : cdo.getCdoUnit()) {
             String name = cdoUnitType.getName();
             String description = cdoUnitType.getDescription();
@@ -139,15 +132,8 @@ public class CdoUnitFactory {
                 }
             }
             CdoUnit cdoUnit = new CdoUnit(name, description, url, provider, types, validationMode, defaultTransactionAttribute, properties);
-            cdoUnits.put(name, cdoUnit);
+            cdoUnits.add(cdoUnit);
         }
-    }
-
-    public CdoUnit getCdoUnit(String name) {
-        CdoUnit cdoUnit = cdoUnits.get(name);
-        if (cdoUnit == null) {
-            throw new CdoException("CDO unit with name '" + name + "' does not exist.");
-        }
-        return cdoUnit;
+        return cdoUnits;
     }
 }
