@@ -1,27 +1,46 @@
 package com.buschmais.cdo.neo4j.api;
 
-import com.buschmais.cdo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
-import com.buschmais.cdo.neo4j.impl.datastore.RestNeo4jDatastore;
-import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
+import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import com.buschmais.cdo.spi.datastore.Datastore;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.apache.commons.lang.WordUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.net.URL;
+import java.net.MalformedURLException;
+import java.net.URI;
 
 public class Neo4jCdoProvider implements CdoDatastoreProvider {
 
+    private static final Logger LOG = LoggerFactory.getLogger(Neo4jCdoProvider.class);
+
     @Override
     public Datastore<?, ?, ?> createDatastore(CdoUnit cdoUnit) {
-        URL url = cdoUnit.getUrl();
-        String protocol = url.getProtocol().toLowerCase();
-        if ("file".equals(protocol)) {
-            GraphDatabaseService graphDatabaseService = new GraphDatabaseFactory().newEmbeddedDatabase(url.getPath());
-            return new EmbeddedNeo4jDatastore(graphDatabaseService);
-        } else if ("http".equals(protocol) || "https".equals(protocol)) {
-            return new RestNeo4jDatastore(url.toExternalForm());
+        URI uri = cdoUnit.getUri();
+
+        DatastoreFactory datastoreFactory = lookupFactory(uri);
+
+        try {
+            return datastoreFactory.createGraphDatabaseService(uri);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
         }
-        return null;
+
+    }
+
+    @SuppressWarnings("unchecked") DatastoreFactory lookupFactory(URI uri) {
+        String factoryClass = getFactoryClassName(uri);
+        LOG.debug("try to lookup provider-class {}", factoryClass);
+
+        try {
+            return ((Class<? extends DatastoreFactory>) Class.forName(factoryClass)).newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String getFactoryClassName(URI uri) {
+        String protocol = WordUtils.capitalize(uri.getScheme().toLowerCase());
+        return DatastoreFactory.class.getPackage().getName() + "." + protocol + "DatastoreFactory";
     }
 }
