@@ -1,10 +1,12 @@
 package com.buschmais.cdo.impl.bootstrap;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.api.TransactionAttribute;
+import com.buschmais.cdo.api.ValidationMode;
+import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.reflection.ClassHelper;
 import com.buschmais.cdo.schema.v1.*;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
-import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -16,26 +18,22 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
-
-import com.buschmais.cdo.api.TransactionAttribute;
-
-import com.buschmais.cdo.api.ValidationMode;
 
 public class CdoUnitFactory {
 
     private static final CdoUnitFactory instance = new CdoUnitFactory();
 
     private JAXBContext cdoContext;
-    private SchemaFactory xsdFactory;
     private Schema cdoXsd;
 
     private CdoUnitFactory() {
         try {
             cdoContext = JAXBContext.newInstance(ObjectFactory.class);
-            xsdFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            SchemaFactory xsdFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             cdoXsd = xsdFactory.newSchema(new StreamSource(CdoUnitFactory.class.getResourceAsStream("/META-INF/xsd/cdo-1.0.xsd")));
         } catch (JAXBException e) {
             throw new CdoException("Cannot create JAXBContext for reading cdo.xml descriptors.", e);
@@ -80,10 +78,10 @@ public class CdoUnitFactory {
             String name = cdoUnitType.getName();
             String description = cdoUnitType.getDescription();
             String urlName = cdoUnitType.getUrl();
-            URL url;
+            URI uri;
             try {
-                url = new URL(urlName);
-            } catch (MalformedURLException e) {
+                uri = new URI(urlName);
+            } catch (URISyntaxException e) {
                 throw new CdoException("Cannot convert '" + urlName + "' to url.");
             }
             String providerName = cdoUnitType.getProvider();
@@ -92,38 +90,8 @@ public class CdoUnitFactory {
             for (String typeName : cdoUnitType.getTypes().getType()) {
                 types.add(ClassHelper.getType(typeName));
             }
-            ValidationModeType validationModeType = cdoUnitType.getValidationMode();
-            ValidationMode validationMode;
-            if (validationModeType != null) {
-                switch (validationModeType) {
-                    case NONE:
-                        validationMode = ValidationMode.NONE;
-                        break;
-                    case AUTO:
-                        validationMode = ValidationMode.AUTO;
-                        break;
-                    default:
-                        throw new CdoException("Unknown validation mode type " + validationModeType);
-                }
-            } else {
-                validationMode = ValidationMode.AUTO;
-            }
-            TransactionAttributeType defaultTransactionAttributeType = cdoUnitType.getDefaultTransactionAttribute();
-            TransactionAttribute defaultTransactionAttribute;
-            if (defaultTransactionAttributeType != null) {
-                switch (defaultTransactionAttributeType) {
-                    case MANDATORY:
-                        defaultTransactionAttribute = TransactionAttribute.MANDATORY;
-                        break;
-                    case REQUIRES:
-                        defaultTransactionAttribute = TransactionAttribute.REQUIRES;
-                        break;
-                    default:
-                        throw new CdoException("Unknown transaction attribute type " + defaultTransactionAttributeType);
-                }
-            } else {
-                defaultTransactionAttribute = TransactionAttribute.MANDATORY;
-            }
+            ValidationMode validationMode = getValidationMode(cdoUnitType.getValidationMode());
+            TransactionAttribute defaultTransactionAttribute = getTransactionAttribute(cdoUnitType.getDefaultTransactionAttribute());
             Properties properties = new Properties();
             PropertiesType propertiesType = cdoUnitType.getProperties();
             if (propertiesType != null) {
@@ -131,9 +99,33 @@ public class CdoUnitFactory {
                     properties.setProperty(propertyType.getName(), propertyType.getValue());
                 }
             }
-            CdoUnit cdoUnit = new CdoUnit(name, description, url, provider, types, validationMode, defaultTransactionAttribute, properties);
+            CdoUnit cdoUnit = new CdoUnit(name, description, uri, provider, types, validationMode, defaultTransactionAttribute, properties);
             cdoUnits.add(cdoUnit);
         }
         return cdoUnits;
+    }
+
+    private ValidationMode getValidationMode(ValidationModeType validationModeType) {
+        if (validationModeType == null) return ValidationMode.AUTO;
+        switch (validationModeType) {
+            case NONE:
+                return ValidationMode.NONE;
+            case AUTO:
+                return ValidationMode.AUTO;
+            default:
+                throw new CdoException("Unknown validation mode type " + validationModeType);
+        }
+    }
+
+    private TransactionAttribute getTransactionAttribute(TransactionAttributeType defaultTransactionAttributeType) {
+        if (defaultTransactionAttributeType == null) return TransactionAttribute.MANDATORY;
+        switch (defaultTransactionAttributeType) {
+            case MANDATORY:
+                return TransactionAttribute.MANDATORY;
+            case REQUIRES:
+                return TransactionAttribute.REQUIRES;
+            default:
+                throw new CdoException("Unknown transaction attribute type " + defaultTransactionAttributeType);
+        }
     }
 }

@@ -7,7 +7,7 @@ import com.buschmais.cdo.api.TransactionAttribute;
 import org.junit.After;
 import org.junit.Before;
 
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
@@ -18,12 +18,12 @@ public abstract class AbstractCdoManagerTest {
     private CdoManager cdoManager = null;
 
     @Before
-    public void createNodeManagerFactory() throws MalformedURLException {
+    public void createNodeManagerFactory() throws URISyntaxException {
         cdoManagerFactory = getNeo4jCdoManagerFactory(getTypes());
         dropDatabase();
     }
 
-    protected abstract CdoManagerFactory getNeo4jCdoManagerFactory(Class<?>[] types) throws MalformedURLException;
+    protected abstract CdoManagerFactory getNeo4jCdoManagerFactory(Class<?>[] types) throws URISyntaxException;
 
     protected abstract Class<?>[] getTypes();
 
