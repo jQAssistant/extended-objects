@@ -2,16 +2,9 @@ package com.buschmais.cdo.impl.bootstrap.osgi;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleListener;
+import org.osgi.framework.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +17,8 @@ public class CdoUnitBundleListener implements BundleActivator, BundleListener {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(CdoUnitBundleListener.class);
+
+    private Map<Long, List<CdoManagerFactory>> registeredCdoManagerFactories = new HashMap<>();
 
     @Override
     public void start(BundleContext context) throws Exception {
@@ -38,27 +33,35 @@ public class CdoUnitBundleListener implements BundleActivator, BundleListener {
     @Override
     public void bundleChanged(BundleEvent event) {
         switch (event.getType()) {
-        case BundleEvent.STARTED:
-            deployCdoUnit(event.getBundle());
-            break;
-        case BundleEvent.STOPPED:
-            undeployCdoUnit(event.getBundle());
-            break;
+            case BundleEvent.STARTED:
+                deployCdoUnits(event.getBundle());
+                break;
+            case BundleEvent.STOPPED:
+                undeployCdoUnits(event.getBundle());
+                break;
         }
     }
 
-    private void deployCdoUnit(Bundle bundle) {
+    private void deployCdoUnits(Bundle bundle) {
         Enumeration<?> e = bundle.findEntries("META-INF", "cdo.xml", false);
-        if (e != null && e.hasMoreElements()) {
+        if (e != null) {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info(
                         "[CdoUnitBundleListener] Deploying CdoUnits in bundle '{0}'",
                         bundle.getSymbolicName());
             }
-            URL cdoUnitUrl = (URL) e.nextElement();
-            try {
-                List<CdoUnit> cdoUnits = CdoUnitFactory.getInstance()
-                        .getCdoUnits(cdoUnitUrl);
+            List<CdoManagerFactory> cdoManagerFactories = new LinkedList<>();
+            while (e.hasMoreElements()) {
+                URL cdoUnitUrl = (URL) e.nextElement();
+                List<CdoUnit> cdoUnits = Collections.emptyList();
+                try {
+                    cdoUnits = CdoUnitFactory.getInstance()
+                            .getCdoUnits(cdoUnitUrl);
+                } catch (IOException ioe) {
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error("Error while loading CdoUnit", ioe);
+                    }
+                }
                 for (CdoUnit cdoUnit : cdoUnits) {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug(
@@ -67,26 +70,31 @@ public class CdoUnitBundleListener implements BundleActivator, BundleListener {
                     }
                     CdoManagerFactory cdoManagerFactory = new CdoManagerFactoryImpl(
                             cdoUnit);
-                    Dictionary<String, Object> p = new Hashtable<String, Object>();
+                    Dictionary<String, Object> p = new Hashtable<>();
                     p.put("name", cdoUnit.getName());
                     bundle.getBundleContext().registerService(
                             CdoManagerFactory.class, cdoManagerFactory, p);
-
+                    cdoManagerFactories.add(cdoManagerFactory);
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug(
                                 "[CdoUnitBundleListener] Registered service for CdoUnit '{0}'",
                                 cdoUnit.getName());
                     }
                 }
-            } catch (IOException ioe) {
-                if (LOGGER.isErrorEnabled()) {
-                    LOGGER.error("Error while loading CdoUnit", ioe);
-                }
             }
+            this.registeredCdoManagerFactories.put(Long.valueOf(bundle.getBundleId()), cdoManagerFactories);
         }
     }
 
-    private void undeployCdoUnit(Bundle bundle) {
+    private void undeployCdoUnits(Bundle bundle) {
+        List<CdoManagerFactory> cdoManagerFactories = this.registeredCdoManagerFactories.remove(Long.valueOf(bundle.getBundleId()));
+        if (cdoManagerFactories != null) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("[CdoUnitBundleListener] Closing CdoManagerFactory for bundle '{0}'.", bundle.getSymbolicName());
+            }
+            for (CdoManagerFactory cdoManagerFactory : cdoManagerFactories) {
+                cdoManagerFactory.close();
+            }
+        }
     }
-
 }
