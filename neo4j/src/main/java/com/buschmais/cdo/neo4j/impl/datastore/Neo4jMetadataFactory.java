@@ -68,7 +68,7 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
     @Override
     public IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod propertyMethod) {
         Indexed indexed = propertyMethod.getAnnotation(Indexed.class);
-        return new IndexedPropertyMetadata(indexed.create());
+        return new IndexedPropertyMetadata(indexed.create(), indexed.unique());
     }
 
     @Override
