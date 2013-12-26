@@ -1,14 +1,15 @@
 package com.buschmais.cdo.api.bootstrap;
 
+import com.buschmais.cdo.api.TransactionAttribute;
+import com.buschmais.cdo.api.ValidationMode;
+
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-
-import com.buschmais.cdo.api.TransactionAttribute;
-
-import com.buschmais.cdo.api.ValidationMode;
 
 /**
  * Represents a CDO unit, i.e. a configuration for a {@link com.buschmais.cdo.api.CdoManagerFactory}.
@@ -19,7 +20,7 @@ public class CdoUnit {
 
     private String description;
 
-    private URL url;
+    private URI uri;
 
     private Class<?> provider;
 
@@ -31,10 +32,10 @@ public class CdoUnit {
 
     private Properties properties;
 
-    public CdoUnit(String name, String description, URL url, Class<?> provider, Set<Class<?>> types, ValidationMode validationMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
+    public CdoUnit(String name, String description, URI uri, Class<?> provider, Set<Class<?>> types, ValidationMode validationMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
         this.name = name;
         this.description = description;
-        this.url = url;
+        this.uri = uri;
         this.provider = provider;
         this.types = types;
         this.validationMode = validationMode;
@@ -42,8 +43,8 @@ public class CdoUnit {
         this.properties = properties;
     }
 
-    public CdoUnit(String name, String description, URL url, Class<?> provider, Class<?>[] types, ValidationMode validationMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
-        this(name, description, url, provider, new HashSet<>(Arrays.asList(types)), validationMode, defaultTransactionAttribute, properties);
+    public CdoUnit(String name, String description, URI uri, Class<?> provider, Class<?>[] types, ValidationMode validationMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
+        this(name, description, uri, provider, new HashSet<>(Arrays.asList(types)), validationMode, defaultTransactionAttribute, properties);
     }
 
     public String getName() {
@@ -54,8 +55,16 @@ public class CdoUnit {
         return description;
     }
 
+    public URI getUri() {
+        return uri;
+    }
+
     public URL getUrl() {
-        return url;
+        try {
+            return getUri().toURL();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Class<?> getProvider() {

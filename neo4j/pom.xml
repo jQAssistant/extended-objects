@@ -66,6 +66,12 @@
                 <version>${org.neo4j_version}</version>
             </dependency>
             <dependency>
+                <groupId>org.neo4j</groupId>
+                <artifactId>neo4j-kernel</artifactId>
+                <classifier>tests</classifier>
+                <version>${org.neo4j_version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.neo4j.app</groupId>
                 <artifactId>neo4j-server</artifactId>
                 <version>${org.neo4j_version}</version>
@@ -145,6 +151,13 @@
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-rest-graphdb</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-kernel</artifactId>
+            <classifier>tests</classifier>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>

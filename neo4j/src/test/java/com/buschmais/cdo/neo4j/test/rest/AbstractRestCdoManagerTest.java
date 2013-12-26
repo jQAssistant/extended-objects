@@ -13,8 +13,8 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.kernel.GraphDatabaseAPI;
 import org.neo4j.server.WrappingNeoServer;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
 public abstract class AbstractRestCdoManagerTest extends AbstractCdoManagerTest {
@@ -22,8 +22,9 @@ public abstract class AbstractRestCdoManagerTest extends AbstractCdoManagerTest 
     private static WrappingNeoServer server;
 
     @Override
-    protected CdoManagerFactory getNeo4jCdoManagerFactory(Class<?>[] types) throws MalformedURLException {
-        CdoUnit cdoUnit = new CdoUnit("rest","REST CDO unit", new URL("http://localhost:7474/db/data"), Neo4jCdoProvider.class, types, ValidationMode.AUTO, getTransactionAttribute(), new Properties());
+    protected CdoManagerFactory getNeo4jCdoManagerFactory(Class<?>[] types) throws URISyntaxException {
+        CdoUnit cdoUnit = new CdoUnit("rest", "REST CDO unit", new URI("http://localhost:7474/db/data"),
+                Neo4jCdoProvider.class, types, ValidationMode.AUTO, getTransactionAttribute(), new Properties());
         return Cdo.createCdoManagerFactory(cdoUnit);
     }
 

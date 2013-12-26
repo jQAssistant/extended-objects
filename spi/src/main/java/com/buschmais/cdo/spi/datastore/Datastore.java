@@ -11,7 +11,7 @@ import java.util.Collection;
  * @param <EntityMetadata>   The type of entity metadata used by the datastore.
  * @param <Discriminator>    The type of entity discriminators used by the datastore.
  */
-public interface Datastore<DatastoreSession extends com.buschmais.cdo.spi.datastore.DatastoreSession, EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> {
+public interface Datastore<DatastoreSession extends com.buschmais.cdo.spi.datastore.DatastoreSession, EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> extends AutoCloseable {
 
     /**
      * Initialize the datastore.
