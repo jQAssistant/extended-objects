@@ -3,11 +3,10 @@ package com.buschmais.cdo.impl.interceptor;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoTransaction;
+import com.buschmais.cdo.api.TransactionAttribute;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import com.buschmais.cdo.api.TransactionAttribute;
 
 public class TransactionInterceptor<T> extends AbstractCdoInterceptor<T> {
 
@@ -33,7 +32,8 @@ public class TransactionInterceptor<T> extends AbstractCdoInterceptor<T> {
         switch (transactionAttribute) {
             case MANDATORY:
                 if (!this.cdoTransaction.isActive()) {
-                    throw new CdoException("An active transaction is MANDATORY when calling method '" + method.getClass().getName() + "#" + method.getName() + "'");
+                    throw new CdoException("An active transaction is MANDATORY when calling method '" +
+                            method.getDeclaringClass().getName() + "#" + method.getName() + "'");
                 }
                 return invoke(method, args);
             case REQUIRES: {

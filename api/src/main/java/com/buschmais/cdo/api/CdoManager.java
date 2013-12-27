@@ -13,7 +13,7 @@ import static com.buschmais.cdo.api.TransactionAttribute.NOT_SUPPORTED;
 /**
  * Defines methods to manage the lifecycle of property instances, query execution and transaction management.
  */
-public interface CdoManager {
+public interface CdoManager extends AutoCloseable {
 
     @Target({ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)

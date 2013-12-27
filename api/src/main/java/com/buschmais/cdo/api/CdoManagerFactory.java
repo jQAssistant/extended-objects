@@ -3,7 +3,7 @@ package com.buschmais.cdo.api;
 /**
  * Defines the factory interfaces for {@link CdoManager} instances.
  */
-public interface CdoManagerFactory {
+public interface CdoManagerFactory extends AutoCloseable {
 
     /**
      * Create a {@link CdoManager} instance.
