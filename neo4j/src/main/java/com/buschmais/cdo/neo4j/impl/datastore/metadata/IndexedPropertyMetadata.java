@@ -2,10 +2,16 @@ package com.buschmais.cdo.neo4j.impl.datastore.metadata;
 
 public class IndexedPropertyMetadata {
 
-    private boolean create;
+    private final boolean create;
+    private final boolean unique;
 
-    public IndexedPropertyMetadata(boolean create) {
+    public IndexedPropertyMetadata(boolean create, boolean unique) {
         this.create = create;
+        this.unique = unique;
+    }
+
+    public boolean isUnique() {
+        return unique;
     }
 
     public boolean isCreate() {

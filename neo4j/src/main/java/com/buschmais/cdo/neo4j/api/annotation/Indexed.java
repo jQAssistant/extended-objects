@@ -18,5 +18,6 @@ import java.lang.annotation.Target;
 public @interface Indexed {
 
     boolean create() default false;
+    boolean unique() default false;
 
 }

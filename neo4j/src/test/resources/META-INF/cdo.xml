@@ -1,7 +1,7 @@
 <v1:cdo version="1.0" xmlns:v1="http://buschmais.com/cdo/schema/v1.0">
     <cdo-unit name="Neo4jEmbedded">
         <description>This is a test unit for Neo4j embedded.</description>
-        <url>file:target/neo4j/embedded</url>
+        <url>memory:///</url>
         <provider>com.buschmais.cdo.neo4j.api.Neo4jCdoProvider</provider>
         <types>
             <type>com.buschmais.cdo.neo4j.test.embedded.bootstrap.composite.A</type>
