@@ -90,7 +90,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     }
 
     private TypeMetadata createMetadata(Class<?> classToRegister, Collection<AnnotatedMethod> annotatedMethods, Set<Class<?>> types) {
-        LOGGER.debug("Processing classToRegister {}", classToRegister.getName());
+        LOGGER.debug("Processing class {}", classToRegister.getName());
         Collection<AbstractMethodMetadata> methodMetadataList = new ArrayList<>();
         // Collect the getter methods as they provide annotations holding meta information also to be applied to setters
         IndexedPropertyMethodMetadata indexedProperty = null;
