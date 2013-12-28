@@ -1,5 +1,7 @@
 package com.buschmais.cdo.spi.metadata;
 
+import com.buschmais.cdo.spi.reflection.AnnotatedType;
+
 import java.util.Collection;
 import java.util.Collections;
 
@@ -10,12 +12,12 @@ public class RelationMetadata<DatastoreMetadata> extends AbstractMetadata<Relati
         OUTGOING;
     }
 
-    public RelationMetadata(Collection<RelationMetadata> superTypes, Collection<AbstractMethodMetadata> properties, DatastoreMetadata datastoreMetadata) {
-        super(superTypes, properties, datastoreMetadata);
+    public RelationMetadata(AnnotatedType annotatedType, Collection<RelationMetadata> superTypes, Collection<AbstractMethodMetadata> properties, DatastoreMetadata datastoreMetadata) {
+        super(annotatedType, superTypes, properties, datastoreMetadata);
     }
 
     public RelationMetadata(DatastoreMetadata datastoreMetadata) {
-        this(Collections.<RelationMetadata>emptyList(), Collections.<AbstractMethodMetadata>emptyList(), datastoreMetadata);
+        this(null, Collections.<RelationMetadata>emptyList(), Collections.<AbstractMethodMetadata>emptyList(), datastoreMetadata);
     }
 
 }

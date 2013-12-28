@@ -51,7 +51,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         }
         List<TypeMetadata> typeMetadata = new ArrayList<>();
         for (Class<?> currentClass : allClasses) {
-            TypeMetadata metadata = createMetadata(currentClass, annotatedMethodsByClass.get(currentClass), annotatedMethodsByClass.keySet());
+            AnnotatedType annotatedType = new AnnotatedType(currentClass);
+            TypeMetadata metadata = createMetadata(annotatedType, annotatedMethodsByClass.get(currentClass), annotatedMethodsByClass.keySet());
             entityMetadataByType.put(currentClass, metadata);
             typeMetadata.add(metadata);
         }
@@ -89,8 +90,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         return typeMetadata;
     }
 
-    private TypeMetadata createMetadata(Class<?> classToRegister, Collection<AnnotatedMethod> annotatedMethods, Set<Class<?>> types) {
-        LOGGER.debug("Processing classToRegister {}", classToRegister.getName());
+    private TypeMetadata createMetadata(AnnotatedType annotatedType, Collection<AnnotatedMethod> annotatedMethods, Set<Class<?>> types) {
+        LOGGER.debug("Processing class {}", annotatedType.getAnnotatedElement().getName());
         Collection<AbstractMethodMetadata> methodMetadataList = new ArrayList<>();
         // Collect the getter methods as they provide annotations holding meta information also to be applied to setters
         IndexedPropertyMethodMetadata indexedProperty = null;
@@ -116,9 +117,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             }
             methodMetadataList.add(methodMetadata);
         }
-        AnnotatedType annotatedType = new AnnotatedType(classToRegister);
         List<TypeMetadata<EntityMetadata>> superTypes = new ArrayList<>();
-        for (Class<?> i : classToRegister.getInterfaces()) {
+        for (Class<?> i : annotatedType.getAnnotatedElement().getInterfaces()) {
             superTypes.add(this.entityMetadataByType.get(i));
         }
         DatastoreEntityMetadata<Discriminator> datastoreEntityMetadata = metadataFactory.createEntityMetadata(annotatedType, entityMetadataByType);
