@@ -18,7 +18,7 @@ public class PrimitivePropertyGetMethod<Entity> extends AbstractPropertyMethod<E
         }
 
         Object value = getPropertyManager().getProperty(entity, metadata);
-        Class<?> type = metadata.getAnnotateddMethod().getType();
+        Class<?> type = metadata.getAnnotatedMethod().getType();
         if (Enum.class.isAssignableFrom(type)) {
             return Enum.valueOf((Class<Enum>) type, (String) value);
         }
