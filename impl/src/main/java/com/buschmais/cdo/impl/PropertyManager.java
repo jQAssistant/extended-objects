@@ -4,7 +4,7 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.metadata.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.RelationMetadata;
+import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 
 import java.util.Iterator;
@@ -33,7 +33,7 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @param source The source entity.
      * @return The target node or <code>null</code>.
      */
-    public Entity getSingleRelation(Entity source, RelationMetadata metadata, RelationMetadata.Direction direction) {
+    public Entity getSingleRelation(Entity source, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction) {
         Relation relation = datastorePropertyManager.getSingleRelation(source, metadata, direction);
         return relation != null ? getRelativeTarget(relation, direction) : null;
     }
@@ -44,7 +44,7 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @param source The node.
      * @return An iterator delivering all target nodes.
      */
-    public Iterator<Entity> getRelations(Entity source, RelationMetadata metadata, final RelationMetadata.Direction direction) {
+    public Iterator<Entity> getRelations(Entity source, RelationTypeMetadata metadata, final RelationTypeMetadata.Direction direction) {
         Iterable<Relation> relations = datastorePropertyManager.getRelations(source, metadata, direction);
         final Iterator<Relation> iterator = relations.iterator();
         return new Iterator<Entity>() {
@@ -72,7 +72,7 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @param source The source.
      * @param target The target source or <code>null</code>.
      */
-    public void createSingleRelation(Entity source, RelationMetadata metadata, RelationMetadata.Direction direction, Entity target) {
+    public void createSingleRelation(Entity source, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction, Entity target) {
         if (datastorePropertyManager.hasSingleRelation(source, metadata, direction)) {
             Relation relation = datastorePropertyManager.getSingleRelation(source, metadata, direction);
             datastorePropertyManager.deleteRelation(relation);
@@ -88,7 +88,7 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @param source The source.
      * @param target The target source.
      */
-    public void createRelation(Entity source, RelationMetadata metadata, RelationMetadata.Direction direction, Entity target) {
+    public void createRelation(Entity source, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction, Entity target) {
         datastorePropertyManager.createRelation(source, metadata, direction, target);
     }
 
@@ -99,7 +99,7 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @param target The target node.
      * @return <code>true</code> if an existing relationship has been removed.
      */
-    public boolean removeRelation(Entity source, RelationMetadata metadata, RelationMetadata.Direction direction, Entity target) {
+    public boolean removeRelation(Entity source, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction, Entity target) {
         Iterable<Relation> relations = datastorePropertyManager.getRelations(source, metadata, direction);
         for (Relation relation : relations) {
             if (getRelativeTarget(relation, direction).equals(target)) {
@@ -115,14 +115,14 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      *
      * @param source The entity.
      */
-    public void removeRelations(Entity source, RelationMetadata metadata, RelationMetadata.Direction direction) {
+    public void removeRelations(Entity source, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction) {
         Iterable<Relation> relations = datastorePropertyManager.getRelations(source, metadata, direction);
         for (Relation relation : relations) {
             datastorePropertyManager.deleteRelation(relation);
         }
     }
 
-    private Entity getRelativeTarget(Relation relation, RelationMetadata.Direction direction) {
+    private Entity getRelativeTarget(Relation relation, RelationTypeMetadata.Direction direction) {
         switch (direction) {
             case OUTGOING:
                 return datastorePropertyManager.getTarget(relation);

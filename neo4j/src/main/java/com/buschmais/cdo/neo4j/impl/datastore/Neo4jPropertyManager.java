@@ -7,28 +7,28 @@ import com.buschmais.cdo.neo4j.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.metadata.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.RelationMetadata;
+import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
 import org.neo4j.graphdb.*;
 
 public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Relationship, PrimitivePropertyMetadata, EnumPropertyMetadata, RelationshipMetadata> {
 
     @Override
-    public boolean hasSingleRelation(Node source, RelationMetadata<RelationshipMetadata> metadata, RelationMetadata.Direction direction) {
+    public boolean hasSingleRelation(Node source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return source.hasRelationship(metadata.getDatastoreMetadata().getRelationshipType(), getDirection(direction));
     }
 
     @Override
-    public Relationship getSingleRelation(Node source, RelationMetadata<RelationshipMetadata> metadata, RelationMetadata.Direction direction) {
+    public Relationship getSingleRelation(Node source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return source.getSingleRelationship(metadata.getDatastoreMetadata().getRelationshipType(), getDirection(direction));
     }
 
     @Override
-    public Iterable<Relationship> getRelations(Node source, RelationMetadata<RelationshipMetadata> metadata, RelationMetadata.Direction direction) {
+    public Iterable<Relationship> getRelations(Node source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return source.getRelationships(metadata.getDatastoreMetadata().getRelationshipType(), getDirection(direction));
     }
 
     @Override
-    public Relationship createRelation(Node source, RelationMetadata<RelationshipMetadata> metadata, RelationMetadata.Direction direction, Node target) {
+    public Relationship createRelation(Node source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction, Node target) {
         switch (direction) {
             case OUTGOING:
                 return source.createRelationshipTo(target, metadata.getDatastoreMetadata().getRelationshipType());
@@ -56,7 +56,7 @@ public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Rela
     }
 
 
-    private Direction getDirection(RelationMetadata.Direction direction) {
+    private Direction getDirection(RelationTypeMetadata.Direction direction) {
         switch (direction) {
             case OUTGOING:
                 return Direction.OUTGOING;

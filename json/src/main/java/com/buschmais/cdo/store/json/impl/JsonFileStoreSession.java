@@ -6,7 +6,7 @@ import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.DatastoreTransaction;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
-import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -83,7 +83,7 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public ResultIterator<ObjectNode> find(TypeMetadata<JsonNodeMetadata> type, String discriminator, Object value) {
+    public ResultIterator<ObjectNode> find(EntityTypeMetadata<JsonNodeMetadata> type, String discriminator, Object value) {
         return null;
     }
 

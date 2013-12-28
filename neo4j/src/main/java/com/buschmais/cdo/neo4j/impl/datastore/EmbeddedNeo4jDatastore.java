@@ -5,7 +5,7 @@ import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
 import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
@@ -33,18 +33,18 @@ public class EmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedNeo4j
     }
 
     @Override
-    public void init(Collection<TypeMetadata<NodeMetadata>> registeredMetadata) {
+    public void init(Collection<EntityTypeMetadata<NodeMetadata>> registeredMetadata) {
         try (Transaction transaction = graphDatabaseService.beginTx()) {
-            for (TypeMetadata<NodeMetadata> typeMetadata : registeredMetadata) {
-                IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedPropertyMethodMetadata = typeMetadata.getIndexedProperty();
+            for (EntityTypeMetadata<NodeMetadata> entityTypeMetadata : registeredMetadata) {
+                IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedPropertyMethodMetadata = entityTypeMetadata.getIndexedProperty();
 
                 if (indexedPropertyMethodMetadata != null) {
                     if (indexedPropertyMethodMetadata.getDatastoreMetadata().isCreate()) {
-                        initCreateIndex(typeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
+                        initCreateIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
                     }
 
                     if (indexedPropertyMethodMetadata.getDatastoreMetadata().isUnique()) {
-                        initUniqueIndex(typeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
+                        initUniqueIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
                     }
                 }
             }
@@ -52,15 +52,15 @@ public class EmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedNeo4j
         }
     }
 
-    private void initUniqueIndex(TypeMetadata<NodeMetadata> typeMetadata, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
-        Label label = typeMetadata.getDatastoreMetadata().getDiscriminator();
+    private void initUniqueIndex(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
+        Label label = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
         if (label != null && propertyMethodMetadata != null) {
             reCreateUniqueConstraint(label, propertyMethodMetadata);
         }
     }
 
-    private void initCreateIndex(TypeMetadata<NodeMetadata> typeMetadata, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
-        Label label = typeMetadata.getDatastoreMetadata().getDiscriminator();
+    private void initCreateIndex(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
+        Label label = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
         if (label != null && propertyMethodMetadata != null) {
             reCreateIndex(label, propertyMethodMetadata);
         }

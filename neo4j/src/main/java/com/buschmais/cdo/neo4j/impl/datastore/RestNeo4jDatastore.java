@@ -1,7 +1,7 @@
 package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
 import org.neo4j.rest.graphdb.RestGraphDatabase;
 
 import java.util.Collection;
@@ -15,7 +15,7 @@ public class RestNeo4jDatastore extends  AbstractNeo4jDatastore<RestNeo4jDatasto
     }
 
     @Override
-    public void init(Collection<TypeMetadata<NodeMetadata>> registeredMetadata) {
+    public void init(Collection<EntityTypeMetadata<NodeMetadata>> registeredMetadata) {
     }
 
     @Override

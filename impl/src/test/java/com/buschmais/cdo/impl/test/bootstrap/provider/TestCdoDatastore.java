@@ -3,8 +3,8 @@ package com.buschmais.cdo.impl.test.bootstrap.provider;
 import com.buschmais.cdo.impl.test.bootstrap.provider.metadata.TestEntityMetadata;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.spi.datastore.*;
-import com.buschmais.cdo.spi.metadata.RelationMetadata;
-import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
@@ -24,7 +24,7 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
     public DatastoreMetadataFactory<TestEntityMetadata, String> getMetadataFactory() {
         return new DatastoreMetadataFactory<TestEntityMetadata, String>() {
             @Override
-            public TestEntityMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata<TestEntityMetadata>> metadataByType) {
+            public TestEntityMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, EntityTypeMetadata<TestEntityMetadata>> metadataByType) {
                 return new TestEntityMetadata(annotatedType.getAnnotatedElement().getName());
             }
 
@@ -64,7 +64,7 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
             }
 
             @Override
-            public RelationMetadata.Direction getRelationDirection(PropertyMethod propertyMethod) {
+            public RelationTypeMetadata.Direction getRelationDirection(PropertyMethod propertyMethod) {
                 return null;
             }
         };
@@ -80,7 +80,7 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
     }
 
     @Override
-    public void init(Collection<TypeMetadata<TestEntityMetadata>> registeredMetadata) {
+    public void init(Collection<EntityTypeMetadata<TestEntityMetadata>> registeredMetadata) {
     }
 
     public CdoUnit getCdoUnit() {

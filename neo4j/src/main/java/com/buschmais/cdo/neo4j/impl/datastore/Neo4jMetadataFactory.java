@@ -8,8 +8,8 @@ import com.buschmais.cdo.neo4j.api.annotation.Relation;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.*;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.RelationMetadata;
-import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
+import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
@@ -22,7 +22,7 @@ import java.util.Map;
 public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label> {
 
     @Override
-    public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata<NodeMetadata>> metadataByType) {
+    public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, EntityTypeMetadata<NodeMetadata>> metadataByType) {
         Label labelAnnotation = annotatedType.getAnnotation(Label.class);
         org.neo4j.graphdb.Label label = null;
         IndexedPropertyMethodMetadata<?> indexedProperty = null;
@@ -79,15 +79,15 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
         return new RelationshipMetadata(relationshipType);
     }
 
-    public RelationMetadata.Direction getRelationDirection(PropertyMethod propertyMethod) {
+    public RelationTypeMetadata.Direction getRelationDirection(PropertyMethod propertyMethod) {
         Relation.Incoming incoming = propertyMethod.getAnnotationOfProperty(Relation.Incoming.class);
         Relation.Outgoing outgoing = propertyMethod.getAnnotationOfProperty(Relation.Outgoing.class);
         if (incoming != null && outgoing != null) {
             throw new CdoException("A relation property must be either incoming or outgoing: '" + propertyMethod.getName() + "'");
         }
         if (incoming != null) {
-            return RelationMetadata.Direction.INCOMING;
+            return RelationTypeMetadata.Direction.INCOMING;
         }
-        return RelationMetadata.Direction.OUTGOING;
+        return RelationTypeMetadata.Direction.OUTGOING;
     }
 }

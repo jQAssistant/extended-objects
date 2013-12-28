@@ -2,22 +2,22 @@ package com.buschmais.cdo.spi.metadata;
 
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
-import static com.buschmais.cdo.spi.metadata.RelationMetadata.Direction;
+import static com.buschmais.cdo.spi.metadata.RelationTypeMetadata.Direction;
 
 public abstract class AbstractRelationPropertyMethodMetadata<DatastoreMetadata> extends AbstractPropertyMethodMetadata<DatastoreMetadata> {
 
-    private RelationMetadata relationMetadata;
+    private RelationTypeMetadata relationTypeMetadata;
 
     private Direction direction;
 
-    public AbstractRelationPropertyMethodMetadata(PropertyMethod propertyMethod, RelationMetadata relationMetadata, Direction direction, DatastoreMetadata datastoreMetadata) {
+    public AbstractRelationPropertyMethodMetadata(PropertyMethod propertyMethod, RelationTypeMetadata relationTypeMetadata, Direction direction, DatastoreMetadata datastoreMetadata) {
         super(propertyMethod, datastoreMetadata);
-        this.relationMetadata = relationMetadata;
+        this.relationTypeMetadata = relationTypeMetadata;
         this.direction = direction;
     }
 
-    public RelationMetadata getRelationshipMetadata() {
-        return relationMetadata;
+    public RelationTypeMetadata getRelationshipMetadata() {
+        return relationTypeMetadata;
     }
 
     public Direction getDirection() {

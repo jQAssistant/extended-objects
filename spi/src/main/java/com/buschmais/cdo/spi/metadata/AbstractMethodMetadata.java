@@ -2,21 +2,23 @@ package com.buschmais.cdo.spi.metadata;
 
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 
-public abstract class AbstractMethodMetadata<B extends AnnotatedMethod, DatastoreMetadata> {
+public abstract class AbstractMethodMetadata<Method extends AnnotatedMethod, DatastoreMetadata> implements MethodMetadata<Method, DatastoreMetadata> {
 
-    private B annotateddMethod;
+    private Method annotateddMethod;
 
     private DatastoreMetadata datastoreMetadata;
 
-    protected AbstractMethodMetadata(B annotatedMethod, DatastoreMetadata datastoreMetadata) {
+    protected AbstractMethodMetadata(Method annotatedMethod, DatastoreMetadata datastoreMetadata) {
         this.annotateddMethod = annotatedMethod;
         this.datastoreMetadata = datastoreMetadata;
     }
 
-    public B getAnnotateddMethod() {
+    @Override
+    public Method getAnnotatedMethod() {
         return annotateddMethod;
     }
 
+    @Override
     public DatastoreMetadata getDatastoreMetadata() {
         return datastoreMetadata;
     }

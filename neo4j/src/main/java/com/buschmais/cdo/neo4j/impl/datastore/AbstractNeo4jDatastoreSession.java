@@ -10,7 +10,7 @@ import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
 import org.neo4j.graphdb.*;
 
 import java.util.HashSet;
@@ -45,13 +45,13 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public ResultIterator<Node> find(TypeMetadata<NodeMetadata> typeMetadata, Label discriminator, Object value) {
-        IndexedPropertyMethodMetadata<?> indexedProperty = typeMetadata.getDatastoreMetadata().getIndexedProperty();
+    public ResultIterator<Node> find(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, Label discriminator, Object value) {
+        IndexedPropertyMethodMetadata<?> indexedProperty = entityTypeMetadata.getDatastoreMetadata().getIndexedProperty();
         if (indexedProperty == null) {
-            indexedProperty = typeMetadata.getIndexedProperty();
+            indexedProperty = entityTypeMetadata.getIndexedProperty();
         }
         if (indexedProperty == null) {
-            throw new CdoException("Type " + typeMetadata.getAnnotatedType().getAnnotatedElement().getName() + " has no indexed property.");
+            throw new CdoException("Type " + entityTypeMetadata.getAnnotatedType().getAnnotatedElement().getName() + " has no indexed property.");
         }
         PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
         ResourceIterable<Node> nodesByLabelAndProperty = getGraphDatabaseService().findNodesByLabelAndProperty(discriminator, propertyMethodMetadata.getDatastoreMetadata().getName(), value);

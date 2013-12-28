@@ -8,13 +8,13 @@ public abstract class AbstractMetadata<S extends AbstractMetadata, DatastoreMeta
 
     private AnnotatedType annotatedType;
 
-    private Collection<AbstractMethodMetadata> properties;
+    private Collection<MethodMetadata> properties;
 
     private Collection<S> superTypes;
 
     private DatastoreMetadata datastoreMetadata;
 
-    protected AbstractMetadata(AnnotatedType annotatedType, Collection<S> superTypes, Collection<AbstractMethodMetadata> properties, DatastoreMetadata datastoreMetadata) {
+    protected AbstractMetadata(AnnotatedType annotatedType, Collection<S> superTypes, Collection<MethodMetadata> properties, DatastoreMetadata datastoreMetadata) {
         this.annotatedType = annotatedType;
         this.superTypes = superTypes;
         this.properties = properties;
@@ -29,7 +29,7 @@ public abstract class AbstractMetadata<S extends AbstractMetadata, DatastoreMeta
         return superTypes;
     }
 
-    public Collection<AbstractMethodMetadata> getProperties() {
+    public Collection<MethodMetadata> getProperties() {
         return properties;
     }
 

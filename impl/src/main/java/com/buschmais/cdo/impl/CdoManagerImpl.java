@@ -9,7 +9,7 @@ import com.buschmais.cdo.impl.query.CdoQueryImpl;
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
-import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
 
 import javax.validation.ConstraintViolation;
 import java.util.Arrays;
@@ -51,12 +51,12 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public <T> ResultIterable<T> find(final Class<T> type, final Object value) {
-        TypeMetadata<EntityMetadata> typeMetadata = metadataProvider.getEntityMetadata(type);
-        Discriminator discriminator = typeMetadata.getDatastoreMetadata().getDiscriminator();
+        EntityTypeMetadata<EntityMetadata> entityTypeMetadata = metadataProvider.getEntityMetadata(type);
+        Discriminator discriminator = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
         if (discriminator == null) {
             throw new CdoException("Type " + type.getName() + " has no discriminator (i.e. cannot be identified in datastore).");
         }
-        final ResultIterator<Entity> iterator = datastoreSession.find(typeMetadata, discriminator, value);
+        final ResultIterator<Entity> iterator = datastoreSession.find(entityTypeMetadata, discriminator, value);
         return new TransactionalResultIterable<T>(new AbstractResultIterable<T>() {
             @Override
             public ResultIterator<T> iterator() {

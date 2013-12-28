@@ -1,6 +1,6 @@
 package com.buschmais.cdo.spi.datastore;
 
-import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
 
 import java.util.Collection;
 
@@ -18,7 +18,7 @@ public interface Datastore<DatastoreSession extends com.buschmais.cdo.spi.datast
      *
      * @param registeredMetadata A collection of all registerted types.
      */
-    void init(Collection<TypeMetadata<EntityMetadata>> registeredMetadata);
+    void init(Collection<EntityTypeMetadata<EntityMetadata>> registeredMetadata);
 
     /**
      * Return the datastore specific metadata factory.

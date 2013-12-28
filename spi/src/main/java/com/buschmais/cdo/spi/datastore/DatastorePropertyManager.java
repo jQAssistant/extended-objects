@@ -2,7 +2,7 @@ package com.buschmais.cdo.spi.datastore;
 
 import com.buschmais.cdo.spi.metadata.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.RelationMetadata;
+import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
 
 /**
  * Defines the datastore specific interface to get/set properties or relations.
@@ -76,7 +76,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param direction The direction.
      * @return <code>true</code> if an relation exists, <code>false</code> otherwise.
      */
-    boolean hasSingleRelation(Entity source, RelationMetadata<RelationDatastoreMetadata> metadata, RelationMetadata.Direction direction);
+    boolean hasSingleRelation(Entity source, RelationTypeMetadata<RelationDatastoreMetadata> metadata, RelationTypeMetadata.Direction direction);
 
     /**
      * Return a single relation (i.e. representing a direct reference) between two entities.
@@ -86,7 +86,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param direction The direction.
      * @return The relation.
      */
-    Relation getSingleRelation(Entity source, RelationMetadata<RelationDatastoreMetadata> metadata, RelationMetadata.Direction direction);
+    Relation getSingleRelation(Entity source, RelationTypeMetadata<RelationDatastoreMetadata> metadata, RelationTypeMetadata.Direction direction);
 
     /**
      * Return all relations (i.e. representing collections) between entities.
@@ -96,7 +96,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param direction The direction.
      * @return The relations.
      */
-    Iterable<Relation> getRelations(Entity source, RelationMetadata<RelationDatastoreMetadata> metadata, RelationMetadata.Direction direction);
+    Iterable<Relation> getRelations(Entity source, RelationTypeMetadata<RelationDatastoreMetadata> metadata, RelationTypeMetadata.Direction direction);
 
     /**
      * Create a relations (i.e. within collections) between entities.
@@ -106,7 +106,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param direction The direction.
      * @return The relations.
      */
-    Relation createRelation(Entity source, RelationMetadata<RelationDatastoreMetadata> metadata, RelationMetadata.Direction direction, Entity target);
+    Relation createRelation(Entity source, RelationTypeMetadata<RelationDatastoreMetadata> metadata, RelationTypeMetadata.Direction direction, Entity target);
 
     /**
      * Delete a relation between entities.
@@ -116,7 +116,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
     void deleteRelation(Relation relation);
 
     /**
-     * Return the source of a relation (i.e. where the direction is {@link com.buschmais.cdo.spi.metadata.RelationMetadata.Direction#INCOMING}.
+     * Return the source of a relation (i.e. where the direction is {@link com.buschmais.cdo.spi.metadata.RelationTypeMetadata.Direction#INCOMING}.
      *
      * @param relation The relation.
      * @return The source entity.
@@ -124,7 +124,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
     Entity getSource(Relation relation);
 
     /**
-     * Return the target of a relation (i.e. where the direction is {@link com.buschmais.cdo.spi.metadata.RelationMetadata.Direction#OUTGOING}.
+     * Return the target of a relation (i.e. where the direction is {@link com.buschmais.cdo.spi.metadata.RelationTypeMetadata.Direction#OUTGOING}.
      *
      * @param relation The relation.
      * @return The target entity.

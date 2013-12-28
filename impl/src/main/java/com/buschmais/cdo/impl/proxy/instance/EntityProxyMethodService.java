@@ -26,11 +26,11 @@ import java.lang.reflect.Method;
 
 public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Entity, M> {
 
-    public EntityProxyMethodService(MetadataProvider<?, ?> metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
+    public EntityProxyMethodService(MetadataProvider<?, ?, ?, ?> metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
         super(instanceManager);
-        for (TypeMetadata<?> typeMetadata : metadataProvider.getRegisteredMetadata()) {
-            for (AbstractMethodMetadata methodMetadata : typeMetadata.getProperties()) {
-                AnnotatedMethod typeMethod = methodMetadata.getAnnotateddMethod();
+        for (EntityTypeMetadata<?> entityTypeMetadata : metadataProvider.getRegisteredMetadata()) {
+            for (MethodMetadata methodMetadata : entityTypeMetadata.getProperties()) {
+                AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
                 if (methodMetadata instanceof UnsupportedOperationMethodMetadata) {
                     addProxyMethod(new UnsupportedOperationMethod((UnsupportedOperationMethodMetadata) methodMetadata), typeMethod.getAnnotatedElement());
                 } else if (methodMetadata instanceof ImplementedByMethodMetadata) {

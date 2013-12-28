@@ -1,7 +1,7 @@
 package com.buschmais.cdo.spi.datastore;
 
-import com.buschmais.cdo.spi.metadata.RelationMetadata;
-import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
+import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
@@ -13,9 +13,9 @@ import java.util.Map;
  * <p>This factory is used on initialization to determine datastore specific entity, property, enumeration and relation metadata.</p>
  *
  * @param <EntityMetadata> The type of entities used by the datastore.
- * @param <Discriminator>  The type of entity discriminators used by the datastore.
+ * @param <EntityDiscriminator>  The type of entity discriminators used by the datastore.
  */
-public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> {
+public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator> {
 
     /**
      * Create the datastore specific entity metadata for the given type.
@@ -24,7 +24,7 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * @param metadataByType A map containing all registered type and their generic metadata.
      * @return An instance of datastore specific entity metadata.
      */
-    EntityMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType);
+    EntityMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, EntityTypeMetadata<EntityMetadata>> metadataByType);
 
     /**
      * Create the datastore specific metadata for a method annotated with {@link com.buschmais.cdo.api.annotation.ImplementedBy}.
@@ -82,5 +82,5 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      */
     <RelationMetadata> RelationMetadata createRelationMetadata(PropertyMethod propertyMethod);
 
-    RelationMetadata.Direction getRelationDirection(PropertyMethod propertyMethod);
+    RelationTypeMetadata.Direction getRelationDirection(PropertyMethod propertyMethod);
 }

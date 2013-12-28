@@ -3,7 +3,7 @@ package com.buschmais.cdo.impl.proxy.collection;
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
-import com.buschmais.cdo.spi.metadata.RelationMetadata;
+import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
 
 import java.util.AbstractCollection;
 import java.util.Collection;
@@ -12,13 +12,13 @@ import java.util.Iterator;
 public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instance> implements Collection<Instance> {
 
     private Entity entity;
-    private RelationMetadata metadata;
-    private RelationMetadata.Direction direction;
+    private RelationTypeMetadata metadata;
+    private RelationTypeMetadata.Direction direction;
     private InstanceManager<?, Entity> instanceManager;
     private PropertyManager<?, Entity, ?, ?> propertyManager;
     private InterceptorFactory interceptorFactory;
 
-    public CollectionProxy(Entity entity, RelationMetadata metadata, RelationMetadata.Direction direction, InstanceManager instanceManager, PropertyManager propertyManager, InterceptorFactory interceptorFactory) {
+    public CollectionProxy(Entity entity, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction, InstanceManager instanceManager, PropertyManager propertyManager, InterceptorFactory interceptorFactory) {
         this.entity = entity;
         this.metadata = metadata;
         this.direction = direction;

@@ -4,7 +4,7 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.metadata.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.RelationMetadata;
+import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonEnumPropertyMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonPrimitivePropertyMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonRelationPropertyMetadata;
@@ -14,27 +14,27 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
 
     @Override
     public void setProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {
-        Class<?> type = metadata.getAnnotateddMethod().getType();
+        Class<?> type = metadata.getAnnotatedMethod().getType();
         if (String.class.equals(type)) {
-            objectNode.put(metadata.getAnnotateddMethod().getName(), (String) value);
+            objectNode.put(metadata.getAnnotatedMethod().getName(), (String) value);
         } else {
-            throw new CdoException("Unsupported type " + type + " for property " + metadata.getAnnotateddMethod().getName());
+            throw new CdoException("Unsupported type " + type + " for property " + metadata.getAnnotatedMethod().getName());
         }
     }
 
     @Override
     public boolean hasProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
-        return objectNode.has(metadata.getAnnotateddMethod().getName());
+        return objectNode.has(metadata.getAnnotatedMethod().getName());
     }
 
     @Override
     public void removeProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
-        objectNode.remove(metadata.getAnnotateddMethod().getName());
+        objectNode.remove(metadata.getAnnotatedMethod().getName());
     }
 
     @Override
     public Object getProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
-        return objectNode.get(metadata.getAnnotateddMethod().getName());
+        return objectNode.get(metadata.getAnnotatedMethod().getName());
     }
 
     @Override
@@ -48,22 +48,22 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
     }
 
     @Override
-    public boolean hasSingleRelation(ObjectNode source, RelationMetadata<JsonRelationPropertyMetadata> metadata, RelationMetadata.Direction direction) {
+    public boolean hasSingleRelation(ObjectNode source, RelationTypeMetadata<JsonRelationPropertyMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return false;
     }
 
     @Override
-    public JsonRelation getSingleRelation(ObjectNode source, RelationMetadata<JsonRelationPropertyMetadata> metadata, RelationMetadata.Direction direction) {
+    public JsonRelation getSingleRelation(ObjectNode source, RelationTypeMetadata<JsonRelationPropertyMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return null;
     }
 
     @Override
-    public Iterable<JsonRelation> getRelations(ObjectNode source, RelationMetadata<JsonRelationPropertyMetadata> metadata, RelationMetadata.Direction direction) {
+    public Iterable<JsonRelation> getRelations(ObjectNode source, RelationTypeMetadata<JsonRelationPropertyMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return null;
     }
 
     @Override
-    public JsonRelation createRelation(ObjectNode source, RelationMetadata<JsonRelationPropertyMetadata> metadata, RelationMetadata.Direction direction, ObjectNode target) {
+    public JsonRelation createRelation(ObjectNode source, RelationTypeMetadata<JsonRelationPropertyMetadata> metadata, RelationTypeMetadata.Direction direction, ObjectNode target) {
         return null;
     }
 

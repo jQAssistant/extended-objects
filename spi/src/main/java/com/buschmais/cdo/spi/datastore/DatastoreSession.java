@@ -1,7 +1,7 @@
 package com.buschmais.cdo.spi.datastore;
 
 import com.buschmais.cdo.api.ResultIterator;
-import com.buschmais.cdo.spi.metadata.TypeMetadata;
+import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
 
 import java.util.Map;
 import java.util.Set;
@@ -72,7 +72,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param value         The primitive value (e.g. indexed value).
      * @return An iterator returning matching entities.
      */
-    ResultIterator<Entity> find(TypeMetadata<EntityMetadata> type, Discriminator discriminator, Object value);
+    ResultIterator<Entity> find(EntityTypeMetadata<EntityMetadata> type, Discriminator discriminator, Object value);
 
     /**
      * Execute a query.
