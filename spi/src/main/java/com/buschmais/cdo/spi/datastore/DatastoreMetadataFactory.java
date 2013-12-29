@@ -56,7 +56,7 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * @param propertyMethod The method.
      * @return An instance of datastore specific method metadata.
      */
-    <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPrimitvePropertyMetadata(PropertyMethod propertyMethod);
+    <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPrimitivePropertyMetadata(PropertyMethod propertyMethod);
 
     /**
      * Create the datastore specific metadata for a property representing an enumeration value.

@@ -190,7 +190,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             if (Enum.class.isAssignableFrom(beanPropertyMethod.getType())) {
                 methodMetadata = new EnumPropertyMethodMetadata(beanPropertyMethod, beanPropertyMethod.getType(), metadataFactory.createEnumPropertyMetadata(beanPropertyMethod));
             } else {
-                methodMetadata = new PrimitivePropertyMethodMetadata(beanPropertyMethod, metadataFactory.createPrimitvePropertyMetadata(beanPropertyMethod));
+                methodMetadata = new PrimitivePropertyMethodMetadata(beanPropertyMethod, metadataFactory.createPrimitivePropertyMetadata(beanPropertyMethod));
             }
         }
         return methodMetadata;
