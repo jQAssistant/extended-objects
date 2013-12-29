@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CdoUnitValidationHandler implements ValidationEventHandler {
 
-    private List<String> errorMessages = new ArrayList<>();
+    private final List<String> errorMessages = new ArrayList<>();
 
     @Override
     public boolean handleEvent(ValidationEvent event) {

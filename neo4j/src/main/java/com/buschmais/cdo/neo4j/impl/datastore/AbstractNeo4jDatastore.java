@@ -7,7 +7,7 @@ import org.neo4j.graphdb.Label;
 
 public abstract class AbstractNeo4jDatastore<DS extends AbstractNeo4jDatastoreSession> implements Datastore<DS, NodeMetadata, Label> {
 
-    private Neo4jMetadataFactory metadataFactory = new Neo4jMetadataFactory();
+    private final Neo4jMetadataFactory metadataFactory = new Neo4jMetadataFactory();
 
     @Override
     public DatastoreMetadataFactory<NodeMetadata, Label> getMetadataFactory() {

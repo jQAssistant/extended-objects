@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class AsMethod<Entity> implements ProxyMethod<Entity> {
 
-    private InstanceManager instanceManager;
+    private final InstanceManager instanceManager;
 
     public AsMethod(InstanceManager instanceManager) {
         this.instanceManager = instanceManager;

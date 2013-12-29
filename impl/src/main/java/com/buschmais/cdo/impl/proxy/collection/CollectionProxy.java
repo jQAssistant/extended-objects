@@ -11,12 +11,12 @@ import java.util.Iterator;
 
 public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instance> implements Collection<Instance> {
 
-    private Entity entity;
-    private RelationMetadata metadata;
-    private RelationMetadata.Direction direction;
-    private InstanceManager<?, Entity> instanceManager;
-    private PropertyManager<?, Entity, ?, ?> propertyManager;
-    private InterceptorFactory interceptorFactory;
+    private final Entity entity;
+    private final RelationMetadata metadata;
+    private final RelationMetadata.Direction direction;
+    private final InstanceManager<?, Entity> instanceManager;
+    private final PropertyManager<?, Entity, ?, ?> propertyManager;
+    private final InterceptorFactory interceptorFactory;
 
     public CollectionProxy(Entity entity, RelationMetadata metadata, RelationMetadata.Direction direction, InstanceManager instanceManager, PropertyManager propertyManager, InterceptorFactory interceptorFactory) {
         this.entity = entity;

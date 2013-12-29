@@ -8,7 +8,7 @@ import org.neo4j.graphdb.ResourceIterator;
 */
 final class ResourceResultIterator<T> implements ResultIterator<T> {
 
-    private ResourceIterator<T> iterator;
+    private final ResourceIterator<T> iterator;
 
     ResourceResultIterator(ResourceIterator<T> iterator) {
         this.iterator = iterator;

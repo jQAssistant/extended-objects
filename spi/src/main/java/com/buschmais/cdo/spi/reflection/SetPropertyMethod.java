@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  */
 public class SetPropertyMethod extends AbstractPropertyMethod {
 
-    private GetPropertyMethod getter;
+    private final GetPropertyMethod getter;
 
     /**
      * Constructor.

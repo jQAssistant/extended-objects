@@ -18,9 +18,8 @@ public class TypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TypeMetadataResolver.class);
 
-    private Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType;
-    private Map<TypeMetadata<EntityMetadata>, Set<Discriminator>> aggregatedDiscriminators = new HashMap<>();
-    private Map<Discriminator, Set<TypeMetadata<EntityMetadata>>> typeMetadataByDiscriminator = new HashMap<>();
+    private final Map<TypeMetadata<EntityMetadata>, Set<Discriminator>> aggregatedDiscriminators = new HashMap<>();
+    private final Map<Discriminator, Set<TypeMetadata<EntityMetadata>>> typeMetadataByDiscriminator = new HashMap<>();
 
     /**
      * Constructor.
@@ -29,7 +28,6 @@ public class TypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata
      */
     public TypeMetadataResolver(Map<Class<?>, TypeMetadata<EntityMetadata>> metadataByType) {
         LOGGER.debug("Type metadata = '{}'", metadataByType);
-        this.metadataByType = metadataByType;
         for (TypeMetadata typeMetadata : metadataByType.values()) {
             Set<Discriminator> discriminators = getAggregatedDiscriminators(typeMetadata);
             LOGGER.debug("Aggregated discriminators of '{}' = '{}'", typeMetadata, discriminators);

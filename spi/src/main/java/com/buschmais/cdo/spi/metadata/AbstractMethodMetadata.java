@@ -4,9 +4,9 @@ import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 
 public abstract class AbstractMethodMetadata<B extends AnnotatedMethod, DatastoreMetadata> {
 
-    private B annotatedMethod;
+    private final B annotatedMethod;
 
-    private DatastoreMetadata datastoreMetadata;
+    private final DatastoreMetadata datastoreMetadata;
 
     protected AbstractMethodMetadata(B annotatedMethod, DatastoreMetadata datastoreMetadata) {
         this.annotatedMethod = annotatedMethod;

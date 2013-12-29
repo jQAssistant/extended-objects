@@ -7,7 +7,7 @@ import java.util.ListIterator;
 
 public class ListProxy<Instance> extends AbstractSequentialList<Instance> implements List<Instance> {
 
-    private CollectionProxy<Instance, ?> collectionProxy;
+    private final CollectionProxy<Instance, ?> collectionProxy;
 
     public ListProxy(CollectionProxy<Instance, ?> collectionProxy) {
         this.collectionProxy = collectionProxy;

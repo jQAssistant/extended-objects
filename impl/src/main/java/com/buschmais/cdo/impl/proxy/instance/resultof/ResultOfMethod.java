@@ -15,11 +15,11 @@ import java.util.List;
 
 public class ResultOfMethod<Entity> implements ProxyMethod<Entity> {
 
-    private ResultOfMethodMetadata resultOfMethodMetadata;
-    private InstanceManager instanceManager;
-    private CdoTransaction cdoTransaction;
-    private InterceptorFactory interceptorFactory;
-    private DatastoreSession datastoreSession;
+    private final ResultOfMethodMetadata resultOfMethodMetadata;
+    private final InstanceManager instanceManager;
+    private final CdoTransaction cdoTransaction;
+    private final InterceptorFactory interceptorFactory;
+    private final DatastoreSession datastoreSession;
 
     public ResultOfMethod(ResultOfMethodMetadata resultOfMethodMetadata, InstanceManager instanceManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
         this.resultOfMethodMetadata = resultOfMethodMetadata;

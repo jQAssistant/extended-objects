@@ -4,7 +4,7 @@ import org.neo4j.graphdb.RelationshipType;
 
 public class RelationshipMetadata {
 
-    private RelationshipType relationshipType;
+    private final RelationshipType relationshipType;
 
     public RelationshipMetadata(RelationshipType relationshipType) {
         this.relationshipType = relationshipType;

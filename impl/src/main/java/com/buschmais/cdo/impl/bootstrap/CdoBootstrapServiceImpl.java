@@ -12,7 +12,7 @@ import java.util.*;
 
 public class CdoBootstrapServiceImpl implements CdoBootstrapService {
 
-    private CdoUnitFactory cdoUnitFactory = CdoUnitFactory.getInstance();
+    private final CdoUnitFactory cdoUnitFactory = CdoUnitFactory.getInstance();
 
     private Map<String, CdoUnit> cdoUnits;
 

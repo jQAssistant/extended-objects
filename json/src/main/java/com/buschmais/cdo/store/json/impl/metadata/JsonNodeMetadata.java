@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public class JsonNodeMetadata implements DatastoreEntityMetadata<String> {
 
-    private String discriminator;
+    private final String discriminator;
 
     public JsonNodeMetadata(String discriminator) {
         this.discriminator = discriminator;

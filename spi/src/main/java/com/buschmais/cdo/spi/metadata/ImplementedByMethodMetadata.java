@@ -5,7 +5,7 @@ import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 
 public class ImplementedByMethodMetadata<DatastoreMetadata> extends AbstractMethodMetadata<AnnotatedMethod, DatastoreMetadata> {
 
-    private Class<? extends ProxyMethod<?>> proxyMethodType;
+    private final Class<? extends ProxyMethod<?>> proxyMethodType;
 
     public ImplementedByMethodMetadata(AnnotatedMethod annotatedMethod, Class<? extends ProxyMethod<?>> proxyMethodType, DatastoreMetadata datastoreMetadata) {
         super(annotatedMethod, datastoreMetadata);

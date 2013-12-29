@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 public class InstanceInvocationHandler<E> implements InvocationHandler {
 
     private E entity;
-    private ProxyMethodService<E, ?> proxyMethodService;
+    private final ProxyMethodService<E, ?> proxyMethodService;
 
     public InstanceInvocationHandler(E entity, ProxyMethodService<E, ?> proxyMethodService) {
         this.entity = entity;

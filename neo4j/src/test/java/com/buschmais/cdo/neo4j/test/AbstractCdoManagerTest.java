@@ -106,7 +106,7 @@ public abstract class AbstractCdoManagerTest {
      */
     protected class TestResult {
 
-        private Map<String, List<Object>> columns;
+        private final Map<String, List<Object>> columns;
 
         TestResult(Map<String, List<Object>> columns) {
             this.columns = columns;

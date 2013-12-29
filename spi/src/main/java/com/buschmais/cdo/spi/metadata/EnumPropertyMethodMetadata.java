@@ -5,7 +5,7 @@ import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
 public class EnumPropertyMethodMetadata<DatastoreMetadata> extends AbstractPropertyMethodMetadata<DatastoreMetadata> {
 
-    private Class<? extends Enum<?>> enumerationType;
+    private final Class<? extends Enum<?>> enumerationType;
 
     public EnumPropertyMethodMetadata(PropertyMethod propertyMethod, Class<? extends Enum<?>> enumerationType, DatastoreMetadata datastoreMetadata) {
         super(propertyMethod, datastoreMetadata);

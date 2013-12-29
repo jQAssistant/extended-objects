@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public class TypeMetadata<DatastoreMetadata extends DatastoreEntityMetadata<?>> extends AbstractMetadata<TypeMetadata<DatastoreMetadata>, DatastoreMetadata> {
 
-    private IndexedPropertyMethodMetadata indexedProperty;
+    private final IndexedPropertyMethodMetadata indexedProperty;
 
     public TypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata<DatastoreMetadata>> superTypeMetadatas, Collection<AbstractMethodMetadata> methodMetadatas, IndexedPropertyMethodMetadata indexedProperty, DatastoreMetadata datastoreMetadata) {
         super(annotatedType, superTypeMetadatas, methodMetadatas, datastoreMetadata);

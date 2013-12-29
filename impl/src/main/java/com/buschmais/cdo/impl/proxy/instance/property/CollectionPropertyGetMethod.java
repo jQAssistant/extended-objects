@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class CollectionPropertyGetMethod<Entity> extends AbstractPropertyMethod<Entity, CollectionPropertyMethodMetadata> {
 
-    private InterceptorFactory interceptorFactory;
+    private final InterceptorFactory interceptorFactory;
 
     public CollectionPropertyGetMethod(CollectionPropertyMethodMetadata<?> metadata, InstanceManager instanceManager, PropertyManager propertyManager, InterceptorFactory interceptorFactory) {
         super(metadata, instanceManager, propertyManager);

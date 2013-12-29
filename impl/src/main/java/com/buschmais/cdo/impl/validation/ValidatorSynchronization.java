@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class ValidatorSynchronization implements CdoTransaction.Synchronization{
 
-    private InstanceValidator instanceValidator;
+    private final InstanceValidator instanceValidator;
 
     public ValidatorSynchronization(InstanceValidator instanceValidator) {
         this.instanceValidator = instanceValidator;
