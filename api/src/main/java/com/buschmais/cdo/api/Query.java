@@ -18,7 +18,7 @@ public interface Query<T> {
      * @param value The parameter value.
      * @return The query.
      */
-    Query withParameter(String name, Object value);
+    Query<T> withParameter(String name, Object value);
 
     /**
      * Bind a map of parameter values to the query.
@@ -26,7 +26,7 @@ public interface Query<T> {
      * @param parameters The map of parameters consisting of names as keys and their values.
      * @return The query.
      */
-    Query withParameters(Map<String, Object> parameters);
+    Query<T> withParameters(Map<String, Object> parameters);
 
     /**
      * Execute the query.

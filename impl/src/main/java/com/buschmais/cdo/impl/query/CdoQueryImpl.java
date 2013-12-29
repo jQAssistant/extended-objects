@@ -13,15 +13,17 @@ import java.util.*;
 
 public class CdoQueryImpl<T, QL> implements Query<T> {
 
-    private QL expression;
-    private DatastoreSession datastoreSession;
-    private InstanceManager instanceManager;
-    private CdoTransaction cdoTransaction;
-    private InterceptorFactory interceptorFactory;
-    private Collection<Class<?>> types;
+    private final QL expression;
+    private final DatastoreSession datastoreSession;
+    private final InstanceManager instanceManager;
+    private final CdoTransaction cdoTransaction;
+    private final InterceptorFactory interceptorFactory;
+    private final Collection<Class<?>> types;
     private Map<String, Object> parameters = null;
 
-    public CdoQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, Collection<Class<?>> types) {
+    public CdoQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager,
+                        CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory,
+                        Collection<Class<?>> types) {
         this.expression = expression;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
@@ -31,21 +33,21 @@ public class CdoQueryImpl<T, QL> implements Query<T> {
     }
 
     @Override
-    public Query withParameter(String name, Object value) {
+    public Query<T> withParameter(String name, Object value) {
         if (parameters == null) {
             parameters = new HashMap<>();
         }
         Object oldValue = parameters.put(name, value);
         if (oldValue != null) {
-            throw new CdoException("Parameter '" + name + "' has alread been assigned to value '" + value + "'.");
+            throw new CdoException("Parameter '" + name + "' has already been assigned to value '" + value + "'.");
         }
         return interceptorFactory.addInterceptor(this);
     }
 
     @Override
-    public Query withParameters(Map<String, Object> parameters) {
+    public Query<T> withParameters(Map<String, Object> parameters) {
         if (this.parameters != null) {
-            throw new CdoException(("Parameters have already beed assigned: " + parameters));
+            throw new CdoException(("Parameters have already been assigned: " + parameters));
         }
         this.parameters = parameters;
         return interceptorFactory.addInterceptor(this);
@@ -66,8 +68,9 @@ public class CdoQueryImpl<T, QL> implements Query<T> {
         }
         ResultIterator<Map<String, Object>> iterator = datastoreSession.execute(expression, effectiveParameters);
         SortedSet<Class<?>> resultTypes = getResultTypes();
-        QueryResultIterableImpl queryResultIterable = new QueryResultIterableImpl(instanceManager, interceptorFactory, datastoreSession, iterator, resultTypes);
-        return new TransactionalQueryResultIterable(queryResultIterable,cdoTransaction);
+        QueryResultIterableImpl queryResultIterable = new QueryResultIterableImpl(instanceManager, datastoreSession,
+                iterator, resultTypes);
+        return new TransactionalQueryResultIterable(queryResultIterable, cdoTransaction);
     }
 
     private SortedSet<Class<?>> getResultTypes() {

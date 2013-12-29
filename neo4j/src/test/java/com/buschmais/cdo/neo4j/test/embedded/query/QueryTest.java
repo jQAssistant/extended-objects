@@ -2,6 +2,7 @@ package com.buschmais.cdo.neo4j.test.embedded.query;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManager;
+import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.query.composite.A;
@@ -12,8 +13,7 @@ import org.junit.Test;
 import static com.buschmais.cdo.api.Query.Result;
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class QueryTest extends AbstractEmbeddedCdoManagerTest {
 
@@ -56,15 +56,29 @@ public class QueryTest extends AbstractEmbeddedCdoManagerTest {
     }
 
     @Test
+    public void cypherStringQuerySimple() {
+        CdoManager cdoManager = getCdoManager();
+
+        cdoManager.currentTransaction().begin();
+        Result<CompositeRowObject> result = cdoManager.createQuery("MATCH (a:A) RETURN a.value LIMIT 1").execute();
+        assertEquals("A1", result.getSingleResult().as(String.class));
+
+        Result<CompositeRowObject> longResult = cdoManager.createQuery("MATCH (a:A) RETURN 10 LIMIT 1").execute();
+        assertEquals(10L, (long) longResult.getSingleResult().as(Long.class));
+
+        cdoManager.currentTransaction().commit();
+    }
+
+    @Test
     public void compositeRowTypedQuery() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
-        Result<CompositeRowObject> result = cdoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
-        A a = result.getSingleResult().get("a", A.class);
+        Result<InstanceByValue> result = cdoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
+        A a = result.getSingleResult().getA();
         assertThat(a.getValue(), equalTo("A1"));
         result = cdoManager.createQuery(InstanceByValue.class).withParameter("value", "A2").execute();
         try {
-            result.getSingleResult().get("a", A.class);
+            result.getSingleResult().getA();
             fail("Expecting a " + CdoException.class.getName());
         } catch (CdoException e) {
         }
