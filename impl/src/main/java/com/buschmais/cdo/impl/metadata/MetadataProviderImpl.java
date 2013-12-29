@@ -68,17 +68,12 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             AnnotatedType annotatedType = new AnnotatedType(currentClass);
             Annotation entityDefinition = annotatedType.getByMetaAnnotation(EntityDefinition.class);
             Annotation relationDefinition = annotatedType.getByMetaAnnotation(RelationDefinition.class);
-            if (entityDefinition != null) {
-                EntityTypeMetadata metadata = createEntityTypeMetadata(annotatedType, annotatedMethodsByClass.get(currentClass), annotatedMethodsByClass.keySet());
-                entityMetadataByType.put(currentClass, metadata);
-                entityTypeMetadata.add(metadata);
-            } else {
-
-            }
+            EntityTypeMetadata metadata = createEntityTypeMetadata(annotatedType, annotatedMethodsByClass.get(currentClass), annotatedMethodsByClass.keySet());
+            entityMetadataByType.put(currentClass, metadata);
+            entityTypeMetadata.add(metadata);
         }
         entityTypeMetadataResolver = new EntityTypeMetadataResolver(entityMetadataByType);
         entityMetadataByType.put(CompositeObject.class, new EntityTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.emptyList(), Collections.<AbstractMethodMetadata>emptyList(), null, null));
-
     }
 
     @Override
