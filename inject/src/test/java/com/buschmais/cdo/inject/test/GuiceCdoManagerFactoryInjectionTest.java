@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import static com.google.inject.Guice.createInjector;
 import static org.junit.Assert.assertEquals;
@@ -18,7 +19,7 @@ public class GuiceCdoManagerFactoryInjectionTest {
 
     private Injector injector = createInjector(
             new GuiceModule("default") {
-                @Provides @Named("guice") CdoManagerFactory special() {
+                @Provides @Singleton @Named("guice") CdoManagerFactory special() {
                     return Cdo.createCdoManagerFactory("guice");
                 }
             }
@@ -48,13 +49,12 @@ public class GuiceCdoManagerFactoryInjectionTest {
 
     static class B {
 
+        private final CdoManagerFactory guiceCdoManager;
+        private final CdoManagerFactory defaultCdoManager;
         @Inject
         public B(@Named("guice") CdoManagerFactory guiceCdoManager, CdoManagerFactory defaultCdoManager) {
             this.guiceCdoManager = guiceCdoManager;
             this.defaultCdoManager = defaultCdoManager;
         }
-
-        private final CdoManagerFactory guiceCdoManager;
-        private final CdoManagerFactory defaultCdoManager;
     }
 }

@@ -5,6 +5,8 @@ import com.buschmais.cdo.api.bootstrap.Cdo;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
+import javax.inject.Singleton;
+
 public class GuiceModule extends AbstractModule {
 
     private final String defaultUnit;
@@ -21,7 +23,7 @@ public class GuiceModule extends AbstractModule {
     protected void configure() {
     }
 
-    @Provides CdoManagerFactory cdoManagerFactory() {
+    @Provides @Singleton CdoManagerFactory cdoManagerFactory() {
         return Cdo.createCdoManagerFactory(defaultUnit);
     }
 }
