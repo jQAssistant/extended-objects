@@ -27,14 +27,14 @@ public class CollectionPropertyGetMethod<Entity> extends AbstractPropertyMethod<
         CollectionPropertyMethodMetadata<?> collectionPropertyMetadata = getMetadata();
         CollectionProxy<?, Entity> collectionProxy = new CollectionProxy<>(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection(), getInstanceManager(), getPropertyManager(), interceptorFactory);
         Collection<?> collection;
-        if (Set.class.isAssignableFrom(collectionPropertyMetadata.getAnnotateddMethod().getType())) {
+        if (Set.class.isAssignableFrom(collectionPropertyMetadata.getAnnotatedMethod().getType())) {
             collection = new SetProxy<>(collectionProxy);
-        } else if (List.class.isAssignableFrom(collectionPropertyMetadata.getAnnotateddMethod().getType())) {
+        } else if (List.class.isAssignableFrom(collectionPropertyMetadata.getAnnotatedMethod().getType())) {
             collection = new ListProxy<>(collectionProxy);
-        } else if (Collection.class.isAssignableFrom(collectionPropertyMetadata.getAnnotateddMethod().getType())) {
+        } else if (Collection.class.isAssignableFrom(collectionPropertyMetadata.getAnnotatedMethod().getType())) {
             collection = collectionProxy;
         } else {
-            throw new CdoException("Unsupported collection type " + collectionPropertyMetadata.getAnnotateddMethod().getType());
+            throw new CdoException("Unsupported collection type " + collectionPropertyMetadata.getAnnotatedMethod().getType());
         }
         Collection<?> result = interceptorFactory.addInterceptor(collection);
         return result;

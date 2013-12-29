@@ -14,27 +14,27 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
 
     @Override
     public void setProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {
-        Class<?> type = metadata.getAnnotateddMethod().getType();
+        Class<?> type = metadata.getAnnotatedMethod().getType();
         if (String.class.equals(type)) {
-            objectNode.put(metadata.getAnnotateddMethod().getName(), (String) value);
+            objectNode.put(metadata.getAnnotatedMethod().getName(), (String) value);
         } else {
-            throw new CdoException("Unsupported type " + type + " for property " + metadata.getAnnotateddMethod().getName());
+            throw new CdoException("Unsupported type " + type + " for property " + metadata.getAnnotatedMethod().getName());
         }
     }
 
     @Override
     public boolean hasProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
-        return objectNode.has(metadata.getAnnotateddMethod().getName());
+        return objectNode.has(metadata.getAnnotatedMethod().getName());
     }
 
     @Override
     public void removeProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
-        objectNode.remove(metadata.getAnnotateddMethod().getName());
+        objectNode.remove(metadata.getAnnotatedMethod().getName());
     }
 
     @Override
     public Object getProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
-        return objectNode.get(metadata.getAnnotateddMethod().getName());
+        return objectNode.get(metadata.getAnnotatedMethod().getName());
     }
 
     @Override

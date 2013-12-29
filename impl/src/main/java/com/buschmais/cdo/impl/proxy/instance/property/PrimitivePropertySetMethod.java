@@ -14,7 +14,7 @@ public class PrimitivePropertySetMethod<Entity> extends AbstractPropertyMethod<E
         Object value = args[0];
         PrimitivePropertyMethodMetadata<?> metadata = getMetadata();
         if (value != null) {
-            if (Enum.class.isAssignableFrom(metadata.getAnnotateddMethod().getType())) {
+            if (Enum.class.isAssignableFrom(metadata.getAnnotatedMethod().getType())) {
                 value = ((Enum) value).name();
             }
             getPropertyManager().setProperty(entity, metadata, value);

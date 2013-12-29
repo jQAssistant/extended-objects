@@ -4,17 +4,17 @@ import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 
 public abstract class AbstractMethodMetadata<B extends AnnotatedMethod, DatastoreMetadata> {
 
-    private B annotateddMethod;
+    private B annotatedMethod;
 
     private DatastoreMetadata datastoreMetadata;
 
     protected AbstractMethodMetadata(B annotatedMethod, DatastoreMetadata datastoreMetadata) {
-        this.annotateddMethod = annotatedMethod;
+        this.annotatedMethod = annotatedMethod;
         this.datastoreMetadata = datastoreMetadata;
     }
 
-    public B getAnnotateddMethod() {
-        return annotateddMethod;
+    public B getAnnotatedMethod() {
+        return annotatedMethod;
     }
 
     public DatastoreMetadata getDatastoreMetadata() {
@@ -23,6 +23,6 @@ public abstract class AbstractMethodMetadata<B extends AnnotatedMethod, Datastor
 
     @Override
     public String toString() {
-        return "AbstractMethodMetadata{" + "annotateddMethod=" + annotateddMethod + '}';
+        return "AbstractMethodMetadata{" + "annotatedMethod=" + annotatedMethod + '}';
     }
 }
