@@ -3,6 +3,7 @@ package com.buschmais.cdo.impl.metadata;
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +63,10 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
             if (discriminator != null) {
                 discriminators.add(discriminator);
             }
-            for (EntityTypeMetadata<EntityMetadata> superEntityTypeMetadata : entityTypeMetadata.getSuperTypes()) {
-                discriminators.addAll(getAggregatedDiscriminators(superEntityTypeMetadata));
+            for (TypeMetadata<?> superTypeMetadata : entityTypeMetadata.getSuperTypes()) {
+                if (superTypeMetadata instanceof EntityTypeMetadata) {
+                    discriminators.addAll(getAggregatedDiscriminators((EntityTypeMetadata<EntityMetadata>) superTypeMetadata));
+                }
             }
             aggregatedDiscriminators.put(entityTypeMetadata, discriminators);
         }
