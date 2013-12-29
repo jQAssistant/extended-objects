@@ -9,9 +9,9 @@ import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.kernel.GraphDatabaseAPI;
 import org.neo4j.server.WrappingNeoServer;
+import org.neo4j.test.TestGraphDatabaseFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,7 +30,7 @@ public abstract class AbstractRestCdoManagerTest extends AbstractCdoManagerTest 
 
     @BeforeClass
     public static void startServer() {
-        GraphDatabaseService graphDatabaseService = new GraphDatabaseFactory().newEmbeddedDatabase("target/neo4j/server");
+        GraphDatabaseService graphDatabaseService = new TestGraphDatabaseFactory().newImpermanentDatabase();
         server = new WrappingNeoServer((GraphDatabaseAPI) graphDatabaseService);
         server.start();
     }
