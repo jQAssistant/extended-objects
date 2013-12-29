@@ -10,8 +10,8 @@ import java.util.Arrays;
 
 public class InterceptorFactory {
 
-    private CdoTransaction cdoTransaction;
-    private TransactionAttribute transactionAttribute;
+    private final CdoTransaction cdoTransaction;
+    private final TransactionAttribute transactionAttribute;
 
     public InterceptorFactory(CdoTransaction cdoTransaction, TransactionAttribute transactionAttribute) {
         this.cdoTransaction = cdoTransaction;

@@ -6,9 +6,9 @@ import com.buschmais.cdo.spi.datastore.DatastoreSession;
 
 public class EqualsMethod<Entity> implements ProxyMethod<Entity> {
 
-    private InstanceManager<?, Entity> instanceManager;
+    private final InstanceManager<?, Entity> instanceManager;
 
-    private DatastoreSession<?, Entity, ?, ?, ?, ?> datastoreSession;
+    private final DatastoreSession<?, Entity, ?, ?, ?, ?> datastoreSession;
 
     public EqualsMethod(InstanceManager<?, Entity> instanceManager, DatastoreSession<?, Entity, ?, ?, ?, ?> datastoreSession) {
         this.instanceManager = instanceManager;

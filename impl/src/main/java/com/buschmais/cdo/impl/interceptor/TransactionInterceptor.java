@@ -10,9 +10,9 @@ import java.lang.reflect.Method;
 
 public class TransactionInterceptor<T> extends AbstractCdoInterceptor<T> {
 
-    private CdoTransaction cdoTransaction;
+    private final CdoTransaction cdoTransaction;
 
-    private TransactionAttribute defaultTransactionAttribute;
+    private final TransactionAttribute defaultTransactionAttribute;
 
     public TransactionInterceptor(T delegate, CdoTransaction cdoTransaction, TransactionAttribute defaultTransactionAttribute) {
         super(delegate);

@@ -5,7 +5,7 @@ import com.buschmais.cdo.api.proxy.ProxyMethod;
 
 public class ToStringMethod<Entity> implements ProxyMethod<Entity> {
 
-    private DatastoreSession<?, Entity,?, ?, ?, ?> datastoreSession;
+    private final DatastoreSession datastoreSession;
 
     public ToStringMethod(DatastoreSession datastoreSession) {
         this.datastoreSession = datastoreSession;
@@ -13,7 +13,7 @@ public class ToStringMethod<Entity> implements ProxyMethod<Entity> {
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         for (Class<?> type : instance.getClass().getInterfaces()) {
             if (stringBuffer.length() > 0) {
                 stringBuffer.append('|');

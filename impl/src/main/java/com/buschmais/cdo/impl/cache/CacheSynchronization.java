@@ -8,11 +8,11 @@ import java.util.Collection;
 
 public class CacheSynchronization<Entity> implements CdoTransaction.Synchronization {
 
-    private InstanceManager<?, Entity> instanceManager;
+    private final InstanceManager<?, Entity> instanceManager;
 
-    private TransactionalCache<?> transactionalCache;
+    private final TransactionalCache<?> transactionalCache;
 
-    private DatastoreSession<?, Entity, ?, ?, ?, ?> datastoreSession;
+    private final DatastoreSession<?, Entity, ?, ?, ?, ?> datastoreSession;
 
     public CacheSynchronization(InstanceManager<?, Entity> instanceManager, TransactionalCache<?> transactionalCache, DatastoreSession<?, Entity, ?, ?, ?, ?> datastoreSession) {
         this.instanceManager = instanceManager;

@@ -13,11 +13,11 @@ import java.util.*;
 
 class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Query.Result<T> {
 
-    private InstanceManager instanceManager;
-    private DatastoreSession datastoreSession;
-    private ResultIterator<Map<String, Object>> iterator;
-    private SortedSet<Class<?>> types;
-    private RowProxyMethodService rowProxyMethodService;
+    private final InstanceManager instanceManager;
+    private final DatastoreSession datastoreSession;
+    private final ResultIterator<Map<String, Object>> iterator;
+    private final SortedSet<Class<?>> types;
+    private final RowProxyMethodService rowProxyMethodService;
 
     QueryResultIterableImpl(InstanceManager instanceManager, DatastoreSession datastoreSession,
                             ResultIterator<Map<String, Object>> iterator, SortedSet<Class<?>> types) {
@@ -58,7 +58,7 @@ class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Qu
 
             private Object decodeValue(Object value) {
                 if (value == null) {
-                    return value;
+                    return null;
                 }
                 Object decodedValue;
                 if (datastoreSession.isEntity(value)) {

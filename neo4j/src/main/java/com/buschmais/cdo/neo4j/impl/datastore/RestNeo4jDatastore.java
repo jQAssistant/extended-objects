@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public class RestNeo4jDatastore extends  AbstractNeo4jDatastore<RestNeo4jDatastoreSession> {
 
-    private String url;
+    private final String url;
 
     public RestNeo4jDatastore(String url) {
         this.url = url;

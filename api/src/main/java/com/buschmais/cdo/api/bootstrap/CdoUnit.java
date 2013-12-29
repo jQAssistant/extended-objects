@@ -16,21 +16,21 @@ import java.util.Set;
  */
 public class CdoUnit {
 
-    private String name;
+    private final String name;
 
-    private String description;
+    private final String description;
 
-    private URI uri;
+    private final URI uri;
 
-    private Class<?> provider;
+    private final Class<?> provider;
 
-    private Set<Class<?>> types;
+    private final Set<Class<?>> types;
 
-    private ValidationMode validationMode;
+    private final ValidationMode validationMode;
 
-    private TransactionAttribute defaultTransactionAttribute;
+    private final TransactionAttribute defaultTransactionAttribute;
 
-    private Properties properties;
+    private final Properties properties;
 
     public CdoUnit(String name, String description, URI uri, Class<?> provider, Set<Class<?>> types, ValidationMode validationMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
         this.name = name;

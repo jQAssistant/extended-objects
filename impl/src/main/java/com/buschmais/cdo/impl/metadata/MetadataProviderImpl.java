@@ -27,10 +27,10 @@ import java.util.*;
 public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> implements MetadataProvider<EntityMetadata, Discriminator> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TypeMetadata.class);
-    private DatastoreMetadataFactory<EntityMetadata, Discriminator> metadataFactory;
-    private TypeMetadataResolver<EntityMetadata, Discriminator> typeMetadataResolver;
+    private final DatastoreMetadataFactory<EntityMetadata, Discriminator> metadataFactory;
+    private final TypeMetadataResolver<EntityMetadata, Discriminator> typeMetadataResolver;
 
-    private Map<Class<?>, TypeMetadata<EntityMetadata>> entityMetadataByType = new HashMap<>();
+    private final Map<Class<?>, TypeMetadata<EntityMetadata>> entityMetadataByType = new HashMap<>();
 
     public MetadataProviderImpl(Collection<Class<?>> types, Datastore<?, EntityMetadata, Discriminator> datastore) {
         this.metadataFactory = datastore.getMetadataFactory();

@@ -18,7 +18,7 @@ public class CdoUnitBundleListener implements BundleActivator, BundleListener {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(CdoUnitBundleListener.class);
 
-    private Map<Long, List<CdoManagerFactory>> registeredCdoManagerFactories = new HashMap<>();
+    private final Map<Long, List<CdoManagerFactory>> registeredCdoManagerFactories = new HashMap<>();
 
     @Override
     public void start(BundleContext context) throws Exception {

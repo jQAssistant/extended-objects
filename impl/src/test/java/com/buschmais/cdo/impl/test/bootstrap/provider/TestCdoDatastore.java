@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D, TestEntityMetadata, String> {
 
-    private CdoUnit cdoUnit;
+    private final CdoUnit cdoUnit;
 
     public TestCdoDatastore(CdoUnit cdoUnit) {
         this.cdoUnit = cdoUnit;

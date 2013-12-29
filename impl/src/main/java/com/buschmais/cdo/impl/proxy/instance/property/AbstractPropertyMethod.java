@@ -7,9 +7,9 @@ import com.buschmais.cdo.spi.metadata.AbstractMethodMetadata;
 
 public abstract class AbstractPropertyMethod<Entity, M extends AbstractMethodMetadata> implements ProxyMethod<Entity> {
 
-    private M metadata;
-    private InstanceManager<?, Entity> instanceManager;
-    private PropertyManager<?, Entity, ?, ?> propertyManager;
+    private final M metadata;
+    private final InstanceManager<?, Entity> instanceManager;
+    private final PropertyManager<?, Entity, ?, ?> propertyManager;
 
     protected AbstractPropertyMethod(M metadata, InstanceManager<?, Entity> instanceManager, PropertyManager<?, Entity, ?, ?> propertyManager) {
         this.metadata = metadata;

@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 
 public class UnsupportedOperationMethod<Entity> implements ProxyMethod<Entity> {
 
-    private UnsupportedOperationMethodMetadata methodMetadata;
+    private final UnsupportedOperationMethodMetadata methodMetadata;
 
     public UnsupportedOperationMethod(UnsupportedOperationMethodMetadata methodMetadata) {
         this.methodMetadata = methodMetadata;

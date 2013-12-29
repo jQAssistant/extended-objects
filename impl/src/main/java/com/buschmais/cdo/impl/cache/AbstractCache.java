@@ -5,7 +5,7 @@ import java.util.Map;
 
 public abstract class AbstractCache<Key, Value> implements Cache<Key, Value> {
 
-    private Map<Key, Value> cache;
+    private final Map<Key, Value> cache;
 
     protected AbstractCache(Map<Key, Value> cache) {
         this.cache = cache;

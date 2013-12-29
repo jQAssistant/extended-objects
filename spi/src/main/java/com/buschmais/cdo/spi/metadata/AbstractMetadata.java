@@ -6,13 +6,13 @@ import java.util.Collection;
 
 public abstract class AbstractMetadata<S extends AbstractMetadata, DatastoreMetadata> {
 
-    private AnnotatedType annotatedType;
+    private final AnnotatedType annotatedType;
 
-    private Collection<AbstractMethodMetadata> properties;
+    private final Collection<AbstractMethodMetadata> properties;
 
-    private Collection<S> superTypes;
+    private final Collection<S> superTypes;
 
-    private DatastoreMetadata datastoreMetadata;
+    private final DatastoreMetadata datastoreMetadata;
 
     protected AbstractMetadata(AnnotatedType annotatedType, Collection<S> superTypes, Collection<AbstractMethodMetadata> properties, DatastoreMetadata datastoreMetadata) {
         this.annotatedType = annotatedType;
