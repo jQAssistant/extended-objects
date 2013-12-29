@@ -65,15 +65,19 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         }
         List<EntityTypeMetadata> entityTypeMetadata = new ArrayList<>();
         for (Class<?> currentClass : allClasses) {
+            LOGGER.debug("Processing class {}", currentClass.getName());
             AnnotatedType annotatedType = new AnnotatedType(currentClass);
+            Collection<AnnotatedMethod> annotatedMethods = annotatedMethodsByClass.get(currentClass);
+            Collection<MethodMetadata> methodMetadataOfType = getMethodMetadataOfType(annotatedMethods, annotatedMethodsByClass.keySet());
             Annotation entityDefinition = annotatedType.getByMetaAnnotation(EntityDefinition.class);
             Annotation relationDefinition = annotatedType.getByMetaAnnotation(RelationDefinition.class);
-            EntityTypeMetadata metadata = createEntityTypeMetadata(annotatedType, annotatedMethodsByClass.get(currentClass), annotatedMethodsByClass.keySet());
+            EntityTypeMetadata metadata = createEntityTypeMetadata(annotatedType, methodMetadataOfType);
             entityMetadataByType.put(currentClass, metadata);
             entityTypeMetadata.add(metadata);
         }
         entityTypeMetadataResolver = new EntityTypeMetadataResolver(entityMetadataByType);
         entityMetadataByType.put(CompositeObject.class, new EntityTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.emptyList(), Collections.<AbstractMethodMetadata>emptyList(), null, null));
+
     }
 
     @Override
@@ -105,25 +109,37 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         return entityTypeMetadata;
     }
 
+    @Override
+    public RelationTypeMetadata<RelationMetadata> getRelationMetadata(Class<?> relationType) {
+        return null;
+    }
+
+    @Override
+    public RelationTypeMetadata.Direction getRelationDirection(List<Class<?>> sourceTypes, RelationTypeMetadata<RelationTypeMetadata> relationMetadata, List<Class<?>> targetTypes) {
+        return null;
+    }
+
     /**
      * Create the {@link EntityTypeMetadata} for the given {@link AnnotatedType}.
      *
-     * @param annotatedType    The {@link AnnotatedType}.
-     * @param annotatedMethods The determined annotated methods of the type.
-     * @param types            A set of all registered classes and their super types.
+     * @param annotatedType        The {@link AnnotatedType}.
+     * @param methodMetadataOfType The method metadata of the type.
      * @return The {@link EntityTypeMetadata} instance representing the annotated type.
      */
-    private EntityTypeMetadata createEntityTypeMetadata(AnnotatedType annotatedType, Collection<AnnotatedMethod> annotatedMethods, Set<Class<?>> types) {
-        LOGGER.debug("Processing class {}", annotatedType.getAnnotatedElement().getName());
-        Collection<MethodMetadata> methodMetadataOfType = getMethodMetadataOfType(annotatedMethods, types);
+    private EntityTypeMetadata createEntityTypeMetadata(AnnotatedType annotatedType, Collection<MethodMetadata> methodMetadataOfType) {
         IndexedPropertyMethodMetadata indexedProperty = getIndexedPropertyMethodMetadata(methodMetadataOfType);
+        List<EntityTypeMetadata<EntityMetadata>> superTypes = getSuperTypeMetadata(annotatedType);
+        DatastoreEntityMetadata<EntityDiscriminator> datastoreEntityMetadata = metadataFactory.createEntityMetadata(annotatedType, entityMetadataByType);
+        EntityTypeMetadata entityTypeMetadata = new EntityTypeMetadata(annotatedType, superTypes, methodMetadataOfType, indexedProperty, datastoreEntityMetadata);
+        return entityTypeMetadata;
+    }
+
+    private List<EntityTypeMetadata<EntityMetadata>> getSuperTypeMetadata(AnnotatedType annotatedType) {
         List<EntityTypeMetadata<EntityMetadata>> superTypes = new ArrayList<>();
         for (Class<?> i : annotatedType.getAnnotatedElement().getInterfaces()) {
             superTypes.add(this.entityMetadataByType.get(i));
         }
-        DatastoreEntityMetadata<EntityDiscriminator> datastoreEntityMetadata = metadataFactory.createEntityMetadata(annotatedType, entityMetadataByType);
-        EntityTypeMetadata entityTypeMetadata = new EntityTypeMetadata(annotatedType, superTypes, methodMetadataOfType, indexedProperty, datastoreEntityMetadata);
-        return entityTypeMetadata;
+        return superTypes;
     }
 
     /**
@@ -175,17 +191,21 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         return methodMetadataOfType;
     }
 
-    private MethodMetadata createPropertyMethodMetadata(Set<Class<?>> types, PropertyMethod beanPropertyMethod) {
+    private MethodMetadata createPropertyMethodMetadata(Set<Class<?>> types, PropertyMethod propertyMethod) {
         MethodMetadata methodMetadata;
-        if (Collection.class.isAssignableFrom(beanPropertyMethod.getType())) {
-            methodMetadata = new CollectionPropertyMethodMetadata(beanPropertyMethod, new RelationTypeMetadata(metadataFactory.createRelationMetadata(beanPropertyMethod)), metadataFactory.getRelationDirection(beanPropertyMethod), metadataFactory.createCollectionPropertyMetadata(beanPropertyMethod));
-        } else if (types.contains(beanPropertyMethod.getType())) {
-            methodMetadata = new ReferencePropertyMethodMetadata(beanPropertyMethod, new RelationTypeMetadata(metadataFactory.createRelationMetadata(beanPropertyMethod)), metadataFactory.getRelationDirection(beanPropertyMethod), metadataFactory.createReferencePropertyMetadata(beanPropertyMethod));
+        if (Collection.class.isAssignableFrom(propertyMethod.getType())) {
+            RelationTypeMetadata.Direction relationDirection = metadataFactory.getRelationDirection(propertyMethod);
+            RelationTypeMetadata relationshipType = new RelationTypeMetadata(metadataFactory.createRelationMetadata(propertyMethod));
+            methodMetadata = new CollectionPropertyMethodMetadata(propertyMethod, relationshipType, relationDirection, metadataFactory.createCollectionPropertyMetadata(propertyMethod));
+        } else if (types.contains(propertyMethod.getType())) {
+            RelationTypeMetadata.Direction relationDirection = metadataFactory.getRelationDirection(propertyMethod);
+            RelationTypeMetadata relationshipType = new RelationTypeMetadata(metadataFactory.createRelationMetadata(propertyMethod));
+            methodMetadata = new ReferencePropertyMethodMetadata(propertyMethod, relationshipType, relationDirection, metadataFactory.createReferencePropertyMetadata(propertyMethod));
         } else {
-            if (Enum.class.isAssignableFrom(beanPropertyMethod.getType())) {
-                methodMetadata = new EnumPropertyMethodMetadata(beanPropertyMethod, beanPropertyMethod.getType(), metadataFactory.createEnumPropertyMetadata(beanPropertyMethod));
+            if (Enum.class.isAssignableFrom(propertyMethod.getType())) {
+                methodMetadata = new EnumPropertyMethodMetadata(propertyMethod, propertyMethod.getType(), metadataFactory.createEnumPropertyMetadata(propertyMethod));
             } else {
-                methodMetadata = new PrimitivePropertyMethodMetadata(beanPropertyMethod, metadataFactory.createPrimitivePropertyMetadata(beanPropertyMethod));
+                methodMetadata = new PrimitivePropertyMethodMetadata(propertyMethod, metadataFactory.createPrimitivePropertyMetadata(propertyMethod));
             }
         }
         return methodMetadata;

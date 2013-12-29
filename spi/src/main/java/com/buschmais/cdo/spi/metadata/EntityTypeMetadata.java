@@ -14,7 +14,6 @@ public class EntityTypeMetadata<DatastoreMetadata extends DatastoreEntityMetadat
         this.indexedProperty = indexedProperty;
     }
 
-
     public IndexedPropertyMethodMetadata getIndexedProperty() {
         return indexedProperty;
     }

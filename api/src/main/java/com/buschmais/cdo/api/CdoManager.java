@@ -55,6 +55,19 @@ public interface CdoManager extends AutoCloseable {
     <T> T create(Class<T> type);
 
     /**
+     * Creates an instance of a typed relationType between a source and a target instance.
+     *
+     * @param source       The source instance.
+     * @param relationType The relation type.
+     * @param target       The target instance.
+     * @param <S>          The source type.
+     * @param <R>          The relation type.
+     * @param <T>          The target type.
+     * @return The created relation instance.
+     */
+    <S, R, T> R create(S source, Class<R> relationType, T target);
+
+    /**
      * Migrates the type of a property instance to the given target types and returns it. The original instance will not be usable anymore after migration.
      *
      * @param <T>         The property type.

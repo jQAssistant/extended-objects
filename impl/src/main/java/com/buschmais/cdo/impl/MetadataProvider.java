@@ -4,8 +4,10 @@ import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -48,4 +50,8 @@ public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata
      * @return The entity metadata.
      */
     EntityTypeMetadata<EntityMetadata> getEntityMetadata(Class<?> type);
+
+    RelationTypeMetadata<RelationMetadata> getRelationMetadata(Class<?> relationType);
+
+    RelationTypeMetadata.Direction getRelationDirection(List<Class<?>> sourceTypes, RelationTypeMetadata<RelationTypeMetadata> relationMetadata, List<Class<?>> targetTypes);
 }
