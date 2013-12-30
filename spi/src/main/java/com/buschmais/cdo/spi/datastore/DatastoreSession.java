@@ -1,7 +1,7 @@
 package com.buschmais.cdo.spi.datastore;
 
 import com.buschmais.cdo.api.ResultIterator;
-import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
 
 import java.util.Map;
 import java.util.Set;
@@ -55,7 +55,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param discriminators The set of discriminators.
      * @return The created entity.
      */
-    Entity create(TypeMetadataSet<EntityMetadata> types, Set<Discriminator> discriminators);
+    Entity create(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<Discriminator> discriminators);
 
     /**
      * Delete an entity.
@@ -93,7 +93,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param targetTypes          The entity types after migration.
      * @param targetDiscriminators The discriminators of the entity after migration.
      */
-    void migrate(Entity entity, TypeMetadataSet<EntityMetadata> types, Set<Discriminator> discriminators, TypeMetadataSet<EntityMetadata> targetTypes, Set<Discriminator> targetDiscriminators);
+    void migrate(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<Discriminator> discriminators, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<Discriminator> targetDiscriminators);
 
     /**
      * Flush the given entity to the datastore.

@@ -10,8 +10,8 @@ import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
-import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
-import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 
 import javax.validation.ConstraintViolation;
 import java.util.*;
@@ -88,7 +88,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public CompositeObject create(Class type, Class<?>... types) {
-        TypeMetadataSet effectiveTypes = getEffectiveTypes(type, types);
+        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = getEffectiveTypes(type, types);
         Set<EntityDiscriminator> entityDiscriminators = metadataProvider.getDiscriminators(effectiveTypes);
         Entity entity = datastoreSession.create(effectiveTypes, entityDiscriminators);
         CompositeObject instance = instanceManager.getInstance(entity);
@@ -196,8 +196,8 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         }
     }
 
-    private TypeMetadataSet<EntityMetadata> getEffectiveTypes(Class<?> type, Class<?>... types) {
-        TypeMetadataSet<EntityMetadata> effectiveTypes = new TypeMetadataSet();
+    private TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getEffectiveTypes(Class<?> type, Class<?>... types) {
+        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = new TypeMetadataSet();
         effectiveTypes.add(metadataProvider.getEntityMetadata(type));
         for (Class<?> otherType : types) {
             effectiveTypes.add(metadataProvider.getEntityMetadata(otherType));

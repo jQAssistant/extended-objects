@@ -1,8 +1,8 @@
 package com.buschmais.cdo.spi.datastore;
 
-import com.buschmais.cdo.spi.metadata.EnumPropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
+import com.buschmais.cdo.spi.metadata.method.EnumPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 
 /**
  * Defines the datastore specific interface to get/set properties or relations.
@@ -116,7 +116,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
     void deleteRelation(Relation relation);
 
     /**
-     * Return the source of a relation (i.e. where the direction is {@link com.buschmais.cdo.spi.metadata.RelationTypeMetadata.Direction#INCOMING}.
+     * Return the source of a relation (i.e. where the direction is {@link com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction#INCOMING}.
      *
      * @param relation The relation.
      * @return The source entity.
@@ -124,7 +124,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
     Entity getSource(Relation relation);
 
     /**
-     * Return the target of a relation (i.e. where the direction is {@link com.buschmais.cdo.spi.metadata.RelationTypeMetadata.Direction#OUTGOING}.
+     * Return the target of a relation (i.e. where the direction is {@link com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction#OUTGOING}.
      *
      * @param relation The relation.
      * @return The target entity.

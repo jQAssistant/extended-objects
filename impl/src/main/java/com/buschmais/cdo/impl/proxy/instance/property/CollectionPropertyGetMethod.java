@@ -7,7 +7,7 @@ import com.buschmais.cdo.impl.proxy.collection.CollectionProxy;
 import com.buschmais.cdo.impl.proxy.collection.ListProxy;
 import com.buschmais.cdo.impl.proxy.collection.SetProxy;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
-import com.buschmais.cdo.spi.metadata.CollectionPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.method.CollectionPropertyMethodMetadata;
 
 import java.util.Collection;
 import java.util.List;

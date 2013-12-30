@@ -3,9 +3,10 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.IndexedPropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
-import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.method.IndexedPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
@@ -33,18 +34,20 @@ public class EmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedNeo4j
     }
 
     @Override
-    public void init(Collection<EntityTypeMetadata<NodeMetadata>> registeredMetadata) {
+    public void init(Collection<TypeMetadata> registeredMetadata) {
         try (Transaction transaction = graphDatabaseService.beginTx()) {
-            for (EntityTypeMetadata<NodeMetadata> entityTypeMetadata : registeredMetadata) {
-                IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedPropertyMethodMetadata = entityTypeMetadata.getIndexedProperty();
+            for (TypeMetadata typeMetadata : registeredMetadata) {
+                if (typeMetadata instanceof EntityTypeMetadata) {
+                    EntityTypeMetadata<NodeMetadata> entityTypeMetadata = (EntityTypeMetadata<NodeMetadata>) typeMetadata;
+                    IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedPropertyMethodMetadata = entityTypeMetadata.getIndexedProperty();
+                    if (indexedPropertyMethodMetadata != null) {
+                        if (indexedPropertyMethodMetadata.getDatastoreMetadata().isCreate()) {
+                            initCreateIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
+                        }
 
-                if (indexedPropertyMethodMetadata != null) {
-                    if (indexedPropertyMethodMetadata.getDatastoreMetadata().isCreate()) {
-                        initCreateIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
-                    }
-
-                    if (indexedPropertyMethodMetadata.getDatastoreMetadata().isUnique()) {
-                        initUniqueIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
+                        if (indexedPropertyMethodMetadata.getDatastoreMetadata().isUnique()) {
+                            initUniqueIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
+                        }
                     }
                 }
             }

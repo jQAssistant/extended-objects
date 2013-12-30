@@ -1,4 +1,4 @@
-package com.buschmais.cdo.spi.metadata;
+package com.buschmais.cdo.spi.metadata.method;
 
 
 import com.buschmais.cdo.spi.reflection.PropertyMethod;

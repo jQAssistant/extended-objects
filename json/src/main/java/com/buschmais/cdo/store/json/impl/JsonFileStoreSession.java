@@ -6,7 +6,7 @@ import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.DatastoreTransaction;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
-import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -61,7 +61,7 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public ObjectNode create(TypeMetadataSet<JsonNodeMetadata> types, Set<String> discriminators) {
+    public ObjectNode create(TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators) {
         ObjectNode rootNode = mapper.createObjectNode();
         ArrayNode typesNode = mapper.createArrayNode();
         for (String typeName : discriminators) {
@@ -93,7 +93,7 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public void migrate(ObjectNode jsonNode, TypeMetadataSet<JsonNodeMetadata> types, Set<String> discriminators, TypeMetadataSet<JsonNodeMetadata> targetTypes, Set<String> targetDiscriminators) {
+    public void migrate(ObjectNode jsonNode, TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators, TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> targetTypes, Set<String> targetDiscriminators) {
     }
 
     @Override

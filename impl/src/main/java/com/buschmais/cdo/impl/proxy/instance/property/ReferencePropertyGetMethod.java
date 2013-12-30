@@ -2,7 +2,7 @@ package com.buschmais.cdo.impl.proxy.instance.property;
 
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;
-import com.buschmais.cdo.spi.metadata.ReferencePropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.method.ReferencePropertyMethodMetadata;
 
 public class ReferencePropertyGetMethod<Entity> extends AbstractPropertyMethod<Entity, ReferencePropertyMethodMetadata> {
 

@@ -1,6 +1,6 @@
 package com.buschmais.cdo.spi.datastore;
 
-import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.DatastoreTypeMetadata;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -8,17 +8,17 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Represents a set of entity type metadata.
+ * Represents a set of type metadata.
  */
-public final class TypeMetadataSet<EntityMetadata extends DatastoreEntityMetadata<?>> extends TreeSet<EntityTypeMetadata<EntityMetadata>> {
+public final class TypeMetadataSet<TypeMetadata extends DatastoreTypeMetadata<?>> extends TreeSet<TypeMetadata> {
 
     /**
      * Constructor.
      */
     public TypeMetadataSet() {
-        super(new Comparator<EntityTypeMetadata<?>>() {
+        super(new Comparator<TypeMetadata>() {
             @Override
-            public int compare(EntityTypeMetadata<?> o1, EntityTypeMetadata<?> o2) {
+            public int compare(TypeMetadata o1, TypeMetadata o2) {
                 return o1.getAnnotatedType().getAnnotatedElement().getName().compareTo(o2.getAnnotatedType().getAnnotatedElement().getName());
             }
         });
@@ -26,8 +26,8 @@ public final class TypeMetadataSet<EntityMetadata extends DatastoreEntityMetadat
 
     public Set<Class<?>> toClasses() {
         Set<Class<?>> classes = new HashSet<>();
-        for (EntityTypeMetadata<EntityMetadata> entityTypeMetadata : this) {
-            classes.add(entityTypeMetadata.getAnnotatedType().getAnnotatedElement());
+        for (TypeMetadata typeMetadata : this) {
+            classes.add(typeMetadata.getAnnotatedType().getAnnotatedElement());
         }
         return classes;
     }

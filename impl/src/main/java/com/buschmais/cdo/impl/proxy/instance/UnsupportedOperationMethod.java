@@ -1,7 +1,7 @@
 package com.buschmais.cdo.impl.proxy.instance;
 
 import com.buschmais.cdo.api.proxy.ProxyMethod;
-import com.buschmais.cdo.spi.metadata.UnsupportedOperationMethodMetadata;
+import com.buschmais.cdo.spi.metadata.method.UnsupportedOperationMethodMetadata;
 
 import java.lang.reflect.Method;
 

@@ -3,7 +3,7 @@ package com.buschmais.cdo.impl.proxy.instance.property;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;
-import com.buschmais.cdo.spi.metadata.AbstractMethodMetadata;
+import com.buschmais.cdo.spi.metadata.method.AbstractMethodMetadata;
 
 public abstract class AbstractPropertyMethod<Entity, M extends AbstractMethodMetadata> implements ProxyMethod<Entity> {
 

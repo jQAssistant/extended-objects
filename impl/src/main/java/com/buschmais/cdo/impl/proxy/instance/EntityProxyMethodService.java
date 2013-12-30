@@ -16,7 +16,8 @@ import com.buschmais.cdo.impl.proxy.instance.object.ToStringMethod;
 import com.buschmais.cdo.impl.proxy.instance.property.*;
 import com.buschmais.cdo.impl.proxy.instance.resultof.ResultOfMethod;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
-import com.buschmais.cdo.spi.metadata.*;
+import com.buschmais.cdo.spi.metadata.method.*;
+import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.GetPropertyMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
@@ -28,8 +29,8 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
 
     public EntityProxyMethodService(MetadataProvider<?, ?, ?, ?> metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
         super(instanceManager);
-        for (EntityTypeMetadata<?> entityTypeMetadata : metadataProvider.getRegisteredMetadata()) {
-            for (MethodMetadata methodMetadata : entityTypeMetadata.getProperties()) {
+        for (TypeMetadata typeMetadata : metadataProvider.getRegisteredMetadata()) {
+            for (MethodMetadata methodMetadata : typeMetadata.getProperties()) {
                 AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
                 if (methodMetadata instanceof UnsupportedOperationMethodMetadata) {
                     addProxyMethod(new UnsupportedOperationMethod((UnsupportedOperationMethodMetadata) methodMetadata), typeMethod.getAnnotatedElement());
@@ -49,30 +50,30 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
                     addProxyMethod(new ResultOfMethod(resultOfMethodMetadata, instanceManager, cdoTransaction, interceptorFactory, datastoreSession), typeMethod.getAnnotatedElement());
                 }
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
-                    PropertyMethod beanPropertyMethod = (PropertyMethod) typeMethod;
-                    Method method = beanPropertyMethod.getAnnotatedElement();
+                    PropertyMethod propertyMethod = (PropertyMethod) typeMethod;
+                    Method method = propertyMethod.getAnnotatedElement();
                     if (methodMetadata instanceof PrimitivePropertyMethodMetadata) {
-                        if (beanPropertyMethod instanceof GetPropertyMethod) {
+                        if (propertyMethod instanceof GetPropertyMethod) {
                             addProxyMethod(new PrimitivePropertyGetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
-                        } else if (beanPropertyMethod instanceof SetPropertyMethod) {
+                        } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new PrimitivePropertySetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
                         }
                     } else if (methodMetadata instanceof EnumPropertyMethodMetadata) {
-                        if (beanPropertyMethod instanceof GetPropertyMethod) {
+                        if (propertyMethod instanceof GetPropertyMethod) {
                             addProxyMethod(new EnumPropertyGetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
-                        } else if (beanPropertyMethod instanceof SetPropertyMethod) {
+                        } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new EnumPropertySetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
                         }
                     } else if (methodMetadata instanceof ReferencePropertyMethodMetadata) {
-                        if (beanPropertyMethod instanceof GetPropertyMethod) {
+                        if (propertyMethod instanceof GetPropertyMethod) {
                             addProxyMethod(new ReferencePropertyGetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
-                        } else if (beanPropertyMethod instanceof SetPropertyMethod) {
+                        } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new ReferencePropertySetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
                         }
                     } else if (methodMetadata instanceof CollectionPropertyMethodMetadata) {
-                        if (beanPropertyMethod instanceof GetPropertyMethod) {
+                        if (propertyMethod instanceof GetPropertyMethod) {
                             addProxyMethod(new CollectionPropertyGetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager, interceptorFactory), method);
-                        } else if (beanPropertyMethod instanceof SetPropertyMethod) {
+                        } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new CollectionPropertySetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
                         }
                     }

@@ -1,7 +1,7 @@
 package com.buschmais.cdo.spi.datastore;
 
-import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
-import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
@@ -24,7 +24,7 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * @param metadataByType A map containing all registered type and their generic metadata.
      * @return An instance of datastore specific entity metadata.
      */
-    EntityMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, EntityTypeMetadata<EntityMetadata>> metadataByType);
+    EntityMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType);
 
     /**
      * Create the datastore specific metadata for a method annotated with {@link com.buschmais.cdo.api.annotation.ImplementedBy}.

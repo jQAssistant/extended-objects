@@ -8,7 +8,7 @@ import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.impl.query.CdoQueryImpl;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
-import com.buschmais.cdo.spi.metadata.ResultOfMethodMetadata;
+import com.buschmais.cdo.spi.metadata.method.ResultOfMethodMetadata;
 
 import java.util.Collections;
 import java.util.List;

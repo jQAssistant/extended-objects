@@ -5,9 +5,9 @@ import com.buschmais.cdo.neo4j.impl.datastore.metadata.EnumPropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.cdo.spi.metadata.EnumPropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
+import com.buschmais.cdo.spi.metadata.method.EnumPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import org.neo4j.graphdb.*;
 
 public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Relationship, PrimitivePropertyMetadata, EnumPropertyMetadata, RelationshipMetadata> {

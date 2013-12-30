@@ -3,7 +3,7 @@ package com.buschmais.cdo.impl.proxy.collection;
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
-import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 
 import java.util.AbstractCollection;
 import java.util.Collection;

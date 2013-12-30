@@ -7,9 +7,10 @@ import com.buschmais.cdo.neo4j.api.annotation.Property;
 import com.buschmais.cdo.neo4j.api.annotation.Relation;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.*;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
-import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
-import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.method.IndexedPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
@@ -22,7 +23,7 @@ import java.util.Map;
 public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label> {
 
     @Override
-    public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, EntityTypeMetadata<NodeMetadata>> metadataByType) {
+    public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
         Label labelAnnotation = annotatedType.getAnnotation(Label.class);
         org.neo4j.graphdb.Label label = null;
         IndexedPropertyMethodMetadata<?> indexedProperty = null;
@@ -30,7 +31,8 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
             label = DynamicLabel.label(labelAnnotation.value());
             Class<?> usingIndexOf = labelAnnotation.usingIndexedPropertyOf();
             if (!Object.class.equals(usingIndexOf)) {
-                indexedProperty = metadataByType.get(usingIndexOf).getIndexedProperty();
+                EntityTypeMetadata<NodeMetadata> typeMetadata = (EntityTypeMetadata<NodeMetadata>) metadataByType.get(usingIndexOf);
+                indexedProperty = typeMetadata.getIndexedProperty();
             }
         }
         return new NodeMetadata(label, indexedProperty);

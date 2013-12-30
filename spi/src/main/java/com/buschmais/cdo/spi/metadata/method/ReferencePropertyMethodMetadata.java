@@ -1,5 +1,6 @@
-package com.buschmais.cdo.spi.metadata;
+package com.buschmais.cdo.spi.metadata.method;
 
+import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
 public class ReferencePropertyMethodMetadata<DatastoreMetadata> extends AbstractRelationPropertyMethodMetadata<DatastoreMetadata> {

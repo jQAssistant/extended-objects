@@ -2,7 +2,7 @@ package com.buschmais.cdo.impl.proxy.instance.property;
 
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;
-import com.buschmais.cdo.spi.metadata.CollectionPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.method.CollectionPropertyMethodMetadata;
 
 import java.util.Collection;
 

@@ -2,9 +2,9 @@ package com.buschmais.cdo.store.json.impl;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.cdo.spi.metadata.EnumPropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
+import com.buschmais.cdo.spi.metadata.method.EnumPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonEnumPropertyMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonPrimitivePropertyMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonRelationPropertyMetadata;

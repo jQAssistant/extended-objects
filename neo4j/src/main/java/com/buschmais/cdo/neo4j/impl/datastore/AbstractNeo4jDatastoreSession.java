@@ -8,9 +8,9 @@ import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
-import com.buschmais.cdo.spi.metadata.IndexedPropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.PrimitivePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.method.IndexedPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
 import org.neo4j.graphdb.*;
 
 import java.util.HashSet;
@@ -36,7 +36,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public Node create(TypeMetadataSet<NodeMetadata> types, Set<Label> discriminators) {
+    public Node create(TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators) {
         Node node = getGraphDatabaseService().createNode();
         for (Label label : discriminators) {
             node.addLabel(label);
@@ -60,7 +60,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public void migrate(Node entity, TypeMetadataSet<NodeMetadata> types, Set<Label> discriminators, TypeMetadataSet<NodeMetadata> targetTypes, Set<Label> targetDiscriminators) {
+    public void migrate(Node entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> targetTypes, Set<Label> targetDiscriminators) {
         Set<Label> labelsToRemove = new HashSet<>(discriminators);
         labelsToRemove.removeAll(targetDiscriminators);
         for (Label label : labelsToRemove) {

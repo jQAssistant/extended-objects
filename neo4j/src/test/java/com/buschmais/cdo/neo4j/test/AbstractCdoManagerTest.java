@@ -30,7 +30,9 @@ public abstract class AbstractCdoManagerTest {
     @After
     public void closeNodeManagerFactory() {
         closeCdoManager();
-        cdoManagerFactory.close();
+        if (cdoManagerFactory != null) {
+            cdoManagerFactory.close();
+        }
     }
 
     protected TransactionAttribute getTransactionAttribute() {

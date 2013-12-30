@@ -1,24 +1,22 @@
-package com.buschmais.cdo.spi.metadata;
+package com.buschmais.cdo.spi.metadata.type;
 
+import com.buschmais.cdo.spi.metadata.method.MethodMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
 
 import java.util.Collection;
 
-public abstract class AbstractTypeMetadata<DatastoreMetadata> implements TypeMetadata<DatastoreMetadata> {
+public abstract class AbstractTypeMetadata implements TypeMetadata {
 
     private AnnotatedType annotatedType;
 
     private Collection<MethodMetadata> properties;
 
-    private Collection<TypeMetadata<?>> superTypes;
+    private Collection<TypeMetadata> superTypes;
 
-    private DatastoreMetadata datastoreMetadata;
-
-    protected AbstractTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata<?>> superTypes, Collection<MethodMetadata> properties, DatastoreMetadata datastoreMetadata) {
+    protected AbstractTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata> properties) {
         this.annotatedType = annotatedType;
         this.superTypes = superTypes;
         this.properties = properties;
-        this.datastoreMetadata = datastoreMetadata;
     }
 
     @Override
@@ -27,7 +25,7 @@ public abstract class AbstractTypeMetadata<DatastoreMetadata> implements TypeMet
     }
 
     @Override
-    public Collection<TypeMetadata<?>> getSuperTypes() {
+    public Collection<TypeMetadata> getSuperTypes() {
         return superTypes;
     }
 
@@ -37,15 +35,9 @@ public abstract class AbstractTypeMetadata<DatastoreMetadata> implements TypeMet
     }
 
     @Override
-    public DatastoreMetadata getDatastoreMetadata() {
-        return datastoreMetadata;
-    }
-
-    @Override
     public String toString() {
         return "AbstractTypeMetadata{" +
                 "type=" + annotatedType +
                 '}';
     }
-
 }

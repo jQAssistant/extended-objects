@@ -3,8 +3,9 @@ package com.buschmais.cdo.impl;
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
-import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
-import com.buschmais.cdo.spi.metadata.RelationTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,7 +27,7 @@ public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata
      * @param entityDiscriminators The entity descriminators.
      * @return The {@link TypeMetadataSet}.
      */
-    TypeMetadataSet<EntityMetadata> getTypes(Set<EntityDiscriminator> entityDiscriminators);
+    TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getTypes(Set<EntityDiscriminator> entityDiscriminators);
 
     /**
      * Determine the set of entity discriminators for the given {@link TypeMetadataSet}.
@@ -34,17 +35,18 @@ public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata
      * @param types The {@link TypeMetadataSet}.
      * @return The set of discriminators.
      */
-    Set<EntityDiscriminator> getDiscriminators(TypeMetadataSet<EntityMetadata> types);
+    Set<EntityDiscriminator> getDiscriminators(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types);
 
     /**
      * Return a collection of all registered entity type metadata.
      *
      * @return The collection of all registered entity type metadata.
      */
-    Collection<EntityTypeMetadata<EntityMetadata>> getRegisteredMetadata();
+    Collection<TypeMetadata> getRegisteredMetadata();
 
     /**
      * Return the entity metadata for a specific type.
+     *
      *
      * @param type The type.
      * @return The entity metadata.

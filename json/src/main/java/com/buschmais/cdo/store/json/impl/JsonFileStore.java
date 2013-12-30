@@ -2,7 +2,8 @@ package com.buschmais.cdo.store.json.impl;
 
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
-import com.buschmais.cdo.spi.metadata.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
 
 import java.io.File;
@@ -32,6 +33,6 @@ public class JsonFileStore implements Datastore<JsonFileStoreSession, JsonNodeMe
     }
 
     @Override
-    public void init(Collection<EntityTypeMetadata<JsonNodeMetadata>> registeredMetadata) {
+    public void init(Collection<TypeMetadata> registeredMetadata) {
     }
 }

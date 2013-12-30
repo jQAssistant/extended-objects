@@ -10,7 +10,8 @@ import com.buschmais.cdo.spi.annotation.EntityDefinition;
 import com.buschmais.cdo.spi.annotation.IndexDefinition;
 import com.buschmais.cdo.spi.annotation.RelationDefinition;
 import com.buschmais.cdo.spi.datastore.*;
-import com.buschmais.cdo.spi.metadata.*;
+import com.buschmais.cdo.spi.metadata.method.*;
+import com.buschmais.cdo.spi.metadata.type.*;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
@@ -37,9 +38,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     private DatastoreMetadataFactory<EntityMetadata, EntityDiscriminator> metadataFactory;
     private EntityTypeMetadataResolver<EntityMetadata, EntityDiscriminator> entityTypeMetadataResolver;
 
-    private Map<Class<?>, TypeMetadata<?>> metadataByType = new HashMap<>();
-    private Map<Class<?>, EntityTypeMetadata<EntityMetadata>> entityMetadataByType = new HashMap<>();
-    private Map<Class<?>, RelationTypeMetadata<RelationMetadata>> relationMetadataByType = new HashMap<>();
+    private Map<Class<?>, TypeMetadata> metadataByType = new HashMap<>();
 
     /**
      * Constructor.
@@ -67,18 +66,31 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         for (Class<?> currentClass : allClasses) {
             LOGGER.debug("Processing class {}", currentClass.getName());
             AnnotatedType annotatedType = new AnnotatedType(currentClass);
+            List<TypeMetadata> superTypes = getSuperTypeMetadata(annotatedType);
+            Class<?> superTypeClass = null;
+            for (TypeMetadata superTypeMetadata : superTypes) {
+                if (superTypeMetadata instanceof DatastoreTypeMetadata) {
+                    Class<?> superTypeMetadataClass = superTypeMetadata.getClass();
+                    if (superTypeMetadataClass != null && !superTypeMetadataClass.equals(superTypeMetadataClass)) {
+                        throw new CdoException(currentClass.getName() + " must extend exclusively either from entity or relation types.");
+                    }
+                    superTypeClass = superTypeMetadataClass;
+                }
+            }
             Collection<AnnotatedMethod> annotatedMethods = annotatedMethodsByClass.get(currentClass);
             Collection<MethodMetadata> methodMetadataOfType = getMethodMetadataOfType(annotatedMethods, annotatedMethodsByClass.keySet());
             Annotation entityDefinition = annotatedType.getByMetaAnnotation(EntityDefinition.class);
-//            if (entityDefinition != null) {
-                EntityTypeMetadata<EntityMetadata> metadata = createEntityTypeMetadata(annotatedType, methodMetadataOfType);
-                entityMetadataByType.put(currentClass, metadata);
-                metadataByType.put(currentClass, metadata);
-//            }
+            TypeMetadata metadata;
+            if (entityDefinition != null || EntityTypeMetadata.class.equals(superTypeClass)) {
+                metadata = createEntityTypeMetadata(annotatedType, superTypes, methodMetadataOfType);
+            } else {
+                metadata = new SimpleTypeMetadata(annotatedType, superTypes, methodMetadataOfType);
+            }
             Annotation relationDefinition = annotatedType.getByMetaAnnotation(RelationDefinition.class);
+            metadataByType.put(currentClass, metadata);
         }
-        entityTypeMetadataResolver = new EntityTypeMetadataResolver(entityMetadataByType);
-        entityMetadataByType.put(CompositeObject.class, new EntityTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.emptyList(), Collections.<MethodMetadata>emptyList(), null, null));
+        entityTypeMetadataResolver = new EntityTypeMetadataResolver(metadataByType);
+        metadataByType.put(CompositeObject.class, new EntityTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.emptyList(), Collections.<MethodMetadata>emptyList(), null, null));
 
     }
 
@@ -88,7 +100,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     }
 
     @Override
-    public Set<EntityDiscriminator> getDiscriminators(TypeMetadataSet<EntityMetadata> types) {
+    public Set<EntityDiscriminator> getDiscriminators(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types) {
         Set<EntityDiscriminator> entityDiscriminators = new HashSet<>();
         for (EntityTypeMetadata<EntityMetadata> entityTypeMetadata : types) {
             Set<EntityDiscriminator> discriminatorsOfType = entityTypeMetadataResolver.getDiscriminators(entityTypeMetadata);
@@ -98,17 +110,17 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     }
 
     @Override
-    public Collection<EntityTypeMetadata<EntityMetadata>> getRegisteredMetadata() {
-        return entityMetadataByType.values();
+    public Collection<TypeMetadata> getRegisteredMetadata() {
+        return metadataByType.values();
     }
 
     @Override
-    public EntityTypeMetadata getEntityMetadata(Class<?> type) {
-        EntityTypeMetadata entityTypeMetadata = entityMetadataByType.get(type);
-        if (entityTypeMetadata == null) {
+    public EntityTypeMetadata<EntityMetadata> getEntityMetadata(Class<?> type) {
+        TypeMetadata typeMetadata = metadataByType.get(type);
+        if (typeMetadata == null) {
             throw new CdoException("Cannot resolve metadata for type " + type.getName() + ".");
         }
-        return entityTypeMetadata;
+        return (EntityTypeMetadata<EntityMetadata>) typeMetadata;
     }
 
     @Override
@@ -125,19 +137,20 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      * Create the {@link EntityTypeMetadata} for the given {@link AnnotatedType}.
      *
      * @param annotatedType        The {@link AnnotatedType}.
+     * @param superTypes           The metadata collection of the super types.
      * @param methodMetadataOfType The method metadata of the type.
      * @return The {@link EntityTypeMetadata} instance representing the annotated type.
      */
-    private EntityTypeMetadata<EntityMetadata> createEntityTypeMetadata(AnnotatedType annotatedType, Collection<MethodMetadata> methodMetadataOfType) {
+    private EntityTypeMetadata<EntityMetadata> createEntityTypeMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes,
+                                                                        Collection<MethodMetadata> methodMetadataOfType) {
         IndexedPropertyMethodMetadata indexedProperty = getIndexedPropertyMethodMetadata(methodMetadataOfType);
-        List<TypeMetadata<?>> superTypes = getSuperTypeMetadata(annotatedType);
-        DatastoreEntityMetadata<EntityDiscriminator> datastoreEntityMetadata = metadataFactory.createEntityMetadata(annotatedType, entityMetadataByType);
+        DatastoreEntityMetadata<EntityDiscriminator> datastoreEntityMetadata = metadataFactory.createEntityMetadata(annotatedType, metadataByType);
         EntityTypeMetadata entityTypeMetadata = new EntityTypeMetadata(annotatedType, superTypes, methodMetadataOfType, indexedProperty, datastoreEntityMetadata);
         return entityTypeMetadata;
     }
 
-    private List<TypeMetadata<?>> getSuperTypeMetadata(AnnotatedType annotatedType) {
-        List<TypeMetadata<?>> superTypes = new ArrayList<>();
+    private List<TypeMetadata> getSuperTypeMetadata(AnnotatedType annotatedType) {
+        List<TypeMetadata> superTypes = new ArrayList<>();
         for (Class<?> i : annotatedType.getAnnotatedElement().getInterfaces()) {
             superTypes.add(this.metadataByType.get(i));
         }
