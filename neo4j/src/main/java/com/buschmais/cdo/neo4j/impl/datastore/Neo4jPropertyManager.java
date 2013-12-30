@@ -14,26 +14,26 @@ public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Rela
 
     @Override
     public boolean hasSingleRelation(Node source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction) {
-        return source.hasRelationship(metadata.getDatastoreMetadata().getRelationshipType(), getDirection(direction));
+        return source.hasRelationship(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
     }
 
     @Override
     public Relationship getSingleRelation(Node source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction) {
-        return source.getSingleRelationship(metadata.getDatastoreMetadata().getRelationshipType(), getDirection(direction));
+        return source.getSingleRelationship(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
     }
 
     @Override
     public Iterable<Relationship> getRelations(Node source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction) {
-        return source.getRelationships(metadata.getDatastoreMetadata().getRelationshipType(), getDirection(direction));
+        return source.getRelationships(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
     }
 
     @Override
     public Relationship createRelation(Node source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction, Node target) {
         switch (direction) {
             case OUTGOING:
-                return source.createRelationshipTo(target, metadata.getDatastoreMetadata().getRelationshipType());
+                return source.createRelationshipTo(target, metadata.getDatastoreMetadata().getDiscriminator());
             case INCOMING:
-                return target.createRelationshipTo(source, metadata.getDatastoreMetadata().getRelationshipType());
+                return target.createRelationshipTo(source, metadata.getDatastoreMetadata().getDiscriminator());
             default:
                 throw new CdoException("Unsupported direction " + direction);
         }

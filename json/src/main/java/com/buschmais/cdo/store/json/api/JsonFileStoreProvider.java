@@ -7,13 +7,14 @@ import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.store.json.impl.JsonFileStore;
 import com.buschmais.cdo.store.json.impl.JsonFileStoreSession;
 import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
+import com.buschmais.cdo.store.json.impl.metadata.JsonRelationMetadata;
 
 import java.net.URL;
 
 public class JsonFileStoreProvider implements CdoDatastoreProvider {
 
     @Override
-    public Datastore<JsonFileStoreSession, JsonNodeMetadata, String> createDatastore(CdoUnit cdoUnit) {
+    public Datastore<JsonFileStoreSession, JsonNodeMetadata, String, JsonRelationMetadata, String> createDatastore(CdoUnit cdoUnit) {
         URL url = cdoUnit.getUrl();
         if (!"file".equals(url.getProtocol())) {
             throw new CdoException("Only file URLs are supported by this store.");

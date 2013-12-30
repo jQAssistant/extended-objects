@@ -12,4 +12,8 @@ public class AnnotatedType extends AbstractAnnotatedElement<Class<?>> {
         super(annotated);
     }
 
+    @Override
+    public String getName() {
+        return getAnnotatedElement().getSimpleName();
+    }
 }

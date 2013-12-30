@@ -9,9 +9,11 @@ import java.util.Collection;
  *
  * @param <DatastoreSession> The type of the sessions produced by the datastore.
  * @param <EntityMetadata>   The type of entity metadata used by the datastore.
- * @param <Discriminator>    The type of entity discriminators used by the datastore.
+ * @param <EntityDiscriminator>    The type of entity discriminators used by the datastore.
+ * @param <RelationMetadata>   The type of relation metadata used by the datastore.
+ * @param <RelationDiscriminator>    The type of relation discriminators used by the datastore.
  */
-public interface Datastore<DatastoreSession extends com.buschmais.cdo.spi.datastore.DatastoreSession, EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> extends AutoCloseable {
+public interface Datastore<DatastoreSession extends com.buschmais.cdo.spi.datastore.DatastoreSession, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> extends AutoCloseable {
 
     /**
      * Initialize the datastore.
@@ -25,7 +27,7 @@ public interface Datastore<DatastoreSession extends com.buschmais.cdo.spi.datast
      *
      * @return The metadata factory.
      */
-    DatastoreMetadataFactory<EntityMetadata, Discriminator> getMetadataFactory();
+    DatastoreMetadataFactory<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> getMetadataFactory();
 
     /**
      * Create a datastore session, e.g. open a connection to the datastore.

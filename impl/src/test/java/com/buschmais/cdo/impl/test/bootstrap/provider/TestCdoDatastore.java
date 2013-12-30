@@ -2,10 +2,12 @@ package com.buschmais.cdo.impl.test.bootstrap.provider;
 
 import com.buschmais.cdo.impl.test.bootstrap.provider.metadata.TestEntityMetadata;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
+import com.buschmais.cdo.impl.test.bootstrap.provider.metadata.TestRelationMetadata;
 import com.buschmais.cdo.spi.datastore.*;
 import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
+import com.buschmais.cdo.spi.reflection.AnnotatedElement;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
@@ -13,7 +15,7 @@ import com.buschmais.cdo.spi.reflection.AnnotatedType;
 import java.util.Collection;
 import java.util.Map;
 
-public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D, TestEntityMetadata, String> {
+public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D, TestEntityMetadata, String, TestRelationMetadata, String> {
 
     private CdoUnit cdoUnit;
 
@@ -22,8 +24,8 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
     }
 
     @Override
-    public DatastoreMetadataFactory<TestEntityMetadata, String> getMetadataFactory() {
-        return new DatastoreMetadataFactory<TestEntityMetadata, String>() {
+    public DatastoreMetadataFactory<TestEntityMetadata, String, TestRelationMetadata, String> getMetadataFactory() {
+        return new DatastoreMetadataFactory<TestEntityMetadata, String, TestRelationMetadata, String>() {
             @Override
             public TestEntityMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
                 return new TestEntityMetadata(annotatedType.getAnnotatedElement().getName());
@@ -60,7 +62,7 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
             }
 
             @Override
-            public <RelationMetadata> RelationMetadata createRelationMetadata(PropertyMethod propertyMethod) {
+            public TestRelationMetadata createRelationMetadata(AnnotatedElement<?> annotatedElement, Map<Class<?>, TypeMetadata> metadataByType) {
                 return null;
             }
 

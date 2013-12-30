@@ -3,14 +3,16 @@ package com.buschmais.cdo.store.json.impl;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
+import com.buschmais.cdo.spi.reflection.AnnotatedElement;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
 import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
+import com.buschmais.cdo.store.json.impl.metadata.JsonRelationMetadata;
 
 import java.util.Map;
 
-public class JsonMetadataFactory implements DatastoreMetadataFactory<JsonNodeMetadata, String> {
+public class JsonMetadataFactory implements DatastoreMetadataFactory<JsonNodeMetadata, String, JsonRelationMetadata, String> {
 
     @Override
     public JsonNodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
@@ -48,7 +50,7 @@ public class JsonMetadataFactory implements DatastoreMetadataFactory<JsonNodeMet
     }
 
     @Override
-    public <RelationMetadata> RelationMetadata createRelationMetadata(PropertyMethod propertyMethod) {
+    public JsonRelationMetadata createRelationMetadata(AnnotatedElement<?> annotatedElement, Map<Class<?>, TypeMetadata> metadataByType) {
         return null;
     }
 

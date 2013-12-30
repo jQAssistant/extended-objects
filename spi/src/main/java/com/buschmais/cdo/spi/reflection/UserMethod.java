@@ -16,4 +16,8 @@ public class UserMethod extends AbstractAnnotatedElement<Method> implements Anno
         super(method);
     }
 
+    @Override
+    public String getName() {
+        return getAnnotatedElement().getName();
+    }
 }

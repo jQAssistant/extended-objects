@@ -24,6 +24,7 @@ public abstract class AbstractPropertyMethod extends AbstractAnnotatedElement<Me
         this.type = type;
     }
 
+    @Override
     public String getName() {
         return name;
     }

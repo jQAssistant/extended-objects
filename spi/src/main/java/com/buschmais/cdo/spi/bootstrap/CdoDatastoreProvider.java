@@ -5,6 +5,6 @@ import com.buschmais.cdo.spi.datastore.Datastore;
 
 public interface CdoDatastoreProvider {
 
-    Datastore<?, ?, ?> createDatastore(CdoUnit cdoUnit);
+    Datastore<?, ?, ?, ?, ?> createDatastore(CdoUnit cdoUnit);
 
 }

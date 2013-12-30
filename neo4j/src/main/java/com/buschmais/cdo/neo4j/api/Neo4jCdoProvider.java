@@ -15,7 +15,7 @@ public class Neo4jCdoProvider implements CdoDatastoreProvider {
     private static final Logger LOG = LoggerFactory.getLogger(Neo4jCdoProvider.class);
 
     @Override
-    public Datastore<?, ?, ?> createDatastore(CdoUnit cdoUnit) {
+    public Datastore<?, ?, ?, ?, ?> createDatastore(CdoUnit cdoUnit) {
         URI uri = cdoUnit.getUri();
 
         DatastoreFactory datastoreFactory = lookupFactory(uri);
@@ -28,7 +28,8 @@ public class Neo4jCdoProvider implements CdoDatastoreProvider {
 
     }
 
-    @SuppressWarnings("unchecked") DatastoreFactory lookupFactory(URI uri) {
+    @SuppressWarnings("unchecked")
+    DatastoreFactory lookupFactory(URI uri) {
         String factoryClass = getFactoryClassName(uri);
         LOG.debug("try to lookup provider-class {}", factoryClass);
 

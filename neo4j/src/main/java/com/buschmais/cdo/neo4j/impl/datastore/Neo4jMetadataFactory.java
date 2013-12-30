@@ -11,16 +11,19 @@ import com.buschmais.cdo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
+import com.buschmais.cdo.spi.reflection.AnnotatedElement;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
+import org.neo4j.graphdb.RelationshipType;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 
-public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label> {
+public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label, RelationshipMetadata, RelationshipType> {
 
     @Override
     public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
@@ -74,13 +77,19 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
     }
 
     @Override
-    public RelationshipMetadata createRelationMetadata(PropertyMethod propertyMethod) {
-        Relation relation = propertyMethod.getAnnotationOfProperty(Relation.class);
-        String name = relation != null ? relation.value() : StringUtils.capitalize(propertyMethod.getName());
+    public RelationshipMetadata createRelationMetadata(AnnotatedElement<?> annotatedElement, Map<Class<?>, TypeMetadata> metadataByType) {
+        Relation relation;
+        if (annotatedElement instanceof PropertyMethod) {
+            relation = ((PropertyMethod) annotatedElement).getAnnotationOfProperty(Relation.class);
+        } else {
+            relation = annotatedElement.getAnnotation(Relation.class);
+        }
+        String name = relation != null ? relation.value() : StringUtils.capitalize(annotatedElement.getName());
         DynamicRelationshipType relationshipType = DynamicRelationshipType.withName(name);
         return new RelationshipMetadata(relationshipType);
     }
 
+    @Override
     public RelationTypeMetadata.Direction getRelationDirection(PropertyMethod propertyMethod) {
         Relation.Incoming incoming = propertyMethod.getAnnotationOfProperty(Relation.Incoming.class);
         Relation.Outgoing outgoing = propertyMethod.getAnnotationOfProperty(Relation.Outgoing.class);

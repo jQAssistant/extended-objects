@@ -7,7 +7,7 @@ import java.lang.annotation.Annotation;
  *
  * @param <AE> The annotated element type.
  */
-public class AbstractAnnotatedElement<AE extends java.lang.reflect.AnnotatedElement> implements AnnotatedElement<AE> {
+public abstract class AbstractAnnotatedElement<AE extends java.lang.reflect.AnnotatedElement> implements AnnotatedElement<AE> {
 
     private AE annotated;
 

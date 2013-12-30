@@ -20,7 +20,7 @@ public interface AnnotatedElement<AE extends java.lang.reflect.AnnotatedElement>
      * Return an annotation identified by its type.
      *
      * @param annotation The annotation type.
-     * @param <T>        The annotationt type.
+     * @param <T>        The annotation type.
      * @return The annotation or <code>null</code>.
      */
     <T extends Annotation> T getAnnotation(Class<T> annotation);
@@ -33,4 +33,11 @@ public interface AnnotatedElement<AE extends java.lang.reflect.AnnotatedElement>
      * @return The annotation or <code>null</code>.
      */
     <T extends Annotation, M extends Annotation> T getByMetaAnnotation(Class<M> metaAnnotation);
+
+    /**
+     * Return the name of the annotated element, e.g. the simple name of a class or method.
+     *
+     * @return The name of the annotated element.
+     */
+    String getName();
 }

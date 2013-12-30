@@ -29,7 +29,7 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
     private CdoUnit cdoUnit;
     private MetadataProvider metadataProvider;
     private ClassLoader classLoader;
-    private Datastore<?, ?, ?> datastore;
+    private Datastore<?, ?, ?, ?, ?> datastore;
     private ValidatorFactory validatorFactory;
     private TransactionAttribute defaultTransactionAttribute;
 

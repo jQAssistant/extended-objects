@@ -7,7 +7,7 @@ import com.buschmais.cdo.spi.datastore.Datastore;
 public class TestCdoProvider implements CdoDatastoreProvider {
 
     @Override
-    public Datastore<?, ? ,?> createDatastore(CdoUnit cdoUnit) {
+    public Datastore<?, ?, ?, ?, ?> createDatastore(CdoUnit cdoUnit) {
         return new TestCdoDatastore(cdoUnit);
     }
 }

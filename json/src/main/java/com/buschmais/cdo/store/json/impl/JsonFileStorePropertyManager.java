@@ -7,10 +7,10 @@ import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonEnumPropertyMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonPrimitivePropertyMetadata;
-import com.buschmais.cdo.store.json.impl.metadata.JsonRelationPropertyMetadata;
+import com.buschmais.cdo.store.json.impl.metadata.JsonRelationMetadata;
 import org.codehaus.jackson.node.ObjectNode;
 
-public class JsonFileStorePropertyManager implements DatastorePropertyManager<ObjectNode, JsonRelation, JsonPrimitivePropertyMetadata, JsonEnumPropertyMetadata, JsonRelationPropertyMetadata> {
+public class JsonFileStorePropertyManager implements DatastorePropertyManager<ObjectNode, JsonRelation, JsonPrimitivePropertyMetadata, JsonEnumPropertyMetadata, JsonRelationMetadata> {
 
     @Override
     public void setProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {
@@ -48,22 +48,22 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
     }
 
     @Override
-    public boolean hasSingleRelation(ObjectNode source, RelationTypeMetadata<JsonRelationPropertyMetadata> metadata, RelationTypeMetadata.Direction direction) {
+    public boolean hasSingleRelation(ObjectNode source, RelationTypeMetadata<JsonRelationMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return false;
     }
 
     @Override
-    public JsonRelation getSingleRelation(ObjectNode source, RelationTypeMetadata<JsonRelationPropertyMetadata> metadata, RelationTypeMetadata.Direction direction) {
+    public JsonRelation getSingleRelation(ObjectNode source, RelationTypeMetadata<JsonRelationMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return null;
     }
 
     @Override
-    public Iterable<JsonRelation> getRelations(ObjectNode source, RelationTypeMetadata<JsonRelationPropertyMetadata> metadata, RelationTypeMetadata.Direction direction) {
+    public Iterable<JsonRelation> getRelations(ObjectNode source, RelationTypeMetadata<JsonRelationMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return null;
     }
 
     @Override
-    public JsonRelation createRelation(ObjectNode source, RelationTypeMetadata<JsonRelationPropertyMetadata> metadata, RelationTypeMetadata.Direction direction, ObjectNode target) {
+    public JsonRelation createRelation(ObjectNode source, RelationTypeMetadata<JsonRelationMetadata> metadata, RelationTypeMetadata.Direction direction, ObjectNode target) {
         return null;
     }
 
