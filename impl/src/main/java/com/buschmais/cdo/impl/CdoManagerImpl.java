@@ -131,7 +131,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public <T, M> CompositeObject migrate(T instance, Class<M> targetType, Class<?>... targetTypes) {
-        return migrate(instance, null, targetTypes);
+        return migrate(instance, null, targetType, targetTypes);
     }
 
     @Override

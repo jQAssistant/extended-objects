@@ -27,7 +27,7 @@ public class AbstractProxyMethodService<E, M extends ProxyMethod<?>> implements 
     public Object invoke(E element, Object instance, Method method, Object[] args) throws Exception {
         ProxyMethod<E> proxyMethod = proxyMethods.get(method);
         if (proxyMethod == null) {
-            throw new CdoException("Cannot find query for method " + method.getName());
+            throw new CdoException("Cannot find proxy for method '" + method.toGenericString() + "'");
         }
         return proxyMethod.invoke(element, instance, args);
     }

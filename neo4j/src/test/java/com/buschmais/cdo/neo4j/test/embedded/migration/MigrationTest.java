@@ -6,6 +6,7 @@ import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.migration.composite.A;
 import com.buschmais.cdo.neo4j.test.embedded.migration.composite.B;
 import com.buschmais.cdo.neo4j.test.embedded.migration.composite.C;
+import com.buschmais.cdo.neo4j.test.embedded.migration.composite.D;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -15,7 +16,7 @@ public class MigrationTest extends AbstractEmbeddedCdoManagerTest {
 
     @Override
     protected Class<?>[] getTypes() {
-        return new Class<?>[]{A.class, B.class, C.class};
+        return new Class<?>[]{A.class, B.class, C.class, D.class};
     }
 
     @Test
@@ -28,6 +29,20 @@ public class MigrationTest extends AbstractEmbeddedCdoManagerTest {
         cdoManager.currentTransaction().begin();
         B b = cdoManager.migrate(a, B.class);
         assertThat(a == b, equalTo(false));
+        assertThat(b.getValue(), equalTo("Value"));
+        cdoManager.currentTransaction().commit();
+        cdoManager.close();
+    }
+
+    @Test
+    public void compositeObject() {
+        CdoManager cdoManager = getCdoManagerFactory().createCdoManager();
+        cdoManager.currentTransaction().begin();
+        A a = cdoManager.create(A.class);
+        a.setValue("Value");
+        cdoManager.currentTransaction().commit();
+        cdoManager.currentTransaction().begin();
+        B b = cdoManager.migrate(a, B.class, D.class).as(B.class);
         assertThat(b.getValue(), equalTo("Value"));
         cdoManager.currentTransaction().commit();
         cdoManager.close();
@@ -61,13 +76,13 @@ public class MigrationTest extends AbstractEmbeddedCdoManagerTest {
         a.setValue("Value");
         cdoManager.currentTransaction().commit();
         cdoManager.currentTransaction().begin();
-        CdoManager.MigrationStrategy<A, CompositeObject> migrationStrategy = new CdoManager.MigrationStrategy<A, CompositeObject>() {
+        CdoManager.MigrationStrategy<A, C> migrationStrategy = new CdoManager.MigrationStrategy<A, C>() {
             @Override
-            public void migrate(A instance, CompositeObject target) {
-                target.as(C.class).setName(instance.getValue());
+            public void migrate(A instance, C target) {
+                target.setName(instance.getValue());
             }
         };
-        C c = cdoManager.migrate(a, migrationStrategy, CompositeObject.class, C.class).as(C.class);
+        C c = cdoManager.migrate(a, migrationStrategy, C.class, D.class).as(C.class);
         assertThat(c.getName(), equalTo("Value"));
         cdoManager.currentTransaction().commit();
         cdoManager.close();
