@@ -11,8 +11,8 @@ public class EntityTypeMetadata<DatastoreMetadata extends DatastoreEntityMetadat
 
     private IndexedPropertyMethodMetadata indexedProperty;
 
-    public EntityTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata> methodMetadatas, IndexedPropertyMethodMetadata indexedProperty, DatastoreMetadata datastoreMetadata) {
-        super(annotatedType, superTypes, methodMetadatas, datastoreMetadata);
+    public EntityTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata> properties, IndexedPropertyMethodMetadata indexedProperty, DatastoreMetadata datastoreMetadata) {
+        super(annotatedType, superTypes, properties, datastoreMetadata);
         this.indexedProperty = indexedProperty;
     }
 

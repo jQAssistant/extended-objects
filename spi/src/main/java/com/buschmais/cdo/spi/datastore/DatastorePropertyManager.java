@@ -9,13 +9,13 @@ import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
  *
  * @param <Entity>                    The type of entities used by the datastore.
  * @param <Relation>                  The type of relations used by the datastore.
- * @param <PrimitivePropertyDatastoreMetadata>
+ * @param <PrimitivePropertyMetadata>
  *                                    The type of metadata for primitive properties used by the datastore.
- * @param <EnumPropertyDatastoreMetadata>
+ * @param <EnumPropertyMetadata>
  *                                    The type of metadata for enum properties used by the datastore.
- * @param <RelationDatastoreMetadata> The type of metadata for relations used by the datastore.
+ * @param <RelationMetadata> The type of metadata for relations used by the datastore.
  */
-public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDatastoreMetadata, EnumPropertyDatastoreMetadata, RelationDatastoreMetadata> {
+public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyMetadata, EnumPropertyMetadata, RelationMetadata> {
 
     /**
      * Set the value of a primitive property.
@@ -24,7 +24,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param metadata The property metadata.
      * @param value    The value
      */
-    void setProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyDatastoreMetadata> metadata, Object value);
+    void setProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata, Object value);
 
     /**
      * Determine if the value of a primitive property is set.
@@ -32,7 +32,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param entity   The entity.
      * @param metadata The property metadata.
      */
-    boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyDatastoreMetadata> metadata);
+    boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
 
     /**
      * Remove the value of a primitive property.
@@ -40,7 +40,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param entity   The entity.
      * @param metadata The property metadata.
      */
-    void removeProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyDatastoreMetadata> metadata);
+    void removeProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
 
     /**
      * Get the value of a primitive property.
@@ -48,7 +48,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param entity   The entity.
      * @param metadata The property metadata.
      */
-    Object getProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyDatastoreMetadata> metadata);
+    Object getProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
 
     /**
      * Get the value of an enumeration property.
@@ -56,7 +56,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param entity   The entity.
      * @param metadata The property metadata.
      */
-    Enum<?> getEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyDatastoreMetadata> metadata);
+    Enum<?> getEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata);
 
     /**
      * Set the value of an enumeration property.
@@ -65,7 +65,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param metadata The property metadata.
      * @param value    The value
      */
-    void setEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyDatastoreMetadata> metadata, Enum<?> value);
+    void setEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata, Enum<?> value);
 
 
     /**
@@ -76,7 +76,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param direction The direction.
      * @return <code>true</code> if an relation exists, <code>false</code> otherwise.
      */
-    boolean hasSingleRelation(Entity source, RelationTypeMetadata<RelationDatastoreMetadata> metadata, RelationTypeMetadata.Direction direction);
+    boolean hasSingleRelation(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction);
 
     /**
      * Return a single relation (i.e. representing a direct reference) between two entities.
@@ -86,7 +86,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param direction The direction.
      * @return The relation.
      */
-    Relation getSingleRelation(Entity source, RelationTypeMetadata<RelationDatastoreMetadata> metadata, RelationTypeMetadata.Direction direction);
+    Relation getSingleRelation(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction);
 
     /**
      * Return all relations (i.e. representing collections) between entities.
@@ -96,7 +96,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param direction The direction.
      * @return The relations.
      */
-    Iterable<Relation> getRelations(Entity source, RelationTypeMetadata<RelationDatastoreMetadata> metadata, RelationTypeMetadata.Direction direction);
+    Iterable<Relation> getRelations(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction);
 
     /**
      * Create a relations (i.e. within collections) between entities.
@@ -106,7 +106,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyDat
      * @param direction The direction.
      * @return The relations.
      */
-    Relation createRelation(Entity source, RelationTypeMetadata<RelationDatastoreMetadata> metadata, RelationTypeMetadata.Direction direction, Entity target);
+    Relation createRelation(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction, Entity target);
 
     /**
      * Delete a relation between entities.

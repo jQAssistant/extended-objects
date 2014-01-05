@@ -19,16 +19,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class InstanceManager<EntityId, Entity> {
+public class InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> {
 
-    private final MetadataProvider metadataProvider;
-    private final DatastoreSession<EntityId, Entity, ?, ?, ?, ?> datastoreSession;
+    private final MetadataProvider<?, EntityDiscriminator, ?, RelationDiscriminator> metadataProvider;
+    private final DatastoreSession<EntityId, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> datastoreSession;
     private final ClassLoader classLoader;
     private final TransactionalCache cache;
     private final ProxyMethodService<Entity, ?> proxyMethodService;
     private final InterceptorFactory interceptorFactory;
 
-    public InstanceManager(MetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, ?, ?, ?> datastoreSession, ClassLoader classLoader, CdoTransaction cdoTransaction, TransactionalCache cache, InterceptorFactory interceptorFactory) {
+    public InstanceManager(MetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> datastoreSession, ClassLoader classLoader, CdoTransaction cdoTransaction, TransactionalCache cache, InterceptorFactory interceptorFactory) {
         this.metadataProvider = metadataProvider;
         this.datastoreSession = datastoreSession;
         this.classLoader = classLoader;
@@ -38,8 +38,12 @@ public class InstanceManager<EntityId, Entity> {
         proxyMethodService = new EntityProxyMethodService(metadataProvider, this, propertyManager, cdoTransaction, interceptorFactory, datastoreSession);
     }
 
+    public <T> T getRelationInstance(Relation relation) {
+        return null;
+    }
+
     public <T> T getInstance(Entity entity) {
-        Set<?> discriminators = datastoreSession.getDiscriminators(entity);
+        Set<EntityDiscriminator> discriminators = datastoreSession.getDiscriminators(entity);
         if (discriminators == null || discriminators.isEmpty()) {
             throw new CdoException("Cannot determine type discriminators for entity '" + entity + "'");
         }

@@ -5,9 +5,9 @@ import com.buschmais.cdo.api.proxy.ProxyMethod;
 
 public class HashCodeMethod<Entity> implements ProxyMethod<Entity> {
 
-    private DatastoreSession<?, Entity, ?, ?, ?, ?> datastoreSession;
+    private DatastoreSession<?, Entity, ?, ?, ?, ?, ?, ?> datastoreSession;
 
-    public HashCodeMethod(DatastoreSession<?, Entity,?, ?, ?, ?> datastoreSession) {
+    public HashCodeMethod(DatastoreSession<?, Entity, ?, ?, ?, ?, ?, ?> datastoreSession) {
         this.datastoreSession = datastoreSession;
     }
 

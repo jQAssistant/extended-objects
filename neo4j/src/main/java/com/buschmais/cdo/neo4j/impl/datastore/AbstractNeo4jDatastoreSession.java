@@ -5,6 +5,7 @@ import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.neo4j.api.annotation.Cypher;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
+import com.buschmais.cdo.neo4j.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
@@ -16,7 +17,7 @@ import org.neo4j.graphdb.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, NodeMetadata, Label, Long, Relationship> {
+public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, NodeMetadata, Label, Long, Relationship, RelationshipMetadata, RelationshipType> {
 
     private GDS graphDatabaseService;
     private Neo4jPropertyManager propertyManager;

@@ -21,14 +21,14 @@ import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> implements CdoManager {
 
     private final TransactionalCache cache;
-    private final MetadataProvider metadataProvider;
+    private final MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider;
     private final CdoTransaction cdoTransaction;
-    private final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation> datastoreSession;
-    private final InstanceManager<EntityId, Entity> instanceManager;
+    private final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession;
+    private final InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> instanceManager;
     private final InterceptorFactory interceptorFactory;
     private final InstanceValidator instanceValidator;
 
-    public CdoManagerImpl(MetadataProvider metadataProvider, CdoTransaction cdoTransaction, TransactionalCache cache, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation> datastoreSession, InstanceManager instanceManager, InterceptorFactory interceptorFactory, InstanceValidator instanceValidator) {
+    public CdoManagerImpl(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, CdoTransaction cdoTransaction, TransactionalCache cache, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> instanceManager, InterceptorFactory interceptorFactory, InstanceValidator instanceValidator) {
         this.metadataProvider = metadataProvider;
         this.cdoTransaction = cdoTransaction;
         this.cache = cache;
@@ -56,7 +56,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
             throw new CdoException("Type " + type.getName() + " has no discriminator (i.e. cannot be identified in datastore).");
         }
         final ResultIterator<Entity> iterator = datastoreSession.find(entityTypeMetadata, entityDiscriminator, value);
-        return new TransactionalResultIterable<T>(new AbstractResultIterable<T>() {
+        return new TransactionalResultIterable<>(new AbstractResultIterable<T>() {
             @Override
             public ResultIterator<T> iterator() {
                 return new ResultIterator<T>() {
@@ -91,33 +91,30 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = getEffectiveTypes(type, types);
         Set<EntityDiscriminator> entityDiscriminators = metadataProvider.getDiscriminators(effectiveTypes);
         Entity entity = datastoreSession.create(effectiveTypes, entityDiscriminators);
-        CompositeObject instance = instanceManager.getInstance(entity);
-        return instance;
+        return instanceManager.getInstance(entity);
     }
 
     public <T> T create(Class<T> type) {
-        T instance = create(type, new Class<?>[0]).as(type);
-        return instance;
-    }
+        return create(type, new Class<?>[0]).as(type);    }
 
     @Override
     public <S, R, T> R create(S source, Class<R> relationType, T target) {
         Entity sourceEntity = instanceManager.getEntity(source);
-        List<Class<?>> sourceTypes = Arrays.asList(source.getClass().getInterfaces());
-        RelationTypeMetadata<RelationTypeMetadata> relationMetadata = metadataProvider.getRelationMetadata(relationType);
+        Set<Class<?>> sourceTypes = new HashSet<>(Arrays.asList(source.getClass().getInterfaces()));
+        RelationTypeMetadata<RelationMetadata> relationTypeMetadata = metadataProvider.getRelationMetadata(relationType);
         Entity targetEntity = instanceManager.getEntity(target);
-        List<Class<?>> targetTypes = Arrays.asList(target.getClass().getInterfaces());
-        RelationTypeMetadata.Direction direction = metadataProvider.getRelationDirection(sourceTypes, relationMetadata, targetTypes);
-        datastoreSession.getDatastorePropertyManager().createRelation(sourceEntity, relationMetadata.getDatastoreMetadata(), direction, targetEntity);
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        Set<Class<?>> targetTypes = new HashSet<>(Arrays.asList(target.getClass().getInterfaces()));
+        RelationTypeMetadata.Direction direction = metadataProvider.getRelationDirection(sourceTypes, relationTypeMetadata, targetTypes);
+        Relation relation = datastoreSession.getDatastorePropertyManager().createRelation(sourceEntity, relationTypeMetadata, direction, targetEntity);
+        return instanceManager.getRelationInstance(relation);
     }
 
     @Override
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
         Entity entity = instanceManager.getEntity(instance);
         Set<EntityDiscriminator> entityDiscriminators = datastoreSession.getDiscriminators(entity);
-        TypeMetadataSet types = metadataProvider.getTypes(entityDiscriminators);
-        TypeMetadataSet effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
+        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = metadataProvider.getTypes(entityDiscriminators);
+        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
         Set<EntityDiscriminator> targetEntityDiscriminators = metadataProvider.getDiscriminators(effectiveTargetTypes);
         datastoreSession.migrate(entity, types, entityDiscriminators, effectiveTargetTypes, targetEntityDiscriminators);
         instanceManager.removeInstance(instance);

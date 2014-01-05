@@ -2,6 +2,7 @@ package com.buschmais.cdo.neo4j.api.annotation;
 
 import com.buschmais.cdo.spi.annotation.RelationDefinition;
 
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

@@ -14,7 +14,7 @@ public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instan
     private Entity entity;
     private RelationTypeMetadata metadata;
     private RelationTypeMetadata.Direction direction;
-    private InstanceManager<?, Entity> instanceManager;
+    private InstanceManager<?, Entity, ?, ?, ?, ?> instanceManager;
     private PropertyManager<?, Entity, ?, ?> propertyManager;
     private InterceptorFactory interceptorFactory;
 

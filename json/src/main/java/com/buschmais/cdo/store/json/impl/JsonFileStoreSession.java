@@ -8,6 +8,7 @@ import com.buschmais.cdo.spi.datastore.DatastoreTransaction;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
+import com.buschmais.cdo.store.json.impl.metadata.JsonRelationMetadata;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -21,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, JsonNodeMetadata, String, Long, JsonRelation> {
+public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, JsonNodeMetadata, String, Long, JsonRelation, JsonRelationMetadata, String> {
 
     private static final String ID_PROPERTY = "id";
     private static final String TYPES_PROPERTY = "types";

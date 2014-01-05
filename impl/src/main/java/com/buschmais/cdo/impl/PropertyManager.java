@@ -23,7 +23,7 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      *
      * @param datastorePropertyManager
      */
-    public PropertyManager(DatastoreSession<EntityId, Entity, ?, ?, RelationId, Relation> datastorePropertyManager) {
+    public PropertyManager(DatastoreSession<EntityId, Entity, ?, ?, RelationId, Relation, ?, ?> datastorePropertyManager) {
         this.datastorePropertyManager = datastorePropertyManager.getDatastorePropertyManager();
     }
 

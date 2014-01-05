@@ -32,7 +32,7 @@ public abstract class AbstractAnnotatedElement<AE extends java.lang.reflect.Anno
 
     @Override
     public <T extends Annotation, M extends Annotation> T getByMetaAnnotation(Class<M> type) {
-        for (Annotation annotation : annotated.getDeclaredAnnotations()) {
+        for (Annotation annotation : annotated.getAnnotations()) {
             if (annotation.annotationType().isAnnotationPresent(type)) {
                 return (T) annotation;
             }
@@ -56,7 +56,7 @@ public abstract class AbstractAnnotatedElement<AE extends java.lang.reflect.Anno
 
     @Override
     public String toString() {
-        return "AbstractAnnotatedElement{" +
+        return this.getClass().getSimpleName() + "{" +
                 "annotated=" + annotated +
                 '}';
     }

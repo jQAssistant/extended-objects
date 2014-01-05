@@ -55,5 +55,5 @@ public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata
 
     RelationTypeMetadata<RelationMetadata> getRelationMetadata(Class<?> relationType);
 
-    RelationTypeMetadata.Direction getRelationDirection(List<Class<?>> sourceTypes, RelationTypeMetadata<RelationTypeMetadata> relationMetadata, List<Class<?>> targetTypes);
+    RelationTypeMetadata.Direction getRelationDirection(Set<Class<?>> sourceTypes, RelationTypeMetadata<RelationMetadata> relationMetadata, Set<Class<?>> targetTypes);
 }

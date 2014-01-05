@@ -9,13 +9,13 @@ import java.util.Set;
 /**
  * Defines the interface of a datastore session, e.g. a connection to the datastore.
  *
- * @param <EntityId>      The type of entity ids used by the datastore.
- * @param <Entity>        The type of entities used by the datastore.
- * @param <Discriminator> The type of entity discriminators used by the datastore.
- * @param <RelationId>    The type of relation ids used by the datastore.
- * @param <Relation>      The type of relations used by the datastore.
+ * @param <EntityId>            The type of entity ids used by the datastore.
+ * @param <Entity>              The type of entities used by the datastore.
+ * @param <EntityDiscriminator> The type of entity discriminators used by the datastore.
+ * @param <RelationId>          The type of relation ids used by the datastore.
+ * @param <Relation>            The type of relations used by the datastore.
  */
-public interface DatastoreSession<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator, RelationId, Relation> {
+public interface DatastoreSession<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> {
 
     /**
      * Return the instance of the datastore transaction associated with the session.
@@ -38,7 +38,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param entity The entity.
      * @return The set of all type discriminators associated with the entity.
      */
-    Set<Discriminator> getDiscriminators(Entity entity);
+    Set<EntityDiscriminator> getDiscriminators(Entity entity);
 
     /**
      * Return the id of an entity.
@@ -55,7 +55,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param discriminators The set of discriminators.
      * @return The created entity.
      */
-    Entity create(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<Discriminator> discriminators);
+    Entity create(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators);
 
     /**
      * Delete an entity.
@@ -72,7 +72,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param value         The primitive value (e.g. indexed value).
      * @return An iterator returning matching entities.
      */
-    ResultIterator<Entity> find(EntityTypeMetadata<EntityMetadata> type, Discriminator discriminator, Object value);
+    ResultIterator<Entity> find(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator discriminator, Object value);
 
     /**
      * Execute a query.
@@ -93,7 +93,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param targetTypes          The entity types after migration.
      * @param targetDiscriminators The discriminators of the entity after migration.
      */
-    void migrate(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<Discriminator> discriminators, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<Discriminator> targetDiscriminators);
+    void migrate(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<EntityDiscriminator> targetDiscriminators);
 
     /**
      * Flush the given entity to the datastore.
@@ -108,6 +108,6 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      *
      * @return The {@link DatastorePropertyManager}.
      */
-    DatastorePropertyManager getDatastorePropertyManager();
+    DatastorePropertyManager<Entity, Relation, ?, ?, RelationMetadata> getDatastorePropertyManager();
 
 }

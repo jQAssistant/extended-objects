@@ -19,7 +19,7 @@ public class AbstractProxyMethodService<E, M extends ProxyMethod<?>> implements 
         this.instanceManager = instanceManager;
     }
 
-    protected InstanceManager<?, ?> getInstanceManager() {
+    protected InstanceManager<?, ?, ?, ?, ?, ?> getInstanceManager() {
         return instanceManager;
     }
 
