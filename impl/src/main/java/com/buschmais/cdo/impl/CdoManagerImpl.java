@@ -69,7 +69,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
                     @Override
                     public T next() {
                         Entity entity = iterator.next();
-                        return instanceManager.getInstance(entity);
+                        return instanceManager.getEntityInstance(entity);
                     }
 
                     @Override
@@ -91,11 +91,12 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = getEffectiveTypes(type, types);
         Set<EntityDiscriminator> entityDiscriminators = metadataProvider.getDiscriminators(effectiveTypes);
         Entity entity = datastoreSession.create(effectiveTypes, entityDiscriminators);
-        return instanceManager.getInstance(entity);
+        return instanceManager.getEntityInstance(entity);
     }
 
     public <T> T create(Class<T> type) {
-        return create(type, new Class<?>[0]).as(type);    }
+        return create(type, new Class<?>[0]).as(type);
+    }
 
     @Override
     public <S, R, T> R create(S source, Class<R> relationType, T target) {
@@ -106,19 +107,19 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         Set<Class<?>> targetTypes = new HashSet<>(Arrays.asList(target.getClass().getInterfaces()));
         RelationTypeMetadata.Direction direction = metadataProvider.getRelationDirection(sourceTypes, relationTypeMetadata, targetTypes);
         Relation relation = datastoreSession.getDatastorePropertyManager().createRelation(sourceEntity, relationTypeMetadata, direction, targetEntity);
-        return instanceManager.getRelationInstance(relation);
+        return instanceManager.getRelationInstance(sourceEntity, relation, direction, targetEntity);
     }
 
     @Override
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
         Entity entity = instanceManager.getEntity(instance);
-        Set<EntityDiscriminator> entityDiscriminators = datastoreSession.getDiscriminators(entity);
+        Set<EntityDiscriminator> entityDiscriminators = datastoreSession.getEntityDiscriminators(entity);
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = metadataProvider.getTypes(entityDiscriminators);
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
         Set<EntityDiscriminator> targetEntityDiscriminators = metadataProvider.getDiscriminators(effectiveTargetTypes);
         datastoreSession.migrate(entity, types, entityDiscriminators, effectiveTargetTypes, targetEntityDiscriminators);
         instanceManager.removeInstance(instance);
-        CompositeObject migratedInstance = instanceManager.getInstance(entity);
+        CompositeObject migratedInstance = instanceManager.getEntityInstance(entity);
         if (migrationStrategy != null) {
             migrationStrategy.migrate(instance, migratedInstance.as(targetType));
         }
@@ -189,7 +190,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         Collection instances = cache.values();
         for (Object instance : instances) {
             Entity entity = instanceManager.getEntity(instance);
-            datastoreSession.flush(entity);
+            datastoreSession.flushEntity(entity);
         }
     }
 

@@ -46,7 +46,7 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public Set<String> getDiscriminators(ObjectNode jsonNodes) {
+    public Set<String> getEntityDiscriminators(ObjectNode jsonNodes) {
         ArrayNode typesNode = (ArrayNode) jsonNodes.get(TYPES_PROPERTY);
         Set<String> discriminators = new HashSet<>();
         for (JsonNode jsonNode : typesNode) {
@@ -57,8 +57,18 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
+    public String getRelationDiscriminator(JsonRelation jsonRelation) {
+        return null;
+    }
+
+    @Override
     public UUID getId(ObjectNode jsonNode) {
         return UUID.fromString(jsonNode.get(ID_PROPERTY).asText());
+    }
+
+    @Override
+    public Long getRelationId(JsonRelation jsonRelation) {
+        return null;
     }
 
     @Override
@@ -98,13 +108,17 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public void flush(ObjectNode objectNode) {
+    public void flushEntity(ObjectNode objectNode) {
         File file = getFile(objectNode);
         try {
             mapper.writeValue(new FileWriter(file), objectNode);
         } catch (IOException e) {
             throw new CdoException("Cannot write file " + file.getName());
         }
+    }
+
+    @Override
+    public void flushRelation(JsonRelation jsonRelation) {
     }
 
     @Override

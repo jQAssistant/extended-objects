@@ -4,33 +4,37 @@ import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 
-import java.util.Collection;
+public class CacheSynchronization<Entity, Relation> implements CdoTransaction.Synchronization {
 
-public class CacheSynchronization<Entity> implements CdoTransaction.Synchronization {
+    private InstanceManager<?, Entity, ?, ?, Relation, ?> instanceManager;
 
-    private InstanceManager<?, Entity, ?, ?, ?, ?> instanceManager;
+    private TransactionalCache<?> entityCache;
 
-    private TransactionalCache<?> transactionalCache;
+    private TransactionalCache<?> relationCache;
 
-    private DatastoreSession<?, Entity, ?, ?, ?, ?, ?, ?> datastoreSession;
+    private DatastoreSession<?, Entity, ?, ?, ?, Relation, ?, ?> datastoreSession;
 
-    public CacheSynchronization(InstanceManager<?, Entity, ?, ? ,? ,?> instanceManager, TransactionalCache<?> transactionalCache, DatastoreSession<?, Entity, ?, ?, ?, ?, ? ,?> datastoreSession) {
+    public CacheSynchronization(InstanceManager<?, Entity, ?, ?, Relation, ?> instanceManager, TransactionalCache<?> entityCache, TransactionalCache<?> relationCache, DatastoreSession<?, Entity, ?, ?, ?, Relation, ?, ?> datastoreSession) {
         this.instanceManager = instanceManager;
-        this.transactionalCache = transactionalCache;
+        this.entityCache = entityCache;
+        this.relationCache = relationCache;
         this.datastoreSession = datastoreSession;
     }
 
     @Override
     public void beforeCompletion() {
-        Collection instances = transactionalCache.values();
-        for (Object instance : instances) {
+        for (Object instance : relationCache.values()) {
+            Relation relation = instanceManager.getRelation(instance);
+            datastoreSession.flushRelation(relation);
+        }
+        for (Object instance : entityCache.values()) {
             Entity entity = instanceManager.getEntity(instance);
-            datastoreSession.flush(entity);
+            datastoreSession.flushEntity(entity);
         }
     }
 
     @Override
     public void afterCompletion(boolean committed) {
-        transactionalCache.afterCompletion(committed);
+        entityCache.afterCompletion(committed);
     }
 }

@@ -9,7 +9,7 @@ public abstract class AbstractDatastoreTypeMetadata<DatastoreMetadata> extends A
 
     private DatastoreMetadata datastoreMetadata;
 
-    protected AbstractDatastoreTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata> properties, DatastoreMetadata datastoreMetadata) {
+    protected AbstractDatastoreTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, DatastoreMetadata datastoreMetadata) {
         super(annotatedType, superTypes, properties);
         this.datastoreMetadata = datastoreMetadata;
     }

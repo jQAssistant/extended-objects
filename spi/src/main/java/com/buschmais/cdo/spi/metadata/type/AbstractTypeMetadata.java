@@ -9,11 +9,11 @@ public abstract class AbstractTypeMetadata implements TypeMetadata {
 
     private AnnotatedType annotatedType;
 
-    private Collection<MethodMetadata> properties;
+    private Collection<MethodMetadata<?, ?>> properties;
 
     private Collection<TypeMetadata> superTypes;
 
-    protected AbstractTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata> properties) {
+    protected AbstractTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties) {
         this.annotatedType = annotatedType;
         this.superTypes = superTypes;
         this.properties = properties;
@@ -30,7 +30,7 @@ public abstract class AbstractTypeMetadata implements TypeMetadata {
     }
 
     @Override
-    public Collection<MethodMetadata> getProperties() {
+    public Collection<MethodMetadata<?, ?>> getProperties() {
         return properties;
     }
 

@@ -20,7 +20,6 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeMetadataResolver.class);
 
-    private Map<Class<?>, TypeMetadata> metadataByType;
     private Map<EntityTypeMetadata<EntityMetadata>, Set<Discriminator>> aggregatedDiscriminators = new HashMap<>();
     private Map<Discriminator, Set<EntityTypeMetadata<EntityMetadata>>> typeMetadataByDiscriminator = new HashMap<>();
 
@@ -31,7 +30,6 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      */
     public EntityTypeMetadataResolver(Map<Class<?>, TypeMetadata> metadataByType) {
         LOGGER.debug("Type metadata = '{}'", metadataByType);
-        this.metadataByType = metadataByType;
         for (TypeMetadata typeMetadata : metadataByType.values()) {
             if (typeMetadata instanceof EntityTypeMetadata) {
                 Set<Discriminator> discriminators = getAggregatedDiscriminators((EntityTypeMetadata<EntityMetadata>) typeMetadata);
@@ -84,7 +82,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * @param discriminators The discriminators.
      * @return The {@link com.buschmais.cdo.spi.datastore.TypeMetadataSet}.
      */
-    public TypeMetadataSet getTypes(Set<Discriminator> discriminators) {
+    public TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getTypes(Set<Discriminator> discriminators) {
         // Get all types matching the discriminators
         Set<EntityTypeMetadata<EntityMetadata>> allEntityTypeMetadatas = new HashSet<>();
         for (Discriminator discriminator : discriminators) {

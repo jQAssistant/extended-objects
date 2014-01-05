@@ -5,12 +5,12 @@ import com.buschmais.cdo.spi.reflection.AnnotatedType;
 
 import java.util.Collection;
 
-public interface TypeMetadata{
+public interface TypeMetadata {
 
     AnnotatedType getAnnotatedType();
 
     Collection<TypeMetadata> getSuperTypes();
 
-    Collection<MethodMetadata> getProperties();
+    Collection<MethodMetadata<?, ?>> getProperties();
 
 }

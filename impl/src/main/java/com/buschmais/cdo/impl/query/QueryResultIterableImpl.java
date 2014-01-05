@@ -62,7 +62,7 @@ class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Qu
                 }
                 Object decodedValue;
                 if (datastoreSession.isEntity(value)) {
-                    return instanceManager.getInstance(value);
+                    return instanceManager.getEntityInstance(value);
                 } else if (value instanceof List<?>) {
                     List<?> listValue = (List<?>) value;
                     List<Object> decodedList = new ArrayList<>();

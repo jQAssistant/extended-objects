@@ -38,7 +38,7 @@ public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instan
 
             @Override
             public Instance next() {
-                return instanceManager.getInstance(iterator.next());
+                return instanceManager.getEntityInstance(iterator.next());
             }
 
             @Override

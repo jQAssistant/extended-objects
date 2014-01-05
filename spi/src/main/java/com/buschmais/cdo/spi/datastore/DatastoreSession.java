@@ -38,7 +38,15 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param entity The entity.
      * @return The set of all type discriminators associated with the entity.
      */
-    Set<EntityDiscriminator> getDiscriminators(Entity entity);
+    Set<EntityDiscriminator> getEntityDiscriminators(Entity entity);
+
+    /**
+     * Return the discriminiator for the given relation.
+     *
+     * @param relation The relation.
+     * @return The discriminator.
+     */
+    RelationDiscriminator getRelationDiscriminator(Relation relation);
 
     /**
      * Return the id of an entity.
@@ -47,6 +55,14 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @return The id of the entity.
      */
     EntityId getId(Entity entity);
+
+    /**
+     * Return the id of a relation.
+     *
+     * @param relation The relation.
+     * @return The id of the relation.
+     */
+    RelationId getRelationId(Relation relation);
 
     /**
      * Create a new entity for the given types using a set of discriminators representing these types.
@@ -98,10 +114,16 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
     /**
      * Flush the given entity to the datastore.
      *
-     * @param entity The entity to flush.
+     * @param entity The entity to flushEntity.
      */
-    void flush(Entity entity);
+    void flushEntity(Entity entity);
 
+    /**
+     * Flush the given relation to the datastore.
+     *
+     * @param relation The relation to flushEntity.
+     */
+    void flushRelation(Relation relation);
 
     /**
      * Return the {@link DatastorePropertyManager} associated with this datastore session.

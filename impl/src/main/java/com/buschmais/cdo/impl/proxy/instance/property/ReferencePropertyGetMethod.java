@@ -12,6 +12,6 @@ public class ReferencePropertyGetMethod<Entity> extends AbstractPropertyMethod<E
 
     public Object invoke(Entity entity, Object instance, Object[] args) {
         Entity target = getPropertyManager().getSingleRelation(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection());
-        return target != null ? getInstanceManager().getInstance(target) : null;
+        return target != null ? getInstanceManager().getEntityInstance(target) : null;
     }
 }

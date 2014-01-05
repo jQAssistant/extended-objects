@@ -27,7 +27,7 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(CdoManagerFactoryImpl.class);
 
     private CdoUnit cdoUnit;
-    private MetadataProvider metadataProvider;
+    private MetadataProvider<?, ?, ?, ?> metadataProvider;
     private ClassLoader classLoader;
     private Datastore<?, ?, ?, ?, ?> datastore;
     private ValidatorFactory validatorFactory;
@@ -45,13 +45,13 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
         CdoDatastoreProvider cdoDatastoreProvider = CdoDatastoreProvider.class.cast(ClassHelper.newInstance(providerType));
         datastore = cdoDatastoreProvider.createDatastore(cdoUnit);
         this.defaultTransactionAttribute = cdoUnit.getDefaultTransactionAttribute();
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        classLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();
-        LOGGER.info("Using class loader '{}'.", contextClassLoader.toString());
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        final ClassLoader parentClassLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();
+        LOGGER.debug("Using parent class loader '{}'.", parentClassLoader.toString());
         classLoader = new ClassLoader() {
             @Override
             public Class<?> loadClass(String name) throws ClassNotFoundException {
-                return contextClassLoader.loadClass(name);
+                return parentClassLoader.loadClass(name);
             }
         };
         metadataProvider = new MetadataProviderImpl(cdoUnit.getTypes(), datastore);
@@ -67,15 +67,16 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
     @Override
     public CdoManager createCdoManager() {
         DatastoreSession datastoreSession = datastore.createSession();
-        TransactionalCache<?> cache = new TransactionalCache();
-        InstanceValidator instanceValidator = new InstanceValidator(validatorFactory, cache);
+        TransactionalCache<?> entityCache = new TransactionalCache();
+        TransactionalCache<?> relationCache = new TransactionalCache();
+        InstanceValidator instanceValidator = new InstanceValidator(validatorFactory, entityCache);
         CdoTransactionImpl cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction());
         InterceptorFactory interceptorFactory = new InterceptorFactory(cdoTransaction, defaultTransactionAttribute);
-        InstanceManager instanceManager = new InstanceManager(metadataProvider, datastoreSession, classLoader, cdoTransaction, cache, interceptorFactory);
+        InstanceManager<?, ?, ?, ?, ?, ?> instanceManager = new InstanceManager(metadataProvider, datastoreSession, classLoader, cdoTransaction, entityCache, relationCache, interceptorFactory);
         // Register default synchronizations.
         cdoTransaction.registerDefaultSynchronization(new ValidatorSynchronization(instanceValidator));
-        cdoTransaction.registerDefaultSynchronization(new CacheSynchronization(instanceManager, cache, datastoreSession));
-        return interceptorFactory.addInterceptor(new CdoManagerImpl(metadataProvider, cdoTransaction, cache, datastoreSession, instanceManager, interceptorFactory, instanceValidator));
+        cdoTransaction.registerDefaultSynchronization(new CacheSynchronization(instanceManager, entityCache, relationCache, datastoreSession));
+        return interceptorFactory.addInterceptor(new CdoManagerImpl(metadataProvider, cdoTransaction, entityCache, datastoreSession, instanceManager, interceptorFactory, instanceValidator));
     }
 
     @Override

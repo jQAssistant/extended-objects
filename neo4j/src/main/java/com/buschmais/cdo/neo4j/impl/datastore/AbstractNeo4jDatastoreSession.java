@@ -90,7 +90,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public void flush(Node node) {
+    public void flushEntity(Node node) {
     }
 
     protected <QL> String getCypher(QL expression) {
@@ -108,11 +108,25 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public Set<Label> getDiscriminators(Node node) {
+    public Set<Label> getEntityDiscriminators(Node node) {
         Set<Label> labels = new HashSet<>();
         for (Label label : node.getLabels()) {
             labels.add(label);
         }
         return labels;
+    }
+
+    @Override
+    public Long getRelationId(Relationship relationship) {
+        return relationship.getId();
+    }
+
+    @Override
+    public RelationshipType getRelationDiscriminator(Relationship relationship) {
+        return relationship.getType();
+    }
+
+    @Override
+    public void flushRelation(Relationship relationship) {
     }
 }

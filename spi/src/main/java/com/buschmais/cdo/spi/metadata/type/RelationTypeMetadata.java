@@ -13,12 +13,12 @@ public class RelationTypeMetadata<DatastoreMetadata> extends AbstractDatastoreTy
         OUTGOING;
     }
 
-    public RelationTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata> properties, DatastoreMetadata datastoreMetadata) {
+    public RelationTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, DatastoreMetadata datastoreMetadata) {
         super(annotatedType, superTypes, properties, datastoreMetadata);
     }
 
     public RelationTypeMetadata(DatastoreMetadata datastoreMetadata) {
-        this(null, Collections.<TypeMetadata>emptyList(), Collections.<MethodMetadata>emptyList(), datastoreMetadata);
+        this(null, Collections.<TypeMetadata>emptyList(), Collections.<MethodMetadata<?, ?>>emptyList(), datastoreMetadata);
     }
 
 }

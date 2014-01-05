@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public class SimpleTypeMetadata extends AbstractTypeMetadata {
 
-    public SimpleTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata> properties) {
+    public SimpleTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties) {
         super(annotatedType, superTypes, properties);
     }
 }

@@ -19,7 +19,7 @@ public class AsMethod<Entity> implements ProxyMethod<Entity> {
         Class<?> targetType = (Class<?>) args[0];
         for (Class<?> type : instance.getClass().getInterfaces()) {
             if (targetType.isAssignableFrom(type)) {
-                return instanceManager.getInstance(entity);
+                return instanceManager.getEntityInstance(entity);
             }
         }
         if (entity instanceof Map) {
