@@ -54,7 +54,7 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
                 return parentClassLoader.loadClass(name);
             }
         };
-        metadataProvider = new MetadataProviderImpl(cdoUnit.getTypes(), datastore);
+        metadataProvider = new MetadataProviderImpl<>(cdoUnit.getTypes(), datastore);
         try {
             this.validatorFactory = Validation.buildDefaultValidatorFactory();
         } catch (ValidationException e) {
@@ -75,8 +75,9 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
         InstanceManager<?, ?, ?, ?, ?, ?> instanceManager = new InstanceManager(metadataProvider, datastoreSession, classLoader, cdoTransaction, entityCache, relationCache, interceptorFactory);
         // Register default synchronizations.
         cdoTransaction.registerDefaultSynchronization(new ValidatorSynchronization(instanceValidator));
-        cdoTransaction.registerDefaultSynchronization(new CacheSynchronization(instanceManager, entityCache, relationCache, datastoreSession));
-        return interceptorFactory.addInterceptor(new CdoManagerImpl(metadataProvider, cdoTransaction, entityCache, datastoreSession, instanceManager, interceptorFactory, instanceValidator));
+        cdoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(instanceManager, entityCache, relationCache, datastoreSession));
+        CdoManagerImpl<?, ?, ?, ?, ?, ?, ?, ?> cdoManager = new CdoManagerImpl(metadataProvider, cdoTransaction, entityCache, relationCache, datastoreSession, instanceManager, interceptorFactory, instanceValidator);
+        return interceptorFactory.addInterceptor(cdoManager);
     }
 
     @Override

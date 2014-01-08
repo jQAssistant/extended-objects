@@ -3,6 +3,12 @@ package com.buschmais.cdo.impl.cache;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * Abstract cache implementation.
+ *
+ * @param <Key>   The key type.
+ * @param <Value> The value type.
+ */
 public abstract class AbstractCache<Key, Value> implements Cache<Key, Value> {
 
     private Map<Key, Value> cache;

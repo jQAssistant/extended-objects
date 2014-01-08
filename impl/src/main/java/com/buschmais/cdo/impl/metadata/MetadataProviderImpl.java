@@ -39,11 +39,9 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     private DatastoreMetadataFactory<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataFactory;
     private EntityTypeMetadataResolver<EntityMetadata, EntityDiscriminator> entityTypeMetadataResolver;
+    private RelationTypeMetadataResolver<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> relationTypeMetadataResolver;
 
     private Map<Class<?>, TypeMetadata> metadataByType = new HashMap<>();
-
-    private Map<RelationTypeMetadata<RelationMetadata>, Class<?>> outgoingTypes = new HashMap<>();
-    private Map<RelationTypeMetadata<RelationMetadata>, Class<?>> incomingTypes = new HashMap<>();
 
     /**
      * Constructor.
@@ -72,6 +70,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             getOrCreateTypeMetadata(currentClass);
         }
         entityTypeMetadataResolver = new EntityTypeMetadataResolver<>(metadataByType);
+        relationTypeMetadataResolver = new RelationTypeMetadataResolver<>(metadataByType);
         metadataByType.put(CompositeObject.class, new SimpleTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.<TypeMetadata>emptyList(), Collections.<MethodMetadata<?, ?>>emptyList()));
     }
 
@@ -108,7 +107,12 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     }
 
     @Override
-    public Set<EntityDiscriminator> getDiscriminators(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types) {
+    public TypeMetadataSet<RelationTypeMetadata<RelationMetadata>> getRelationTypes(Set<EntityDiscriminator> sourceDiscriminators, RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators) {
+        return relationTypeMetadataResolver.getRelationTypes(sourceDiscriminators, discriminator, targetDiscriminators);
+    }
+
+    @Override
+    public Set<EntityDiscriminator> getEntityDiscriminators(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types) {
         Set<EntityDiscriminator> entityDiscriminators = new HashSet<>();
         for (EntityTypeMetadata<EntityMetadata> entityTypeMetadata : types) {
             Set<EntityDiscriminator> discriminatorsOfType = entityTypeMetadataResolver.getDiscriminators(entityTypeMetadata);
@@ -134,20 +138,12 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     @Override
     public RelationTypeMetadata.Direction getRelationDirection(Set<Class<?>> sourceTypes, RelationTypeMetadata<RelationMetadata> relationMetadata, Set<Class<?>> targetTypes) {
-        Class<?> outgoingType = outgoingTypes.get(relationMetadata);
-        Class<?> incomingType = incomingTypes.get(relationMetadata);
-        if (sourceTypes.contains(outgoingType) && targetTypes.contains(incomingType)) {
+        if (sourceTypes.contains(relationMetadata.getOutgoingType()) && targetTypes.contains(relationMetadata.getIncomingType())) {
             return RelationTypeMetadata.Direction.OUTGOING;
-        }
-        if (targetTypes.contains(outgoingType) && sourceTypes.contains(incomingType)) {
+        } else if (targetTypes.contains(relationMetadata.getOutgoingType()) && sourceTypes.contains(relationMetadata.getIncomingType())) {
             return RelationTypeMetadata.Direction.INCOMING;
         }
         throw new CdoException("The relation '" + relationMetadata + "' is not defined for the instances.");
-    }
-
-    @Override
-    public RelationTypeMetadata<RelationMetadata> getRelationType(Set<EntityDiscriminator> sourceDiscriminators, RelationDiscriminator relationDiscriminator, RelationTypeMetadata.Direction direction, Set<EntityDiscriminator> targetDiscriminators) {
-        return null;
     }
 
     private boolean isEntityType(AnnotatedType annotatedType) {
@@ -196,12 +192,27 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      */
     private RelationTypeMetadata<RelationMetadata> createRelationTypeMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes,
                                                                               Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
-        RelationTypeMetadata<RelationMetadata> relationTypeMetadata = (RelationTypeMetadata<RelationMetadata>) metadataByType.get(annotatedType.getAnnotatedElement());
-        if (relationTypeMetadata == null) {
-            RelationMetadata datastoreRelationMetadata = metadataFactory.createRelationMetadata(annotatedType, metadataByType);
-            relationTypeMetadata = new RelationTypeMetadata<>(annotatedType, superTypes, methodMetadataOfType, datastoreRelationMetadata);
-            metadataByType.put(annotatedType.getAnnotatedElement(), relationTypeMetadata);
+        Class<?> outgoingType = null;
+        Class<?> incomingType = null;
+        for (MethodMetadata<?, ?> methodMetadata : methodMetadataOfType) {
+            if (methodMetadata instanceof ReferencePropertyMethodMetadata) {
+                ReferencePropertyMethodMetadata<?> propertyMethodMetadata = (ReferencePropertyMethodMetadata<?>) methodMetadata;
+                Class<?> type = propertyMethodMetadata.getAnnotatedMethod().getType();
+                switch (propertyMethodMetadata.getDirection()) {
+                    case OUTGOING:
+                        outgoingType = type;
+                        break;
+                    case INCOMING:
+                        incomingType = type;
+                        break;
+                    default:
+                        throw new CdoException("Unsupported direction '" + propertyMethodMetadata.getDirection() + "'");
+                }
+            }
         }
+        RelationMetadata relationMetadata = metadataFactory.createRelationMetadata(annotatedType, metadataByType);
+        RelationTypeMetadata<RelationMetadata> relationTypeMetadata = new RelationTypeMetadata<>(annotatedType, superTypes, methodMetadataOfType, outgoingType, incomingType, relationMetadata);
+        metadataByType.put(annotatedType.getAnnotatedElement(), relationTypeMetadata);
         return relationTypeMetadata;
     }
 
@@ -269,25 +280,25 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             RelationTypeMetadata relationshipType = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(propertyMethod, metadataByType));
             methodMetadata = new CollectionPropertyMethodMetadata<>(propertyMethod, relationshipType, relationDirection, metadataFactory.createCollectionPropertyMetadata(propertyMethod));
         } else if (annotatedMethods.containsKey(propertyType)) {
-            RelationTypeMetadata.Direction relationDirection = metadataFactory.getRelationDirection(propertyMethod);
+            RelationTypeMetadata.Direction relationDirection;
             RelationTypeMetadata<RelationMetadata> relationMetadata;
             if (isEntityType(new AnnotatedType(propertyType))) {
+                relationDirection = metadataFactory.getRelationDirection(propertyMethod);
                 relationMetadata = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(propertyMethod, metadataByType));
             } else if (isRelationType(new AnnotatedType(propertyType))) {
                 TypeMetadata propertyTypeMetadata = getOrCreateTypeMetadata(propertyType);
                 relationMetadata = (RelationTypeMetadata) propertyTypeMetadata;
+                if (annotatedType.getAnnotatedElement().equals(relationMetadata.getOutgoingType())) {
+                    relationDirection = RelationTypeMetadata.Direction.OUTGOING;
+                } else if (annotatedType.getAnnotatedElement().equals(relationMetadata.getIncomingType())) {
+                    relationDirection = RelationTypeMetadata.Direction.INCOMING;
+                } else {
+                    throw new CdoException("Cannot determine relation direction for type '" + propertyTypeMetadata.getAnnotatedType().getName() + "'");
+                }
             } else {
                 throw new CdoException("Unsupported type for reference property: " + propertyType.getName());
             }
             methodMetadata = new ReferencePropertyMethodMetadata<>(propertyMethod, relationMetadata, relationDirection, metadataFactory.createReferencePropertyMetadata(propertyMethod));
-            switch (relationDirection) {
-                case OUTGOING:
-                    outgoingTypes.put(relationMetadata, annotatedType.getAnnotatedElement());
-                    break;
-                case INCOMING:
-                    incomingTypes.put(relationMetadata, annotatedType.getAnnotatedElement());
-                    break;
-            }
         } else {
             if (Enum.class.isAssignableFrom(propertyType)) {
                 methodMetadata = new EnumPropertyMethodMetadata(propertyMethod, propertyType, metadataFactory.createEnumPropertyMetadata(propertyMethod));

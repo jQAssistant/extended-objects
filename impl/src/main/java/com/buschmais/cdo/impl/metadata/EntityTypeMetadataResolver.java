@@ -4,6 +4,7 @@ import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.type.DatastoreTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
 import org.slf4j.Logger;
@@ -117,4 +118,5 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
         Set<Discriminator> discriminators = aggregatedDiscriminators.get(entityTypeMetadata);
         return discriminators != null ? discriminators : Collections.<Discriminator>emptySet();
     }
+
 }

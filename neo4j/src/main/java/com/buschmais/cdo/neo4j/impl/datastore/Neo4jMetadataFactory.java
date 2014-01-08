@@ -13,17 +13,15 @@ import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedElement;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
-import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
+import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
-import org.neo4j.graphdb.RelationshipType;
 
-import java.lang.annotation.Annotation;
 import java.util.Map;
 
-public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label, RelationshipMetadata, RelationshipType> {
+public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label, RelationshipMetadata, Neo4jRelationshipType> {
 
     @Override
     public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
@@ -85,7 +83,7 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
             relation = annotatedElement.getAnnotation(Relation.class);
         }
         String name = relation != null ? relation.value() : StringUtils.capitalize(annotatedElement.getName());
-        DynamicRelationshipType relationshipType = DynamicRelationshipType.withName(name);
+        Neo4jRelationshipType relationshipType = new Neo4jRelationshipType(DynamicRelationshipType.withName(name));
         return new RelationshipMetadata(relationshipType);
     }
 

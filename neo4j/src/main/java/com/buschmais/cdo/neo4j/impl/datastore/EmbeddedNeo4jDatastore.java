@@ -85,14 +85,14 @@ public class EmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedNeo4j
 
     private void reCreateUniqueConstraint(Label label, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
         PrimitivePropertyMetadata primitivePropertyMetadata = ((PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata>) propertyMethodMetadata).getDatastoreMetadata();
-        ConstraintDefinition contraint = findUniqueConstraint(label, primitivePropertyMetadata.getName());
+        ConstraintDefinition constraint = findUniqueConstraint(label, primitivePropertyMetadata.getName());
         //TODO propertyMethodMetadata is always != null
-        if (propertyMethodMetadata != null && contraint == null) {
-            LOGGER.info("Creating contraint for label {} on property '{}'.", label, primitivePropertyMetadata.getName());
+        if (propertyMethodMetadata != null && constraint == null) {
+            LOGGER.info("Creating constraint for label {} on property '{}'.", label, primitivePropertyMetadata.getName());
             graphDatabaseService.schema().constraintFor(label).assertPropertyIsUnique(primitivePropertyMetadata.getName()).create();
-        } else if (propertyMethodMetadata == null && contraint != null) {
-            LOGGER.info("Dropping constraint for label {} on properties '{}'.", label, contraint.getPropertyKeys());
-            contraint.drop();
+        } else if (propertyMethodMetadata == null && constraint != null) {
+            LOGGER.info("Dropping constraint for label {} on properties '{}'.", label, constraint.getPropertyKeys());
+            constraint.drop();
         }
     }
 

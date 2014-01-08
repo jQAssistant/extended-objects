@@ -1,18 +1,17 @@
 package com.buschmais.cdo.neo4j.impl.datastore.metadata;
 
 import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
-import org.neo4j.graphdb.RelationshipType;
 
-public class RelationshipMetadata implements DatastoreRelationMetadata<RelationshipType> {
+public class RelationshipMetadata implements DatastoreRelationMetadata<Neo4jRelationshipType> {
 
-    private RelationshipType relationshipType;
+    private Neo4jRelationshipType relationshipType;
 
-    public RelationshipMetadata(RelationshipType relationshipType) {
+    public RelationshipMetadata(Neo4jRelationshipType relationshipType) {
         this.relationshipType = relationshipType;
     }
 
     @Override
-    public RelationshipType getDiscriminator() {
+    public Neo4jRelationshipType getDiscriminator() {
         return relationshipType;
     }
 }

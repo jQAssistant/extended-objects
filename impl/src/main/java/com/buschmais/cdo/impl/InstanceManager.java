@@ -38,15 +38,16 @@ public class InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, 
         proxyMethodService = new EntityProxyMethodService(metadataProvider, this, propertyManager, cdoTransaction, interceptorFactory, datastoreSession);
     }
 
-    public <T> T getRelationInstance(Entity sourceEntity, Relation relation, RelationTypeMetadata.Direction direction, Entity targetEntity) {
+    public <T> T getRelationInstance(Relation relation) {
+        Entity source = datastoreSession.getDatastorePropertyManager().getSource(relation);
+        Entity target = datastoreSession.getDatastorePropertyManager().getTarget(relation);
         RelationDiscriminator discriminator = datastoreSession.getRelationDiscriminator(relation);
         if (discriminator == null) {
             throw new CdoException("Cannot determine type discriminators for relation '" + relation + "'");
         }
-        RelationTypeMetadata<?> relationTypeMetadata = metadataProvider.getRelationType(getEntityDiscriminators(sourceEntity), discriminator, direction, getEntityDiscriminators(targetEntity));
-        Class<?> relationType = relationTypeMetadata.getAnnotatedType().getAnnotatedElement();
+        TypeMetadataSet<?> types = metadataProvider.getRelationTypes(getEntityDiscriminators(source), discriminator, getEntityDiscriminators(target));
         RelationId id = datastoreSession.getRelationId(relation);
-        return (T) getOrCreateInstance(relationCache, id, relation, new HashSet(Arrays.asList(new Class<?>[]{relationType})), CompositeObject.class);
+        return (T) getOrCreateInstance(relationCache, id, relation, types.toClasses(), CompositeObject.class);
     }
 
     public <T> T getEntityInstance(Entity entity) {
@@ -121,6 +122,6 @@ public class InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, 
     }
 
     public Relation getRelation(Object instance) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return null;
     }
 }

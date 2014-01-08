@@ -9,7 +9,6 @@ import static com.buschmais.cdo.neo4j.api.annotation.Relation.Outgoing;
 @Label("A")
 public interface A {
 
-    @Outgoing
     TypedOneToOneRelation getOneToOne();
 
     @Outgoing

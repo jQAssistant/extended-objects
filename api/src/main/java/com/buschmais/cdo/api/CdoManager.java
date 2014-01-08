@@ -167,7 +167,7 @@ public interface CdoManager extends AutoCloseable {
      * @param types The additional types to be returned.
      * @return The {@link Query}.
      */
-    Query<CompositeRowObject> createQuery(Class<?> query, Class<?>... types);
+    <Q> Query<CompositeRowObject> createQuery(Class<Q> query, Class<?>... types);
 
     /**
      * Close the {@CdoManager}.

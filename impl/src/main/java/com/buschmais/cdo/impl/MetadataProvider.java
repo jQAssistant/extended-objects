@@ -35,7 +35,15 @@ public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata
      * @param types The {@link TypeMetadataSet}.
      * @return The set of discriminators.
      */
-    Set<EntityDiscriminator> getDiscriminators(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types);
+    Set<EntityDiscriminator> getEntityDiscriminators(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types);
+
+    /**
+     * Determine the {@link TypeMetadataSet} for a given relation discriminator.
+     *
+     * @param discriminator The relation descriminator.
+     * @return The {@link TypeMetadataSet}.
+     */
+    TypeMetadataSet<RelationTypeMetadata<RelationMetadata>> getRelationTypes(Set<EntityDiscriminator> sourceDiscriminators, RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators);
 
     /**
      * Return a collection of all registered entity type metadata.
@@ -47,15 +55,19 @@ public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Return the entity metadata for a specific type.
      *
-     *
      * @param type The type.
      * @return The entity metadata.
      */
     EntityTypeMetadata<EntityMetadata> getEntityMetadata(Class<?> type);
 
+    /**
+     * Return the relation metadata for a specific type.
+     *
+     * @param relationType The relation type.
+     * @return The relation metadata.
+     */
     RelationTypeMetadata<RelationMetadata> getRelationMetadata(Class<?> relationType);
 
     RelationTypeMetadata.Direction getRelationDirection(Set<Class<?>> sourceTypes, RelationTypeMetadata<RelationMetadata> relationMetadata, Set<Class<?>> targetTypes);
 
-    RelationTypeMetadata<RelationMetadata> getRelationType(Set<EntityDiscriminator> sourceDiscriminators, RelationDiscriminator discriminator, RelationTypeMetadata.Direction direction, Set<EntityDiscriminator> targetDiscriminators);
 }

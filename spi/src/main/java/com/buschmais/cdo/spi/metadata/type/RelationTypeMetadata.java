@@ -13,12 +13,25 @@ public class RelationTypeMetadata<DatastoreMetadata> extends AbstractDatastoreTy
         OUTGOING;
     }
 
-    public RelationTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, DatastoreMetadata datastoreMetadata) {
+    private Class<?> outgoingType;
+    private Class<?> incomingType;
+
+    public RelationTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, Class<?> outgoingType, Class<?> incomingType, DatastoreMetadata datastoreMetadata) {
         super(annotatedType, superTypes, properties, datastoreMetadata);
+        this.outgoingType = outgoingType;
+        this.incomingType = incomingType;
     }
 
     public RelationTypeMetadata(DatastoreMetadata datastoreMetadata) {
-        this(null, Collections.<TypeMetadata>emptyList(), Collections.<MethodMetadata<?, ?>>emptyList(), datastoreMetadata);
+        this(null, Collections.<TypeMetadata>emptyList(), Collections.<MethodMetadata<?, ?>>emptyList(), null, null, datastoreMetadata);
+    }
+
+    public Class<?> getOutgoingType() {
+        return outgoingType;
+    }
+
+    public Class<?> getIncomingType() {
+        return incomingType;
     }
 
 }

@@ -2,6 +2,12 @@ package com.buschmais.cdo.impl.cache;
 
 import java.util.Collection;
 
+/**
+ * Defines the cache interface.
+ *
+ * @param <K> The key type.
+ * @param <V> The value type.
+ */
 public interface Cache<K, V> {
 
     void put(K key, V value);

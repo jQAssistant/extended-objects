@@ -18,9 +18,22 @@ import java.util.*;
 
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 
+/**
+ * Generic implementation of a {@link CdoManager}.
+ *
+ * @param <EntityId>              The type of entity ids as provided by the datastore.
+ * @param <Entity>                The type entities as provided by the datastore.
+ * @param <EntityMetadata>        The type of entity metadata as provided by the datastore.
+ * @param <EntityDiscriminator>   The type of discriminators as provided by the datastore.
+ * @param <RelationId>            The type of relation ids as provided by the datastore.
+ * @param <Relation>              The type of relations as provided by the datastore.
+ * @param <RelationMetadata>      The type of relation metadata as provided by the datastore.
+ * @param <RelationDiscriminator> The type of relation discriminators as provided by the datastore.
+ */
 public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> implements CdoManager {
 
-    private final TransactionalCache cache;
+    private final TransactionalCache<EntityId> entityCache;
+    private final TransactionalCache<RelationId> relationCache;
     private final MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider;
     private final CdoTransaction cdoTransaction;
     private final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession;
@@ -28,10 +41,23 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
     private final InterceptorFactory interceptorFactory;
     private final InstanceValidator instanceValidator;
 
-    public CdoManagerImpl(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, CdoTransaction cdoTransaction, TransactionalCache cache, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> instanceManager, InterceptorFactory interceptorFactory, InstanceValidator instanceValidator) {
+    /**
+     * Constructor.
+     *
+     * @param metadataProvider   The {@link MetadataProvider}.
+     * @param cdoTransaction     The associated {@link CdoTransaction}.
+     * @param entityCache        The associated transactional entity cache.
+     * @param relationCache      The associated transactional relation cache.
+     * @param datastoreSession   The associated {@link DatastoreSession}.
+     * @param instanceManager    The associated {@link InstanceManager}.
+     * @param interceptorFactory The associated {@link InterceptorFactory}.
+     * @param instanceValidator  The associated {@link InstanceValidator}.
+     */
+    public CdoManagerImpl(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, CdoTransaction cdoTransaction, TransactionalCache<EntityId> entityCache, TransactionalCache<RelationId> relationCache, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> instanceManager, InterceptorFactory interceptorFactory, InstanceValidator instanceValidator) {
         this.metadataProvider = metadataProvider;
         this.cdoTransaction = cdoTransaction;
-        this.cache = cache;
+        this.entityCache = entityCache;
+        this.relationCache = relationCache;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
         this.interceptorFactory = interceptorFactory;
@@ -89,7 +115,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
     @Override
     public CompositeObject create(Class type, Class<?>... types) {
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = getEffectiveTypes(type, types);
-        Set<EntityDiscriminator> entityDiscriminators = metadataProvider.getDiscriminators(effectiveTypes);
+        Set<EntityDiscriminator> entityDiscriminators = metadataProvider.getEntityDiscriminators(effectiveTypes);
         Entity entity = datastoreSession.create(effectiveTypes, entityDiscriminators);
         return instanceManager.getEntityInstance(entity);
     }
@@ -107,7 +133,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         Set<Class<?>> targetTypes = new HashSet<>(Arrays.asList(target.getClass().getInterfaces()));
         RelationTypeMetadata.Direction direction = metadataProvider.getRelationDirection(sourceTypes, relationTypeMetadata, targetTypes);
         Relation relation = datastoreSession.getDatastorePropertyManager().createRelation(sourceEntity, relationTypeMetadata, direction, targetEntity);
-        return instanceManager.getRelationInstance(sourceEntity, relation, direction, targetEntity);
+        return instanceManager.getRelationInstance(relation);
     }
 
     @Override
@@ -116,7 +142,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         Set<EntityDiscriminator> entityDiscriminators = datastoreSession.getEntityDiscriminators(entity);
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = metadataProvider.getTypes(entityDiscriminators);
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
-        Set<EntityDiscriminator> targetEntityDiscriminators = metadataProvider.getDiscriminators(effectiveTargetTypes);
+        Set<EntityDiscriminator> targetEntityDiscriminators = metadataProvider.getEntityDiscriminators(effectiveTargetTypes);
         datastoreSession.migrate(entity, types, entityDiscriminators, effectiveTargetTypes, targetEntityDiscriminators);
         instanceManager.removeInstance(instance);
         CompositeObject migratedInstance = instanceManager.getEntityInstance(entity);
@@ -152,27 +178,32 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public Query<CompositeRowObject> createQuery(String query) {
-        return interceptorFactory.addInterceptor(new CdoQueryImpl(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Collections.emptyList()));
+        CdoQueryImpl<CompositeRowObject, String> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Collections.<Class<?>>emptyList());
+        return interceptorFactory.addInterceptor(cdoQuery);
     }
 
     @Override
     public <T> Query<T> createQuery(String query, Class<T> type) {
-        return interceptorFactory.addInterceptor(new CdoQueryImpl(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(new Class<?>[]{type})));
+        CdoQueryImpl<T, String> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(new Class<?>[]{type}));
+        return interceptorFactory.addInterceptor(cdoQuery);
     }
 
     @Override
     public Query<CompositeRowObject> createQuery(String query, Class<?> type, Class<?>... types) {
-        return interceptorFactory.addInterceptor(new CdoQueryImpl(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(types)));
+        CdoQueryImpl<CompositeRowObject, String> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(types));
+        return interceptorFactory.addInterceptor(cdoQuery);
     }
 
     @Override
     public <T> Query<T> createQuery(Class<T> query) {
-        return interceptorFactory.addInterceptor(new CdoQueryImpl(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(new Class<?>[]{query})));
+        CdoQueryImpl<T, Class<T>> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(new Class<?>[]{query}));
+        return interceptorFactory.addInterceptor(cdoQuery);
     }
 
     @Override
-    public Query<CompositeRowObject> createQuery(Class<?> query, Class<?>... types) {
-        return interceptorFactory.addInterceptor(new CdoQueryImpl(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(types)));
+    public <Q> Query<CompositeRowObject> createQuery(Class<Q> query, Class<?>... types) {
+        CdoQueryImpl<CompositeRowObject, Class<Q>> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(types));
+        return interceptorFactory.addInterceptor(cdoQuery);
     }
 
     @Override
@@ -187,15 +218,18 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public void flush() {
-        Collection instances = cache.values();
-        for (Object instance : instances) {
+        for (Object instance : relationCache.values()) {
+            Relation relation = instanceManager.getRelation(instance);
+            datastoreSession.flushRelation(relation);
+        }
+        for (Object instance : entityCache.values()) {
             Entity entity = instanceManager.getEntity(instance);
             datastoreSession.flushEntity(entity);
         }
     }
 
     private TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getEffectiveTypes(Class<?> type, Class<?>... types) {
-        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = new TypeMetadataSet();
+        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = new TypeMetadataSet<>();
         effectiveTypes.add(metadataProvider.getEntityMetadata(type));
         for (Class<?> otherType : types) {
             effectiveTypes.add(metadataProvider.getEntityMetadata(otherType));

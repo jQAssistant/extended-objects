@@ -3,6 +3,7 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.neo4j.api.annotation.Cypher;
+import com.buschmais.cdo.neo4j.impl.datastore.metadata.Neo4jRelationshipType;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.RelationshipMetadata;
@@ -17,7 +18,7 @@ import org.neo4j.graphdb.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, NodeMetadata, Label, Long, Relationship, RelationshipMetadata, RelationshipType> {
+public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, NodeMetadata, Label, Long, Relationship, RelationshipMetadata, Neo4jRelationshipType> {
 
     private GDS graphDatabaseService;
     private Neo4jPropertyManager propertyManager;
@@ -122,8 +123,8 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public RelationshipType getRelationDiscriminator(Relationship relationship) {
-        return relationship.getType();
+    public Neo4jRelationshipType getRelationDiscriminator(Relationship relationship) {
+        return new Neo4jRelationshipType(relationship.getType());
     }
 
     @Override
