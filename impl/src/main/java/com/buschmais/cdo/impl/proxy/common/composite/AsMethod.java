@@ -1,4 +1,4 @@
-package com.buschmais.cdo.impl.proxy.instance.composite;
+package com.buschmais.cdo.impl.proxy.common.composite;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.proxy.ProxyMethod;

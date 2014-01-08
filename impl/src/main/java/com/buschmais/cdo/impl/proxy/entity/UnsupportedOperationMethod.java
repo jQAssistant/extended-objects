@@ -1,4 +1,4 @@
-package com.buschmais.cdo.impl.proxy.instance;
+package com.buschmais.cdo.impl.proxy.entity;
 
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 import com.buschmais.cdo.spi.metadata.method.UnsupportedOperationMethodMetadata;

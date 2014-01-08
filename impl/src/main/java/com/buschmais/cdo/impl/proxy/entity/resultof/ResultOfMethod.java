@@ -1,4 +1,4 @@
-package com.buschmais.cdo.impl.proxy.instance.resultof;
+package com.buschmais.cdo.impl.proxy.entity.resultof;
 
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.Query;

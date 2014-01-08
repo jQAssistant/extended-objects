@@ -1,4 +1,4 @@
-package com.buschmais.cdo.impl.proxy.instance.property;
+package com.buschmais.cdo.impl.proxy.entity.property;
 
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;

@@ -8,10 +8,9 @@ import com.buschmais.cdo.impl.proxy.ProxyMethodService;
 import com.buschmais.cdo.impl.interceptor.CdoInterceptor;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
-import com.buschmais.cdo.impl.proxy.instance.InstanceInvocationHandler;
-import com.buschmais.cdo.impl.proxy.instance.EntityProxyMethodService;
+import com.buschmais.cdo.impl.proxy.entity.InstanceInvocationHandler;
+import com.buschmais.cdo.impl.proxy.entity.EntityProxyMethodService;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
-import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;

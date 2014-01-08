@@ -4,7 +4,7 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
-import com.buschmais.cdo.impl.proxy.instance.composite.AsMethod;
+import com.buschmais.cdo.impl.proxy.common.composite.AsMethod;
 import com.buschmais.cdo.impl.proxy.query.object.EqualsMethod;
 import com.buschmais.cdo.impl.proxy.query.object.HashCodeMethod;
 import com.buschmais.cdo.impl.proxy.query.object.ToStringMethod;
@@ -32,9 +32,9 @@ public class RowProxyMethodService extends AbstractProxyMethodService<Map<String
                 if (!(typeMethod instanceof GetPropertyMethod)) {
                     throw new CdoException("Only get methods are supported for projections: '" + typeMethod.getAnnotatedElement().getName() + "'.");
                 }
-                PropertyMethod beanPropertyMethod = (PropertyMethod) typeMethod;
-                GetMethod proxyMethod = new GetMethod(beanPropertyMethod.getName(), beanPropertyMethod.getType());
-                addProxyMethod(proxyMethod, beanPropertyMethod.getAnnotatedElement());
+                PropertyMethod propertyMethod = (PropertyMethod) typeMethod;
+                GetMethod proxyMethod = new GetMethod(propertyMethod.getName(), propertyMethod.getType());
+                addProxyMethod(proxyMethod, propertyMethod.getAnnotatedElement());
             }
         }
         addMethod(new AsMethod<Map<String, Object>>(getInstanceManager()), CompositeObject.class, "as", Class.class);

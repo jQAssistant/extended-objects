@@ -1,4 +1,4 @@
-package com.buschmais.cdo.impl.proxy.instance.object;
+package com.buschmais.cdo.impl.proxy.entity.object;
 
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.api.proxy.ProxyMethod;

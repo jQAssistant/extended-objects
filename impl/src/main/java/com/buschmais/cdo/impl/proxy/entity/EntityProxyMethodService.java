@@ -1,4 +1,4 @@
-package com.buschmais.cdo.impl.proxy.instance;
+package com.buschmais.cdo.impl.proxy.entity;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoTransaction;
@@ -9,12 +9,12 @@ import com.buschmais.cdo.impl.MetadataProvider;
 import com.buschmais.cdo.impl.PropertyManager;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
-import com.buschmais.cdo.impl.proxy.instance.composite.AsMethod;
-import com.buschmais.cdo.impl.proxy.instance.object.EqualsMethod;
-import com.buschmais.cdo.impl.proxy.instance.object.HashCodeMethod;
-import com.buschmais.cdo.impl.proxy.instance.object.ToStringMethod;
-import com.buschmais.cdo.impl.proxy.instance.property.*;
-import com.buschmais.cdo.impl.proxy.instance.resultof.ResultOfMethod;
+import com.buschmais.cdo.impl.proxy.common.composite.AsMethod;
+import com.buschmais.cdo.impl.proxy.entity.object.EqualsMethod;
+import com.buschmais.cdo.impl.proxy.entity.object.HashCodeMethod;
+import com.buschmais.cdo.impl.proxy.entity.object.ToStringMethod;
+import com.buschmais.cdo.impl.proxy.entity.property.*;
+import com.buschmais.cdo.impl.proxy.entity.resultof.ResultOfMethod;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.metadata.method.*;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
