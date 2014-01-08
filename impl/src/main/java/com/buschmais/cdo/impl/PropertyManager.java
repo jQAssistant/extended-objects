@@ -33,9 +33,8 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @param source The source entity.
      * @return The target node or <code>null</code>.
      */
-    public Entity getSingleRelation(Entity source, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction) {
-        Relation relation = datastorePropertyManager.getSingleRelation(source, metadata, direction);
-        return relation != null ? getRelativeTarget(relation, direction) : null;
+    public Relation getSingleRelation(Entity source, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction) {
+        return datastorePropertyManager.getSingleRelation(source, metadata, direction);
     }
 
     /**
@@ -122,7 +121,7 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
         }
     }
 
-    private Entity getRelativeTarget(Relation relation, RelationTypeMetadata.Direction direction) {
+    public Entity getRelativeTarget(Relation relation, RelationTypeMetadata.Direction direction) {
         switch (direction) {
             case OUTGOING:
                 return datastorePropertyManager.getTarget(relation);

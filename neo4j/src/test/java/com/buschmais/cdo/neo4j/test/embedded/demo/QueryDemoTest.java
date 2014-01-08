@@ -6,6 +6,7 @@ import com.buschmais.cdo.neo4j.test.embedded.demo.composite.Group;
 import com.buschmais.cdo.neo4j.test.embedded.demo.composite.Person;
 import org.junit.Test;
 
+import static com.buschmais.cdo.neo4j.test.embedded.demo.composite.Group.MemberByName;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -29,7 +30,7 @@ public class QueryDemoTest extends AbstractEmbeddedCdoManagerTest {
         group.getMembers().add(person2);
         cdoManager.currentTransaction().commit();
         cdoManager.currentTransaction().begin();
-        Group.MemberByName memberByName = (Group.MemberByName) cdoManager.createQuery(Group.MemberByName.class).withParameter("this", group).withParameter("name", "Peter").execute().getSingleResult();
+        MemberByName memberByName = cdoManager.createQuery(MemberByName.class).withParameter("this", group).withParameter("name", "Peter").execute().getSingleResult();
         Person peter = memberByName.getMember();
         assertThat(peter, equalTo(person1));
         cdoManager.currentTransaction().commit();

@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 
 public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Entity, M> {
 
-    public EntityProxyMethodService(MetadataProvider<?, ?, ?, ?> metadataProvider, InstanceManager instanceManager, PropertyManager propertyManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
+    public EntityProxyMethodService(MetadataProvider<?, ?, ?, ?> metadataProvider, InstanceManager<?, Entity, ?, ?, ?, ?> instanceManager, PropertyManager<?, Entity, ?, ?> propertyManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession<?, Entity, ?, ?, ?, ?, ?, ?> datastoreSession) {
         super(instanceManager);
         for (TypeMetadata typeMetadata : metadataProvider.getRegisteredMetadata()) {
             for (MethodMetadata methodMetadata : typeMetadata.getProperties()) {
@@ -72,7 +72,8 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
                         }
                     } else if (methodMetadata instanceof CollectionPropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new CollectionPropertyGetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager, interceptorFactory), method);
+                            CollectionPropertyGetMethod<Entity, ?> proxyMethod = new CollectionPropertyGetMethod<>((CollectionPropertyMethodMetadata<?>) methodMetadata, instanceManager, propertyManager, interceptorFactory);
+                            addProxyMethod(proxyMethod, method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new CollectionPropertySetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
                         }
@@ -81,8 +82,8 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
             }
         }
         addMethod(new AsMethod<Entity>(getInstanceManager()), CompositeObject.class, "as", Class.class);
-        addMethod(new HashCodeMethod<Entity>(datastoreSession), Object.class, "hashCode");
-        addMethod(new EqualsMethod<Entity>(instanceManager, datastoreSession), Object.class, "equals", Object.class);
+        addMethod(new HashCodeMethod<>(datastoreSession), Object.class, "hashCode");
+        addMethod(new EqualsMethod<>(instanceManager, datastoreSession), Object.class, "equals", Object.class);
         addMethod(new ToStringMethod<Entity>(datastoreSession), Object.class, "toString");
     }
 }

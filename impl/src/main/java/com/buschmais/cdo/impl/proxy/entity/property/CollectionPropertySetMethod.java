@@ -6,7 +6,7 @@ import com.buschmais.cdo.spi.metadata.method.CollectionPropertyMethodMetadata;
 
 import java.util.Collection;
 
-public class CollectionPropertySetMethod<Entity> extends AbstractPropertyMethod<Entity, CollectionPropertyMethodMetadata> {
+public class CollectionPropertySetMethod<Entity, Relation> extends AbstractPropertyMethod<Entity, Relation, CollectionPropertyMethodMetadata> {
 
     public CollectionPropertySetMethod(CollectionPropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
         super(metadata, instanceManager, propertyManager);

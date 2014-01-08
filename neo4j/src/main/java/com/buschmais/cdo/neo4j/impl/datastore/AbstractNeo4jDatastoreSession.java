@@ -81,6 +81,11 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
+    public boolean isRelation(Object o) {
+        return Relationship.class.isAssignableFrom(o.getClass());
+    }
+
+    @Override
     public Long getId(Node entity) {
         return Long.valueOf(entity.getId());
     }

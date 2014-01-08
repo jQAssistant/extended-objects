@@ -33,6 +33,14 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
     boolean isEntity(Object o);
 
     /**
+     * Determine if the given object is a relation.
+     *
+     * @param o The object.
+     * @return <code>true</code> if the object is a relation, <code>false</code> otherwise.
+     */
+    boolean isRelation(Object o);
+
+    /**
      * Return the type discriminators of an entity.
      *
      * @param entity The entity.

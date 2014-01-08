@@ -6,29 +6,29 @@ import com.buschmais.cdo.impl.proxy.ProxyMethodService;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-public class InstanceInvocationHandler<E> implements InvocationHandler {
+public class InstanceInvocationHandler<DatastoreType> implements InvocationHandler {
 
-    private E entity;
-    private ProxyMethodService<E, ?> proxyMethodService;
+    private DatastoreType datastoreType;
+    private ProxyMethodService<DatastoreType, ?> proxyMethodService;
 
-    public InstanceInvocationHandler(E entity, ProxyMethodService<E, ?> proxyMethodService) {
-        this.entity = entity;
+    public InstanceInvocationHandler(DatastoreType datastoreType, ProxyMethodService<DatastoreType, ?> proxyMethodService) {
+        this.datastoreType = datastoreType;
         this.proxyMethodService = proxyMethodService;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (entity == null) {
+        if (datastoreType == null) {
             throw new CdoException("Invalid access to an un-managed instance.");
         }
-        return proxyMethodService.invoke(entity, proxy, method, args);
+        return proxyMethodService.invoke(datastoreType, proxy, method, args);
     }
 
-    public E getEntity() {
-        return entity;
+    public DatastoreType getDatastoreType() {
+        return datastoreType;
     }
 
     public void close() {
-        entity = null;
+        datastoreType = null;
     }
 }

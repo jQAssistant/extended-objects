@@ -4,7 +4,7 @@ import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;
 import com.buschmais.cdo.spi.metadata.method.EnumPropertyMethodMetadata;
 
-public class EnumPropertySetMethod<Entity> extends AbstractPropertyMethod<Entity, EnumPropertyMethodMetadata> {
+public class EnumPropertySetMethod<Entity, Relation> extends AbstractPropertyMethod<Entity, Relation, EnumPropertyMethodMetadata> {
 
     public EnumPropertySetMethod(EnumPropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
         super(metadata, instanceManager, propertyManager);

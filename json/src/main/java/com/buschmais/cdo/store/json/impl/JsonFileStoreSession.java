@@ -46,6 +46,11 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
+    public boolean isRelation(Object o) {
+        return JsonRelation.class.isAssignableFrom(o.getClass());
+    }
+
+    @Override
     public Set<String> getEntityDiscriminators(ObjectNode jsonNodes) {
         ArrayNode typesNode = (ArrayNode) jsonNodes.get(TYPES_PROPERTY);
         Set<String> discriminators = new HashSet<>();

@@ -4,7 +4,7 @@ import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;
 import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 
-public class PrimitivePropertyGetMethod<Entity> extends AbstractPropertyMethod<Entity,
+public class PrimitivePropertyGetMethod<Entity, Relation> extends AbstractPropertyMethod<Entity, Relation,
         PrimitivePropertyMethodMetadata> {
 
     public PrimitivePropertyGetMethod(PrimitivePropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {

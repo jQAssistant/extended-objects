@@ -4,7 +4,7 @@ import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;
 import com.buschmais.cdo.spi.metadata.method.ReferencePropertyMethodMetadata;
 
-public class ReferencePropertySetMethod<Entity> extends AbstractPropertyMethod<Entity, ReferencePropertyMethodMetadata> {
+public class ReferencePropertySetMethod<Entity, Relation> extends AbstractPropertyMethod<Entity, Relation, ReferencePropertyMethodMetadata> {
 
     public ReferencePropertySetMethod(ReferencePropertyMethodMetadata metadata, InstanceManager instanceManager, PropertyManager propertyManager) {
         super(metadata, instanceManager, propertyManager);
