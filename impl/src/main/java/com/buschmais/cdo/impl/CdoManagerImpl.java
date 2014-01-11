@@ -36,6 +36,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
     private final TransactionalCache<RelationId> relationCache;
     private final MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider;
     private final CdoTransaction cdoTransaction;
+    private final PropertyManager<EntityId, Entity, RelationId, Relation> propertyManager;
     private final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession;
     private final InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> instanceManager;
     private final InterceptorFactory interceptorFactory;
@@ -53,11 +54,12 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
      * @param interceptorFactory The associated {@link InterceptorFactory}.
      * @param instanceValidator  The associated {@link InstanceValidator}.
      */
-    public CdoManagerImpl(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, CdoTransaction cdoTransaction, TransactionalCache<EntityId> entityCache, TransactionalCache<RelationId> relationCache, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> instanceManager, InterceptorFactory interceptorFactory, InstanceValidator instanceValidator) {
+    public CdoManagerImpl(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, CdoTransaction cdoTransaction, TransactionalCache<EntityId> entityCache, TransactionalCache<RelationId> relationCache, PropertyManager<EntityId, Entity, RelationId, Relation> propertyManager, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> instanceManager, InterceptorFactory interceptorFactory, InstanceValidator instanceValidator) {
         this.metadataProvider = metadataProvider;
         this.cdoTransaction = cdoTransaction;
         this.entityCache = entityCache;
         this.relationCache = relationCache;
+        this.propertyManager = propertyManager;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
         this.interceptorFactory = interceptorFactory;
@@ -132,7 +134,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         Entity targetEntity = instanceManager.getEntity(target);
         Set<Class<?>> targetTypes = new HashSet<>(Arrays.asList(target.getClass().getInterfaces()));
         RelationTypeMetadata.Direction direction = metadataProvider.getRelationDirection(sourceTypes, relationTypeMetadata, targetTypes);
-        Relation relation = datastoreSession.getDatastorePropertyManager().createRelation(sourceEntity, relationTypeMetadata, direction, targetEntity);
+        Relation relation = propertyManager.createSingleRelation(sourceEntity, relationTypeMetadata, direction, targetEntity);
         return instanceManager.getRelationInstance(relation);
     }
 
@@ -144,7 +146,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
         Set<EntityDiscriminator> targetEntityDiscriminators = metadataProvider.getEntityDiscriminators(effectiveTargetTypes);
         datastoreSession.migrate(entity, types, entityDiscriminators, effectiveTargetTypes, targetEntityDiscriminators);
-        instanceManager.removeInstance(instance);
+        instanceManager.removeEntityInstance(instance);
         CompositeObject migratedInstance = instanceManager.getEntityInstance(entity);
         if (migrationStrategy != null) {
             migrationStrategy.migrate(instance, migratedInstance.as(targetType));
@@ -170,10 +172,18 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public <T> void delete(T instance) {
-        Entity entity = instanceManager.getEntity(instance);
-        instanceManager.removeInstance(instance);
+        if (instanceManager.isEntity(instance)) {
+            Entity entity = instanceManager.getEntity(instance);
+            datastoreSession.deleteEntity(entity);
+            instanceManager.removeEntityInstance(instance);
+        } else if (instanceManager.isRelation(instance)) {
+            Relation relation = instanceManager.getRelation(instance);
+            datastoreSession.getDatastorePropertyManager().deleteRelation(relation);
+            instanceManager.removeRelationInstance(instance);
+        } else {
+            throw new CdoException(instance + " is not a managed CDO instance.");
+        }
         instanceManager.destroyInstance(instance);
-        datastoreSession.delete(entity);
     }
 
     @Override

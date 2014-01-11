@@ -19,7 +19,6 @@ public class TypedReferencePropertyTest extends AbstractEmbeddedCdoManagerTest {
     }
 
     @Test
-    @Ignore
     public void oneToOne() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();

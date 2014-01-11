@@ -90,10 +90,10 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public void delete(ObjectNode entity) {
+    public void deleteEntity(ObjectNode entity) {
         File file = getFile(entity);
         if (!file.exists()) {
-            throw new CdoException("Cannot delete entity '" + entity + "' as it does not exist.");
+            throw new CdoException("Cannot deleteEntity entity '" + entity + "' as it does not exist.");
         }
         file.delete();
     }

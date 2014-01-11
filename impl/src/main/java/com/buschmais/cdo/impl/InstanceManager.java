@@ -4,9 +4,9 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
-import com.buschmais.cdo.impl.interceptor.CdoInterceptor;
 import com.buschmais.cdo.impl.proxy.ProxyMethodService;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
+import com.buschmais.cdo.impl.proxy.relation.RelationProxyMethodService;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.impl.proxy.entity.InstanceInvocationHandler;
 import com.buschmais.cdo.impl.proxy.entity.EntityProxyMethodService;
@@ -24,17 +24,18 @@ public class InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, 
     private final TransactionalCache<EntityId> entityCache;
     private final TransactionalCache<RelationId> relationCache;
     private final ProxyMethodService<Entity, ?> entityProxyMethodService;
+    private final ProxyMethodService<Relation, ?> relationProxyMethodService;
     private final InterceptorFactory interceptorFactory;
 
-    public InstanceManager(MetadataProvider metadataProvider, DatastoreSession<EntityId, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> datastoreSession, ClassLoader classLoader, CdoTransaction cdoTransaction, TransactionalCache<EntityId> entityCache, TransactionalCache relationCache, InterceptorFactory interceptorFactory) {
+    public InstanceManager(MetadataProvider metadataProvider, PropertyManager<EntityId, Entity, RelationId, Relation> propertyManager, DatastoreSession<EntityId, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> datastoreSession, ClassLoader classLoader, CdoTransaction cdoTransaction, TransactionalCache<EntityId> entityCache, TransactionalCache relationCache, InterceptorFactory interceptorFactory) {
         this.metadataProvider = metadataProvider;
         this.datastoreSession = datastoreSession;
         this.classLoader = classLoader;
         this.entityCache = entityCache;
         this.relationCache = relationCache;
-        PropertyManager propertyManager = new PropertyManager(datastoreSession);
         this.interceptorFactory = interceptorFactory;
         entityProxyMethodService = new EntityProxyMethodService(metadataProvider, this, propertyManager, cdoTransaction, interceptorFactory, datastoreSession);
+        relationProxyMethodService = new RelationProxyMethodService<>(metadataProvider, this, propertyManager, cdoTransaction, interceptorFactory, datastoreSession);
     }
 
     public <T> T getRelationInstance(Relation relation) {
@@ -46,14 +47,14 @@ public class InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, 
         }
         TypeMetadataSet<?> types = metadataProvider.getRelationTypes(getEntityDiscriminators(source), discriminator, getEntityDiscriminators(target));
         RelationId id = datastoreSession.getRelationId(relation);
-        return (T) getOrCreateInstance(relationCache, id, relation, types.toClasses(), CompositeObject.class);
+        return (T) getOrCreateInstance(relationCache, id, relation, relationProxyMethodService, types.toClasses(), CompositeObject.class);
     }
 
     public <T> T getEntityInstance(Entity entity) {
         Set<EntityDiscriminator> discriminators = getEntityDiscriminators(entity);
         TypeMetadataSet<?> types = metadataProvider.getTypes(discriminators);
         EntityId id = datastoreSession.getId(entity);
-        return (T) getOrCreateInstance(entityCache, id, entity, types.toClasses(), CompositeObject.class);
+        return (T) getOrCreateInstance(entityCache, id, entity, entityProxyMethodService, types.toClasses(), CompositeObject.class);
     }
 
     private Set<EntityDiscriminator> getEntityDiscriminators(Entity entity) {
@@ -64,10 +65,10 @@ public class InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, 
         return discriminators;
     }
 
-    private <CacheId> Object getOrCreateInstance(TransactionalCache<CacheId> cache, CacheId id, Object e, Set<Class<?>> types, Class<?>... baseTypes) {
+    private <CacheId> Object getOrCreateInstance(TransactionalCache<CacheId> cache, CacheId id, Object e, ProxyMethodService<?, ?> proxyMethodService, Set<Class<?>> types, Class<?>... baseTypes) {
         Object instance = cache.get(id);
         if (instance == null) {
-            InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(e, entityProxyMethodService);
+            InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(e, proxyMethodService);
             instance = createInstance(invocationHandler, types, baseTypes);
             cache.put(id, instance);
         }
@@ -81,10 +82,16 @@ public class InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, 
         return (Instance) createProxyInstance(invocationHandler, effectiveTypes);
     }
 
-    public <Instance> void removeInstance(Instance instance) {
+    public <Instance> void removeEntityInstance(Instance instance) {
         Entity entity = getEntity(instance);
         EntityId id = datastoreSession.getId(entity);
         entityCache.remove(id);
+    }
+
+    public <Instance> void removeRelationInstance(Instance instance) {
+        Relation  relation = getRelation(instance);
+        RelationId id = datastoreSession.getRelationId(relation);
+        relationCache.remove(id);
     }
 
     public <Instance> void destroyInstance(Instance instance) {
@@ -92,7 +99,7 @@ public class InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, 
     }
 
     public <Instance> boolean isEntity(Instance instance) {
-        if (isDatastoreType((Instance) instance)) {
+        if (isDatastoreType(instance)) {
             return datastoreSession.isEntity(getInvocationHandler(instance).getDatastoreType());
         }
         return false;
@@ -104,7 +111,6 @@ public class InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, 
         }
         return false;
     }
-
 
     public <Instance, DatastoreType> Entity getEntity(Instance instance) {
         InstanceInvocationHandler<DatastoreType> invocationHandler = getInvocationHandler(instance);
@@ -142,11 +148,21 @@ public class InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, 
     }
 
     private <Instance> boolean isDatastoreType(Instance instance) {
-        return Proxy.isProxyClass(instance.getClass()) && Proxy.getInvocationHandler(instance) instanceof CdoInterceptor;
+        if (interceptorFactory.hasInterceptor(instance)) {
+            return isDatastoreType(interceptorFactory.removeInterceptor(instance));
+        }
+        if (Proxy.isProxyClass(instance.getClass())) {
+            InvocationHandler invocationHandler = Proxy.getInvocationHandler(instance);
+            return invocationHandler instanceof InstanceInvocationHandler;
+        }
+        return false;
     }
 
     private <DatastoreType, Instance> InstanceInvocationHandler<DatastoreType> getInvocationHandler(Instance instance) {
-        InvocationHandler invocationHandler = Proxy.getInvocationHandler(interceptorFactory.removeInterceptor(instance));
+        if (interceptorFactory.hasInterceptor(instance)) {
+            return getInvocationHandler(interceptorFactory.removeInterceptor(instance));
+        }
+        InvocationHandler invocationHandler = Proxy.getInvocationHandler(instance);
         if (!(invocationHandler instanceof InstanceInvocationHandler)) {
             throw new CdoException("Instance " + instance + " implementing " + Arrays.asList(instance.getClass().getInterfaces()) + " is not a " + InstanceInvocationHandler.class.getName());
         }

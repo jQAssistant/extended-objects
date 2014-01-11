@@ -6,7 +6,7 @@ import com.buschmais.cdo.impl.InstanceManager;
 
 import java.util.Map;
 
-public class AsMethod<Entity> implements ProxyMethod<Entity> {
+public class AsMethod<DatastoreType> implements ProxyMethod<DatastoreType> {
 
     private InstanceManager instanceManager;
 
@@ -15,15 +15,19 @@ public class AsMethod<Entity> implements ProxyMethod<Entity> {
     }
 
     @Override
-    public Object invoke(Entity entity, Object instance, Object[] args) {
+    public Object invoke(DatastoreType datastoreType, Object instance, Object[] args) {
         Class<?> targetType = (Class<?>) args[0];
         for (Class<?> type : instance.getClass().getInterfaces()) {
             if (targetType.isAssignableFrom(type)) {
-                return instanceManager.getEntityInstance(entity);
+                if (instanceManager.isEntity(instance)) {
+                    return instanceManager.getEntityInstance(datastoreType);
+                } else if (instanceManager.isRelation(instance)) {
+                    return instanceManager.getRelation(instance);
+                }
             }
         }
-        if (entity instanceof Map) {
-            Map map = (Map) entity;
+        if (datastoreType instanceof Map) {
+            Map map = (Map) datastoreType;
             if (map.size() == 1) {
                 return map.values().iterator().next();
             }

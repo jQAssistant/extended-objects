@@ -24,6 +24,10 @@ public class InterceptorFactory {
         return (T) Proxy.newProxyInstance(instance.getClass().getClassLoader(), interfaces, cdoInterceptor);
     }
 
+    public <T> boolean hasInterceptor(T instance) {
+        return Proxy.isProxyClass(instance.getClass()) && Proxy.getInvocationHandler(instance) instanceof CdoInterceptor;
+    }
+
     public <T> T removeInterceptor(T instance) {
         InvocationHandler invocationHandler = Proxy.getInvocationHandler(instance);
         Class<?> interceptorType = TransactionInterceptor.class;

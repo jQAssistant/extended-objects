@@ -71,14 +71,15 @@ public class PropertyManager<EntityId, Entity, RelationId, Relation> {
      * @param source The source.
      * @param target The target source or <code>null</code>.
      */
-    public void createSingleRelation(Entity source, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction, Entity target) {
+    public Relation createSingleRelation(Entity source, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction, Entity target) {
         if (datastorePropertyManager.hasSingleRelation(source, metadata, direction)) {
             Relation relation = datastorePropertyManager.getSingleRelation(source, metadata, direction);
             datastorePropertyManager.deleteRelation(relation);
         }
         if (target != null) {
-            datastorePropertyManager.createRelation(source, metadata, direction, target);
+            return datastorePropertyManager.createRelation(source, metadata, direction, target);
         }
+        return null;
     }
 
     /**

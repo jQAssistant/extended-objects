@@ -84,9 +84,9 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
     /**
      * Delete an entity.
      *
-     * @param entity The entity to delete.
+     * @param entity The entity to deleteEntity.
      */
-    void delete(Entity entity);
+    void deleteEntity(Entity entity);
 
     /**
      * Find entities using a single primitive value (e.g. from an index if supported by the datastore).

@@ -1,4 +1,4 @@
-package com.buschmais.cdo.impl.proxy.entity;
+package com.buschmais.cdo.impl.proxy.relation;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoTransaction;
@@ -9,13 +9,13 @@ import com.buschmais.cdo.impl.MetadataProvider;
 import com.buschmais.cdo.impl.PropertyManager;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
-import com.buschmais.cdo.impl.proxy.common.UnsupportedOperationMethod;
 import com.buschmais.cdo.impl.proxy.common.composite.AsMethod;
-import com.buschmais.cdo.impl.proxy.entity.object.EqualsMethod;
-import com.buschmais.cdo.impl.proxy.entity.object.HashCodeMethod;
-import com.buschmais.cdo.impl.proxy.entity.object.ToStringMethod;
+import com.buschmais.cdo.impl.proxy.common.UnsupportedOperationMethod;
 import com.buschmais.cdo.impl.proxy.entity.property.*;
 import com.buschmais.cdo.impl.proxy.entity.resultof.ResultOfMethod;
+import com.buschmais.cdo.impl.proxy.relation.object.EqualsMethod;
+import com.buschmais.cdo.impl.proxy.relation.object.HashCodeMethod;
+import com.buschmais.cdo.impl.proxy.relation.object.ToStringMethod;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.metadata.method.*;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
@@ -26,9 +26,9 @@ import com.buschmais.cdo.spi.reflection.SetPropertyMethod;
 
 import java.lang.reflect.Method;
 
-public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Entity, M> {
+public class RelationProxyMethodService<Relation, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Relation, M> {
 
-    public EntityProxyMethodService(MetadataProvider<?, ?, ?, ?> metadataProvider, InstanceManager<?, Entity, ?, ?, ?, ?> instanceManager, PropertyManager<?, Entity, ?, ?> propertyManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession<?, Entity, ?, ?, ?, ?, ?, ?> datastoreSession) {
+    public RelationProxyMethodService(MetadataProvider<?, ?, ?, ?> metadataProvider, InstanceManager<?, ?, ?, ?, Relation, ?> instanceManager, PropertyManager<?, ?, ?, Relation> propertyManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession<?, ?, ?, ?, ?, Relation, ?, ?> datastoreSession) {
         super(instanceManager);
         for (TypeMetadata typeMetadata : metadataProvider.getRegisteredMetadata()) {
             for (MethodMetadata methodMetadata : typeMetadata.getProperties()) {
@@ -71,20 +71,13 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
                         } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new ReferencePropertySetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
                         }
-                    } else if (methodMetadata instanceof CollectionPropertyMethodMetadata) {
-                        if (propertyMethod instanceof GetPropertyMethod) {
-                            CollectionPropertyGetMethod<Entity, ?> proxyMethod = new CollectionPropertyGetMethod<>((CollectionPropertyMethodMetadata<?>) methodMetadata, instanceManager, propertyManager, interceptorFactory);
-                            addProxyMethod(proxyMethod, method);
-                        } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new CollectionPropertySetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
-                        }
                     }
                 }
             }
         }
-        addMethod(new AsMethod<Entity>(getInstanceManager()), CompositeObject.class, "as", Class.class);
+        addMethod(new AsMethod<Relation>(getInstanceManager()), CompositeObject.class, "as", Class.class);
         addMethod(new HashCodeMethod<>(datastoreSession), Object.class, "hashCode");
         addMethod(new EqualsMethod<>(instanceManager, datastoreSession), Object.class, "equals", Object.class);
-        addMethod(new ToStringMethod<Entity>(datastoreSession), Object.class, "toString");
+        addMethod(new ToStringMethod<>(datastoreSession), Object.class, "toString");
     }
 }

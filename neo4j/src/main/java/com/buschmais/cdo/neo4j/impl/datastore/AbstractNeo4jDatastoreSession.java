@@ -91,7 +91,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public void delete(Node entity) {
+    public void deleteEntity(Node entity) {
         entity.delete();
     }
 
