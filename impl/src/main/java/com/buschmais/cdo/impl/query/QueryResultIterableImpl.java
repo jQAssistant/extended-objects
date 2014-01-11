@@ -4,6 +4,7 @@ import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.impl.AbstractResultIterable;
 import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.ProxyFactory;
 import com.buschmais.cdo.impl.proxy.query.RowInvocationHandler;
 import com.buschmais.cdo.impl.proxy.query.RowProxyMethodService;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
@@ -14,18 +15,20 @@ import java.util.*;
 class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Query.Result<T> {
 
     private InstanceManager instanceManager;
+    private ProxyFactory proxyFactory;
     private DatastoreSession datastoreSession;
     private ResultIterator<Map<String, Object>> iterator;
     private SortedSet<Class<?>> types;
     private RowProxyMethodService rowProxyMethodService;
 
-    QueryResultIterableImpl(InstanceManager instanceManager, DatastoreSession datastoreSession,
+    QueryResultIterableImpl(InstanceManager instanceManager, ProxyFactory proxyFactory, DatastoreSession datastoreSession,
                             ResultIterator<Map<String, Object>> iterator, SortedSet<Class<?>> types) {
         this.instanceManager = instanceManager;
+        this.proxyFactory = proxyFactory;
         this.datastoreSession = datastoreSession;
         this.iterator = iterator;
         this.types = types;
-        this.rowProxyMethodService = new RowProxyMethodService(types, instanceManager);
+        this.rowProxyMethodService = new RowProxyMethodService(types, instanceManager, proxyFactory);
     }
 
     @Override
@@ -48,7 +51,7 @@ class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Qu
                     row.put(column, decodedValue);
                 }
                 RowInvocationHandler invocationHandler = new RowInvocationHandler(row, rowProxyMethodService);
-                return (T) instanceManager.createInstance(invocationHandler, types, CompositeRowObject.class);
+                return (T) proxyFactory.createInstance(invocationHandler, types, CompositeRowObject.class);
             }
 
             @Override

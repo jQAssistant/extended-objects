@@ -72,12 +72,13 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
         InstanceValidator instanceValidator = new InstanceValidator(validatorFactory, entityCache);
         CdoTransactionImpl cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction());
         InterceptorFactory interceptorFactory = new InterceptorFactory(cdoTransaction, defaultTransactionAttribute);
+        ProxyFactory proxyFactory = new ProxyFactory(interceptorFactory, classLoader);
         PropertyManager<?, ?, ?, ?> propertyManager = new PropertyManager(datastoreSession);
-        InstanceManager<?, ?, ?, ?, ?, ?> instanceManager = new InstanceManager(metadataProvider, propertyManager, datastoreSession, classLoader, cdoTransaction, entityCache, relationCache, interceptorFactory);
+        InstanceManager<?, ?, ?, ?, ?, ?> instanceManager = new InstanceManager(metadataProvider, propertyManager, datastoreSession, cdoTransaction, entityCache, relationCache, proxyFactory, interceptorFactory);
         // Register default synchronizations.
         cdoTransaction.registerDefaultSynchronization(new ValidatorSynchronization(instanceValidator));
         cdoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(instanceManager, entityCache, relationCache, datastoreSession));
-        CdoManagerImpl<?, ?, ?, ?, ?, ?, ?, ?> cdoManager = new CdoManagerImpl(metadataProvider, cdoTransaction, entityCache, relationCache, propertyManager, datastoreSession, instanceManager, interceptorFactory, instanceValidator);
+        CdoManagerImpl<?, ?, ?, ?, ?, ?, ?, ?> cdoManager = new CdoManagerImpl(metadataProvider, cdoTransaction, entityCache, relationCache, propertyManager, datastoreSession, instanceManager, proxyFactory, interceptorFactory, instanceValidator);
         return interceptorFactory.addInterceptor(cdoManager);
     }
 

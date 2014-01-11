@@ -5,6 +5,7 @@ import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.ProxyFactory;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.impl.transaction.TransactionalQueryResultIterable;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
@@ -16,17 +17,20 @@ public class CdoQueryImpl<T, QL> implements Query<T> {
     private final QL expression;
     private final DatastoreSession datastoreSession;
     private final InstanceManager instanceManager;
+    private final ProxyFactory proxyFactory;
     private final CdoTransaction cdoTransaction;
     private final InterceptorFactory interceptorFactory;
     private final Collection<Class<?>> types;
     private Map<String, Object> parameters = null;
 
     public CdoQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager,
-                        CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory,
+                        ProxyFactory proxyFactory, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory,
                         Collection<Class<?>> types) {
         this.expression = expression;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
+        this.proxyFactory = proxyFactory;
+
         this.cdoTransaction = cdoTransaction;
         this.interceptorFactory = interceptorFactory;
         this.types = types;
@@ -68,7 +72,7 @@ public class CdoQueryImpl<T, QL> implements Query<T> {
         }
         ResultIterator<Map<String, Object>> iterator = datastoreSession.execute(expression, effectiveParameters);
         SortedSet<Class<?>> resultTypes = getResultTypes();
-        QueryResultIterableImpl queryResultIterable = new QueryResultIterableImpl(instanceManager, datastoreSession,
+        QueryResultIterableImpl queryResultIterable = new QueryResultIterableImpl(instanceManager, proxyFactory, datastoreSession,
                 iterator, resultTypes);
         return new TransactionalQueryResultIterable(queryResultIterable, cdoTransaction);
     }

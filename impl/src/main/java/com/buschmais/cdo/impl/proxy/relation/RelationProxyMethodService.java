@@ -7,6 +7,7 @@ import com.buschmais.cdo.api.proxy.ProxyMethod;
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.MetadataProvider;
 import com.buschmais.cdo.impl.PropertyManager;
+import com.buschmais.cdo.impl.ProxyFactory;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.cdo.impl.proxy.common.composite.AsMethod;
@@ -28,8 +29,8 @@ import java.lang.reflect.Method;
 
 public class RelationProxyMethodService<Relation, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Relation, M> {
 
-    public RelationProxyMethodService(MetadataProvider<?, ?, ?, ?> metadataProvider, InstanceManager<?, ?, ?, ?, Relation, ?> instanceManager, PropertyManager<?, ?, ?, Relation> propertyManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession<?, ?, ?, ?, ?, Relation, ?, ?> datastoreSession) {
-        super(instanceManager);
+    public RelationProxyMethodService(MetadataProvider<?, ?, ?, ?> metadataProvider, InstanceManager<?, ?, ?, ?, Relation, ?> instanceManager, ProxyFactory proxyFactory, PropertyManager<?, ?, ?, Relation> propertyManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession<?, ?, ?, ?, ?, Relation, ?, ?> datastoreSession) {
+        super(instanceManager, proxyFactory);
         for (TypeMetadata typeMetadata : metadataProvider.getRegisteredMetadata()) {
             for (MethodMetadata methodMetadata : typeMetadata.getProperties()) {
                 AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
@@ -48,7 +49,7 @@ public class RelationProxyMethodService<Relation, M extends ProxyMethod<?>> exte
                 }
                 if (methodMetadata instanceof ResultOfMethodMetadata) {
                     ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata) methodMetadata;
-                    addProxyMethod(new ResultOfMethod(resultOfMethodMetadata, instanceManager, cdoTransaction, interceptorFactory, datastoreSession), typeMethod.getAnnotatedElement());
+                    addProxyMethod(new ResultOfMethod(resultOfMethodMetadata, instanceManager, proxyFactory, cdoTransaction, interceptorFactory, datastoreSession), typeMethod.getAnnotatedElement());
                 }
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
                     PropertyMethod propertyMethod = (PropertyMethod) typeMethod;

@@ -3,6 +3,7 @@ package com.buschmais.cdo.impl.proxy;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.ProxyFactory;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -14,9 +15,11 @@ public class AbstractProxyMethodService<E, M extends ProxyMethod<?>> implements 
     private final Map<Method, ProxyMethod<E>> proxyMethods = new HashMap<>();
 
     private InstanceManager instanceManager;
+    private ProxyFactory proxyFactory;
 
-    protected AbstractProxyMethodService(InstanceManager instanceManager) {
+    protected AbstractProxyMethodService(InstanceManager instanceManager, ProxyFactory proxyFactory) {
         this.instanceManager = instanceManager;
+        this.proxyFactory = proxyFactory;
     }
 
     protected InstanceManager<?, ?, ?, ?, ?, ?> getInstanceManager() {

@@ -39,22 +39,24 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
     private final PropertyManager<EntityId, Entity, RelationId, Relation> propertyManager;
     private final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession;
     private final InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> instanceManager;
+    private final ProxyFactory proxyFactory;
     private final InterceptorFactory interceptorFactory;
     private final InstanceValidator instanceValidator;
 
     /**
      * Constructor.
      *
-     * @param metadataProvider   The {@link MetadataProvider}.
-     * @param cdoTransaction     The associated {@link CdoTransaction}.
+     * @param metadataProvider   The {@link com.buschmais.cdo.impl.MetadataProvider}.
+     * @param cdoTransaction     The associated {@link com.buschmais.cdo.api.CdoTransaction}.
      * @param entityCache        The associated transactional entity cache.
      * @param relationCache      The associated transactional relation cache.
-     * @param datastoreSession   The associated {@link DatastoreSession}.
-     * @param instanceManager    The associated {@link InstanceManager}.
-     * @param interceptorFactory The associated {@link InterceptorFactory}.
-     * @param instanceValidator  The associated {@link InstanceValidator}.
+     * @param datastoreSession   The associated {@link com.buschmais.cdo.spi.datastore.DatastoreSession}.
+     * @param instanceManager    The associated {@link com.buschmais.cdo.impl.InstanceManager}.
+     * @param proxyFactory
+     * @param interceptorFactory The associated {@link com.buschmais.cdo.impl.interceptor.InterceptorFactory}.
+     * @param instanceValidator  The associated {@link com.buschmais.cdo.impl.validation.InstanceValidator}.
      */
-    public CdoManagerImpl(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, CdoTransaction cdoTransaction, TransactionalCache<EntityId> entityCache, TransactionalCache<RelationId> relationCache, PropertyManager<EntityId, Entity, RelationId, Relation> propertyManager, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> instanceManager, InterceptorFactory interceptorFactory, InstanceValidator instanceValidator) {
+    public CdoManagerImpl(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, CdoTransaction cdoTransaction, TransactionalCache<EntityId> entityCache, TransactionalCache<RelationId> relationCache, PropertyManager<EntityId, Entity, RelationId, Relation> propertyManager, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, InstanceManager<EntityId, Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> instanceManager, ProxyFactory proxyFactory, InterceptorFactory interceptorFactory, InstanceValidator instanceValidator) {
         this.metadataProvider = metadataProvider;
         this.cdoTransaction = cdoTransaction;
         this.entityCache = entityCache;
@@ -62,6 +64,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.propertyManager = propertyManager;
         this.datastoreSession = datastoreSession;
         this.instanceManager = instanceManager;
+        this.proxyFactory = proxyFactory;
         this.interceptorFactory = interceptorFactory;
         this.instanceValidator = instanceValidator;
     }
@@ -188,31 +191,31 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public Query<CompositeRowObject> createQuery(String query) {
-        CdoQueryImpl<CompositeRowObject, String> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Collections.<Class<?>>emptyList());
+        CdoQueryImpl<CompositeRowObject, String> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, proxyFactory, cdoTransaction, interceptorFactory, Collections.<Class<?>>emptyList());
         return interceptorFactory.addInterceptor(cdoQuery);
     }
 
     @Override
     public <T> Query<T> createQuery(String query, Class<T> type) {
-        CdoQueryImpl<T, String> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(new Class<?>[]{type}));
+        CdoQueryImpl<T, String> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, proxyFactory, cdoTransaction, interceptorFactory, Arrays.asList(new Class<?>[]{type}));
         return interceptorFactory.addInterceptor(cdoQuery);
     }
 
     @Override
     public Query<CompositeRowObject> createQuery(String query, Class<?> type, Class<?>... types) {
-        CdoQueryImpl<CompositeRowObject, String> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(types));
+        CdoQueryImpl<CompositeRowObject, String> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, proxyFactory, cdoTransaction, interceptorFactory, Arrays.asList(types));
         return interceptorFactory.addInterceptor(cdoQuery);
     }
 
     @Override
     public <T> Query<T> createQuery(Class<T> query) {
-        CdoQueryImpl<T, Class<T>> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(new Class<?>[]{query}));
+        CdoQueryImpl<T, Class<T>> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, proxyFactory, cdoTransaction, interceptorFactory, Arrays.asList(new Class<?>[]{query}));
         return interceptorFactory.addInterceptor(cdoQuery);
     }
 
     @Override
     public <Q> Query<CompositeRowObject> createQuery(Class<Q> query, Class<?>... types) {
-        CdoQueryImpl<CompositeRowObject, Class<Q>> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, cdoTransaction, interceptorFactory, Arrays.asList(types));
+        CdoQueryImpl<CompositeRowObject, Class<Q>> cdoQuery = new CdoQueryImpl<>(query, datastoreSession, instanceManager, proxyFactory, cdoTransaction, interceptorFactory, Arrays.asList(types));
         return interceptorFactory.addInterceptor(cdoQuery);
     }
 
