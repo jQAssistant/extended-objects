@@ -44,10 +44,14 @@ public class TransactionInterceptor<T> extends AbstractCdoInterceptor<T> {
                         this.cdoTransaction.commit();
                         return result;
                     } catch (RuntimeException e) {
-                        this.cdoTransaction.rollback();
+                        if (this.cdoTransaction.isActive()) {
+                            this.cdoTransaction.rollback();
+                        }
                         throw e;
                     } catch (Exception e) {
-                        this.cdoTransaction.commit();
+                        if (this.cdoTransaction.isActive()) {
+                            this.cdoTransaction.commit();
+                        }
                         throw e;
                     }
                 } else {
