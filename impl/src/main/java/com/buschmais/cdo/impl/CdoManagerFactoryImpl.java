@@ -83,6 +83,7 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
         datastore.close();
     }
 
+    @Override
     public CdoUnit getCdoUnit() {
         return cdoUnit;
     }
