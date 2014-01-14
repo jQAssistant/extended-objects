@@ -1,17 +1,14 @@
 package com.buschmais.cdo.impl;
 
-import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.api.TransactionAttribute;
-import com.buschmais.cdo.impl.reflection.ClassHelper;
-import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
+import com.buschmais.cdo.api.*;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.cache.CacheSynchronization;
+import com.buschmais.cdo.impl.cache.TransactionalCache;
+import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
+import com.buschmais.cdo.impl.metadata.MetadataProviderImpl;
+import com.buschmais.cdo.impl.reflection.ClassHelper;
 import com.buschmais.cdo.impl.validation.InstanceValidator;
 import com.buschmais.cdo.impl.validation.ValidatorSynchronization;
-import com.buschmais.cdo.impl.cache.TransactionalCache;
-import com.buschmais.cdo.impl.metadata.MetadataProviderImpl;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
@@ -31,6 +28,7 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
     private ClassLoader classLoader;
     private Datastore<?, ?, ?> datastore;
     private ValidatorFactory validatorFactory;
+    private ConcurrencyMode concurrencyMode;
     private TransactionAttribute defaultTransactionAttribute;
 
     public CdoManagerFactoryImpl(CdoUnit cdoUnit) {
@@ -44,6 +42,7 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
         }
         CdoDatastoreProvider cdoDatastoreProvider = CdoDatastoreProvider.class.cast(ClassHelper.newInstance(providerType));
         datastore = cdoDatastoreProvider.createDatastore(cdoUnit);
+        this.concurrencyMode = cdoUnit.getConcurrencyMode();
         this.defaultTransactionAttribute = cdoUnit.getDefaultTransactionAttribute();
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         classLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();
@@ -70,7 +69,7 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
         TransactionalCache<?> cache = new TransactionalCache();
         InstanceValidator instanceValidator = new InstanceValidator(validatorFactory, cache);
         CdoTransactionImpl cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction());
-        InterceptorFactory interceptorFactory = new InterceptorFactory(cdoTransaction, defaultTransactionAttribute);
+        InterceptorFactory interceptorFactory = new InterceptorFactory(cdoTransaction, defaultTransactionAttribute, concurrencyMode);
         InstanceManager instanceManager = new InstanceManager(metadataProvider, datastoreSession, classLoader, cdoTransaction, cache, interceptorFactory);
         // Register default synchronizations.
         cdoTransaction.registerDefaultSynchronization(new ValidatorSynchronization(instanceValidator));

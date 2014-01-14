@@ -1,6 +1,7 @@
 package com.buschmais.cdo.impl.bootstrap;
 
 import com.buschmais.cdo.api.CdoException;
+import com.buschmais.cdo.api.ConcurrencyMode;
 import com.buschmais.cdo.api.TransactionAttribute;
 import com.buschmais.cdo.api.ValidationMode;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
@@ -91,6 +92,7 @@ public class CdoUnitFactory {
                 types.add(ClassHelper.getType(typeName));
             }
             ValidationMode validationMode = getValidationMode(cdoUnitType.getValidationMode());
+            ConcurrencyMode concurrencyMode = getConcurrencyMode(cdoUnitType.getConcurrencyMode());
             TransactionAttribute defaultTransactionAttribute = getTransactionAttribute(cdoUnitType.getDefaultTransactionAttribute());
             Properties properties = new Properties();
             PropertiesType propertiesType = cdoUnitType.getProperties();
@@ -99,10 +101,22 @@ public class CdoUnitFactory {
                     properties.setProperty(propertyType.getName(), propertyType.getValue());
                 }
             }
-            CdoUnit cdoUnit = new CdoUnit(name, description, uri, provider, types, validationMode, defaultTransactionAttribute, properties);
+            CdoUnit cdoUnit = new CdoUnit(name, description, uri, provider, types, validationMode, concurrencyMode, defaultTransactionAttribute, properties);
             cdoUnits.add(cdoUnit);
         }
         return cdoUnits;
+    }
+
+    private ConcurrencyMode getConcurrencyMode(ConcurrencyModeType concurrencyModeType) {
+        if (concurrencyModeType == null) return ConcurrencyMode.SINGLETHREADED;
+        switch (concurrencyModeType) {
+            case SINGLETHREADED:
+                return ConcurrencyMode.SINGLETHREADED;
+            case MULTITHREADED:
+                return ConcurrencyMode.MULTITHREADED;
+            default:
+                throw new CdoException("Unknown conucrrency mode type " + concurrencyModeType);
+        }
     }
 
     private ValidationMode getValidationMode(ValidationModeType validationModeType) {

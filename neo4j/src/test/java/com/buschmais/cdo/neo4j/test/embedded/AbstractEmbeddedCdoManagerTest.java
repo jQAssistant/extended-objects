@@ -1,6 +1,7 @@
 package com.buschmais.cdo.neo4j.test.embedded;
 
 import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.api.ConcurrencyMode;
 import com.buschmais.cdo.api.ValidationMode;
 import com.buschmais.cdo.api.bootstrap.Cdo;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
@@ -16,7 +17,7 @@ public abstract class AbstractEmbeddedCdoManagerTest extends AbstractCdoManagerT
     @Override
     protected CdoManagerFactory getNeo4jCdoManagerFactory(Class<?>[] types) throws URISyntaxException {
         CdoUnit cdoUnit = new CdoUnit("embedded", "Embedded CDO unit", new URI("memory:///"), Neo4jCdoProvider.class,
-                types, ValidationMode.AUTO, getTransactionAttribute(), new Properties());
+                types, ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, getTransactionAttribute(), new Properties());
         return Cdo.createCdoManagerFactory(cdoUnit);
     }
 

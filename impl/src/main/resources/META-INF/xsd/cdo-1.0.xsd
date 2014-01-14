@@ -26,6 +26,7 @@
             <xs:element name="provider" type="cdo:NonEmptyStringType" minOccurs="1"/>
             <xs:element name="types" type="cdo:TypesType" minOccurs="1"/>
             <xs:element name="validation-mode" type="cdo:ValidationModeType" minOccurs="0"/>
+            <xs:element name="concurrency-mode" type="cdo:ConcurrencyModeType" minOccurs="0"/>
             <xs:element name="default-transaction-attribute" type="cdo:TransactionAttributeType" minOccurs="0"/>
             <xs:element name="properties" type="cdo:PropertiesType" minOccurs="0"/>
         </xs:sequence>
@@ -37,6 +38,13 @@
             <xs:element name="type" type="cdo:NonEmptyStringType" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
+
+    <xs:simpleType name="ConcurrencyModeType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="SINGLETHREADED"/>
+            <xs:enumeration value="MULTITHREADED"/>
+        </xs:restriction>
+    </xs:simpleType>
 
     <xs:simpleType name="ValidationModeType">
         <xs:restriction base="xs:token">

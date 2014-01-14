@@ -1,5 +1,6 @@
 package com.buschmais.cdo.api.bootstrap;
 
+import com.buschmais.cdo.api.ConcurrencyMode;
 import com.buschmais.cdo.api.TransactionAttribute;
 import com.buschmais.cdo.api.ValidationMode;
 
@@ -28,23 +29,26 @@ public class CdoUnit {
 
     private ValidationMode validationMode;
 
+    private ConcurrencyMode concurrencyMode;
+
     private TransactionAttribute defaultTransactionAttribute;
 
     private Properties properties;
 
-    public CdoUnit(String name, String description, URI uri, Class<?> provider, Set<Class<?>> types, ValidationMode validationMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
+    public CdoUnit(String name, String description, URI uri, Class<?> provider, Set<Class<?>> types, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
         this.name = name;
         this.description = description;
         this.uri = uri;
         this.provider = provider;
         this.types = types;
         this.validationMode = validationMode;
+        this.concurrencyMode = concurrencyMode;
         this.defaultTransactionAttribute = defaultTransactionAttribute;
         this.properties = properties;
     }
 
-    public CdoUnit(String name, String description, URI uri, Class<?> provider, Class<?>[] types, ValidationMode validationMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
-        this(name, description, uri, provider, new HashSet<>(Arrays.asList(types)), validationMode, defaultTransactionAttribute, properties);
+    public CdoUnit(String name, String description, URI uri, Class<?> provider, Class<?>[] types, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
+        this(name, description, uri, provider, new HashSet<>(Arrays.asList(types)), validationMode, concurrencyMode, defaultTransactionAttribute, properties);
     }
 
     public String getName() {
@@ -77,6 +81,10 @@ public class CdoUnit {
 
     public ValidationMode getValidationMode() {
         return validationMode;
+    }
+
+    public ConcurrencyMode getConcurrencyMode() {
+        return concurrencyMode;
     }
 
     public TransactionAttribute getDefaultTransactionAttribute() {
