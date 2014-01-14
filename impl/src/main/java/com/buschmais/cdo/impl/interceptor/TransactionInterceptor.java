@@ -14,7 +14,8 @@ public class TransactionInterceptor<T> extends AbstractCdoInterceptor<T> {
 
     private TransactionAttribute defaultTransactionAttribute;
 
-    public TransactionInterceptor(T delegate, CdoTransaction cdoTransaction, TransactionAttribute defaultTransactionAttribute) {
+    public TransactionInterceptor(T delegate, CdoTransaction cdoTransaction,
+            TransactionAttribute defaultTransactionAttribute) {
         super(delegate);
         this.cdoTransaction = cdoTransaction;
         this.defaultTransactionAttribute = defaultTransactionAttribute;
@@ -22,46 +23,51 @@ public class TransactionInterceptor<T> extends AbstractCdoInterceptor<T> {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        TransactionAttribute transactionAttribute;
-        CdoManager.Transaction transaction = method.getAnnotation(CdoManager.Transaction.class);
-        if (transaction != null) {
-            transactionAttribute = transaction.value();
-        } else {
-            transactionAttribute = this.defaultTransactionAttribute;
-        }
-        switch (transactionAttribute) {
-            case MANDATORY:
-                if (!this.cdoTransaction.isActive()) {
-                    throw new CdoException("An active transaction is MANDATORY when calling method '" +
-                            method.getDeclaringClass().getName() + "#" + method.getName() + "'");
-                }
-                return invoke(method, args);
-            case REQUIRES: {
-                if (!this.cdoTransaction.isActive()) {
-                    try {
-                        this.cdoTransaction.begin();
-                        Object result = invoke(method, args);
-                        this.cdoTransaction.commit();
-                        return result;
-                    } catch (RuntimeException e) {
-                        if (this.cdoTransaction.isActive()) {
-                            this.cdoTransaction.rollback();
-                        }
-                        throw e;
-                    } catch (Exception e) {
-                        if (this.cdoTransaction.isActive()) {
-                            this.cdoTransaction.commit();
-                        }
-                        throw e;
-                    }
-                } else {
-                    return invoke(method, args);
-                }
+        synchronized (this.cdoTransaction) {
+            TransactionAttribute transactionAttribute;
+            CdoManager.Transaction transaction = method.getAnnotation(CdoManager.Transaction.class);
+            if (transaction != null) {
+                transactionAttribute = transaction.value();
+            } else {
+                transactionAttribute = this.defaultTransactionAttribute;
             }
-            case NOT_SUPPORTED:
-                return invoke(method, args);
-            default: {
-                throw new CdoException("Unsupported transaction attribute '" + transactionAttribute + "'");
+            switch (transactionAttribute) {
+                case MANDATORY:
+                    if (!this.cdoTransaction.isActive()) {
+                        throw new CdoException(
+                                "An active transaction is MANDATORY when calling method '"
+                                        + method.getDeclaringClass().getName()
+                                        + "#" + method.getName() + "'");
+                    }
+                    return invoke(method, args);
+                case REQUIRES: {
+                    if (!this.cdoTransaction.isActive()) {
+                        try {
+                            this.cdoTransaction.begin();
+                            Object result = invoke(method, args);
+                            this.cdoTransaction.commit();
+                            return result;
+                        } catch (RuntimeException e) {
+                            if (this.cdoTransaction.isActive()) {
+                                this.cdoTransaction.rollback();
+                            }
+                            throw e;
+                        } catch (Exception e) {
+                            if (this.cdoTransaction.isActive()) {
+                                this.cdoTransaction.commit();
+                            }
+                            throw e;
+                        }
+                    } else {
+                        return invoke(method, args);
+                    }
+                }
+                case NOT_SUPPORTED:
+                    return invoke(method, args);
+                default: {
+                    throw new CdoException(
+                            "Unsupported transaction attribute '" + transactionAttribute + "'");
+                }
             }
         }
     }
