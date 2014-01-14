@@ -1,8 +1,7 @@
 package com.buschmais.cdo.impl.interceptor;
 
-import java.lang.reflect.InvocationHandler;
+public interface CdoInterceptor {
 
-public interface CdoInterceptor<T>  extends InvocationHandler {
+    Object invoke(InvocationContext invocationContext) throws Throwable;
 
-    T getDelegate();
 }

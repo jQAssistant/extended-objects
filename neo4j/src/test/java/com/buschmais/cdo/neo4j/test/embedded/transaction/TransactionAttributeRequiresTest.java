@@ -30,7 +30,7 @@ public class TransactionAttributeRequiresTest extends AbstractEmbeddedCdoManager
         A a = createA(cdoManager);
         assertThat(a.getValue(), equalTo("value1"));
         assertThat(cdoManager.find(A.class, "value1").getSingleResult(), equalTo(a));
-        assertThat(((A.ByValue) cdoManager.createQuery(A.ByValue.class).withParameter("value", "value1").execute().getSingleResult()).getA(), equalTo(a));
+        assertThat(cdoManager.createQuery(A.ByValue.class).withParameter("value", "value1").execute().getSingleResult().getA(), equalTo(a));
         assertThat(a.getByValue("value1").getA(), equalTo(a));
         a.setValue("value2");
         assertThat(a.getValue(), equalTo("value2"));

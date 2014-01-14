@@ -4,13 +4,13 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
-import com.buschmais.cdo.impl.proxy.ProxyMethodService;
-import com.buschmais.cdo.impl.interceptor.CdoInterceptor;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
-import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
-import com.buschmais.cdo.impl.proxy.instance.InstanceInvocationHandler;
+import com.buschmais.cdo.impl.interceptor.InterceptorInvocationHandler;
+import com.buschmais.cdo.impl.proxy.ProxyMethodService;
 import com.buschmais.cdo.impl.proxy.instance.EntityProxyMethodService;
+import com.buschmais.cdo.impl.proxy.instance.InstanceInvocationHandler;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
+import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -72,7 +72,7 @@ public class InstanceManager<EntityId, Entity> {
     }
 
     public <Instance> boolean isEntity(Instance instance) {
-        return Proxy.isProxyClass(instance.getClass()) && Proxy.getInvocationHandler(instance) instanceof CdoInterceptor;
+        return Proxy.isProxyClass(instance.getClass()) && Proxy.getInvocationHandler(instance) instanceof InterceptorInvocationHandler;
     }
 
     public <Instance> Entity getEntity(Instance instance) {

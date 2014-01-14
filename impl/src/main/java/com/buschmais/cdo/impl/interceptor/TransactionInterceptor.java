@@ -5,23 +5,22 @@ import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.TransactionAttribute;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class TransactionInterceptor<T> extends AbstractCdoInterceptor<T> {
+public class TransactionInterceptor implements CdoInterceptor {
 
     private CdoTransaction cdoTransaction;
 
     private TransactionAttribute defaultTransactionAttribute;
 
-    public TransactionInterceptor(T delegate, CdoTransaction cdoTransaction, TransactionAttribute defaultTransactionAttribute) {
-        super(delegate);
+    public TransactionInterceptor(CdoTransaction cdoTransaction, TransactionAttribute defaultTransactionAttribute) {
         this.cdoTransaction = cdoTransaction;
         this.defaultTransactionAttribute = defaultTransactionAttribute;
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(InvocationContext context) throws Throwable {
+        Method method = context.getMethod();
         TransactionAttribute transactionAttribute;
         CdoManager.Transaction transaction = method.getAnnotation(CdoManager.Transaction.class);
         if (transaction != null) {
@@ -35,12 +34,12 @@ public class TransactionInterceptor<T> extends AbstractCdoInterceptor<T> {
                     throw new CdoException("An active transaction is MANDATORY when calling method '" +
                             method.getDeclaringClass().getName() + "#" + method.getName() + "'");
                 }
-                return invoke(method, args);
+                return context.proceed();
             case REQUIRES: {
                 if (!this.cdoTransaction.isActive()) {
                     try {
                         this.cdoTransaction.begin();
-                        Object result = invoke(method, args);
+                        Object result = context.proceed();
                         this.cdoTransaction.commit();
                         return result;
                     } catch (RuntimeException e) {
@@ -55,22 +54,14 @@ public class TransactionInterceptor<T> extends AbstractCdoInterceptor<T> {
                         throw e;
                     }
                 } else {
-                    return invoke(method, args);
+                    return context.proceed();
                 }
             }
             case NOT_SUPPORTED:
-                return invoke(method, args);
+                return context.proceed();
             default: {
                 throw new CdoException("Unsupported transaction attribute '" + transactionAttribute + "'");
             }
-        }
-    }
-
-    private Object invoke(Method method, Object[] args) throws Throwable {
-        try {
-            return method.invoke(getDelegate(), args);
-        } catch (InvocationTargetException e) {
-            throw e.getTargetException();
         }
     }
 }
