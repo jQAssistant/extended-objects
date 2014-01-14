@@ -15,9 +15,9 @@ public class InterceptorFactory {
     List<CdoInterceptor> chain;
 
     public InterceptorFactory(CdoTransaction cdoTransaction, TransactionAttribute transactionAttribute) {
-        CdoInterceptor cdoInterceptor = new TransactionInterceptor(cdoTransaction, transactionAttribute);
         this.chain = new ArrayList<>();
-        chain.add(cdoInterceptor);
+        chain.add(new ConcurrencyInterceptor());
+        chain.add(new TransactionInterceptor(cdoTransaction, transactionAttribute));
     }
 
     public <T> T addInterceptor(T instance) {
