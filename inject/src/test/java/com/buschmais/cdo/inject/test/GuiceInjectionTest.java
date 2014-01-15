@@ -1,24 +1,25 @@
 package com.buschmais.cdo.inject.test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.inject.CdoContext;
 import com.buschmais.cdo.inject.GuiceModule;
 import com.buschmais.cdo.inject.test.composite.A;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.inject.Inject;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
 
 public class GuiceInjectionTest {
 
-	@CdoContext(unit = "guice")
-	private CdoManagerFactory cdoManagerFactory;
+    @Inject
+    private CdoManagerFactory cdoManagerFactory;
 
 	private CdoManager cdoManager;
 
@@ -43,6 +44,10 @@ public class GuiceInjectionTest {
 		A a = cdoManager.create(A.class);
 		a.setValue("Google Guice");
 		cdoManager.currentTransaction().commit();
+
+        cdoManager.currentTransaction().begin();
+        assertEquals("Google Guice", a.getValue());
+        cdoManager.currentTransaction().commit();
 	}
 
 	private void closeCdoManager() {

@@ -1,13 +1,29 @@
 package com.buschmais.cdo.inject;
 
+import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.api.bootstrap.Cdo;
 import com.google.inject.AbstractModule;
-import com.google.inject.matcher.Matchers;
+import com.google.inject.Provides;
+
+import javax.inject.Singleton;
 
 public class GuiceModule extends AbstractModule {
 
-	@Override
-	protected void configure() {
-		bindListener(Matchers.any(), new CdoManagerTypeListener());
-	}
+    private final String defaultUnit;
 
+    public GuiceModule() {
+        this("default");
+    }
+
+    public GuiceModule(String defaultUnit) {
+        this.defaultUnit = defaultUnit;
+    }
+
+    @Override
+    protected void configure() {
+    }
+
+    @Provides @Singleton CdoManagerFactory cdoManagerFactory() {
+        return Cdo.createCdoManagerFactory(defaultUnit);
+    }
 }
