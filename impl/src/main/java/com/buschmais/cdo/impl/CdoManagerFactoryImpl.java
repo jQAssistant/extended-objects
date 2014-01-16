@@ -4,8 +4,6 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.TransactionAttribute;
-import com.buschmais.cdo.impl.cache.EntityCacheSynchronization;
-import com.buschmais.cdo.impl.cache.RelationCacheSynchronization;
 import com.buschmais.cdo.impl.reflection.ClassHelper;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
@@ -16,8 +14,6 @@ import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.metadata.MetadataProviderImpl;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import com.buschmais.cdo.spi.datastore.Datastore;
-import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +22,16 @@ import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
 
-public class CdoManagerFactoryImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> implements CdoManagerFactory {
+public class CdoManagerFactoryImpl implements CdoManagerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CdoManagerFactoryImpl.class);
 
     private CdoUnit cdoUnit;
-    private MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider;
-    private Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore;
+    private MetadataProvider metadataProvider;
+    private ClassLoader classLoader;
+    private Datastore<?, ?, ?> datastore;
     private ValidatorFactory validatorFactory;
     private TransactionAttribute defaultTransactionAttribute;
-    private ClassLoader classLoader;
 
     public CdoManagerFactoryImpl(CdoUnit cdoUnit) {
         this.cdoUnit = cdoUnit;
@@ -48,17 +44,18 @@ public class CdoManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Data
         }
         CdoDatastoreProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> cdoDatastoreProvider = CdoDatastoreProvider.class.cast(ClassHelper.newInstance(providerType));
         this.datastore = cdoDatastoreProvider.createDatastore(cdoUnit);
+        this.concurrencyMode = cdoUnit.getConcurrencyMode();
         this.defaultTransactionAttribute = cdoUnit.getDefaultTransactionAttribute();
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        final ClassLoader parentClassLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();
-        LOGGER.debug("Using parent class loader '{}'.", parentClassLoader.toString());
-        this.classLoader = new ClassLoader() {
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        classLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();
+        LOGGER.info("Using class loader '{}'.", contextClassLoader.toString());
+        classLoader = new ClassLoader() {
             @Override
             public Class<?> loadClass(String name) throws ClassNotFoundException {
-                return parentClassLoader.loadClass(name);
+                return contextClassLoader.loadClass(name);
             }
         };
-        this.metadataProvider = new MetadataProviderImpl<>(cdoUnit.getTypes(), datastore);
+        metadataProvider = new MetadataProviderImpl(cdoUnit.getTypes(), datastore);
         try {
             this.validatorFactory = Validation.buildDefaultValidatorFactory();
         } catch (ValidationException e) {

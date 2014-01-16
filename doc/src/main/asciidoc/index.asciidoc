@@ -18,9 +18,10 @@ Composite Data Objects (CDO) allows modeling types as interfaces by specifying t
 (i.e. getter and setter) and composing these types either statically or dynamically. The CDO API uses well-known
 concepts from existing persistence APIs (e.g. JPA, JDO) but extends them with functionality which is enabled by using
 interfaces to define the data objects, e.g. type migration at runtime.
-The CDO implementation itself is datastore-agnostic, i.e. it does not depend on specific concept like relational
-or graph databases, document stores etc. but allows using them. Datastore specific implementations can be provided by
-implementing the SPI (service provider interface), the reference implementation is based on the graph database Neo4j.
+The CDO implementation itself is datastore-agnostic, i.e. it does not depend on specific datastore concepts like
+relational or graph databases, document stores etc. but allows using them. Datastore specific implementations can be
+provided by implementing the SPI (Service Provider Interface), the reference implementation is based on the
+graph database Neo4j.
 
 Static vs. Dynamic Composition
 ------------------------------
@@ -111,7 +112,7 @@ public class RaidersOfTheLostArk {
 ----
 
 The types Actor and Director use static composition by extending from the type Person. But what happens if a person
-works in both roles: actor and director? Using static composition a new type would be needed:
+works in both roles: actor and director? A new type extending from both would be required if static composition was used:
 
 DirectingActor.java
 [source,java]
@@ -120,8 +121,8 @@ public interface DirectingActor extends Director, Actor {
 }
 ----
 
-The situation gets even more complex if other roles (like screenwriter, composer, etc.) are added to the domain model.
-Each combination of roles must be represented by such a type. Dynamic compositon helps getting around this problem:
+The situation gets even more complex if other roles (like screenwriter, editor, etc.) are added to the domain model.
+Each combination of roles must be represented by such a type. Dynamic composition helps getting around this problem:
 
 TempleOfDoom.java
 [source,java]
@@ -135,7 +136,7 @@ public class TempleOfDoom {
     Actor harrison = cm.create(Actor.class);
     harrison.setName("Harrison Ford");
 
-    // Create Steven as composite object with several roles
+    // Create Steven as composite object using more than one role
     CompositeObject steven = cm.create(Director.class, Actor.class);
 
     // Use Steven in the role of an actor
@@ -144,7 +145,7 @@ public class TempleOfDoom {
     Movie temple = cm.create(Movie.class);
     temple.setTitle("Temple Of Doom");
 
-    // Use Steven in the role of a director
+    // Use Steven in the role of a director as the "director" property of the type Movie requires it
     temple.setDirectedBy(steven.as(Director.class));
     temple.getActors().add(harrison);
 
@@ -157,9 +158,10 @@ public class TempleOfDoom {
 ----
 Migration
 ---------
-There may be situations where an existing data object needs to be migrated to other types. Using the above example the
-fact that the director also acted in the movie might have been discovered after the data object has been created with
-the type Director. CDO offers a way to perform a migration at runtime and add or remove required roles (i.e. types):
+There may be situations where an existing data object needs to be migrated to also represent other types. Using the
+above example the fact that the director also acted in the movie might have been discovered after the data object
+has been created using the type Director. CDO offers a way to perform a migration at runtime and allows adding (or
+removing) roles (i.e. types):
 
 TempleOfDoom.java
 [source,java]
@@ -172,7 +174,7 @@ public class TempleOfDoom {
     cm.currentTransaction.begin();
 
     // Create Steven as a director
-    CompositeObject steven = cm.create(Director.class);
+    Director steven = cm.create(Director.class);
     steven.setName("Steven Spielberg");
 
     Movie temple = cm.create(Movie.class);
@@ -196,7 +198,7 @@ Mapping Composite Data Objects to Neo4j
 
 As a graph database Neo4j provides very powerful capabilities to store and query highly interconnected data structures
 consisting of nodes and relationships between them. With release 2.0 the concept of labels has been introduced. One or
-more number of labels can be added to a node:
+more labels can be added to a single node:
 
 [source]
 ----
@@ -219,8 +221,8 @@ return
 ----
 
 If a node has a label it can be assumed that it represents some type of data which requires the presence of specific
-properties and relationships (e.g. name for persons, acted_in relations to movies). This implies that a Neo4j label can
-be represented as a Java interface and vice versa.
+properties and relationships (e.g. property "name" for persons, "ACTED_IN" relations to movies). This implies that a
+Neo4j label can be represented as a Java interface and vice versa.
 
 Person.java
 [source,java]

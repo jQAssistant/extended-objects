@@ -47,7 +47,7 @@ public class CdoUnitBundleListener implements BundleActivator, BundleListener {
         if (e != null) {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info(
-                        "[CdoUnitBundleListener] Deploying CdoUnits in bundle '{0}'",
+                        "[CdoUnitBundleListener] Deploying CdoUnits in bundle '{}'",
                         bundle.getSymbolicName());
             }
             List<CdoManagerFactory> cdoManagerFactories = new LinkedList<>();
@@ -65,7 +65,7 @@ public class CdoUnitBundleListener implements BundleActivator, BundleListener {
                 for (CdoUnit cdoUnit : cdoUnits) {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug(
-                                "[CdoUnitBundleListener] Found CdoUnit '{0}'",
+                                "[CdoUnitBundleListener] Found CdoUnit '{}'",
                                 cdoUnit.getName());
                     }
                     CdoManagerFactory cdoManagerFactory = new CdoManagerFactoryImpl(
@@ -77,7 +77,7 @@ public class CdoUnitBundleListener implements BundleActivator, BundleListener {
                     cdoManagerFactories.add(cdoManagerFactory);
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug(
-                                "[CdoUnitBundleListener] Registered service for CdoUnit '{0}'",
+                                "[CdoUnitBundleListener] Registered service for CdoUnit '{}'",
                                 cdoUnit.getName());
                     }
                 }
@@ -90,7 +90,7 @@ public class CdoUnitBundleListener implements BundleActivator, BundleListener {
         List<CdoManagerFactory> cdoManagerFactories = this.registeredCdoManagerFactories.remove(Long.valueOf(bundle.getBundleId()));
         if (cdoManagerFactories != null) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("[CdoUnitBundleListener] Closing CdoManagerFactory for bundle '{0}'.", bundle.getSymbolicName());
+                LOGGER.debug("[CdoUnitBundleListener] Closing CdoManagerFactory for bundle '{}'.", bundle.getSymbolicName());
             }
             for (CdoManagerFactory cdoManagerFactory : cdoManagerFactories) {
                 cdoManagerFactory.close();

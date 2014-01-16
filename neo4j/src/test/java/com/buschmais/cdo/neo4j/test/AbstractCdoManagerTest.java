@@ -18,7 +18,7 @@ public abstract class AbstractCdoManagerTest {
     private CdoManager cdoManager = null;
 
     @Before
-    public void createNodeManagerFactory() throws URISyntaxException {
+    public void createCdoManagerFactory() throws URISyntaxException {
         cdoManagerFactory = getNeo4jCdoManagerFactory(getTypes());
         dropDatabase();
     }
