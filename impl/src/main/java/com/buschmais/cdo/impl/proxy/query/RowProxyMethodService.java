@@ -2,8 +2,7 @@ package com.buschmais.cdo.impl.proxy.query;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
-import com.buschmais.cdo.impl.InstanceManager;
-import com.buschmais.cdo.impl.ProxyFactory;
+import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.cdo.impl.proxy.common.composite.AsMethod;
 import com.buschmais.cdo.impl.proxy.query.object.EqualsMethod;
@@ -22,10 +21,9 @@ import java.util.SortedSet;
 
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 
-public class RowProxyMethodService extends AbstractProxyMethodService<Map<String, Object>, RowProxyMethod> {
+public class RowProxyMethodService<Entity, Relation> extends AbstractProxyMethodService<Map<String, Object>, RowProxyMethod> {
 
-    public RowProxyMethodService(SortedSet<Class<?>> types, InstanceManager instanceManager, ProxyFactory proxyFactory) {
-        super(instanceManager, proxyFactory);
+    public RowProxyMethodService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, SortedSet<Class<?>> types) {
         BeanMethodProvider beanMethodProvider = BeanMethodProvider.newInstance();
         for (Class<?> type : types) {
             Collection<AnnotatedMethod> typeMethodsOfType = beanMethodProvider.getMethods(type);
@@ -38,7 +36,7 @@ public class RowProxyMethodService extends AbstractProxyMethodService<Map<String
                 addProxyMethod(proxyMethod, propertyMethod.getAnnotatedElement());
             }
         }
-        addMethod(new AsMethod<Map<String, Object>>(getInstanceManager()), CompositeObject.class, "as", Class.class);
+        addMethod(new AsMethod<Map<String, Object>, Entity, Relation>(sessionContext), CompositeObject.class, "as", Class.class);
         addMethod(new com.buschmais.cdo.impl.proxy.query.row.GetMethod(), CompositeRowObject.class, "get", String.class, Class.class);
         addMethod(new GetColumnsMethod(), CompositeRowObject.class, "getColumns");
         addMethod(new HashCodeMethod(), Object.class, "hashCode");

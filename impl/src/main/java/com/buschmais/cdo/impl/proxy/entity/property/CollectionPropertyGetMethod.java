@@ -3,6 +3,7 @@ package com.buschmais.cdo.impl.proxy.entity.property;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.impl.InstanceManager;
 import com.buschmais.cdo.impl.PropertyManager;
+import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.proxy.collection.CollectionProxy;
 import com.buschmais.cdo.impl.proxy.collection.ListProxy;
 import com.buschmais.cdo.impl.proxy.collection.SetProxy;
@@ -15,17 +16,14 @@ import java.util.Set;
 
 public class CollectionPropertyGetMethod<Entity, Relation> extends AbstractPropertyMethod<Entity, Relation, CollectionPropertyMethodMetadata> {
 
-    private InterceptorFactory interceptorFactory;
-
-    public CollectionPropertyGetMethod(CollectionPropertyMethodMetadata<?> metadata, InstanceManager instanceManager, PropertyManager propertyManager, InterceptorFactory interceptorFactory) {
-        super(metadata, instanceManager, propertyManager);
-        this.interceptorFactory = interceptorFactory;
+    public CollectionPropertyGetMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, CollectionPropertyMethodMetadata<?> metadata) {
+        super(sessionContext, metadata);
     }
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
         CollectionPropertyMethodMetadata<?> collectionPropertyMetadata = getMetadata();
-        CollectionProxy<?, Entity> collectionProxy = new CollectionProxy<>(entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection(), getInstanceManager(), getPropertyManager(), interceptorFactory);
+        CollectionProxy<?, Entity> collectionProxy = new CollectionProxy<>(getSessionContext(), entity, getMetadata().getRelationshipMetadata(), getMetadata().getDirection());
         Collection<?> collection;
         if (Set.class.isAssignableFrom(collectionPropertyMetadata.getAnnotatedMethod().getType())) {
             collection = new SetProxy<>(collectionProxy);
@@ -36,7 +34,7 @@ public class CollectionPropertyGetMethod<Entity, Relation> extends AbstractPrope
         } else {
             throw new CdoException("Unsupported collection type " + collectionPropertyMetadata.getAnnotatedMethod().getType());
         }
-        Collection<?> result = interceptorFactory.addInterceptor(collection);
+        Collection<?> result = getSessionContext().getInterceptorFactory().addInterceptor(collection);
         return result;
     }
 }

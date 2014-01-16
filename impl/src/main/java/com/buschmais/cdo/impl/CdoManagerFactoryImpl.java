@@ -4,6 +4,8 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.TransactionAttribute;
+import com.buschmais.cdo.impl.cache.EntityCacheSynchronization;
+import com.buschmais.cdo.impl.cache.RelationCacheSynchronization;
 import com.buschmais.cdo.impl.reflection.ClassHelper;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
@@ -14,6 +16,8 @@ import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.metadata.MetadataProviderImpl;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import com.buschmais.cdo.spi.datastore.Datastore;
+import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
+import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +26,16 @@ import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
 
-public class CdoManagerFactoryImpl implements CdoManagerFactory {
+public class CdoManagerFactoryImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> implements CdoManagerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CdoManagerFactoryImpl.class);
 
     private CdoUnit cdoUnit;
-    private MetadataProvider<?, ?, ?, ?> metadataProvider;
-    private ClassLoader classLoader;
-    private Datastore<?, ?, ?, ?, ?> datastore;
+    private MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider;
+    private Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore;
     private ValidatorFactory validatorFactory;
     private TransactionAttribute defaultTransactionAttribute;
+    private ClassLoader classLoader;
 
     public CdoManagerFactoryImpl(CdoUnit cdoUnit) {
         this.cdoUnit = cdoUnit;
@@ -42,19 +46,19 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
         if (!CdoDatastoreProvider.class.isAssignableFrom(providerType)) {
             throw new CdoException(providerType.getName() + " specified as CDO provider must implement " + CdoDatastoreProvider.class.getName());
         }
-        CdoDatastoreProvider cdoDatastoreProvider = CdoDatastoreProvider.class.cast(ClassHelper.newInstance(providerType));
-        datastore = cdoDatastoreProvider.createDatastore(cdoUnit);
+        CdoDatastoreProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> cdoDatastoreProvider = CdoDatastoreProvider.class.cast(ClassHelper.newInstance(providerType));
+        this.datastore = cdoDatastoreProvider.createDatastore(cdoUnit);
         this.defaultTransactionAttribute = cdoUnit.getDefaultTransactionAttribute();
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         final ClassLoader parentClassLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();
         LOGGER.debug("Using parent class loader '{}'.", parentClassLoader.toString());
-        classLoader = new ClassLoader() {
+        this.classLoader = new ClassLoader() {
             @Override
             public Class<?> loadClass(String name) throws ClassNotFoundException {
                 return parentClassLoader.loadClass(name);
             }
         };
-        metadataProvider = new MetadataProviderImpl<>(cdoUnit.getTypes(), datastore);
+        this.metadataProvider = new MetadataProviderImpl<>(cdoUnit.getTypes(), datastore);
         try {
             this.validatorFactory = Validation.buildDefaultValidatorFactory();
         } catch (ValidationException e) {
@@ -66,20 +70,10 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
 
     @Override
     public CdoManager createCdoManager() {
-        DatastoreSession datastoreSession = datastore.createSession();
-        TransactionalCache<?> entityCache = new TransactionalCache();
-        TransactionalCache<?> relationCache = new TransactionalCache();
-        InstanceValidator instanceValidator = new InstanceValidator(validatorFactory, entityCache);
-        CdoTransactionImpl cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction());
-        InterceptorFactory interceptorFactory = new InterceptorFactory(cdoTransaction, defaultTransactionAttribute);
-        ProxyFactory proxyFactory = new ProxyFactory(interceptorFactory, classLoader);
-        PropertyManager<?, ?, ?, ?> propertyManager = new PropertyManager(datastoreSession);
-        InstanceManager<?, ?, ?, ?, ?, ?> instanceManager = new InstanceManager(metadataProvider, propertyManager, datastoreSession, cdoTransaction, entityCache, relationCache, proxyFactory, interceptorFactory);
-        // Register default synchronizations.
-        cdoTransaction.registerDefaultSynchronization(new ValidatorSynchronization(instanceValidator));
-        cdoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(instanceManager, entityCache, relationCache, datastoreSession));
-        CdoManagerImpl<?, ?, ?, ?, ?, ?, ?, ?> cdoManager = new CdoManagerImpl(metadataProvider, cdoTransaction, entityCache, relationCache, propertyManager, datastoreSession, instanceManager, proxyFactory, interceptorFactory, instanceValidator);
-        return interceptorFactory.addInterceptor(cdoManager);
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = datastore.createSession();
+        SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext = new SessionContext<>(metadataProvider, datastoreSession, validatorFactory, defaultTransactionAttribute, classLoader);
+        CdoManagerImpl<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> cdoManager = new CdoManagerImpl<>(sessionContext);
+        return sessionContext.getInterceptorFactory().addInterceptor(cdoManager);
     }
 
     @Override

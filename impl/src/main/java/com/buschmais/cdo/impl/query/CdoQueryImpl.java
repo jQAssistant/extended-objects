@@ -1,38 +1,24 @@
 package com.buschmais.cdo.impl.query;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.impl.InstanceManager;
-import com.buschmais.cdo.impl.ProxyFactory;
-import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
+import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.transaction.TransactionalQueryResultIterable;
-import com.buschmais.cdo.spi.datastore.DatastoreSession;
 
 import java.util.*;
 
-public class CdoQueryImpl<T, QL> implements Query<T> {
+public class CdoQueryImpl<T, QL, Entity, Relation> implements Query<T> {
 
     private final QL expression;
-    private final DatastoreSession datastoreSession;
-    private final InstanceManager instanceManager;
-    private final ProxyFactory proxyFactory;
-    private final CdoTransaction cdoTransaction;
-    private final InterceptorFactory interceptorFactory;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
     private final Collection<Class<?>> types;
     private Map<String, Object> parameters = null;
 
-    public CdoQueryImpl(QL expression, DatastoreSession datastoreSession, InstanceManager instanceManager,
-                        ProxyFactory proxyFactory, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory,
-                        Collection<Class<?>> types) {
+    public CdoQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QL expression, Collection<Class<?>> types) {
+        this.sessionContext = sessionContext;
         this.expression = expression;
-        this.datastoreSession = datastoreSession;
-        this.instanceManager = instanceManager;
-        this.proxyFactory = proxyFactory;
-
-        this.cdoTransaction = cdoTransaction;
-        this.interceptorFactory = interceptorFactory;
         this.types = types;
     }
 
@@ -45,7 +31,7 @@ public class CdoQueryImpl<T, QL> implements Query<T> {
         if (oldValue != null) {
             throw new CdoException("Parameter '" + name + "' has already been assigned to value '" + value + "'.");
         }
-        return interceptorFactory.addInterceptor(this);
+        return sessionContext.getInterceptorFactory().addInterceptor(this);
     }
 
     @Override
@@ -54,27 +40,30 @@ public class CdoQueryImpl<T, QL> implements Query<T> {
             throw new CdoException(("Parameters have already been assigned: " + parameters));
         }
         this.parameters = parameters;
-        return interceptorFactory.addInterceptor(this);
+        return sessionContext.getInterceptorFactory().addInterceptor(this);
     }
 
     @Override
     public Result<T> execute() {
         Map<String, Object> effectiveParameters = new HashMap<>();
         if (parameters != null) {
+            InstanceManager<?, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+            InstanceManager<?, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
             for (Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
                 String name = parameterEntry.getKey();
                 Object value = parameterEntry.getValue();
-                if (instanceManager.isEntity(value)) {
-                    value = instanceManager.getEntity(value);
+                if (entityInstanceManager.isInstance(value)) {
+                    value = entityInstanceManager.getDatastoreType(value);
+                } else if (relationInstanceManager.isInstance(value)) {
+                    value = relationInstanceManager.getDatastoreType(value);
                 }
                 effectiveParameters.put(name, value);
             }
         }
-        ResultIterator<Map<String, Object>> iterator = datastoreSession.execute(expression, effectiveParameters);
+        ResultIterator<Map<String, Object>> iterator = sessionContext.getDatastoreSession().execute(expression, effectiveParameters);
         SortedSet<Class<?>> resultTypes = getResultTypes();
-        QueryResultIterableImpl queryResultIterable = new QueryResultIterableImpl(instanceManager, proxyFactory, datastoreSession,
-                iterator, resultTypes);
-        return new TransactionalQueryResultIterable(queryResultIterable, cdoTransaction);
+        QueryResultIterableImpl<Entity, Relation, Map<String, Object>> queryResultIterable = new QueryResultIterableImpl(sessionContext, iterator, resultTypes);
+        return new TransactionalQueryResultIterable(queryResultIterable, sessionContext.getCdoTransaction());
     }
 
     private SortedSet<Class<?>> getResultTypes() {

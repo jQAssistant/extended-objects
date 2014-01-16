@@ -1,14 +1,9 @@
 package com.buschmais.cdo.impl.proxy.entity;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
-import com.buschmais.cdo.impl.InstanceManager;
-import com.buschmais.cdo.impl.MetadataProvider;
-import com.buschmais.cdo.impl.PropertyManager;
-import com.buschmais.cdo.impl.ProxyFactory;
-import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
+import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.cdo.impl.proxy.common.UnsupportedOperationMethod;
 import com.buschmais.cdo.impl.proxy.common.composite.AsMethod;
@@ -17,7 +12,6 @@ import com.buschmais.cdo.impl.proxy.entity.object.HashCodeMethod;
 import com.buschmais.cdo.impl.proxy.entity.object.ToStringMethod;
 import com.buschmais.cdo.impl.proxy.entity.property.*;
 import com.buschmais.cdo.impl.proxy.entity.resultof.ResultOfMethod;
-import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.metadata.method.*;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
@@ -27,11 +21,10 @@ import com.buschmais.cdo.spi.reflection.SetPropertyMethod;
 
 import java.lang.reflect.Method;
 
-public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Entity, M> {
+public class EntityProxyMethodService<Entity, Relation, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Entity, M> {
 
-    public EntityProxyMethodService(MetadataProvider<?, ?, ?, ?> metadataProvider, InstanceManager<?, Entity, ?, ?, ?, ?> instanceManager, ProxyFactory proxyFactory, PropertyManager<?, Entity, ?, ?> propertyManager, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession<?, Entity, ?, ?, ?, ?, ?, ?> datastoreSession) {
-        super(instanceManager, proxyFactory);
-        for (TypeMetadata typeMetadata : metadataProvider.getRegisteredMetadata()) {
+    public EntityProxyMethodService(SessionContext<?, Entity, ?,?, ?,Relation, ?,?> sessionContext) {
+        for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata()) {
             for (MethodMetadata methodMetadata : typeMetadata.getProperties()) {
                 AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
                 if (methodMetadata instanceof UnsupportedOperationMethodMetadata) {
@@ -49,43 +42,43 @@ public class EntityProxyMethodService<Entity, M extends ProxyMethod<?>> extends 
                 }
                 if (methodMetadata instanceof ResultOfMethodMetadata) {
                     ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata) methodMetadata;
-                    addProxyMethod(new ResultOfMethod(resultOfMethodMetadata, instanceManager, proxyFactory, cdoTransaction, interceptorFactory, datastoreSession), typeMethod.getAnnotatedElement());
+                    addProxyMethod(new ResultOfMethod(sessionContext, resultOfMethodMetadata), typeMethod.getAnnotatedElement());
                 }
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
                     PropertyMethod propertyMethod = (PropertyMethod) typeMethod;
                     Method method = propertyMethod.getAnnotatedElement();
                     if (methodMetadata instanceof PrimitivePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new PrimitivePropertyGetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
+                            addProxyMethod(new PrimitivePropertyGetMethod(sessionContext, (PrimitivePropertyMethodMetadata) methodMetadata), method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new PrimitivePropertySetMethod((PrimitivePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
+                            addProxyMethod(new PrimitivePropertySetMethod(sessionContext, (PrimitivePropertyMethodMetadata) methodMetadata), method);
                         }
                     } else if (methodMetadata instanceof EnumPropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new EnumPropertyGetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
+                            addProxyMethod(new EnumPropertyGetMethod(sessionContext, (EnumPropertyMethodMetadata) methodMetadata), method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new EnumPropertySetMethod((EnumPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
+                            addProxyMethod(new EnumPropertySetMethod(sessionContext, (EnumPropertyMethodMetadata) methodMetadata), method);
                         }
                     } else if (methodMetadata instanceof ReferencePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new ReferencePropertyGetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
+                            addProxyMethod(new ReferencePropertyGetMethod(sessionContext, (ReferencePropertyMethodMetadata) methodMetadata), method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new ReferencePropertySetMethod((ReferencePropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
+                            addProxyMethod(new ReferencePropertySetMethod(sessionContext, (ReferencePropertyMethodMetadata) methodMetadata), method);
                         }
                     } else if (methodMetadata instanceof CollectionPropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            CollectionPropertyGetMethod<Entity, ?> proxyMethod = new CollectionPropertyGetMethod<>((CollectionPropertyMethodMetadata<?>) methodMetadata, instanceManager, propertyManager, interceptorFactory);
+                            CollectionPropertyGetMethod<Entity, ?> proxyMethod = new CollectionPropertyGetMethod<>(sessionContext, (CollectionPropertyMethodMetadata<?>) methodMetadata);
                             addProxyMethod(proxyMethod, method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new CollectionPropertySetMethod((CollectionPropertyMethodMetadata) methodMetadata, instanceManager, propertyManager), method);
+                            addProxyMethod(new CollectionPropertySetMethod(sessionContext, (CollectionPropertyMethodMetadata) methodMetadata), method);
                         }
                     }
                 }
             }
         }
-        addMethod(new AsMethod<Entity>(getInstanceManager()), CompositeObject.class, "as", Class.class);
-        addMethod(new HashCodeMethod<>(datastoreSession), Object.class, "hashCode");
-        addMethod(new EqualsMethod<>(instanceManager, datastoreSession), Object.class, "equals", Object.class);
-        addMethod(new ToStringMethod<Entity>(datastoreSession), Object.class, "toString");
+        addMethod(new AsMethod<Entity, Entity, Relation>(sessionContext), CompositeObject.class, "as", Class.class);
+        addMethod(new HashCodeMethod<>(sessionContext), Object.class, "hashCode");
+        addMethod(new EqualsMethod<>(sessionContext), Object.class, "equals", Object.class);
+        addMethod(new ToStringMethod<Entity>(sessionContext), Object.class, "toString");
     }
 }

@@ -2,26 +2,28 @@ package com.buschmais.cdo.impl.proxy.entity.object;
 
 import com.buschmais.cdo.api.proxy.ProxyMethod;
 import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.SessionContext;
+import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
+import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 
 public class EqualsMethod<Entity> implements ProxyMethod<Entity> {
 
-    private InstanceManager<?, Entity, ?, ?, ?, ?> instanceManager;
+    private SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext;
 
-    private DatastoreSession<?, Entity, ?, ?, ?, ?, ?, ?> datastoreSession;
-
-    public EqualsMethod(InstanceManager<?, Entity, ?, ?, ?, ?> instanceManager, DatastoreSession<?, Entity, ?, ?, ?, ?, ?, ?> datastoreSession) {
-        this.instanceManager = instanceManager;
-        this.datastoreSession = datastoreSession;
+    public EqualsMethod(SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext) {
+        this.sessionContext = sessionContext;
     }
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
         Object other = args[0];
-        if (instanceManager.isEntity(other)) {
-            Entity otherEntity = instanceManager.getEntity(other);
+        InstanceManager<?, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+        if (entityInstanceManager.isInstance(other)) {
+            Entity otherEntity = entityInstanceManager.getDatastoreType(other);
+            DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, ?, ? extends DatastoreRelationMetadata<?>, ?> datastoreSession = sessionContext.getDatastoreSession();
             return (datastoreSession.getId(otherEntity).equals(datastoreSession.getId(entity)));
         }
-        return Boolean.valueOf(false);
+        return Boolean.FALSE;
     }
 }

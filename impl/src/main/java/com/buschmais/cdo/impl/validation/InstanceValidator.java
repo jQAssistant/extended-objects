@@ -5,20 +5,17 @@ import com.buschmais.cdo.impl.cache.TransactionalCache;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class InstanceValidator {
 
     private final ValidatorFactory validatorFactory;
 
-    private final TransactionalCache<?> cache;
+    private final TransactionalCache<?>[] caches;
 
-    public InstanceValidator(ValidatorFactory validatorFactory, TransactionalCache<?> cache) {
+    public InstanceValidator(ValidatorFactory validatorFactory, TransactionalCache<?>... caches) {
         this.validatorFactory = validatorFactory;
-        this.cache = cache;
+        this.caches = caches;
     }
 
     public Set<ConstraintViolation<Object>> validate() {
@@ -27,10 +24,11 @@ public class InstanceValidator {
         }
         Validator validator = validatorFactory.getValidator();
         Set<ConstraintViolation<Object>> violations = new HashSet<>();
-        for (Object instance : new ArrayList(cache.values())) {
-            violations.addAll(validator.validate(instance));
+        for (TransactionalCache<?> cache : caches) {
+            for (Object instance : new ArrayList<>(cache.values())) {
+                violations.addAll(validator.validate(instance));
+            }
         }
         return violations;
-
     }
 }

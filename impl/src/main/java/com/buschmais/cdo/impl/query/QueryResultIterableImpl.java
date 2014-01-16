@@ -3,32 +3,26 @@ package com.buschmais.cdo.impl.query;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.impl.AbstractResultIterable;
-import com.buschmais.cdo.impl.InstanceManager;
-import com.buschmais.cdo.impl.ProxyFactory;
+import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.proxy.query.RowInvocationHandler;
 import com.buschmais.cdo.impl.proxy.query.RowProxyMethodService;
-import com.buschmais.cdo.spi.datastore.DatastoreSession;
 
 import java.io.IOException;
 import java.util.*;
 
-class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Query.Result<T> {
+class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterable<T> implements Query.Result<T> {
 
-    private InstanceManager instanceManager;
-    private ProxyFactory proxyFactory;
-    private DatastoreSession datastoreSession;
+    private SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
     private ResultIterator<Map<String, Object>> iterator;
     private SortedSet<Class<?>> types;
     private RowProxyMethodService rowProxyMethodService;
 
-    QueryResultIterableImpl(InstanceManager instanceManager, ProxyFactory proxyFactory, DatastoreSession datastoreSession,
+    QueryResultIterableImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext,
                             ResultIterator<Map<String, Object>> iterator, SortedSet<Class<?>> types) {
-        this.instanceManager = instanceManager;
-        this.proxyFactory = proxyFactory;
-        this.datastoreSession = datastoreSession;
+        this.sessionContext = sessionContext;
         this.iterator = iterator;
         this.types = types;
-        this.rowProxyMethodService = new RowProxyMethodService(types, instanceManager, proxyFactory);
+        this.rowProxyMethodService = new RowProxyMethodService(sessionContext, types);
     }
 
     @Override
@@ -51,7 +45,7 @@ class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Qu
                     row.put(column, decodedValue);
                 }
                 RowInvocationHandler invocationHandler = new RowInvocationHandler(row, rowProxyMethodService);
-                return (T) proxyFactory.createInstance(invocationHandler, types, CompositeRowObject.class);
+                return (T) sessionContext.getProxyFactory().createInstance(invocationHandler, types, CompositeRowObject.class);
             }
 
             @Override
@@ -61,11 +55,13 @@ class QueryResultIterableImpl<T> extends AbstractResultIterable<T> implements Qu
 
             private Object decodeValue(Object value) {
                 if (value == null) {
-                    return value;
+                    return null;
                 }
                 Object decodedValue;
-                if (datastoreSession.isEntity(value)) {
-                    return instanceManager.getEntityInstance(value);
+                if (sessionContext.getDatastoreSession().isEntity(value)) {
+                    return sessionContext.getEntityInstanceManager().getInstance((Entity) value);
+                } else if (sessionContext.getDatastoreSession().isRelation(value)) {
+                    return sessionContext.getRelationInstanceManager().getInstance((Relation) value);
                 } else if (value instanceof List<?>) {
                     List<?> listValue = (List<?>) value;
                     List<Object> decodedList = new ArrayList<>();

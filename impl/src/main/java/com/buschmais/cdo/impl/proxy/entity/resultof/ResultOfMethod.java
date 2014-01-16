@@ -1,14 +1,10 @@
 package com.buschmais.cdo.impl.proxy.entity.resultof;
 
-import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.annotation.ResultOf;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
-import com.buschmais.cdo.impl.InstanceManager;
-import com.buschmais.cdo.impl.ProxyFactory;
-import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
+import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.query.CdoQueryImpl;
-import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.metadata.method.ResultOfMethodMetadata;
 
 import java.util.Collections;
@@ -16,27 +12,19 @@ import java.util.List;
 
 public class ResultOfMethod<Entity> implements ProxyMethod<Entity> {
 
-    private ResultOfMethodMetadata resultOfMethodMetadata;
-    private InstanceManager instanceManager;
-    private ProxyFactory proxyFactory;
-    private CdoTransaction cdoTransaction;
-    private InterceptorFactory interceptorFactory;
-    private DatastoreSession datastoreSession;
+    private SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext;
+    private ResultOfMethodMetadata<?> resultOfMethodMetadata;
 
-    public ResultOfMethod(ResultOfMethodMetadata resultOfMethodMetadata, InstanceManager instanceManager, ProxyFactory proxyFactory, CdoTransaction cdoTransaction, InterceptorFactory interceptorFactory, DatastoreSession datastoreSession) {
+    public ResultOfMethod(SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext, ResultOfMethodMetadata<?> resultOfMethodMetadata) {
+        this.sessionContext = sessionContext;
         this.resultOfMethodMetadata = resultOfMethodMetadata;
-        this.instanceManager = instanceManager;
-        this.proxyFactory = proxyFactory;
-        this.cdoTransaction = cdoTransaction;
-        this.interceptorFactory = interceptorFactory;
-        this.datastoreSession = datastoreSession;
     }
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
-        CdoQueryImpl<?, Class<?>> query = new CdoQueryImpl(resultOfMethodMetadata.getQuery(), datastoreSession, instanceManager, proxyFactory, cdoTransaction, interceptorFactory, Collections.<Class<?>>emptyList());
+        CdoQueryImpl<?, Class<?>, Entity, ?> query = (CdoQueryImpl<?, Class<?>, Entity, ?>) new CdoQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(), Collections.<Class<?>>emptyList());
         String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
-        query.withParameter(usingThisAs, instanceManager.getEntityInstance(entity));
+        query.withParameter(usingThisAs, sessionContext.getEntityInstanceManager().getInstance(entity));
         List<ResultOf.Parameter> parameters = resultOfMethodMetadata.getParameters();
         for (int i = 0; i < parameters.size(); i++) {
             query.withParameter(parameters.get(i).value(), args[i]);

@@ -1,14 +1,14 @@
 package com.buschmais.cdo.impl.proxy.relation.object;
 
 import com.buschmais.cdo.api.proxy.ProxyMethod;
-import com.buschmais.cdo.spi.datastore.DatastoreSession;
+import com.buschmais.cdo.impl.SessionContext;
 
 public class ToStringMethod<Relation> implements ProxyMethod<Relation> {
 
-    private DatastoreSession<?, ?, ?, ?, ?, Relation, ?, ?> datastoreSession;
+    private SessionContext<?, ?, ?, ?, ?, Relation, ?, ?> sessionContext;
 
-    public ToStringMethod(DatastoreSession<?, ?, ?, ?, ?, Relation, ?, ?>  datastoreSession) {
-        this.datastoreSession = datastoreSession;
+    public ToStringMethod(SessionContext<?, ?, ?, ?, ?, Relation, ?, ?> sessionContext) {
+        this.sessionContext = sessionContext;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class ToStringMethod<Relation> implements ProxyMethod<Relation> {
             stringBuffer.append(type);
         }
         stringBuffer.append(", id=");
-        stringBuffer.append(datastoreSession.getRelationId(relation));
+        stringBuffer.append(sessionContext.getDatastoreSession().getRelationId(relation));
         return stringBuffer.toString();
     }
 }

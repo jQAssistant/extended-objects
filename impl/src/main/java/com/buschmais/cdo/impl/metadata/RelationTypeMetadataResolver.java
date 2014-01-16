@@ -25,8 +25,6 @@ import java.util.Set;
  */
 public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RelationTypeMetadataResolver.class);
-
     private Map<RelationDiscriminator, Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>>> relationMappings;
 
     /**

@@ -2,16 +2,16 @@ package com.buschmais.cdo.impl.proxy.common.composite;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
-import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.SessionContext;
 
 import java.util.Map;
 
-public class AsMethod<DatastoreType> implements ProxyMethod<DatastoreType> {
+public class AsMethod<DatastoreType, Entity, Relation> implements ProxyMethod<DatastoreType> {
 
-    private InstanceManager instanceManager;
+    private SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
 
-    public AsMethod(InstanceManager instanceManager) {
-        this.instanceManager = instanceManager;
+    public AsMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext) {
+        this.sessionContext = sessionContext;
     }
 
     @Override
@@ -19,10 +19,10 @@ public class AsMethod<DatastoreType> implements ProxyMethod<DatastoreType> {
         Class<?> targetType = (Class<?>) args[0];
         for (Class<?> type : instance.getClass().getInterfaces()) {
             if (targetType.isAssignableFrom(type)) {
-                if (instanceManager.isEntity(instance)) {
-                    return instanceManager.getEntityInstance(datastoreType);
-                } else if (instanceManager.isRelation(instance)) {
-                    return instanceManager.getRelation(instance);
+                if (sessionContext.getEntityInstanceManager().isInstance(instance)) {
+                    return sessionContext.getEntityInstanceManager().getInstance((Entity) datastoreType);
+                } else if (sessionContext.getRelationInstanceManager().isInstance(instance)) {
+                    return sessionContext.getRelationInstanceManager().getInstance((Relation) instance);
                 }
             }
         }
