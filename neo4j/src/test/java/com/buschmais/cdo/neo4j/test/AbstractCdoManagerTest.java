@@ -1,9 +1,6 @@
 package com.buschmais.cdo.neo4j.test;
 
-import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.api.Query;
-import com.buschmais.cdo.api.TransactionAttribute;
+import com.buschmais.cdo.api.*;
 import org.junit.After;
 import org.junit.Before;
 
@@ -35,6 +32,10 @@ public abstract class AbstractCdoManagerTest {
 
     protected TransactionAttribute getTransactionAttribute() {
         return TransactionAttribute.MANDATORY;
+    }
+
+    protected ConcurrencyMode getConcurrencyMode() {
+        return ConcurrencyMode.SINGLETHREADED;
     }
 
     /**
