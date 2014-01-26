@@ -72,7 +72,7 @@ public class InstanceManager<EntityId, Entity> {
     }
 
     public <Instance> boolean isEntity(Instance instance) {
-        return Proxy.isProxyClass(instance.getClass()) && Proxy.getInvocationHandler(instance) instanceof InterceptorInvocationHandler;
+        return CompositeObject.class.isAssignableFrom(instance.getClass());
     }
 
     public <Instance> Entity getEntity(Instance instance) {
