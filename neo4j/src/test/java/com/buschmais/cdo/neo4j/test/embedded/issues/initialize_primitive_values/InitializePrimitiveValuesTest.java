@@ -10,6 +10,9 @@ import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.issues.initialize_primitive_values.composite.A;
 
+/**
+ * https://github.com/buschmais/cdo-neo4j/issues/61
+ */
 public class InitializePrimitiveValuesTest extends
         AbstractEmbeddedCdoManagerTest {
 
