@@ -29,7 +29,7 @@ public class CdoManagerFactoryImpl implements CdoManagerFactory {
     private Datastore<?, ?, ?> datastore;
     private ValidatorFactory validatorFactory;
     private ConcurrencyMode concurrencyMode;
-    private TransactionAttribute defaultTransactionAttribute;
+    private Transaction.TransactionAttribute defaultTransactionAttribute;
 
     public CdoManagerFactoryImpl(CdoUnit cdoUnit) {
         this.cdoUnit = cdoUnit;

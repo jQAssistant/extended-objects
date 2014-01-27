@@ -9,6 +9,7 @@ import com.buschmais.cdo.impl.test.bootstrap.provider.TestCdoProvider;
 import org.junit.Test;
 
 import static com.buschmais.cdo.api.ConcurrencyMode.MULTITHREADED;
+import static com.buschmais.cdo.api.Transaction.TransactionAttribute.MANDATORY;
 import static com.buschmais.cdo.api.ValidationMode.NONE;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
@@ -25,12 +26,12 @@ public class BootstrapTest {
         CdoUnit cdoUnit = cdoManagerFactoryImpl.getCdoUnit();
         assertThat(cdoUnit.getName(), equalTo("testUnit"));
         assertThat(cdoUnit.getDescription(), equalTo("This is a test unit."));
-        assertThat(cdoUnit.getUrl().toExternalForm(), equalTo("file://foo"));
         assertThat(cdoUnit.getUri().toString(), equalTo("file://foo"));
         assertThat(cdoUnit.getProvider(), typeCompatibleWith(TestCdoProvider.class));
         assertThat(cdoUnit.getTypes(), hasItem(A.class));
         assertThat(cdoUnit.getValidationMode(), equalTo(NONE));
         assertThat(cdoUnit.getConcurrencyMode(), equalTo(MULTITHREADED));
+        assertThat(cdoUnit.getDefaultTransactionAttribute(), equalTo(MANDATORY));
         assertThat(cdoUnit.getProperties(), hasEntry(equalTo((Object) "foo"), equalTo((Object) "bar")));
     }
 

@@ -1,9 +1,8 @@
 package com.buschmais.cdo.impl.interceptor;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoTransaction;
-import com.buschmais.cdo.api.TransactionAttribute;
+import com.buschmais.cdo.api.Transaction;
 
 import java.lang.reflect.Method;
 
@@ -11,9 +10,9 @@ public class TransactionInterceptor implements CdoInterceptor {
 
     private CdoTransaction cdoTransaction;
 
-    private TransactionAttribute defaultTransactionAttribute;
+    private Transaction.TransactionAttribute defaultTransactionAttribute;
 
-    public TransactionInterceptor(CdoTransaction cdoTransaction, TransactionAttribute defaultTransactionAttribute) {
+    public TransactionInterceptor(CdoTransaction cdoTransaction, Transaction.TransactionAttribute defaultTransactionAttribute) {
         this.cdoTransaction = cdoTransaction;
         this.defaultTransactionAttribute = defaultTransactionAttribute;
     }
@@ -21,8 +20,8 @@ public class TransactionInterceptor implements CdoInterceptor {
     @Override
     public Object invoke(InvocationContext context) throws Throwable {
         Method method = context.getMethod();
-        TransactionAttribute transactionAttribute;
-        CdoManager.Transaction transaction = method.getAnnotation(CdoManager.Transaction.class);
+        Transaction.TransactionAttribute transactionAttribute;
+        Transaction transaction = method.getAnnotation(Transaction.class);
         if (transaction != null) {
             transactionAttribute = transaction.value();
         } else {

@@ -1,23 +1,28 @@
 package com.buschmais.cdo.store.json.api;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
+import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.store.json.impl.JsonFileStore;
 import com.buschmais.cdo.store.json.impl.JsonFileStoreSession;
 import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
 
-import java.net.URL;
+import java.net.MalformedURLException;
+import java.net.URI;
 
 public class JsonFileStoreProvider implements CdoDatastoreProvider {
 
     @Override
     public Datastore<JsonFileStoreSession, JsonNodeMetadata, String> createDatastore(CdoUnit cdoUnit) {
-        URL url = cdoUnit.getUrl();
-        if (!"file".equals(url.getProtocol())) {
-            throw new CdoException("Only file URLs are supported by this store.");
+        URI uri = cdoUnit.getUri();
+        if (!"file".equals(uri.getScheme())) {
+            throw new CdoException("Only file URIs are supported by this store.");
         }
-        return new JsonFileStore(url.getPath());
+        try {
+            return new JsonFileStore(uri.toURL().getPath());
+        } catch (MalformedURLException e) {
+            throw new CdoException("Cannot convert URI '" + uri.toString() + "' to URL.", e);
+        }
     }
 }

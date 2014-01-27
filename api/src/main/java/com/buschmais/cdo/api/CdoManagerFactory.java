@@ -22,7 +22,7 @@ public interface CdoManagerFactory extends AutoCloseable {
     /**
      * Return the datastore configuration object used to initialize this factory.
      *
-     * @return the underlying configuration
+     * @return The underlying configuration.
      */
     CdoUnit getCdoUnit();
 

@@ -3,7 +3,7 @@ package com.buschmais.cdo.impl.interceptor;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.ConcurrencyMode;
-import com.buschmais.cdo.api.TransactionAttribute;
+import com.buschmais.cdo.api.Transaction;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -15,7 +15,7 @@ public class InterceptorFactory {
 
     private List<CdoInterceptor> chain;
 
-    public InterceptorFactory(CdoTransaction cdoTransaction, TransactionAttribute transactionAttribute, ConcurrencyMode concurrencyMode) {
+    public InterceptorFactory(CdoTransaction cdoTransaction, Transaction.TransactionAttribute transactionAttribute, ConcurrencyMode concurrencyMode) {
         this.chain = new ArrayList<>();
         chain.add(new ConcurrencyInterceptor(concurrencyMode));
         chain.add(new TransactionInterceptor(cdoTransaction, transactionAttribute));

@@ -1,29 +1,29 @@
 package com.buschmais.cdo.api;
 
 import javax.validation.ConstraintViolation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.Set;
 
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
-import static com.buschmais.cdo.api.TransactionAttribute.NOT_SUPPORTED;
+import static com.buschmais.cdo.api.Transaction.TransactionAttribute.NOT_SUPPORTED;
 
 /**
  * Defines methods to manage the lifecycle of property instances, query execution and transaction management.
  */
 public interface CdoManager extends AutoCloseable {
 
-    @Target({ElementType.METHOD})
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface Transaction {
-        TransactionAttribute value();
-    }
-
+    /**
+     * Return the {@link com.buschmais.cdo.api.CdoTransaction} associated with the manager.
+     *
+     * @return The {@link com.buschmais.cdo.api.CdoTransaction}.
+     */
     @Transaction(NOT_SUPPORTED)
     CdoTransaction currentTransaction();
 
+    /**
+     * Performs a validation of all managed instances (JSR-303).
+     *
+     * @return The set of detected constraint violations.
+     */
     Set<ConstraintViolation<Object>> validate();
 
     /**
@@ -169,6 +169,7 @@ public interface CdoManager extends AutoCloseable {
      * @param <DS>        The expected session type.
      * @return The expected session type.
      */
+    @Transaction(NOT_SUPPORTED)
     <DS> DS getDatastoreSession(Class<DS> sessionType);
 
     /**
