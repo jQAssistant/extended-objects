@@ -2,7 +2,6 @@ package com.buschmais.cdo.impl;
 
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.ConcurrencyMode;
-import com.buschmais.cdo.api.TransactionAttribute;
 import com.buschmais.cdo.impl.cache.EntityCacheSynchronization;
 import com.buschmais.cdo.impl.cache.RelationCacheSynchronization;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
@@ -14,6 +13,8 @@ import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 
 import javax.validation.ValidatorFactory;
+
+import static com.buschmais.cdo.api.Transaction.TransactionAttribute;
 
 /**
  * Provides access to all session related services.
