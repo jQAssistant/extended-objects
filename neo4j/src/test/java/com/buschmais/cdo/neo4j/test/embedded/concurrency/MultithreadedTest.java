@@ -2,7 +2,7 @@ package com.buschmais.cdo.neo4j.test.embedded.concurrency;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.ConcurrencyMode;
-import com.buschmais.cdo.api.TransactionAttribute;
+import com.buschmais.cdo.api.Transaction;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.concurrency.composite.A;
 import org.junit.Test;
@@ -20,8 +20,8 @@ public class MultithreadedTest extends AbstractEmbeddedCdoManagerTest {
     }
 
     @Override
-    protected TransactionAttribute getTransactionAttribute() {
-        return TransactionAttribute.REQUIRES;
+    protected Transaction.TransactionAttribute getTransactionAttribute() {
+        return Transaction.TransactionAttribute.REQUIRES;
     }
 
     @Override

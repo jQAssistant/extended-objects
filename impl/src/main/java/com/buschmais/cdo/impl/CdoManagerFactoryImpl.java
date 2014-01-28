@@ -26,7 +26,7 @@ public class CdoManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Data
     private Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore;
     private ValidatorFactory validatorFactory;
     private ConcurrencyMode concurrencyMode;
-    private TransactionAttribute defaultTransactionAttribute;
+    private Transaction.TransactionAttribute defaultTransactionAttribute;
 
     public CdoManagerFactoryImpl(CdoUnit cdoUnit) {
         this.cdoUnit = cdoUnit;

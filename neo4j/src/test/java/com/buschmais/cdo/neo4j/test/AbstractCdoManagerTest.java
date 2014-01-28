@@ -32,8 +32,8 @@ public abstract class AbstractCdoManagerTest {
         }
     }
 
-    protected TransactionAttribute getTransactionAttribute() {
-        return TransactionAttribute.MANDATORY;
+    protected Transaction.TransactionAttribute getTransactionAttribute() {
+        return Transaction.TransactionAttribute.MANDATORY;
     }
 
     protected ConcurrencyMode getConcurrencyMode() {

@@ -1,19 +1,19 @@
 package com.buschmais.cdo.api.bootstrap;
 
+import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.ConcurrencyMode;
-import com.buschmais.cdo.api.TransactionAttribute;
 import com.buschmais.cdo.api.ValidationMode;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
+import static com.buschmais.cdo.api.Transaction.TransactionAttribute;
+
 /**
- * Represents a CDO unit, i.e. a configuration for a {@link com.buschmais.cdo.api.CdoManagerFactory}.
+ * Represents a CDO unit, i.e. a configuration for a {@link CdoManagerFactory}.
  */
 public class CdoUnit {
 
@@ -35,6 +35,19 @@ public class CdoUnit {
 
     private Properties properties;
 
+    /**
+     * Constructs a CDO unit.
+     *
+     * @param name                        The name which is used to uniquely identify the CDO unit.
+     * @param description                 A human readable description (optional).
+     * @param uri                         The datastore specific URI.
+     * @param provider                    The provider class to use.
+     * @param types                       The entity types to register.
+     * @param validationMode              The {@link ValidationMode} to use.
+     * @param concurrencyMode             The {@link ConcurrencyMode} to use.
+     * @param defaultTransactionAttribute The {@link TransactionAttribute} to use.
+     * @param properties                  Additional properties to be passed to the provider.
+     */
     public CdoUnit(String name, String description, URI uri, Class<?> provider, Set<Class<?>> types, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
         this.name = name;
         this.description = description;
@@ -47,6 +60,19 @@ public class CdoUnit {
         this.properties = properties;
     }
 
+    /**
+     * Constructs a CDO unit.
+     *
+     * @param name                        The name which is used to uniquely identify the CDO unit.
+     * @param description                 A human readable description (optional).
+     * @param uri                         The datastore specific URI.
+     * @param provider                    The provider class to use.
+     * @param types                       The entity types to register.
+     * @param validationMode              The {@link ValidationMode} to use.
+     * @param concurrencyMode             The {@link ConcurrencyMode} to use.
+     * @param defaultTransactionAttribute The {@link TransactionAttribute} to use.
+     * @param properties                  Additional properties to be passed to the provider.
+     */
     public CdoUnit(String name, String description, URI uri, Class<?> provider, Class<?>[] types, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
         this(name, description, uri, provider, new HashSet<>(Arrays.asList(types)), validationMode, concurrencyMode, defaultTransactionAttribute, properties);
     }
@@ -61,14 +87,6 @@ public class CdoUnit {
 
     public URI getUri() {
         return uri;
-    }
-
-    public URL getUrl() {
-        try {
-            return getUri().toURL();
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public Class<?> getProvider() {

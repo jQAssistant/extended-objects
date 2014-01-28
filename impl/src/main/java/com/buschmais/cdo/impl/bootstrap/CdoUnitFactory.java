@@ -2,7 +2,7 @@ package com.buschmais.cdo.impl.bootstrap;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ConcurrencyMode;
-import com.buschmais.cdo.api.TransactionAttribute;
+import com.buschmais.cdo.api.Transaction;
 import com.buschmais.cdo.api.ValidationMode;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.reflection.ClassHelper;
@@ -93,7 +93,7 @@ public class CdoUnitFactory {
             }
             ValidationMode validationMode = getValidationMode(cdoUnitType.getValidationMode());
             ConcurrencyMode concurrencyMode = getConcurrencyMode(cdoUnitType.getConcurrencyMode());
-            TransactionAttribute defaultTransactionAttribute = getTransactionAttribute(cdoUnitType.getDefaultTransactionAttribute());
+            Transaction.TransactionAttribute defaultTransactionAttribute = getTransactionAttribute(cdoUnitType.getDefaultTransactionAttribute());
             Properties properties = new Properties();
             PropertiesType propertiesType = cdoUnitType.getProperties();
             if (propertiesType != null) {
@@ -131,13 +131,13 @@ public class CdoUnitFactory {
         }
     }
 
-    private TransactionAttribute getTransactionAttribute(TransactionAttributeType defaultTransactionAttributeType) {
-        if (defaultTransactionAttributeType == null) return TransactionAttribute.MANDATORY;
+    private Transaction.TransactionAttribute getTransactionAttribute(TransactionAttributeType defaultTransactionAttributeType) {
+        if (defaultTransactionAttributeType == null) return Transaction.TransactionAttribute.MANDATORY;
         switch (defaultTransactionAttributeType) {
             case MANDATORY:
-                return TransactionAttribute.MANDATORY;
+                return Transaction.TransactionAttribute.MANDATORY;
             case REQUIRES:
-                return TransactionAttribute.REQUIRES;
+                return Transaction.TransactionAttribute.REQUIRES;
             default:
                 throw new CdoException("Unknown transaction attribute type " + defaultTransactionAttributeType);
         }
