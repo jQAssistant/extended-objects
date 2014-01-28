@@ -1,6 +1,6 @@
 package com.buschmais.cdo.impl.cache;
 
-import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.AbstractInstanceManager;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 
 /**
@@ -10,7 +10,7 @@ public class EntityCacheSynchronization<Entity> extends CacheSynchronization<Ent
 
     private DatastoreSession<?, Entity, ?, ?, ?, ?, ?, ?> datastoreSession;
 
-    public EntityCacheSynchronization(InstanceManager<?, Entity> instanceManager, TransactionalCache<?> cache, DatastoreSession<?, Entity, ?, ?, ?, ?, ?, ?> datastoreSession) {
+    public EntityCacheSynchronization(AbstractInstanceManager<?, Entity> instanceManager, TransactionalCache<?> cache, DatastoreSession<?, Entity, ?, ?, ?, ?, ?, ?> datastoreSession) {
         super(instanceManager, cache);
         this.datastoreSession = datastoreSession;
     }

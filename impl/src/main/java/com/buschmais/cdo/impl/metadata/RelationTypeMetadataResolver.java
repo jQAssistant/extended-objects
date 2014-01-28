@@ -6,17 +6,12 @@ import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.method.MethodMetadata;
-import com.buschmais.cdo.spi.metadata.method.ReferencePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.buschmais.cdo.spi.reflection.AnnotatedType;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Allows resolving types from relation discriminators as provided by the datastores.
@@ -27,6 +22,8 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
 
     private Map<RelationDiscriminator, Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>>> relationMappings;
 
+    private Map<Class<?>, Map<RelationTypeMetadata<?>, AbstractRelationPropertyMethodMetadata<?>>> relationProperties = null;
+
     /**
      * Constructor.
      *
@@ -34,6 +31,7 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
      */
     public RelationTypeMetadataResolver(Map<Class<?>, TypeMetadata> metadataByType) {
         relationMappings = new HashMap<>();
+        relationProperties = new HashMap<>();
         for (TypeMetadata typeMetadata : metadataByType.values()) {
             if (typeMetadata instanceof RelationTypeMetadata) {
                 RelationTypeMetadata<RelationMetadata> relationTypeMetadata = (RelationTypeMetadata) typeMetadata;
@@ -48,6 +46,23 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
                     relationMappings.put(relationTypeMetadata.getDatastoreMetadata().getDiscriminator(), mappingSet);
                 }
                 mappingSet.add(relationMapping);
+            } else if (typeMetadata instanceof EntityTypeMetadata) {
+                EntityTypeMetadata entityTypeMetadata = (EntityTypeMetadata) typeMetadata;
+                for (MethodMetadata<?, ?> methodMetadata : entityTypeMetadata.getProperties()) {
+                    if (methodMetadata instanceof AbstractRelationPropertyMethodMetadata<?>) {
+                        AbstractRelationPropertyMethodMetadata propertyMethodMetadata = (AbstractRelationPropertyMethodMetadata) methodMetadata;
+                        AnnotatedType relationType = propertyMethodMetadata.getRelationshipMetadata().getAnnotatedType();
+                        if (relationType != null) {
+                            RelationTypeMetadata<?> relationTypeMetadata = (RelationTypeMetadata<?>) metadataByType.get(relationType.getAnnotatedElement());
+                            Map<RelationTypeMetadata<?>, AbstractRelationPropertyMethodMetadata<?>> relationProperties = this.relationProperties.get(relationTypeMetadata);
+                            if (relationProperties == null) {
+                                relationProperties = new HashMap<>();
+                                this.relationProperties.put(entityTypeMetadata.getAnnotatedType().getAnnotatedElement(), relationProperties);
+                            }
+                            relationProperties.put(relationTypeMetadata, propertyMethodMetadata);
+                        }
+                    }
+                }
             }
         }
     }
@@ -66,6 +81,17 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
             }
         }
         return types;
+    }
+
+    public AbstractRelationPropertyMethodMetadata<?> getRelationPropertyMethodMetadata(Class<?> fromType, RelationTypeMetadata<?> relationTypeMetadata) {
+        Class<?> containingType;
+        if (relationTypeMetadata.getOutgoingType().isAssignableFrom(fromType)) {
+            containingType = relationTypeMetadata.getOutgoingType();
+        } else {
+            throw new CdoException("");
+        }
+        Map<RelationTypeMetadata<?>, AbstractRelationPropertyMethodMetadata<?>> relationProperties = this.relationProperties.get(containingType);
+        return relationProperties.get(relationTypeMetadata);
     }
 
     private static class RelationMapping<EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> {

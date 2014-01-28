@@ -24,7 +24,16 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyMet
      * @param metadata The property metadata.
      * @param value    The value
      */
-    void setProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata, Object value);
+    void setEntityProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata, Object value);
+
+    /**
+     * Set the value of a primitive property.
+     *
+     * @param entity   The entity.
+     * @param metadata The property metadata.
+     * @param value    The value
+     */
+    void setRelationProperty(Relation entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata, Object value);
 
     /**
      * Determine if the value of a primitive property is set.
@@ -35,12 +44,29 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyMet
     boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
 
     /**
+     * Determine if the value of a primitive property is set.
+     *
+     * @param relation The relation.
+     * @param metadata The property metadata.
+     */
+    boolean hasRelationProperty(Relation relation, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
+
+    /**
      * Remove the value of a primitive property.
      *
      * @param entity   The entity.
      * @param metadata The property metadata.
      */
     void removeProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
+
+    /**
+     * Remove the value of a primitive property.
+     *
+     * @param relation The relation.
+     * @param metadata The property metadata.
+     */
+    void removeRelationProperty(Relation relation, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
+
 
     /**
      * Get the value of a primitive property.
@@ -51,12 +77,28 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyMet
     Object getProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
 
     /**
+     * Get the value of a primitive property.
+     *
+     * @param relation   The relation.
+     * @param metadata The property metadata.
+     */
+    Object getRelationProperty(Relation relation, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
+
+    /**
      * Get the value of an enumeration property.
      *
      * @param entity   The entity.
      * @param metadata The property metadata.
      */
     Enum<?> getEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata);
+
+    /**
+     * Get the value of an enumeration property.
+     *
+     * @param relation   The relation.
+     * @param metadata The property metadata.
+     */
+    Enum<?> getRelationEnumProperty(Relation relation, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata);
 
     /**
      * Set the value of an enumeration property.
@@ -67,6 +109,14 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyMet
      */
     void setEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata, Enum<?> value);
 
+    /**
+     * Set the value of an enumeration property.
+     *
+     * @param relation   The relation.
+     * @param metadata The property metadata.
+     * @param value    The value
+     */
+    void setRelationEnumProperty(Relation relation, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata, Enum<?> value);
 
     /**
      * Determine if a single relation (i.e. direct reference) between two entities exists.

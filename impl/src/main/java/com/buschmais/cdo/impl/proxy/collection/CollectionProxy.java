@@ -1,7 +1,9 @@
 package com.buschmais.cdo.impl.proxy.collection;
 
-import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.AbstractInstanceManager;
 import com.buschmais.cdo.impl.SessionContext;
+import com.buschmais.cdo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
+import com.buschmais.cdo.spi.metadata.method.CollectionPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 
 import java.util.AbstractCollection;
@@ -12,18 +14,16 @@ public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instan
 
     private SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext;
     private Entity entity;
-    private RelationTypeMetadata metadata;
-    private RelationTypeMetadata.Direction direction;
+    private CollectionPropertyMethodMetadata<?> metadata;
 
-    public CollectionProxy(SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext, Entity entity, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction) {
+    public CollectionProxy(SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext, Entity entity, CollectionPropertyMethodMetadata<?> metadata) {
         this.sessionContext = sessionContext;
         this.entity = entity;
         this.metadata = metadata;
-        this.direction = direction;
     }
 
     public Iterator<Instance> iterator() {
-        final Iterator<Entity> iterator = sessionContext.getPropertyManager().getRelations(entity, metadata, direction);
+        final Iterator<Entity> iterator = sessionContext.getEntityPropertyManager().getEntityCollection(entity, metadata);
         return sessionContext.getInterceptorFactory().addInterceptor(new Iterator<Instance>() {
 
             @Override
@@ -45,7 +45,7 @@ public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instan
 
     public int size() {
         int size = 0;
-        for (Iterator<Entity> iterator = sessionContext.getPropertyManager().getRelations(entity, metadata, direction); iterator.hasNext(); ) {
+        for (Iterator<Entity> iterator = sessionContext.getEntityPropertyManager().getEntityCollection(entity, metadata); iterator.hasNext(); ) {
             iterator.next();
             size++;
         }
@@ -54,17 +54,15 @@ public class CollectionProxy<Instance, Entity> extends AbstractCollection<Instan
 
     @Override
     public boolean add(Instance instance) {
-        Entity target = sessionContext.getEntityInstanceManager().getDatastoreType(instance);
-        sessionContext.getPropertyManager().createRelation(entity, metadata, direction, target);
+        sessionContext.getEntityPropertyManager().createEntityReference(entity, metadata, instance);
         return true;
     }
 
     @Override
     public boolean remove(Object o) {
-        InstanceManager<?,Entity> instanceManager = sessionContext.getEntityInstanceManager();
+        AbstractInstanceManager<?,Entity> instanceManager = sessionContext.getEntityInstanceManager();
         if (instanceManager.isInstance(o)) {
-            Entity target = instanceManager.getDatastoreType(o);
-            return sessionContext.getPropertyManager().removeRelation(entity, metadata, direction, target);
+            return sessionContext.getEntityPropertyManager().removeEntityReference(entity, metadata, o);
         }
         return false;
     }

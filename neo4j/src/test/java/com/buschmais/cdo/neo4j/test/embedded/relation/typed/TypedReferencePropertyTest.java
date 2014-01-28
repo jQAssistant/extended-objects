@@ -5,7 +5,6 @@ import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.relation.typed.composite.A;
 import com.buschmais.cdo.neo4j.test.embedded.relation.typed.composite.B;
 import com.buschmais.cdo.neo4j.test.embedded.relation.typed.composite.TypedOneToOneRelation;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -26,13 +25,19 @@ public class TypedReferencePropertyTest extends AbstractEmbeddedCdoManagerTest {
         B b1 = cdoManager.create(B.class);
         B b2 = cdoManager.create(B.class);
         TypedOneToOneRelation relation1 = cdoManager.create(a, TypedOneToOneRelation.class, b1);
+        relation1.setVersion(1);
         cdoManager.currentTransaction().commit();
         cdoManager.currentTransaction().begin();
         assertThat(a.getOneToOne(), equalTo(relation1));
+        assertThat(relation1.getVersion(), equalTo(1));
+        assertThat(relation1.getA(), equalTo(a));
+        assertThat(relation1.getB(), equalTo(b1));
         TypedOneToOneRelation relation2 = cdoManager.create(a, TypedOneToOneRelation.class, b2);
         cdoManager.currentTransaction().commit();
         cdoManager.currentTransaction().begin();
         assertThat(a.getOneToOne(), equalTo(relation2));
+        assertThat(relation2.getA(), equalTo(a));
+        assertThat(relation2.getB(), equalTo(b2));
         cdoManager.delete(relation2);
         cdoManager.currentTransaction().commit();
         cdoManager.currentTransaction().begin();

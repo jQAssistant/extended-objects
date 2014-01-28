@@ -9,7 +9,7 @@ import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 /**
  * Implementation of an instance manager for relation types.
  */
-public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> extends InstanceManager<RelationId, Relation> {
+public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> extends AbstractInstanceManager<RelationId, Relation> {
 
     private SessionContext<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> sessionContext;
 

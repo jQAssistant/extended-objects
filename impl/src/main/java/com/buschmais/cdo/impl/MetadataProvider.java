@@ -3,6 +3,7 @@ package com.buschmais.cdo.impl;
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
+import com.buschmais.cdo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
@@ -70,4 +71,5 @@ public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata
 
     RelationTypeMetadata.Direction getRelationDirection(Set<Class<?>> sourceTypes, RelationTypeMetadata<RelationMetadata> relationMetadata, Set<Class<?>> targetTypes);
 
+    <R> AbstractRelationPropertyMethodMetadata<?> getPropertyMetadata(Class<?> entityType, Class<R> relationType);
 }

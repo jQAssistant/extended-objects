@@ -1,6 +1,7 @@
 package com.buschmais.cdo.impl;
 
 import com.buschmais.cdo.api.CdoTransaction;
+import com.buschmais.cdo.api.ConcurrencyMode;
 import com.buschmais.cdo.api.TransactionAttribute;
 import com.buschmais.cdo.impl.cache.EntityCacheSynchronization;
 import com.buschmais.cdo.impl.cache.RelationCacheSynchronization;
@@ -30,9 +31,9 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     private MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider;
 
-    private InstanceManager<EntityId, Entity> entityInstanceManager;
+    private AbstractInstanceManager<EntityId, Entity> entityInstanceManager;
 
-    private InstanceManager<RelationId, Relation> relationInstanceManager;
+    private AbstractInstanceManager<RelationId, Relation> relationInstanceManager;
 
     private TransactionalCache<EntityId> entityCache;
 
@@ -42,7 +43,9 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     private CdoTransactionImpl cdoTransaction;
 
-    private PropertyManager<EntityId, Entity, RelationId, Relation> propertyManager;
+    private EntityPropertyManager<Entity, Relation> entityPropertyManager;
+
+    private RelationPropertyManager<Entity, Relation> relationPropertyManager;
 
     private InterceptorFactory interceptorFactory;
 
@@ -50,16 +53,17 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     private DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession;
 
-    public SessionContext(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, ValidatorFactory validatorFactory, TransactionAttribute defaultTransactionAttribute, ClassLoader classLoader) {
+    public SessionContext(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, ValidatorFactory validatorFactory, TransactionAttribute defaultTransactionAttribute, ConcurrencyMode concurrencyMode, ClassLoader classLoader) {
         this.metadataProvider = metadataProvider;
         this.datastoreSession = datastoreSession;
         this.entityCache = new TransactionalCache<>();
         this.relationCache = new TransactionalCache<>();
         this.instanceValidator = new InstanceValidator(validatorFactory, relationCache, entityCache);
         this.cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction());
-        this.interceptorFactory = new InterceptorFactory(cdoTransaction, defaultTransactionAttribute);
+        this.interceptorFactory = new InterceptorFactory(cdoTransaction, defaultTransactionAttribute, concurrencyMode);
         this.proxyFactory = new ProxyFactory(interceptorFactory, classLoader);
-        this.propertyManager = new PropertyManager<>(datastoreSession);
+        this.entityPropertyManager = new EntityPropertyManager(this);
+        this.relationPropertyManager = new RelationPropertyManager<>(this);
         this.relationInstanceManager = new RelationInstanceManager<>(this);
         this.entityInstanceManager = new EntityInstanceManager<>(this);
         // Register default synchronizations.
@@ -73,11 +77,11 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         return metadataProvider;
     }
 
-    public InstanceManager<EntityId, Entity> getEntityInstanceManager() {
+    public AbstractInstanceManager<EntityId, Entity> getEntityInstanceManager() {
         return entityInstanceManager;
     }
 
-    public InstanceManager<RelationId, Relation> getRelationInstanceManager() {
+    public AbstractInstanceManager<RelationId, Relation> getRelationInstanceManager() {
         return relationInstanceManager;
     }
 
@@ -97,10 +101,13 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         return cdoTransaction;
     }
 
-    public PropertyManager<EntityId, Entity, RelationId, Relation> getPropertyManager() {
-        return propertyManager;
+    public EntityPropertyManager<Entity, Relation> getEntityPropertyManager() {
+        return entityPropertyManager;
     }
 
+    public RelationPropertyManager<Entity, Relation> getRelationPropertyManager() {
+        return relationPropertyManager;
+    }
     public InterceptorFactory getInterceptorFactory() {
         return interceptorFactory;
     }

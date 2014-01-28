@@ -1,15 +1,15 @@
 package com.buschmais.cdo.impl.cache;
 
 import com.buschmais.cdo.api.CdoTransaction;
-import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.AbstractInstanceManager;
 
 public abstract class CacheSynchronization<DatastoreType> implements CdoTransaction.Synchronization {
 
-    private InstanceManager<?, DatastoreType> instanceManager;
+    private AbstractInstanceManager<?, DatastoreType> instanceManager;
 
     private TransactionalCache<?> cache;
 
-    public CacheSynchronization(InstanceManager<?, DatastoreType> instanceManager,TransactionalCache<?> cache) {
+    public CacheSynchronization(AbstractInstanceManager<?, DatastoreType> instanceManager,TransactionalCache<?> cache) {
         this.instanceManager = instanceManager;
         this.cache = cache;
     }

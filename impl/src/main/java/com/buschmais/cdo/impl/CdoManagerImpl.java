@@ -7,13 +7,12 @@ import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
+import com.buschmais.cdo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
-import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 
 import javax.validation.ConstraintViolation;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
@@ -74,7 +73,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
                     @Override
                     public T next() {
                         Entity entity = iterator.next();
-                        InstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+                        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
                         return entityInstanceManager.getInstance(entity);
                     }
 
@@ -98,7 +97,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         Set<EntityDiscriminator> entityDiscriminators = sessionContext.getMetadataProvider().getEntityDiscriminators(effectiveTypes);
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
         Entity entity = datastoreSession.create(effectiveTypes, entityDiscriminators);
-        InstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         return entityInstanceManager.getInstance(entity);
     }
 
@@ -107,24 +106,16 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
     }
 
     @Override
-    public <S, R, T> R create(S source, Class<R> relationType, T target) {
-        InstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        Entity sourceEntity = entityInstanceManager.getDatastoreType(source);
-        Set<Class<?>> sourceTypes = new HashSet<>(Arrays.asList(source.getClass().getInterfaces()));
+    public <S, R, T> R create(S from, Class<R> relationType, T to) {
         MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
-        RelationTypeMetadata<RelationMetadata> relationTypeMetadata = metadataProvider.getRelationMetadata(relationType);
-        Entity targetEntity = entityInstanceManager.getDatastoreType(target);
-        Set<Class<?>> targetTypes = new HashSet<>(Arrays.asList(target.getClass().getInterfaces()));
-        RelationTypeMetadata.Direction direction = metadataProvider.getRelationDirection(sourceTypes, relationTypeMetadata, targetTypes);
-        PropertyManager<EntityId, Entity, RelationId, Relation> propertyManager = sessionContext.getPropertyManager();
-        Relation relation = propertyManager.createSingleRelation(sourceEntity, relationTypeMetadata, direction, targetEntity);
-        InstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
-        return relationInstanceManager.getInstance(relation);
+        AbstractRelationPropertyMethodMetadata<?> propertyMethodMetadata = metadataProvider.getPropertyMetadata(from.getClass(), relationType);
+        Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(from);
+        return sessionContext.getEntityPropertyManager().createRelationReference(entity, propertyMethodMetadata, to);
     }
 
     @Override
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
-        InstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         Entity entity = entityInstanceManager.getDatastoreType(instance);
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
         Set<EntityDiscriminator> entityDiscriminators = datastoreSession.getEntityDiscriminators(entity);
@@ -159,8 +150,8 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public <T> void delete(T instance) {
-        InstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        InstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
+        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+        AbstractInstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
         if (entityInstanceManager.isInstance(instance)) {
             Entity entity = entityInstanceManager.getDatastoreType(instance);

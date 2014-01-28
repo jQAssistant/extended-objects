@@ -28,7 +28,7 @@ public class InterceptorFactory {
     }
 
     public <T> boolean hasInterceptor(T instance) {
-        return Proxy.isProxyClass(instance.getClass()) && Proxy.getInvocationHandler(instance) instanceof CdoInterceptor;
+        return Proxy.isProxyClass(instance.getClass()) && Proxy.getInvocationHandler(instance) instanceof InterceptorInvocationHandler;
     }
 
     public <T> T removeInterceptor(T instance) {

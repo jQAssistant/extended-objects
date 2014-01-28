@@ -3,7 +3,7 @@ package com.buschmais.cdo.impl.query;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.ResultIterator;
-import com.buschmais.cdo.impl.InstanceManager;
+import com.buschmais.cdo.impl.AbstractInstanceManager;
 import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.transaction.TransactionalQueryResultIterable;
 
@@ -47,8 +47,8 @@ public class CdoQueryImpl<T, QL, Entity, Relation> implements Query<T> {
     public Result<T> execute() {
         Map<String, Object> effectiveParameters = new HashMap<>();
         if (parameters != null) {
-            InstanceManager<?, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-            InstanceManager<?, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
+            AbstractInstanceManager<?, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+            AbstractInstanceManager<?, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
             for (Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
                 String name = parameterEntry.getKey();
                 Object value = parameterEntry.getValue();

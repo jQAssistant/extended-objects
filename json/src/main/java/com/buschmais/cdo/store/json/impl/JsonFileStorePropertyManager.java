@@ -13,7 +13,7 @@ import org.codehaus.jackson.node.ObjectNode;
 public class JsonFileStorePropertyManager implements DatastorePropertyManager<ObjectNode, JsonRelation, JsonPrimitivePropertyMetadata, JsonEnumPropertyMetadata, JsonRelationMetadata> {
 
     @Override
-    public void setProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {
+    public void setEntityProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {
         Class<?> type = metadata.getAnnotatedMethod().getType();
         if (String.class.equals(type)) {
             objectNode.put(metadata.getAnnotatedMethod().getName(), (String) value);
@@ -23,8 +23,18 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
     }
 
     @Override
+    public void setRelationProperty(JsonRelation entity, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {
+        // TODO
+    }
+
+    @Override
     public boolean hasProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
         return objectNode.has(metadata.getAnnotatedMethod().getName());
+    }
+
+    @Override
+    public boolean hasRelationProperty(JsonRelation jsonRelation, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+        return false;
     }
 
     @Override
@@ -33,8 +43,18 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
     }
 
     @Override
+    public void removeRelationProperty(JsonRelation jsonRelation, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+
+    }
+
+    @Override
     public Object getProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
         return objectNode.get(metadata.getAnnotatedMethod().getName());
+    }
+
+    @Override
+    public Object getRelationProperty(JsonRelation jsonRelation, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+        return null;
     }
 
     @Override
@@ -43,7 +63,17 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
     }
 
     @Override
+    public Enum<?> getRelationEnumProperty(JsonRelation jsonRelation, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata) {
+        return null;
+    }
+
+    @Override
     public void setEnumProperty(ObjectNode objectNode, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata, Enum<?> value) {
+
+    }
+
+    @Override
+    public void setRelationEnumProperty(JsonRelation jsonRelation, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata, Enum<?> value) {
 
     }
 

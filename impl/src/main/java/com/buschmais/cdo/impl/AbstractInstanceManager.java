@@ -8,12 +8,12 @@ import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 
 import java.util.Set;
 
-public abstract class InstanceManager<DatastoreId, DatastoreType> {
+public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
 
     private final TransactionalCache<DatastoreId> cache;
     private final ProxyFactory proxyFactory;
 
-    public InstanceManager(TransactionalCache<DatastoreId> cache, ProxyFactory proxyFactory) {
+    public AbstractInstanceManager(TransactionalCache<DatastoreId> cache, ProxyFactory proxyFactory) {
         this.cache = cache;
         this.proxyFactory = proxyFactory;
     }

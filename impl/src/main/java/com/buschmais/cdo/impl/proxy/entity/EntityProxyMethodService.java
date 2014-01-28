@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 
 public class EntityProxyMethodService<Entity, Relation, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Entity, M> {
 
-    public EntityProxyMethodService(SessionContext<?, Entity, ?,?, ?,Relation, ?,?> sessionContext) {
+    public EntityProxyMethodService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext) {
         for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata()) {
             for (MethodMetadata methodMetadata : typeMetadata.getProperties()) {
                 AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
@@ -59,26 +59,42 @@ public class EntityProxyMethodService<Entity, Relation, M extends ProxyMethod<?>
                         } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new EnumPropertySetMethod(sessionContext, (EnumPropertyMethodMetadata) methodMetadata), method);
                         }
-                    } else if (methodMetadata instanceof ReferencePropertyMethodMetadata) {
+                    } else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new ReferencePropertyGetMethod(sessionContext, (ReferencePropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new EntityReferencePropertyGetMethod(sessionContext, (EntityReferencePropertyMethodMetadata) methodMetadata), method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new ReferencePropertySetMethod(sessionContext, (ReferencePropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new EntityReferencePropertySetMethod(sessionContext, (EntityReferencePropertyMethodMetadata) methodMetadata), method);
+                        }
+                    } else if (methodMetadata instanceof RelationReferencePropertyMethodMetadata) {
+                        if (propertyMethod instanceof GetPropertyMethod) {
+                            addProxyMethod(new RelationReferencePropertyGetMethod(sessionContext, (RelationReferencePropertyMethodMetadata) methodMetadata), method);
                         }
                     } else if (methodMetadata instanceof CollectionPropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            CollectionPropertyGetMethod<Entity, ?> proxyMethod = new CollectionPropertyGetMethod<>(sessionContext, (CollectionPropertyMethodMetadata<?>) methodMetadata);
+                            EntityCollectionPropertyGetMethod<Entity, ?> proxyMethod = new EntityCollectionPropertyGetMethod<>(sessionContext, (CollectionPropertyMethodMetadata<?>) methodMetadata);
                             addProxyMethod(proxyMethod, method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new CollectionPropertySetMethod(sessionContext, (CollectionPropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new EntityCollectionPropertySetMethod(sessionContext, (CollectionPropertyMethodMetadata) methodMetadata), method);
                         }
                     }
                 }
             }
         }
-        addMethod(new AsMethod<Entity, Entity, Relation>(sessionContext), CompositeObject.class, "as", Class.class);
-        addMethod(new HashCodeMethod<>(sessionContext), Object.class, "hashCode");
-        addMethod(new EqualsMethod<>(sessionContext), Object.class, "equals", Object.class);
-        addMethod(new ToStringMethod<Entity>(sessionContext), Object.class, "toString");
+
+        addMethod(new AsMethod<Entity, Entity, Relation>(sessionContext), CompositeObject
+
+                .class, "as", Class.class);
+
+        addMethod(new HashCodeMethod<>(sessionContext), Object
+
+                .class, "hashCode");
+
+        addMethod(new EqualsMethod<>(sessionContext), Object
+
+                .class, "equals", Object.class);
+
+        addMethod(new ToStringMethod<Entity>(sessionContext), Object
+
+                .class, "toString");
     }
 }

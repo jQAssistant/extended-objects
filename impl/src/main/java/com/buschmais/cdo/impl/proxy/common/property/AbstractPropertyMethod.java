@@ -1,12 +1,11 @@
-package com.buschmais.cdo.impl.proxy.entity.property;
+package com.buschmais.cdo.impl.proxy.common.property;
 
 import com.buschmais.cdo.api.proxy.ProxyMethod;
-import com.buschmais.cdo.impl.InstanceManager;
-import com.buschmais.cdo.impl.PropertyManager;
+import com.buschmais.cdo.impl.AbstractPropertyManager;
 import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.spi.metadata.method.AbstractMethodMetadata;
 
-public abstract class AbstractPropertyMethod<Entity, Relation, M extends AbstractMethodMetadata> implements ProxyMethod<Entity> {
+public abstract class AbstractPropertyMethod<DatastoreType, Entity, Relation, M extends AbstractMethodMetadata> implements ProxyMethod<DatastoreType> {
 
     private SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
 
@@ -17,12 +16,14 @@ public abstract class AbstractPropertyMethod<Entity, Relation, M extends Abstrac
         this.metadata = metadata;
     }
 
-    public SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> getSessionContext() {
+    protected SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> getSessionContext() {
         return sessionContext;
     }
 
     protected M getMetadata() {
         return metadata;
     }
+
+    protected abstract AbstractPropertyManager<DatastoreType, Entity, Relation> getPropertyManager();
 
 }

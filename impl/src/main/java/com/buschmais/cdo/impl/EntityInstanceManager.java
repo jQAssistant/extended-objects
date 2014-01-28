@@ -6,7 +6,7 @@ import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 
 import java.util.Set;
 
-public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extends InstanceManager<EntityId, Entity> {
+public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extends AbstractInstanceManager<EntityId, Entity> {
 
     private SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?> sessionContext;
     private ProxyMethodService<Entity, ?> proxyMethodService;

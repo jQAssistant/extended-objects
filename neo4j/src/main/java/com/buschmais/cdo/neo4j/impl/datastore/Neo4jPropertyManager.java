@@ -75,18 +75,38 @@ public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Rela
     }
 
     @Override
+    public void removeRelationProperty(Relationship relationship, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
+        relationship.removeProperty(metadata.getDatastoreMetadata().getName());
+    }
+
+    @Override
     public boolean hasProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
         return node.hasProperty(metadata.getDatastoreMetadata().getName());
     }
 
     @Override
-    public void setProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata, Object value) {
+    public boolean hasRelationProperty(Relationship relationship, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
+        return relationship.hasProperty(metadata.getDatastoreMetadata().getName());
+    }
+
+    @Override
+    public void setEntityProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata, Object value) {
         node.setProperty(metadata.getDatastoreMetadata().getName(), value);
+    }
+
+    @Override
+    public void setRelationProperty(Relationship relationship, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata, Object value) {
+        relationship.setProperty(metadata.getDatastoreMetadata().getName(), value);
     }
 
     @Override
     public Object getProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
         return node.getProperty(metadata.getDatastoreMetadata().getName());
+    }
+
+    @Override
+    public Object getRelationProperty(Relationship relationship, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
+        return relationship.getProperty(metadata.getDatastoreMetadata().getName());
     }
 
     @Override
@@ -100,6 +120,11 @@ public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Rela
     }
 
     @Override
+    public Enum<?> getRelationEnumProperty(Relationship relationship, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata) {
+        throw new CdoException("Enum properties are not supported for relationships.");
+    }
+
+    @Override
     public void setEnumProperty(Node node, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata, Enum<?> value) {
         for (Enum<?> enumerationValue : metadata.getEnumerationType().getEnumConstants()) {
             Label label = DynamicLabel.label(enumerationValue.name());
@@ -109,6 +134,11 @@ public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Rela
                 node.removeLabel(label);
             }
         }
+    }
+
+    @Override
+    public void setRelationEnumProperty(Relationship relationship, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata, Enum<?> value) {
+        throw new CdoException("Enum properties are not supported for relationships.");
     }
 
 }

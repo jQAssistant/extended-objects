@@ -7,7 +7,7 @@ import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.cdo.impl.proxy.common.UnsupportedOperationMethod;
 import com.buschmais.cdo.impl.proxy.common.composite.AsMethod;
-import com.buschmais.cdo.impl.proxy.entity.property.*;
+import com.buschmais.cdo.impl.proxy.relation.property.*;
 import com.buschmais.cdo.impl.proxy.entity.resultof.ResultOfMethod;
 import com.buschmais.cdo.impl.proxy.relation.object.EqualsMethod;
 import com.buschmais.cdo.impl.proxy.relation.object.HashCodeMethod;
@@ -62,11 +62,9 @@ public class RelationProxyMethodService<Entity, Relation, M extends ProxyMethod<
                         } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new EnumPropertySetMethod(sessionContext, (EnumPropertyMethodMetadata) methodMetadata), method);
                         }
-                    } else if (methodMetadata instanceof ReferencePropertyMethodMetadata) {
+                    } else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new ReferencePropertyGetMethod(sessionContext, (ReferencePropertyMethodMetadata) methodMetadata), method);
-                        } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new ReferencePropertySetMethod(sessionContext, (ReferencePropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new EntityReferencePropertyGetMethod(sessionContext, (EntityReferencePropertyMethodMetadata) methodMetadata), method);
                         }
                     }
                 }
