@@ -53,7 +53,7 @@ public class CdoUnitFactory {
     }
 
     private Cdo readCdoDescriptor(JAXBContext cdoContext, URL url, Schema cdoXsd)
-    throws IOException {
+            throws IOException {
         try (InputStream is = url.openStream()) {
             try {
                 Unmarshaller unmarshaller = cdoContext.createUnmarshaller();
