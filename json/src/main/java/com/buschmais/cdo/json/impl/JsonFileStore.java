@@ -1,11 +1,10 @@
-package com.buschmais.cdo.store.json.impl;
+package com.buschmais.cdo.json.impl;
 
+import com.buschmais.cdo.json.impl.metadata.JsonNodeMetadata;
+import com.buschmais.cdo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
-import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
-import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
-import com.buschmais.cdo.store.json.impl.metadata.JsonRelationMetadata;
 
 import java.io.File;
 import java.util.Collection;

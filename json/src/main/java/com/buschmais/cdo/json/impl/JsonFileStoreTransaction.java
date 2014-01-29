@@ -1,4 +1,4 @@
-package com.buschmais.cdo.store.json.impl;
+package com.buschmais.cdo.json.impl;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.spi.datastore.DatastoreTransaction;

@@ -1,8 +1,6 @@
-package com.buschmais.cdo.store.json.impl.metadata;
+package com.buschmais.cdo.json.impl.metadata;
 
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
-
-import java.util.Collection;
 
 public class JsonNodeMetadata implements DatastoreEntityMetadata<String> {
 

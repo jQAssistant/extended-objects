@@ -1,14 +1,14 @@
-package com.buschmais.cdo.store.json.impl;
+package com.buschmais.cdo.json.impl;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
+import com.buschmais.cdo.json.impl.metadata.JsonNodeMetadata;
+import com.buschmais.cdo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.DatastoreTransaction;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
-import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
-import com.buschmais.cdo.store.json.impl.metadata.JsonRelationMetadata;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;

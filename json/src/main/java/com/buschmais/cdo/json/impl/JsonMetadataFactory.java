@@ -1,14 +1,14 @@
-package com.buschmais.cdo.store.json.impl;
+package com.buschmais.cdo.json.impl;
 
+import com.buschmais.cdo.json.impl.metadata.JsonNodeMetadata;
+import com.buschmais.cdo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedElement;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
-import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
-import com.buschmais.cdo.store.json.impl.metadata.JsonNodeMetadata;
-import com.buschmais.cdo.store.json.impl.metadata.JsonRelationMetadata;
+import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
 import java.util.Map;
 
