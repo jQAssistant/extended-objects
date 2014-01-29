@@ -7,11 +7,12 @@ import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.cdo.impl.proxy.common.UnsupportedOperationMethod;
 import com.buschmais.cdo.impl.proxy.common.composite.AsMethod;
-import com.buschmais.cdo.impl.proxy.relation.property.*;
+import com.buschmais.cdo.impl.proxy.common.composite.GetDelegateMethod;
 import com.buschmais.cdo.impl.proxy.entity.resultof.ResultOfMethod;
 import com.buschmais.cdo.impl.proxy.relation.object.EqualsMethod;
 import com.buschmais.cdo.impl.proxy.relation.object.HashCodeMethod;
 import com.buschmais.cdo.impl.proxy.relation.object.ToStringMethod;
+import com.buschmais.cdo.impl.proxy.relation.property.*;
 import com.buschmais.cdo.spi.metadata.method.*;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
@@ -71,6 +72,7 @@ public class RelationProxyMethodService<Entity, Relation, M extends ProxyMethod<
             }
         }
         addMethod(new AsMethod<Relation, Entity, Relation>(sessionContext), CompositeObject.class, "as", Class.class);
+        addMethod(new GetDelegateMethod<Relation>(), CompositeObject.class, "getDelegate");
         addMethod(new HashCodeMethod<>(sessionContext), Object.class, "hashCode");
         addMethod(new EqualsMethod<>(sessionContext), Object.class, "equals", Object.class);
         addMethod(new ToStringMethod<>(sessionContext), Object.class, "toString");

@@ -14,4 +14,12 @@ public interface CompositeObject {
      */
     <T> T as(Class<T> type);
 
+    /**
+     * Return the underlying datastore delegate.
+     *
+     * @param <D> The expected type.
+     * @return The datastore delegate.
+     */
+    <D> D getDelegate();
+
 }

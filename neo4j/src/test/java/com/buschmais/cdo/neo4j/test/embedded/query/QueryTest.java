@@ -2,8 +2,6 @@ package com.buschmais.cdo.neo4j.test.embedded.query;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.api.CompositeObject;
-import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.query.composite.A;
 import com.buschmais.cdo.neo4j.test.embedded.query.typedquery.InstanceByValue;
@@ -105,14 +103,14 @@ public class QueryTest extends AbstractEmbeddedCdoManagerTest {
         cdoManager.currentTransaction().commit();
     }
 
-	@Test
-	public void optionalMatch() {
-		CdoManager cdoManager = getCdoManager();
-		cdoManager.currentTransaction().begin();
-		Result<CompositeRowObject> row = getCdoManager().createQuery(
-				"OPTIONAL MATCH (a:A) WHERE a.name = 'X' return a").execute();
-		A a = row.getSingleResult().get("a", A.class);
-		assertThat(a, equalTo(null));
-		cdoManager.currentTransaction().commit();
-	}
+    @Test
+    public void optionalMatch() {
+        CdoManager cdoManager = getCdoManager();
+        cdoManager.currentTransaction().begin();
+        Result<CompositeRowObject> row = getCdoManager().createQuery("OPTIONAL MATCH (a:A) WHERE a.name = 'X' return a").execute();
+        A a = row.getSingleResult().get("a", A.class);
+        assertThat(a, equalTo(null));
+        cdoManager.currentTransaction().commit();
+    }
+
 }

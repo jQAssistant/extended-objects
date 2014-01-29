@@ -34,5 +34,4 @@ public class LabelTest extends AbstractEmbeddedCdoManagerTest {
         assertThat(executeQuery("MATCH (n:EXPLICIT_LABEL) RETURN n").getColumn("n"), hasItem(explicitLabel));
         cdoManager.currentTransaction().commit();
     }
-
 }
