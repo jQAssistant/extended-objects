@@ -29,7 +29,11 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
         org.neo4j.graphdb.Label label = null;
         IndexedPropertyMethodMetadata<?> indexedProperty = null;
         if (labelAnnotation != null) {
-            label = DynamicLabel.label(labelAnnotation.value());
+            String value = labelAnnotation.value();
+            if (Label.DEFAULT_VALUE.equals(value)) {
+                value = annotatedType.getName();
+            }
+            label = DynamicLabel.label(value);
             Class<?> usingIndexOf = labelAnnotation.usingIndexedPropertyOf();
             if (!Object.class.equals(usingIndexOf)) {
                 EntityTypeMetadata<NodeMetadata> typeMetadata = (EntityTypeMetadata<NodeMetadata>) metadataByType.get(usingIndexOf);

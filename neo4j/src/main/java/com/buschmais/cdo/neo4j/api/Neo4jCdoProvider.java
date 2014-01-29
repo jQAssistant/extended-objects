@@ -17,9 +17,7 @@ public class Neo4jCdoProvider implements CdoDatastoreProvider {
     @Override
     public Datastore<?, ?, ?, ?, ?> createDatastore(CdoUnit cdoUnit) {
         URI uri = cdoUnit.getUri();
-
         DatastoreFactory datastoreFactory = lookupFactory(uri);
-
         try {
             return datastoreFactory.createGraphDatabaseService(uri);
         } catch (MalformedURLException e) {
