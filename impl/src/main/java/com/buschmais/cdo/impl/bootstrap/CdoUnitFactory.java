@@ -6,7 +6,7 @@ import com.buschmais.cdo.api.Transaction;
 import com.buschmais.cdo.api.ValidationMode;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.reflection.ClassHelper;
-import com.buschmais.cdo.schema.v1.*;
+import com.buschmais.cdo.impl.schema.v1.*;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import org.xml.sax.SAXException;
 
@@ -52,8 +52,8 @@ public class CdoUnitFactory {
         return getCdoUnits(cdo);
     }
 
-    private com.buschmais.cdo.schema.v1.Cdo readCdoDescriptor(JAXBContext cdoContext, URL url, Schema cdoXsd)
-            throws IOException {
+    private Cdo readCdoDescriptor(JAXBContext cdoContext, URL url, Schema cdoXsd)
+    throws IOException {
         try (InputStream is = url.openStream()) {
             try {
                 Unmarshaller unmarshaller = cdoContext.createUnmarshaller();

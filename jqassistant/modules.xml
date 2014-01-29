@@ -1,8 +1,12 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
 
-    <concept id="modules:Modules">
+    <concept id="modules:DeclaredModules">
         <requiresConcept refId="module-api:Module"/>
+        <requiresConcept refId="module-spi:Module"/>
+        <requiresConcept refId="module-impl:Module"/>
         <requiresConcept refId="module-neo4j:Module"/>
+        <requiresConcept refId="module-inject:Module"/>
+        <requiresConcept refId="module-json:Module"/>
         <description>Returns all modules, i.e. all packages labeled with MODULE.</description>
         <cypher><![CDATA[
 			MATCH
@@ -20,7 +24,7 @@
 			MATCH
 				(apiPackage:PACKAGE)
 			WHERE
-				apiPackage.FQN =~ ".*\\.api"
+				apiPackage.NAME = "api"
 			SET
 			    apiPackage:API
 			RETURN
@@ -34,7 +38,7 @@
 			MATCH
 				(implementationPackage:PACKAGE)
 			WHERE
-				implementationPackage.FQN =~ ".*\\.impl"
+				implementationPackage.NAME = "impl"
 			SET
 			    implementationPackage:IMPLEMENTATION
 			RETURN
@@ -43,7 +47,7 @@
     </concept>
 
     <concept id="modules:PackagesPerModule">
-        <requiresConcept refId="modules:Modules"/>
+        <requiresConcept refId="modules:DeclaredModules"/>
         <description>Return the number of packages per module.</description>
         <cypher><![CDATA[
             MATCH
@@ -56,7 +60,7 @@
     </concept>
 
     <concept id="modules:TypesPerModule">
-        <requiresConcept refId="modules:Modules"/>
+        <requiresConcept refId="modules:DeclaredModules"/>
         <description>Return the number of types (i.e. classes, interfaces, enumerations and annotations) per module.</description>
         <cypher><![CDATA[
             MATCH
@@ -68,6 +72,21 @@
                 types DESC, module.FQN ASC
         ]]></cypher>
     </concept>
+
+    <constraint id="modules:UnknownModules">
+        <requiresConcept refId="modules:DeclaredModules"/>
+        <description>Every child package of "com.buschmais.cdo" must be labeled as MODULE.</description>
+        <cypher><![CDATA[
+			MATCH
+				(rootPackage:PACKAGE)-[:CONTAINS]->(modulePackage:PACKAGE)
+			WHERE
+				rootPackage.FQN = "com.buschmais.cdo"
+				AND NOT
+				  modulePackage:MODULE
+			RETURN
+				modulePackage as UndeclaredModule
+        ]]></cypher>
+    </constraint>
 
     <constraint id="modules:ApiMustNotDependOnImplementation">
         <requiresConcept refId="modules:API"/>
@@ -87,7 +106,7 @@
 
     <constraint id="modules:ModuleMustDependOnApiOfOtherModule">
         <requiresConcept refId="modules:API"/>
-        <requiresConcept refId="modules:Modules"/>
+        <requiresConcept refId="modules:DeclaredModules"/>
         <description>A module must only have dependencies to API packages of other modules.</description>
         <cypher><![CDATA[
             MATCH
@@ -104,6 +123,5 @@
               p1.FQN
         ]]></cypher>
     </constraint>
-
 
 </jqa:jqassistant-rules>

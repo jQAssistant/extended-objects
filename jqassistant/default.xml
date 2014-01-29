@@ -9,6 +9,7 @@
         <includeConstraint refId="naming:AbstractClassesMustHaveAbstractPrefix"/>
         <includeConstraint refId="modules:ApiMustNotDependOnImplementation"/>
         <includeConstraint refId="modules:ModuleMustDependOnApiOfOtherModule"/>
+        <includeConstraint refId="modules:UnknownModules"/>
     </group>
 
 </jqa:jqassistant-rules>
