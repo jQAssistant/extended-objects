@@ -3,14 +3,15 @@ package com.buschmais.cdo.impl;
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.spi.datastore.DatastoreTransaction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CdoTransactionImpl implements CdoTransaction {
 
-    private DatastoreTransaction datastoreTransaction;
+    private final DatastoreTransaction datastoreTransaction;
 
-    private List<Synchronization> defaultSynchronizations = new ArrayList<>();
-    private List<Synchronization> synchronizations = new ArrayList<>();
+    private final List<Synchronization> defaultSynchronizations = new ArrayList<>();
+    private final List<Synchronization> synchronizations = new ArrayList<>();
 
     public CdoTransactionImpl(DatastoreTransaction datastoreTransaction) {
         this.datastoreTransaction = datastoreTransaction;
@@ -59,10 +60,6 @@ public class CdoTransactionImpl implements CdoTransaction {
 
     public void registerDefaultSynchronization(Synchronization synchronization) {
         defaultSynchronizations.add(synchronization);
-    }
-
-    public void unregisterDefaultSynchronization(Synchronization synchronization) {
-        defaultSynchronizations.remove(synchronization);
     }
 
     private void beforeCompletion() {

@@ -17,23 +17,23 @@ import static com.buschmais.cdo.api.Transaction.TransactionAttribute;
  */
 public class CdoUnit {
 
-    private String name;
+    private final String name;
 
-    private String description;
+    private final String description;
 
-    private URI uri;
+    private final URI uri;
 
-    private Class<?> provider;
+    private final Class<?> provider;
 
-    private Set<Class<?>> types;
+    private final Set<Class<?>> types;
 
-    private ValidationMode validationMode;
+    private final ValidationMode validationMode;
 
-    private ConcurrencyMode concurrencyMode;
+    private final ConcurrencyMode concurrencyMode;
 
-    private TransactionAttribute defaultTransactionAttribute;
+    private final TransactionAttribute defaultTransactionAttribute;
 
-    private Properties properties;
+    private final Properties properties;
 
     /**
      * Constructs a CDO unit.

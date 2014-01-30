@@ -11,9 +11,8 @@ import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
  */
 public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> extends AbstractInstanceManager<RelationId, Relation> {
 
-    private SessionContext<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> sessionContext;
-
-    private ProxyMethodService<Relation, ?> proxyMethodService;
+    private final SessionContext<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> sessionContext;
+    private final ProxyMethodService<Relation, ?> proxyMethodService;
 
     public RelationInstanceManager(SessionContext<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> sessionContext) {
         super(sessionContext.getRelationCache(), sessionContext.getProxyFactory());

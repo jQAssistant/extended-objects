@@ -3,12 +3,9 @@ package com.buschmais.cdo.impl.cache;
 import com.buschmais.cdo.impl.AbstractInstanceManager;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
 
-/**
- * Created by Dirk Mahler on 14.01.14.
- */
 public class RelationCacheSynchronization<Relation> extends AbstractCacheSynchronization<Relation> {
 
-    private DatastoreSession<?, ?, ?, ?, ?, Relation, ?, ?> datastoreSession;
+    private final DatastoreSession<?, ?, ?, ?, ?, Relation, ?, ?> datastoreSession;
 
     public RelationCacheSynchronization(AbstractInstanceManager<?, Relation> instanceManager, TransactionalCache<?> cache, DatastoreSession<?, ?, ?, ?, ?, Relation, ?, ?> datastoreSession) {
         super(instanceManager, cache);

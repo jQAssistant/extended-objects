@@ -28,8 +28,8 @@ public class CdoUnitFactory {
 
     private static final CdoUnitFactory instance = new CdoUnitFactory();
 
-    private JAXBContext cdoContext;
-    private Schema cdoXsd;
+    private final JAXBContext cdoContext;
+    private final Schema cdoXsd;
 
     private CdoUnitFactory() {
         try {

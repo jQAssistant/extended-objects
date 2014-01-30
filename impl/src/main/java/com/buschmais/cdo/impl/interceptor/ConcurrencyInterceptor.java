@@ -7,8 +7,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ConcurrencyInterceptor implements CdoInterceptor {
 
-    private ConcurrencyMode concurrencyMode;
-    private ReentrantLock lock;
+    private final ConcurrencyMode concurrencyMode;
+    private final ReentrantLock lock;
 
     public ConcurrencyInterceptor(ConcurrencyMode concurrencyMode) {
         this.concurrencyMode = concurrencyMode;

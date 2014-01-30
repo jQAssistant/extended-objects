@@ -3,21 +3,22 @@ package com.buschmais.cdo.impl.bootstrap;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.bootstrap.CdoBootstrapService;
-import com.buschmais.cdo.impl.CdoManagerFactoryImpl;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
+import com.buschmais.cdo.impl.CdoManagerFactoryImpl;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CdoBootstrapServiceImpl implements CdoBootstrapService {
 
-    private CdoUnitFactory cdoUnitFactory = CdoUnitFactory.getInstance();
-
-    private Map<String, CdoUnit> cdoUnits;
+    private final CdoUnitFactory cdoUnitFactory = CdoUnitFactory.getInstance();
+    private final Map<String, CdoUnit> cdoUnits;
 
     public CdoBootstrapServiceImpl() {
-        readCdoDescriptors();
+        this.cdoUnits = readCdoDescriptors();
     }
 
     @Override
@@ -34,8 +35,8 @@ public class CdoBootstrapServiceImpl implements CdoBootstrapService {
         return new CdoManagerFactoryImpl(cdoUnit);
     }
 
-    private void readCdoDescriptors() {
-        this.cdoUnits = new HashMap<>();
+    private Map<String, CdoUnit> readCdoDescriptors() {
+        Map<String, CdoUnit> result = new HashMap<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (classLoader == null) {
             classLoader = CdoUnitFactory.class.getClassLoader();
@@ -45,7 +46,7 @@ public class CdoBootstrapServiceImpl implements CdoBootstrapService {
             while (resources.hasMoreElements()) {
                 URL url = resources.nextElement();
                 for (CdoUnit cdoUnit : cdoUnitFactory.getCdoUnits(url)) {
-                    CdoUnit existingCdoUnit = cdoUnits.put(cdoUnit.getName(), cdoUnit);
+                    CdoUnit existingCdoUnit = result.put(cdoUnit.getName(), cdoUnit);
                     if (existingCdoUnit != null) {
                         throw new CdoException("Found more than one CDO unit with name '" + cdoUnit.getName() + "'.");
                     }
@@ -54,5 +55,6 @@ public class CdoBootstrapServiceImpl implements CdoBootstrapService {
         } catch (IOException e) {
             throw new CdoException("Cannot read cdo.xml descriptors.", e);
         }
+        return result;
     }
 }

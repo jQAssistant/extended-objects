@@ -6,14 +6,10 @@ import java.util.List;
 
 public class InvocationContext {
 
-    private Object instance;
-
-    private Method method;
-
-    private Object[] args;
-
-    private List<CdoInterceptor> chain;
-
+    private final Object instance;
+    private final Method method;
+    private final Object[] args;
+    private final List<CdoInterceptor> chain;
     private int index = 0;
 
     public InvocationContext(Object instance, Method method, Object[] args, List<CdoInterceptor> chain) {

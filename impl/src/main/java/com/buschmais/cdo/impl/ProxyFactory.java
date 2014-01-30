@@ -16,8 +16,8 @@ import java.util.Set;
  */
 public class ProxyFactory {
 
-    private InterceptorFactory interceptorFactory;
-    private ClassLoader classLoader;
+    private final InterceptorFactory interceptorFactory;
+    private final ClassLoader classLoader;
 
     /**
      * Constructor.

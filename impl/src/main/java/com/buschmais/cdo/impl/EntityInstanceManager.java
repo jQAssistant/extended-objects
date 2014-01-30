@@ -8,8 +8,8 @@ import java.util.Set;
 
 public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extends AbstractInstanceManager<EntityId, Entity> {
 
-    private SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?> sessionContext;
-    private ProxyMethodService<Entity, ?> proxyMethodService;
+    private final SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?> sessionContext;
+    private final ProxyMethodService<Entity, ?> proxyMethodService;
 
     public EntityInstanceManager(SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?> sessionContext) {
         super(sessionContext.getEntityCache(), sessionContext.getProxyFactory());

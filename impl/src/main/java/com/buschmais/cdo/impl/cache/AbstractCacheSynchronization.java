@@ -5,9 +5,8 @@ import com.buschmais.cdo.impl.AbstractInstanceManager;
 
 public abstract class AbstractCacheSynchronization<DatastoreType> implements CdoTransaction.Synchronization {
 
-    private AbstractInstanceManager<?, DatastoreType> instanceManager;
-
-    private TransactionalCache<?> cache;
+    private final AbstractInstanceManager<?, DatastoreType> instanceManager;
+    private final TransactionalCache<?> cache;
 
     public AbstractCacheSynchronization(AbstractInstanceManager<?, DatastoreType> instanceManager, TransactionalCache<?> cache) {
         this.instanceManager = instanceManager;
