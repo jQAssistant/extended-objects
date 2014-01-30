@@ -6,7 +6,7 @@ import com.buschmais.cdo.spi.datastore.DatastoreSession;
 /**
  * Created by Dirk Mahler on 14.01.14.
  */
-public class RelationCacheSynchronization<Relation> extends CacheSynchronization<Relation> {
+public class RelationCacheSynchronization<Relation> extends AbstractCacheSynchronization<Relation> {
 
     private DatastoreSession<?, ?, ?, ?, ?, Relation, ?, ?> datastoreSession;
 

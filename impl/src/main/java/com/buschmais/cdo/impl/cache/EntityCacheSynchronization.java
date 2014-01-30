@@ -6,7 +6,7 @@ import com.buschmais.cdo.spi.datastore.DatastoreSession;
 /**
  * Created by Dirk Mahler on 14.01.14.
  */
-public class EntityCacheSynchronization<Entity> extends CacheSynchronization<Entity> {
+public class EntityCacheSynchronization<Entity> extends AbstractCacheSynchronization<Entity> {
 
     private DatastoreSession<?, Entity, ?, ?, ?, ?, ?, ?> datastoreSession;
 
