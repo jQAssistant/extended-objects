@@ -11,7 +11,10 @@ import com.buschmais.cdo.spi.annotation.IndexDefinition;
 import com.buschmais.cdo.spi.annotation.RelationDefinition;
 import com.buschmais.cdo.spi.datastore.*;
 import com.buschmais.cdo.spi.metadata.method.*;
-import com.buschmais.cdo.spi.metadata.type.*;
+import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.SimpleTypeMetadata;
+import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
 import com.buschmais.cdo.spi.reflection.PropertyMethod;
@@ -22,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -280,26 +284,36 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         MethodMetadata<?, ?> methodMetadata;
         Class<?> propertyType = propertyMethod.getType();
         if (Collection.class.isAssignableFrom(propertyType)) {
-            RelationTypeMetadata.Direction relationDirection = metadataFactory.getRelationDirection(propertyMethod);
-            RelationTypeMetadata relationshipType = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(propertyMethod, metadataByType));
-            methodMetadata = new CollectionPropertyMethodMetadata<>(propertyMethod, relationshipType, relationDirection, metadataFactory.createCollectionPropertyMetadata(propertyMethod));
+            Type genericType = propertyMethod.getGenericType();
+            ParameterizedType type = (ParameterizedType) genericType;
+            Class<?> typeArgument = (Class<?>) type.getActualTypeArguments()[0];
+            AnnotatedType annotatedTypeArgument = new AnnotatedType(typeArgument);
+            if (isEntityType(annotatedTypeArgument)) {
+                RelationTypeMetadata.Direction relationDirection = metadataFactory.getRelationDirection(propertyMethod);
+                RelationTypeMetadata relationshipType = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(propertyMethod, metadataByType));
+                methodMetadata = new EntityCollectionPropertyMethodMetadata<>(propertyMethod, relationshipType, relationDirection,
+                        metadataFactory.createCollectionPropertyMetadata(propertyMethod));
+            } else if (isRelationType(annotatedTypeArgument)) {
+                TypeMetadata propertyTypeMetadata = getOrCreateTypeMetadata(typeArgument);
+                RelationTypeMetadata<RelationMetadata> relationMetadata = (RelationTypeMetadata) propertyTypeMetadata;
+                RelationTypeMetadata.Direction relationDirection = getRelationDirection(annotatedType, relationMetadata, propertyTypeMetadata);
+                methodMetadata = new RelationCollectionPropertyMethodMetadata<>(propertyMethod, relationMetadata, relationDirection,
+                        metadataFactory.createCollectionPropertyMetadata(propertyMethod));
+            } else {
+                throw new CdoException("Unsupported type argument '" + typeArgument.getName() + "' for collection property: " + propertyType.getName());
+            }
         } else if (annotatedMethods.containsKey(propertyType)) {
+            AnnotatedType referencedType = new AnnotatedType(propertyType);
             RelationTypeMetadata.Direction relationDirection;
             RelationTypeMetadata<RelationMetadata> relationMetadata;
-            if (isEntityType(new AnnotatedType(propertyType))) {
+            if (isEntityType(referencedType)) {
                 relationDirection = metadataFactory.getRelationDirection(propertyMethod);
                 relationMetadata = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(propertyMethod, metadataByType));
                 methodMetadata = new EntityReferencePropertyMethodMetadata<>(propertyMethod, relationMetadata, relationDirection, metadataFactory.createReferencePropertyMetadata(propertyMethod));
-            } else if (isRelationType(new AnnotatedType(propertyType))) {
+            } else if (isRelationType(referencedType)) {
                 TypeMetadata propertyTypeMetadata = getOrCreateTypeMetadata(propertyType);
                 relationMetadata = (RelationTypeMetadata) propertyTypeMetadata;
-                if (annotatedType.getAnnotatedElement().equals(relationMetadata.getOutgoingType())) {
-                    relationDirection = RelationTypeMetadata.Direction.OUTGOING;
-                } else if (annotatedType.getAnnotatedElement().equals(relationMetadata.getIncomingType())) {
-                    relationDirection = RelationTypeMetadata.Direction.INCOMING;
-                } else {
-                    throw new CdoException("Cannot determine relation direction for type '" + propertyTypeMetadata.getAnnotatedType().getName() + "'");
-                }
+                relationDirection = getRelationDirection(annotatedType, relationMetadata, propertyTypeMetadata);
                 methodMetadata = new RelationReferencePropertyMethodMetadata<>(propertyMethod, relationMetadata, relationDirection, metadataFactory.createReferencePropertyMetadata(propertyMethod));
             } else {
                 throw new CdoException("Unsupported type for reference property: " + propertyType.getName());
@@ -312,6 +326,18 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             }
         }
         return methodMetadata;
+    }
+
+    private RelationTypeMetadata.Direction getRelationDirection(AnnotatedType annotatedEntityType, RelationTypeMetadata<RelationMetadata> relationMetadata, TypeMetadata propertyTypeMetadata) {
+        RelationTypeMetadata.Direction relationDirection;
+        if (annotatedEntityType.getAnnotatedElement().equals(relationMetadata.getOutgoingType())) {
+            relationDirection = RelationTypeMetadata.Direction.OUTGOING;
+        } else if (annotatedEntityType.getAnnotatedElement().equals(relationMetadata.getIncomingType())) {
+            relationDirection = RelationTypeMetadata.Direction.INCOMING;
+        } else {
+            throw new CdoException("Cannot determine relation direction for type '" + propertyTypeMetadata.getAnnotatedType().getName() + "'");
+        }
+        return relationDirection;
     }
 
     private MethodMetadata<?, ?> createResultOfMetadata(AnnotatedMethod annotatedMethod, ResultOf resultOf) {

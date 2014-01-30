@@ -69,12 +69,17 @@ public class EntityProxyMethodService<Entity, Relation, M extends ProxyMethod<?>
                         if (propertyMethod instanceof GetPropertyMethod) {
                             addProxyMethod(new RelationReferencePropertyGetMethod(sessionContext, (RelationReferencePropertyMethodMetadata) methodMetadata), method);
                         }
-                    } else if (methodMetadata instanceof CollectionPropertyMethodMetadata) {
+                    } else if (methodMetadata instanceof EntityCollectionPropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            EntityCollectionPropertyGetMethod<Entity, ?> proxyMethod = new EntityCollectionPropertyGetMethod<>(sessionContext, (CollectionPropertyMethodMetadata<?>) methodMetadata);
+                            EntityCollectionPropertyGetMethod<Entity, ?> proxyMethod = new EntityCollectionPropertyGetMethod<>(sessionContext, (EntityCollectionPropertyMethodMetadata<?>) methodMetadata);
                             addProxyMethod(proxyMethod, method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new EntityCollectionPropertySetMethod(sessionContext, (CollectionPropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new EntityCollectionPropertySetMethod(sessionContext, (EntityCollectionPropertyMethodMetadata) methodMetadata), method);
+                        }
+                    } else if (methodMetadata instanceof RelationCollectionPropertyMethodMetadata) {
+                        if (propertyMethod instanceof GetPropertyMethod) {
+                            RelationCollectionPropertyGetMethod<Entity, ?> proxyMethod = new RelationCollectionPropertyGetMethod<>(sessionContext, (RelationCollectionPropertyMethodMetadata<?>) methodMetadata);
+                            addProxyMethod(proxyMethod, method);
                         }
                     }
                 }

@@ -6,9 +6,9 @@ import java.util.Set;
 
 public class SetProxy<T> extends AbstractSet<T> implements Set<T> {
 
-    private CollectionProxy<T, ?> collectionProxy;
+    private AbstractCollectionProxy<T, ?, ?, ?> collectionProxy;
 
-    public SetProxy(CollectionProxy<T, ?> collectionProxy) {
+    public SetProxy(AbstractCollectionProxy<T, ?, ?, ?> collectionProxy) {
         this.collectionProxy = collectionProxy;
     }
 

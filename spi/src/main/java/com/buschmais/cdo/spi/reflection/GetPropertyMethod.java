@@ -2,6 +2,7 @@ package com.buschmais.cdo.spi.reflection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * Represents a get method.
@@ -15,8 +16,8 @@ public class GetPropertyMethod extends AbstractPropertyMethod {
      * @param name   The name of the property.
      * @param type   The type of the property.
      */
-    public GetPropertyMethod(Method getter, String name, Class<?> type) {
-        super(getter, name, type);
+    public GetPropertyMethod(Method getter, String name, Class<?> type, Type genericType) {
+        super(getter, name, type, genericType);
     }
 
     @Override

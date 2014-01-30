@@ -79,15 +79,20 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
         return null;
     }
 
-    public void removeEntityReferences(Entity entity, CollectionPropertyMethodMetadata metadata) {
+    public void removeEntityReferences(Entity entity, EntityCollectionPropertyMethodMetadata metadata) {
         removeRelations(entity, metadata.getRelationshipMetadata(), metadata.getDirection());
     }
 
-    public Iterator<Entity> getEntityCollection(Entity entity, CollectionPropertyMethodMetadata<?> metadata) {
+    public Iterator<Entity> getEntityCollection(Entity entity, EntityCollectionPropertyMethodMetadata<?> metadata) {
         return getRelations(entity, metadata.getRelationshipMetadata(), metadata.getDirection());
     }
 
-    public boolean removeEntityReference(Entity entity, CollectionPropertyMethodMetadata<?> metadata, Object target) {
+    public Iterator<Relation> getRelationCollection(Entity entity, RelationCollectionPropertyMethodMetadata<?> metadata) {
+        Iterable<Relation> relations = getSessionContext().getDatastoreSession().getDatastorePropertyManager().getRelations(entity, metadata.getRelationshipMetadata(), metadata.getDirection());
+        return relations.iterator();
+    }
+
+    public boolean removeEntityReference(Entity entity, EntityCollectionPropertyMethodMetadata<?> metadata, Object target) {
         Entity targetEntity = getSessionContext().getEntityInstanceManager().getDatastoreType(target);
         return removeEntityRelation(entity, metadata.getRelationshipMetadata(), metadata.getDirection(), targetEntity);
     }
@@ -175,7 +180,7 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
         Relation relation;
         if (metadata instanceof EntityReferencePropertyMethodMetadata || metadata instanceof RelationReferencePropertyMethodMetadata) {
             relation = createSingleReference(sourceEntity, metadata.getRelationshipMetadata(), metadata.getDirection(), targetEntity);
-        } else if (metadata instanceof CollectionPropertyMethodMetadata) {
+        } else if (metadata instanceof EntityCollectionPropertyMethodMetadata || metadata instanceof RelationCollectionPropertyMethodMetadata) {
             relation = createReference(sourceEntity, metadata.getRelationshipMetadata(), metadata.getDirection(), targetEntity);
         } else {
             throw new CdoException("Unsupported relation metadata type " + metadata.getClass().getName());

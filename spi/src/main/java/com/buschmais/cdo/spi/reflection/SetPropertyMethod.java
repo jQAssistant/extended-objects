@@ -2,6 +2,7 @@ package com.buschmais.cdo.spi.reflection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * Represents a set method.
@@ -18,8 +19,8 @@ public class SetPropertyMethod extends AbstractPropertyMethod {
      * @param name   The name of the property.
      * @param type   The type of the property.
      */
-    public SetPropertyMethod(Method setter, GetPropertyMethod getter, String name, Class<?> type) {
-        super(setter, name, type);
+    public SetPropertyMethod(Method setter, GetPropertyMethod getter, String name, Class<?> type, Type genericType) {
+        super(setter, name, type, genericType);
         this.getter = getter;
     }
 

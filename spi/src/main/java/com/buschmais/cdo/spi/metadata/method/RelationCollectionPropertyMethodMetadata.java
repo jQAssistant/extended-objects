@@ -5,9 +5,9 @@ import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
 import static com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction;
 
-public class CollectionPropertyMethodMetadata<DatastoreMetadata> extends AbstractRelationPropertyMethodMetadata<DatastoreMetadata> {
+public class RelationCollectionPropertyMethodMetadata<DatastoreMetadata> extends AbstractRelationPropertyMethodMetadata<DatastoreMetadata> {
 
-    public CollectionPropertyMethodMetadata(PropertyMethod propertyMethod, RelationTypeMetadata relationshipType, Direction direction, DatastoreMetadata datastoreMetadata) {
+    public RelationCollectionPropertyMethodMetadata(PropertyMethod propertyMethod, RelationTypeMetadata relationshipType, Direction direction, DatastoreMetadata datastoreMetadata) {
         super(propertyMethod, relationshipType, direction, datastoreMetadata);
     }
 
