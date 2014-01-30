@@ -43,7 +43,7 @@ public class CdoManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Data
         this.defaultTransactionAttribute = cdoUnit.getDefaultTransactionAttribute();
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         final ClassLoader parentClassLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();
-        LOGGER.info("Using class loader '{}'.", parentClassLoader.toString());
+        LOGGER.debug("Using class loader '{}'.", parentClassLoader.toString());
         classLoader = new ClassLoader() {
             @Override
             public Class<?> loadClass(String name) throws ClassNotFoundException {
