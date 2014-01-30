@@ -1,4 +1,4 @@
-package com.buschmais.cdo.store.json.impl.metadata;
+package com.buschmais.cdo.json.impl.metadata;
 
 /**
  * Created by dimahler on 12/13/13.

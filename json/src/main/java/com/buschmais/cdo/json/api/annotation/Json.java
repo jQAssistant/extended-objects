@@ -1,4 +1,4 @@
-package com.buschmais.cdo.store.json.api.annotation;
+package com.buschmais.cdo.json.api.annotation;
 
 import com.buschmais.cdo.spi.annotation.EntityDefinition;
 

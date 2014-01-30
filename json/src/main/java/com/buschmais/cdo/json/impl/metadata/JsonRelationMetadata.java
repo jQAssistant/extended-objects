@@ -1,4 +1,4 @@
-package com.buschmais.cdo.store.json.impl.metadata;
+package com.buschmais.cdo.json.impl.metadata;
 
 import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 

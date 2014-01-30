@@ -128,14 +128,12 @@
                 <executions>
                     <execution>
                         <id>scan</id>
-                        <phase/>
                         <goals>
                             <goal>scan</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>analyze</id>
-                        <phase/>
                         <goals>
                             <goal>analyze</goal>
                         </goals>
@@ -146,13 +144,13 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <groupId>com.buschmais.jqassistant</groupId>
-                        <artifactId>jqassistant.rules.java</artifactId>
+                        <groupId>com.buschmais.jqassistant.plugin</groupId>
+                        <artifactId>jqassistant.plugin.java</artifactId>
                         <version>${jqassistant.version}</version>
                     </dependency>
                     <dependency>
-                        <groupId>com.buschmais.jqassistant</groupId>
-                        <artifactId>jqassistant.rules.junit4</artifactId>
+                        <groupId>com.buschmais.jqassistant.plugin</groupId>
+                        <artifactId>jqassistant.plugin.junit4</artifactId>
                         <version>${jqassistant.version}</version>
                     </dependency>
                 </dependencies>

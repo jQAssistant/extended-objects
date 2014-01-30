@@ -13,7 +13,8 @@ public class Neo4jCdoProviderTest {
 
     private final Neo4jCdoProvider provider = new Neo4jCdoProvider();
 
-    @Test public void lookupTests() throws Exception {
+    @Test
+    public void lookupTests() throws Exception {
 
         assertEquals(FileDatastoreFactory.class, provider.lookupFactory(new URI("file://foo/")).getClass());
 
@@ -23,7 +24,8 @@ public class Neo4jCdoProviderTest {
         assertEquals(HttpsDatastoreFactory.class, provider.lookupFactory(new URI("https://foo")).getClass());
     }
 
-    @Test public void createDsTests() throws Exception {
+    @Test
+    public void createDsTests() throws Exception {
         assertEquals(EmbeddedNeo4jDatastore.class, provider.createDatastore(unit("memory:///")).getClass());
         assertEquals(RestNeo4jDatastore.class, provider.createDatastore(unit("http://foo")).getClass());
     }
