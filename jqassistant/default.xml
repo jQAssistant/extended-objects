@@ -10,6 +10,12 @@
         <includeConstraint refId="modules:ApiMustNotDependOnImplementation"/>
         <includeConstraint refId="modules:ModuleMustDependOnApiOfOtherModule"/>
         <includeConstraint refId="modules:UnknownModules"/>
+        <includeConstraint refId="module-api:Dependency"/>
+        <includeConstraint refId="module-impl:Dependency"/>
+        <includeConstraint refId="module-inject:Dependency"/>
+        <includeConstraint refId="module-json:Dependency"/>
+        <includeConstraint refId="module-neo4j:Dependency"/>
+        <includeConstraint refId="osgi-bundle:UnusedInternalType"/>
     </group>
 
 </jqa:jqassistant-rules>

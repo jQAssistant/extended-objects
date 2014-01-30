@@ -14,4 +14,24 @@
         ]]></cypher>
     </concept>
 
+    <constraint id="module-neo4j:Dependency">
+        <requiresConcept refId="modules:DeclaredModules"/>
+        <requiresConcept refId="dependency:Type"/>
+        <description>The module "cdo.inject" must only have dependencies to "cdo.api".</description>
+        <cypher><![CDATA[
+			MATCH
+			    (module:MODULE:CDO_NEO4J)-[:CONTAINS*]->(type:TYPE),
+                (otherModule:MODULE)-[:CONTAINS*]->(otherType:TYPE),
+				(type)-[:DEPENDS_ON]->(otherType:TYPE)
+			WHERE
+			    module<>otherModule
+			    AND NOT (
+			      otherModule:CDO_API
+			      OR otherModule:CDO_SPI
+			    )
+			RETURN
+				type as Type, otherType as OtherType
+        ]]></cypher>
+    </constraint>
+
 </jqa:jqassistant-rules>
