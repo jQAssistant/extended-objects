@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class TransactionalCache<Id> extends AbstractCache<Id, Object> {
 
-    private ReferenceCache referenceCache;
+    private final ReferenceCache referenceCache;
 
     public TransactionalCache() {
         super(new HashMap<Id, Object>());

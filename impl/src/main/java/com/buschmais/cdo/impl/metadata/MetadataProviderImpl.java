@@ -39,13 +39,12 @@ import java.util.*;
 public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> implements MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeMetadata.class);
-    private Map<Class<?>, Collection<AnnotatedMethod>> annotatedMethods;
 
-    private DatastoreMetadataFactory<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataFactory;
-    private EntityTypeMetadataResolver<EntityMetadata, EntityDiscriminator> entityTypeMetadataResolver;
-    private RelationTypeMetadataResolver<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> relationTypeMetadataResolver;
-
-    private Map<Class<?>, TypeMetadata> metadataByType = new HashMap<>();
+    private final DatastoreMetadataFactory<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataFactory;
+    private final EntityTypeMetadataResolver<EntityMetadata, EntityDiscriminator> entityTypeMetadataResolver;
+    private final RelationTypeMetadataResolver<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> relationTypeMetadataResolver;
+    private final Map<Class<?>, Collection<AnnotatedMethod>> annotatedMethods;
+    private final Map<Class<?>, TypeMetadata> metadataByType = new HashMap<>();
 
     /**
      * Constructor.
@@ -319,11 +318,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 throw new CdoException("Unsupported type for reference property: " + propertyType.getName());
             }
         } else {
-            if (Enum.class.isAssignableFrom(propertyType)) {
-                methodMetadata = new EnumPropertyMethodMetadata(propertyMethod, propertyType, metadataFactory.createEnumPropertyMetadata(propertyMethod));
-            } else {
-                methodMetadata = new PrimitivePropertyMethodMetadata<>(propertyMethod, metadataFactory.createPrimitivePropertyMetadata(propertyMethod));
-            }
+            methodMetadata = new PrimitivePropertyMethodMetadata<>(propertyMethod, metadataFactory.createPrimitivePropertyMetadata(propertyMethod));
         }
         return methodMetadata;
     }

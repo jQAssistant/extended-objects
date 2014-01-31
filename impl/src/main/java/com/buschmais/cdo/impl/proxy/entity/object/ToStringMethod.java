@@ -1,9 +1,9 @@
 package com.buschmais.cdo.impl.proxy.entity.object;
 
 import com.buschmais.cdo.impl.SessionContext;
-import com.buschmais.cdo.api.proxy.ProxyMethod;
+import com.buschmais.cdo.impl.proxy.common.object.AbstractToStringMethod;
 
-public class ToStringMethod<Entity> implements ProxyMethod<Entity> {
+public class ToStringMethod<Entity> extends AbstractToStringMethod<Entity> {
 
     private SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext;
 
@@ -12,16 +12,7 @@ public class ToStringMethod<Entity> implements ProxyMethod<Entity> {
     }
 
     @Override
-    public Object invoke(Entity entity, Object instance, Object[] args) {
-        StringBuffer stringBuffer = new StringBuffer();
-        for (Class<?> type : instance.getClass().getInterfaces()) {
-            if (stringBuffer.length() > 0) {
-                stringBuffer.append('|');
-            }
-            stringBuffer.append(type);
-        }
-        stringBuffer.append(", id=");
-        stringBuffer.append(sessionContext.getDatastoreSession().getId(entity));
-        return stringBuffer.toString();
+    protected String getId(Entity datastoreType) {
+        return sessionContext.getDatastoreSession().getId(datastoreType).toString();
     }
 }

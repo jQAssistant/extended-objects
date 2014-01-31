@@ -23,9 +23,8 @@ import java.util.Set;
  */
 public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> {
 
-    private Map<RelationDiscriminator, Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>>> relationMappings;
-
-    private Map<Class<?>, Map<RelationTypeMetadata<?>, AbstractRelationPropertyMethodMetadata<?>>> relationProperties = null;
+    private final Map<RelationDiscriminator, Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>>> relationMappings;
+    private final Map<Class<?>, Map<RelationTypeMetadata<?>, AbstractRelationPropertyMethodMetadata<?>>> relationProperties;
 
     /**
      * Constructor.
@@ -115,9 +114,9 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
     }
 
     private static class RelationMapping<EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> {
-        private EntityDiscriminator source;
-        private RelationTypeMetadata<RelationMetadata> relationType;
-        private EntityDiscriminator target;
+        private final EntityDiscriminator source;
+        private final RelationTypeMetadata<RelationMetadata> relationType;
+        private final EntityDiscriminator target;
 
         private RelationMapping(EntityDiscriminator source, RelationTypeMetadata<RelationMetadata> relationType, EntityDiscriminator target) {
             this.source = source;

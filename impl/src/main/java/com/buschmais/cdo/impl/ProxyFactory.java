@@ -12,41 +12,49 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Dirk Mahler on 11.01.14.
+ * The factory provides methods for creating dynamic proxies and unwrapping the them.
  */
 public class ProxyFactory {
 
-    private InterceptorFactory interceptorFactory;
-    private ClassLoader classLoader;
+    private final InterceptorFactory interceptorFactory;
+    private final ClassLoader classLoader;
 
+    /**
+     * Constructor.
+     *
+     * @param interceptorFactory The {@link com.buschmais.cdo.impl.interceptor.InterceptorFactory}.
+     * @param classLoader        The class loader.
+     */
     public ProxyFactory(InterceptorFactory interceptorFactory, ClassLoader classLoader) {
         this.interceptorFactory = interceptorFactory;
         this.classLoader = classLoader;
     }
 
-    public <Instance> Instance createInstance(InvocationHandler invocationHandler, Set<Class<?>> types, Class<?>... baseTypes) {
-        List<Class<?>> effectiveTypes = new ArrayList<>(types.size() + baseTypes.length);
+    /**
+     * Creates a proxy instance.
+     *
+     * @param invocationHandler The {@link java.lang.reflect.InvocationHandler}.
+     * @param types             The interface the proxy will implement.
+     * @param baseType          The base interface type the proxy will implement.
+     * @param <Instance>        The instance type.
+     * @return The instance.
+     */
+    public <Instance> Instance createInstance(InvocationHandler invocationHandler, Set<Class<?>> types, Class<?> baseType) {
+        List<Class<?>> effectiveTypes = new ArrayList<>(types.size() + 1);
         effectiveTypes.addAll(types);
-        effectiveTypes.addAll(Arrays.asList(baseTypes));
-        return (Instance) createProxyInstance(invocationHandler, effectiveTypes);
-    }
-
-    private Object createProxyInstance(InvocationHandler invocationHandler, List<Class<?>> effectiveTypes) {
+        effectiveTypes.add(baseType);
         Object instance = Proxy.newProxyInstance(classLoader, effectiveTypes.toArray(new Class<?>[effectiveTypes.size()]), invocationHandler);
-        return interceptorFactory.addInterceptor(instance);
+        return (Instance) interceptorFactory.addInterceptor(instance);
     }
 
-    public <Instance> boolean isDatastoreType(Instance instance) {
-        if (interceptorFactory.hasInterceptor(instance)) {
-            return isDatastoreType(interceptorFactory.removeInterceptor(instance));
-        }
-        if (Proxy.isProxyClass(instance.getClass())) {
-            InvocationHandler invocationHandler = Proxy.getInvocationHandler(instance);
-            return invocationHandler instanceof InstanceInvocationHandler;
-        }
-        return false;
-    }
-
+    /**
+     * Extracts the {@link com.buschmais.cdo.impl.proxy.entity.InstanceInvocationHandler} from a proxy instance.
+     *
+     * @param instance        The proxy instance.
+     * @param <DatastoreType> The expected datastore type of the {@link com.buschmais.cdo.impl.proxy.entity.InstanceInvocationHandler}
+     * @param <Instance>      The instance type.
+     * @return The {@link com.buschmais.cdo.impl.proxy.entity.InstanceInvocationHandler}.
+     */
     public <DatastoreType, Instance> InstanceInvocationHandler<DatastoreType> getInvocationHandler(Instance instance) {
         if (interceptorFactory.hasInterceptor(instance)) {
             return getInvocationHandler(interceptorFactory.removeInterceptor(instance));

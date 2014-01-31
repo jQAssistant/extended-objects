@@ -23,27 +23,29 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Entity, 
     }
 
     private Object convert(Object value, Class<?> type) {
-        if (Enum.class.isAssignableFrom(type)) {
-            return Enum.valueOf((Class<Enum>) type, (String) value);
-        } else if (value == null) {
-            if (boolean.class.equals(type)) {
-                return false;
-            } else if (short.class.equals(type)) {
-                return 0;
-            } else if (int.class.equals(type)) {
-                return 0;
-            } else if (long.class.equals(type)) {
-                return 0l;
-            } else if (float.class.equals(type)) {
-                return 0f;
-            } else if (double.class.equals(type)) {
-                return 0d;
-            } else if (char.class.equals(type)) {
-                return 0;
-            } else if (byte.class.equals(type)) {
-                return 0;
+        if (value != null) {
+            if (Enum.class.isAssignableFrom(type)) {
+                return Enum.valueOf((Class<Enum>) type, (String) value);
             }
+            return value;
+        } else if (boolean.class.equals(type)) {
+            return false;
+        } else if (short.class.equals(type)) {
+            return 0;
+        } else if (int.class.equals(type)) {
+            return 0;
+        } else if (long.class.equals(type)) {
+            return 0l;
+        } else if (float.class.equals(type)) {
+            return 0f;
+        } else if (double.class.equals(type)) {
+            return 0d;
+        } else if (char.class.equals(type)) {
+            return 0;
+        } else if (byte.class.equals(type)) {
+            return 0;
         }
-        return value;
+        return null;
     }
+
 }

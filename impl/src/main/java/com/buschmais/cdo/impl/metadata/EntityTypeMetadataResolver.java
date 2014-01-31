@@ -2,9 +2,7 @@ package com.buschmais.cdo.impl.metadata;
 
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
-import com.buschmais.cdo.spi.metadata.type.DatastoreTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
-import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
 import org.slf4j.Logger;
@@ -21,8 +19,8 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeMetadataResolver.class);
 
-    private Map<EntityTypeMetadata<EntityMetadata>, Set<Discriminator>> aggregatedDiscriminators = new HashMap<>();
-    private Map<Discriminator, Set<EntityTypeMetadata<EntityMetadata>>> typeMetadataByDiscriminator = new HashMap<>();
+    private final Map<EntityTypeMetadata<EntityMetadata>, Set<Discriminator>> aggregatedDiscriminators = new HashMap<>();
+    private final Map<Discriminator, Set<EntityTypeMetadata<EntityMetadata>>> typeMetadataByDiscriminator = new HashMap<>();
 
     /**
      * Constructor.

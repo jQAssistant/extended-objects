@@ -1,12 +1,7 @@
 package com.buschmais.cdo.impl;
 
-import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
-import com.buschmais.cdo.spi.metadata.method.*;
+import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
-
-import java.util.Iterator;
 
 /**
  * Contains methods for reading and creating relationships specified by the given metadata.
@@ -15,7 +10,7 @@ import java.util.Iterator;
  */
 public abstract class AbstractPropertyManager<DatastoreType, Entity, Relation> {
 
-    private SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
 
     /**
      * Constructor.
@@ -47,8 +42,4 @@ public abstract class AbstractPropertyManager<DatastoreType, Entity, Relation> {
     public abstract boolean hasProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata);
 
     public abstract void removeProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata);
-
-    public abstract void setEnumProperty(DatastoreType datastoreType, EnumPropertyMethodMetadata metadata, Enum<?> value);
-
-    public abstract Enum<?> getEnumProperty(DatastoreType datastoreType, EnumPropertyMethodMetadata metadata);
 }

@@ -14,4 +14,20 @@
         ]]></cypher>
     </concept>
 
+    <constraint id="module-api:Dependency">
+        <requiresConcept refId="modules:DeclaredModules"/>
+        <requiresConcept refId="dependency:Type"/>
+        <description>The module API must have no dependencies to other modules.</description>
+        <cypher><![CDATA[
+			MATCH
+			    (module:MODULE:CDO_API)-[:CONTAINS*]->(type:TYPE),
+                (otherModule:MODULE)-[:CONTAINS*]->(otherType:TYPE),
+				(type)-[:DEPENDS_ON]->(otherType:TYPE)
+			WHERE
+			    module<>otherModule
+			RETURN
+                type as Type, otherType as OtherType
+        ]]></cypher>
+    </constraint>
+
 </jqa:jqassistant-rules>

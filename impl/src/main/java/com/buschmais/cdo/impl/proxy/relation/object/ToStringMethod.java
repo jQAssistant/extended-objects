@@ -1,9 +1,9 @@
 package com.buschmais.cdo.impl.proxy.relation.object;
 
-import com.buschmais.cdo.api.proxy.ProxyMethod;
 import com.buschmais.cdo.impl.SessionContext;
+import com.buschmais.cdo.impl.proxy.common.object.AbstractToStringMethod;
 
-public class ToStringMethod<Relation> implements ProxyMethod<Relation> {
+public class ToStringMethod<Relation> extends AbstractToStringMethod<Relation> {
 
     private SessionContext<?, ?, ?, ?, ?, Relation, ?, ?> sessionContext;
 
@@ -12,16 +12,7 @@ public class ToStringMethod<Relation> implements ProxyMethod<Relation> {
     }
 
     @Override
-    public Object invoke(Relation relation, Object instance, Object[] args) {
-        StringBuffer stringBuffer = new StringBuffer();
-        for (Class<?> type : instance.getClass().getInterfaces()) {
-            if (stringBuffer.length() > 0) {
-                stringBuffer.append('|');
-            }
-            stringBuffer.append(type);
-        }
-        stringBuffer.append(", id=");
-        stringBuffer.append(sessionContext.getDatastoreSession().getRelationId(relation));
-        return stringBuffer.toString();
+    protected String getId(Relation datastoreType) {
+        return sessionContext.getDatastoreSession().getRelationId(datastoreType).toString();
     }
 }

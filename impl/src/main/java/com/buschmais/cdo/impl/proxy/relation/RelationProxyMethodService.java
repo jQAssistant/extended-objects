@@ -12,7 +12,9 @@ import com.buschmais.cdo.impl.proxy.entity.resultof.ResultOfMethod;
 import com.buschmais.cdo.impl.proxy.relation.object.EqualsMethod;
 import com.buschmais.cdo.impl.proxy.relation.object.HashCodeMethod;
 import com.buschmais.cdo.impl.proxy.relation.object.ToStringMethod;
-import com.buschmais.cdo.impl.proxy.relation.property.*;
+import com.buschmais.cdo.impl.proxy.relation.property.EntityReferencePropertyGetMethod;
+import com.buschmais.cdo.impl.proxy.relation.property.PrimitivePropertyGetMethod;
+import com.buschmais.cdo.impl.proxy.relation.property.PrimitivePropertySetMethod;
 import com.buschmais.cdo.spi.metadata.method.*;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
@@ -24,10 +26,7 @@ import java.lang.reflect.Method;
 
 public class RelationProxyMethodService<Entity, Relation, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Relation, M> {
 
-    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
-
     public RelationProxyMethodService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext) {
-        this.sessionContext = sessionContext;
         for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata()) {
             for (MethodMetadata methodMetadata : typeMetadata.getProperties()) {
                 AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
@@ -56,12 +55,6 @@ public class RelationProxyMethodService<Entity, Relation, M extends ProxyMethod<
                             addProxyMethod(new PrimitivePropertyGetMethod(sessionContext, (PrimitivePropertyMethodMetadata) methodMetadata), method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new PrimitivePropertySetMethod(sessionContext, (PrimitivePropertyMethodMetadata) methodMetadata), method);
-                        }
-                    } else if (methodMetadata instanceof EnumPropertyMethodMetadata) {
-                        if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new EnumPropertyGetMethod(sessionContext, (EnumPropertyMethodMetadata) methodMetadata), method);
-                        } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new EnumPropertySetMethod(sessionContext, (EnumPropertyMethodMetadata) methodMetadata), method);
                         }
                     } else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {

@@ -30,29 +30,18 @@ import static com.buschmais.cdo.api.Transaction.TransactionAttribute;
  */
 public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> {
 
-    private MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider;
-
-    private AbstractInstanceManager<EntityId, Entity> entityInstanceManager;
-
-    private AbstractInstanceManager<RelationId, Relation> relationInstanceManager;
-
-    private TransactionalCache<EntityId> entityCache;
-
-    private TransactionalCache<RelationId> relationCache;
-
-    private InstanceValidator instanceValidator;
-
-    private CdoTransactionImpl cdoTransaction;
-
-    private EntityPropertyManager<Entity, Relation> entityPropertyManager;
-
-    private RelationPropertyManager<Entity, Relation> relationPropertyManager;
-
-    private InterceptorFactory interceptorFactory;
-
-    private ProxyFactory proxyFactory;
-
-    private DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession;
+    private final MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider;
+    private final AbstractInstanceManager<EntityId, Entity> entityInstanceManager;
+    private final AbstractInstanceManager<RelationId, Relation> relationInstanceManager;
+    private final TransactionalCache<EntityId> entityCache;
+    private final TransactionalCache<RelationId> relationCache;
+    private final InstanceValidator instanceValidator;
+    private final CdoTransactionImpl cdoTransaction;
+    private final EntityPropertyManager<Entity, Relation> entityPropertyManager;
+    private final RelationPropertyManager<Entity, Relation> relationPropertyManager;
+    private final InterceptorFactory interceptorFactory;
+    private final ProxyFactory proxyFactory;
+    private final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession;
 
     public SessionContext(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, ValidatorFactory validatorFactory, TransactionAttribute defaultTransactionAttribute, ConcurrencyMode concurrencyMode, ClassLoader classLoader) {
         this.metadataProvider = metadataProvider;
@@ -63,7 +52,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction());
         this.interceptorFactory = new InterceptorFactory(cdoTransaction, defaultTransactionAttribute, concurrencyMode);
         this.proxyFactory = new ProxyFactory(interceptorFactory, classLoader);
-        this.entityPropertyManager = new EntityPropertyManager(this);
+        this.entityPropertyManager = new EntityPropertyManager<>(this);
         this.relationPropertyManager = new RelationPropertyManager<>(this);
         this.relationInstanceManager = new RelationInstanceManager<>(this);
         this.entityInstanceManager = new EntityInstanceManager<>(this);
@@ -109,6 +98,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
     public RelationPropertyManager<Entity, Relation> getRelationPropertyManager() {
         return relationPropertyManager;
     }
+
     public InterceptorFactory getInterceptorFactory() {
         return interceptorFactory;
     }

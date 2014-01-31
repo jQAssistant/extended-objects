@@ -8,9 +8,8 @@ import java.lang.reflect.Method;
 
 public class TransactionInterceptor implements CdoInterceptor {
 
-    private CdoTransaction cdoTransaction;
-
-    private Transaction.TransactionAttribute defaultTransactionAttribute;
+    private final CdoTransaction cdoTransaction;
+    private final Transaction.TransactionAttribute defaultTransactionAttribute;
 
     public TransactionInterceptor(CdoTransaction cdoTransaction, Transaction.TransactionAttribute defaultTransactionAttribute) {
         this.cdoTransaction = cdoTransaction;

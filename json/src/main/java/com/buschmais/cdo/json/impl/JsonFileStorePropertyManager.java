@@ -5,7 +5,6 @@ import com.buschmais.cdo.json.impl.metadata.JsonEnumPropertyMetadata;
 import com.buschmais.cdo.json.impl.metadata.JsonPrimitivePropertyMetadata;
 import com.buschmais.cdo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.cdo.spi.metadata.method.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import org.codehaus.jackson.node.ObjectNode;
@@ -58,26 +57,6 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
     }
 
     @Override
-    public Enum<?> getEnumProperty(ObjectNode objectNode, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata) {
-        return null;
-    }
-
-    @Override
-    public Enum<?> getRelationEnumProperty(JsonRelation jsonRelation, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata) {
-        return null;
-    }
-
-    @Override
-    public void setEnumProperty(ObjectNode objectNode, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata, Enum<?> value) {
-
-    }
-
-    @Override
-    public void setRelationEnumProperty(JsonRelation jsonRelation, EnumPropertyMethodMetadata<JsonEnumPropertyMetadata> metadata, Enum<?> value) {
-
-    }
-
-    @Override
     public boolean hasSingleRelation(ObjectNode source, RelationTypeMetadata<JsonRelationMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return false;
     }
@@ -99,7 +78,6 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
 
     @Override
     public void deleteRelation(JsonRelation jsonRelation) {
-
     }
 
     @Override

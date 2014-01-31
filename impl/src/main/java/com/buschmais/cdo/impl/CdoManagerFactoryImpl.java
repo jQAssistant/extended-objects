@@ -20,13 +20,13 @@ public class CdoManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Data
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CdoManagerFactoryImpl.class);
 
-    private CdoUnit cdoUnit;
-    private MetadataProvider metadataProvider;
-    private ClassLoader classLoader;
-    private Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore;
-    private ValidatorFactory validatorFactory;
-    private ConcurrencyMode concurrencyMode;
-    private Transaction.TransactionAttribute defaultTransactionAttribute;
+    private final CdoUnit cdoUnit;
+    private final MetadataProvider metadataProvider;
+    private final ClassLoader classLoader;
+    private final Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore;
+    private final ValidatorFactory validatorFactory;
+    private final ConcurrencyMode concurrencyMode;
+    private final Transaction.TransactionAttribute defaultTransactionAttribute;
 
     public CdoManagerFactoryImpl(CdoUnit cdoUnit) {
         this.cdoUnit = cdoUnit;
@@ -43,7 +43,7 @@ public class CdoManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Data
         this.defaultTransactionAttribute = cdoUnit.getDefaultTransactionAttribute();
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         final ClassLoader parentClassLoader = contextClassLoader != null ? contextClassLoader : cdoUnit.getClass().getClassLoader();
-        LOGGER.info("Using class loader '{}'.", parentClassLoader.toString());
+        LOGGER.debug("Using class loader '{}'.", parentClassLoader.toString());
         classLoader = new ClassLoader() {
             @Override
             public Class<?> loadClass(String name) throws ClassNotFoundException {
@@ -51,13 +51,23 @@ public class CdoManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Data
             }
         };
         metadataProvider = new MetadataProviderImpl(cdoUnit.getTypes(), datastore);
+        this.validatorFactory = getValidatorFactory();
+        datastore.init(metadataProvider.getRegisteredMetadata());
+    }
+
+    /**
+     * Return the {@link javax.validation.ValidatorFactory}.
+     *
+     * @return The {@link javax.validation.ValidatorFactory}.
+     */
+    private ValidatorFactory getValidatorFactory() {
         try {
-            this.validatorFactory = Validation.buildDefaultValidatorFactory();
+            return Validation.buildDefaultValidatorFactory();
         } catch (ValidationException e) {
             LOGGER.debug("Cannot find validation provider.", e);
             LOGGER.info("No JSR 303 Bean Validation provider available.");
         }
-        datastore.init(metadataProvider.getRegisteredMetadata());
+        return null;
     }
 
     @Override
@@ -73,6 +83,7 @@ public class CdoManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Data
         datastore.close();
     }
 
+    @Override
     public CdoUnit getCdoUnit() {
         return cdoUnit;
     }

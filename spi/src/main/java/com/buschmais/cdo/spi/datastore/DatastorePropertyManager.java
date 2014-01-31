@@ -1,6 +1,5 @@
 package com.buschmais.cdo.spi.datastore;
 
-import com.buschmais.cdo.spi.metadata.method.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 
@@ -9,11 +8,9 @@ import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
  *
  * @param <Entity>                    The type of entities used by the datastore.
  * @param <Relation>                  The type of relations used by the datastore.
- * @param <PrimitivePropertyMetadata>
- *                                    The type of metadata for primitive properties used by the datastore.
- * @param <EnumPropertyMetadata>
- *                                    The type of metadata for enum properties used by the datastore.
- * @param <RelationMetadata> The type of metadata for relations used by the datastore.
+ * @param <PrimitivePropertyMetadata> The type of metadata for primitive properties used by the datastore.
+ * @param <EnumPropertyMetadata>      The type of metadata for enum properties used by the datastore.
+ * @param <RelationMetadata>          The type of metadata for relations used by the datastore.
  */
 public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyMetadata, EnumPropertyMetadata, RelationMetadata> {
 
@@ -79,44 +76,10 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyMet
     /**
      * Get the value of a primitive property.
      *
-     * @param relation   The relation.
+     * @param relation The relation.
      * @param metadata The property metadata.
      */
     Object getRelationProperty(Relation relation, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
-
-    /**
-     * Get the value of an enumeration property.
-     *
-     * @param entity   The entity.
-     * @param metadata The property metadata.
-     */
-    Enum<?> getEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata);
-
-    /**
-     * Get the value of an enumeration property.
-     *
-     * @param relation   The relation.
-     * @param metadata The property metadata.
-     */
-    Enum<?> getRelationEnumProperty(Relation relation, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata);
-
-    /**
-     * Set the value of an enumeration property.
-     *
-     * @param entity   The entity.
-     * @param metadata The property metadata.
-     * @param value    The value
-     */
-    void setEnumProperty(Entity entity, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata, Enum<?> value);
-
-    /**
-     * Set the value of an enumeration property.
-     *
-     * @param relation   The relation.
-     * @param metadata The property metadata.
-     * @param value    The value
-     */
-    void setRelationEnumProperty(Relation relation, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata, Enum<?> value);
 
     /**
      * Determine if a single relation (i.e. direct reference) between two entities exists.

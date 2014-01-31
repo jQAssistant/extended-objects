@@ -1,24 +1,23 @@
 package com.buschmais.cdo.impl.bootstrap.osgi;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
-
-import org.osgi.framework.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.impl.CdoManagerFactoryImpl;
 import com.buschmais.cdo.impl.bootstrap.CdoUnitFactory;
+import org.osgi.framework.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
 
 public class CdoUnitBundleListener implements BundleActivator, BundleListener {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(CdoUnitBundleListener.class);
 
-    private Map<Long, List<CdoManagerFactory>> registeredCdoManagerFactories = new HashMap<>();
+    private final Map<Long, List<CdoManagerFactory>> registeredCdoManagerFactories = new HashMap<>();
 
     @Override
     public void start(BundleContext context) throws Exception {

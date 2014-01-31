@@ -4,9 +4,9 @@ import java.util.*;
 
 public class DependencyResolver<T> {
 
+    private final Collection<T> elements;
+    private final DependencyProvider<T> dependencyProvider;
     private Map<T, Set<T>> blockedBy;
-    private Collection<T> elements;
-    private DependencyProvider<T> dependencyProvider;
 
     private DependencyResolver(Collection<T> elements, DependencyProvider<T> dependencyProvider) {
         this.elements = elements;
