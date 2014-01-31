@@ -1,6 +1,5 @@
 package com.buschmais.cdo.impl;
 
-import com.buschmais.cdo.spi.metadata.method.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 
@@ -43,8 +42,4 @@ public abstract class AbstractPropertyManager<DatastoreType, Entity, Relation> {
     public abstract boolean hasProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata);
 
     public abstract void removeProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata);
-
-    public abstract void setEnumProperty(DatastoreType datastoreType, EnumPropertyMethodMetadata metadata, Enum<?> value);
-
-    public abstract Enum<?> getEnumProperty(DatastoreType datastoreType, EnumPropertyMethodMetadata metadata);
 }

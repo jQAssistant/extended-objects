@@ -60,16 +60,6 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
         getSessionContext().getDatastoreSession().getDatastorePropertyManager().removeProperty(entity, metadata);
     }
 
-    @Override
-    public void setEnumProperty(Entity entity, EnumPropertyMethodMetadata metadata, Enum<?> value) {
-        getSessionContext().getDatastoreSession().getDatastorePropertyManager().setEnumProperty(entity, metadata, value);
-    }
-
-    @Override
-    public Enum<?> getEnumProperty(Entity entity, EnumPropertyMethodMetadata metadata) {
-        return getSessionContext().getDatastoreSession().getDatastorePropertyManager().getEnumProperty(entity, metadata);
-    }
-
     public Object getEntityReference(Entity entity, EntityReferencePropertyMethodMetadata metadata) {
         Relation singleRelation = getSingleRelation(entity, metadata.getRelationshipMetadata(), metadata.getDirection());
         if (singleRelation != null) {

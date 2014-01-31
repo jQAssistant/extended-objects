@@ -5,10 +5,11 @@ import com.buschmais.cdo.neo4j.impl.datastore.metadata.EnumPropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.cdo.spi.metadata.method.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 
 public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Relationship, PrimitivePropertyMetadata, EnumPropertyMetadata, RelationshipMetadata> {
 
@@ -108,37 +109,4 @@ public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Rela
     public Object getRelationProperty(Relationship relationship, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
         return relationship.getProperty(metadata.getDatastoreMetadata().getName());
     }
-
-    @Override
-    public Enum<?> getEnumProperty(Node node, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata) {
-        for (Enum<?> enumerationValue : metadata.getEnumerationType().getEnumConstants()) {
-            if (node.hasLabel(DynamicLabel.label(enumerationValue.name()))) {
-                return enumerationValue;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Enum<?> getRelationEnumProperty(Relationship relationship, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata) {
-        throw new CdoException("Enum properties are not supported for relationships.");
-    }
-
-    @Override
-    public void setEnumProperty(Node node, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata, Enum<?> value) {
-        for (Enum<?> enumerationValue : metadata.getEnumerationType().getEnumConstants()) {
-            Label label = DynamicLabel.label(enumerationValue.name());
-            if (enumerationValue.equals(value)) {
-                node.addLabel(label);
-            } else if (node.hasLabel(label)) {
-                node.removeLabel(label);
-            }
-        }
-    }
-
-    @Override
-    public void setRelationEnumProperty(Relationship relationship, EnumPropertyMethodMetadata<EnumPropertyMetadata> metadata, Enum<?> value) {
-        throw new CdoException("Enum properties are not supported for relationships.");
-    }
-
 }

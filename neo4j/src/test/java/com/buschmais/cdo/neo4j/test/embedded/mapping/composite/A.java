@@ -45,12 +45,12 @@ public interface A extends Version {
     @Relation("MAPPED_LIST_OF_B")
     List<B> getMappedListOfB();
 
-    Enumeration getEnumerationLabel();
+    Enumeration getEnumeration();
 
-    void setEnumerationLabel(Enumeration enumeration);
+    void setEnumeration(Enumeration enumeration);
 
-    @Property("enumeration")
-    Enumeration getEnumerationProperty();
+    @Property("MAPPED_ENUMERATION")
+    Enumeration getMappedEnumeration();
 
-    void setEnumerationProperty(Enumeration enumeration);
+    void setMappedEnumeration(Enumeration enumeration);
 }

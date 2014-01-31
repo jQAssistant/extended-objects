@@ -4,7 +4,6 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.metadata.method.EntityReferencePropertyMethodMetadata;
-import com.buschmais.cdo.spi.metadata.method.EnumPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 
@@ -42,16 +41,6 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
     @Override
     public void removeProperty(Relation relation, PrimitivePropertyMethodMetadata metadata) {
         getSessionContext().getDatastoreSession().getDatastorePropertyManager().removeRelationProperty(relation, metadata);
-    }
-
-    @Override
-    public Enum<?> getEnumProperty(Relation relation, EnumPropertyMethodMetadata metadata) {
-        return getSessionContext().getDatastoreSession().getDatastorePropertyManager().getRelationEnumProperty(relation, metadata);
-    }
-
-    @Override
-    public void setEnumProperty(Relation relation, EnumPropertyMethodMetadata metadata, Enum<?> value) {
-        getSessionContext().getDatastoreSession().getDatastorePropertyManager().setRelationEnumProperty(relation, metadata, value);
     }
 
     public Entity getEntityReference(Relation relation, EntityReferencePropertyMethodMetadata metadata) {

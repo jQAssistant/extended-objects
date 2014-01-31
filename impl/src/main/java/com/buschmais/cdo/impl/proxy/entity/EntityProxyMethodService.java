@@ -54,12 +54,6 @@ public class EntityProxyMethodService<Entity, Relation, M extends ProxyMethod<?>
                         } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new PrimitivePropertySetMethod(sessionContext, (PrimitivePropertyMethodMetadata) methodMetadata), method);
                         }
-                    } else if (methodMetadata instanceof EnumPropertyMethodMetadata) {
-                        if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new EnumPropertyGetMethod(sessionContext, (EnumPropertyMethodMetadata) methodMetadata), method);
-                        } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new EnumPropertySetMethod(sessionContext, (EnumPropertyMethodMetadata) methodMetadata), method);
-                        }
                     } else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
                             addProxyMethod(new EntityReferencePropertyGetMethod(sessionContext, (EntityReferencePropertyMethodMetadata) methodMetadata), method);
