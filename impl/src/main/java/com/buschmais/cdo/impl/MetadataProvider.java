@@ -9,7 +9,6 @@ import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -71,5 +70,5 @@ public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata
 
     RelationTypeMetadata.Direction getRelationDirection(Set<Class<?>> sourceTypes, RelationTypeMetadata<RelationMetadata> relationMetadata, Set<Class<?>> targetTypes);
 
-    <R> AbstractRelationPropertyMethodMetadata<?> getPropertyMetadata(Class<?> entityType, Class<R> relationType);
+    <R> AbstractRelationPropertyMethodMetadata<?> getPropertyMetadata(Class<?> entityType, Class<R> relationType, RelationTypeMetadata.Direction direction);
 }

@@ -87,11 +87,23 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
         return types;
     }
 
-    public AbstractRelationPropertyMethodMetadata<?> getRelationPropertyMethodMetadata(Class<?> fromType, RelationTypeMetadata<?> relationTypeMetadata) {
-        Class<?> containingType;
-        if (relationTypeMetadata.getOutgoingType().isAssignableFrom(fromType)) {
-            containingType = relationTypeMetadata.getOutgoingType();
-        } else {
+    public AbstractRelationPropertyMethodMetadata<?> getRelationPropertyMethodMetadata(Class<?> type, RelationTypeMetadata<?> relationTypeMetadata, RelationTypeMetadata.Direction direction) {
+        Class<?> containingType = null;
+        switch (direction) {
+            case OUTGOING:
+                if (relationTypeMetadata.getOutgoingType().isAssignableFrom(type)) {
+                    containingType = relationTypeMetadata.getOutgoingType();
+                }
+                break;
+            case INCOMING:
+                if (relationTypeMetadata.getIncomingType().isAssignableFrom(type)) {
+                    containingType = relationTypeMetadata.getIncomingType();
+                }
+                break;
+            default:
+                throw direction.createNotSupportedException();
+        }
+        if (containingType == null) {
             throw new CdoException("Cannot resolve containing entity type for relation type '" + relationTypeMetadata.getAnnotatedType().getName() + "'.");
         }
         Map<RelationTypeMetadata<?>, AbstractRelationPropertyMethodMetadata<?>> relationProperties = this.relationProperties.get(containingType);

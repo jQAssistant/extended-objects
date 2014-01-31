@@ -27,14 +27,14 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     public <T> T createEntityReference(Entity sourceEntity, AbstractRelationPropertyMethodMetadata<?> metadata, Object target) {
         AbstractInstanceManager<?, Entity> instanceManager = getSessionContext().getEntityInstanceManager();
         Entity targetEntity = target != null ? instanceManager.getDatastoreType(target) : null;
-        Relation relation = createRelation(sourceEntity, metadata, targetEntity);
+        Relation relation = createRelation(sourceEntity, metadata, targetEntity, null);
         return relation != null ? (T) instanceManager.getInstance(getReferencedEntity(relation, metadata.getDirection())) : null;
     }
 
-    public <T> T createRelationReference(Entity sourceEntity, AbstractRelationPropertyMethodMetadata<?> metadata, Object target) {
+    public <T> T createRelationReference(Entity sourceEntity, AbstractRelationPropertyMethodMetadata<?> fromProperty, Object target, AbstractRelationPropertyMethodMetadata<?> toProperty) {
         AbstractInstanceManager<?, Entity> entityInstanceManager = getSessionContext().getEntityInstanceManager();
         Entity targetEntity = target != null ? entityInstanceManager.getDatastoreType(target) : null;
-        Relation relation = createRelation(sourceEntity, metadata, targetEntity);
+        Relation relation = createRelation(sourceEntity, fromProperty, targetEntity, toProperty);
         AbstractInstanceManager<?, Relation> relationInstanceManager = getSessionContext().getRelationInstanceManager();
         return relation != null ? (T) relationInstanceManager.getInstance(relation) : null;
     }
@@ -176,14 +176,16 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
         }
     }
 
-    private Relation createRelation(Entity sourceEntity, AbstractRelationPropertyMethodMetadata<?> metadata, Entity targetEntity) {
+    private Relation createRelation(Entity sourceEntity, AbstractRelationPropertyMethodMetadata<?> fromProperty, Entity targetEntity, AbstractRelationPropertyMethodMetadata<?> toProperty) {
         Relation relation;
-        if (metadata instanceof EntityReferencePropertyMethodMetadata || metadata instanceof RelationReferencePropertyMethodMetadata) {
-            relation = createSingleReference(sourceEntity, metadata.getRelationshipMetadata(), metadata.getDirection(), targetEntity);
-        } else if (metadata instanceof EntityCollectionPropertyMethodMetadata || metadata instanceof RelationCollectionPropertyMethodMetadata) {
-            relation = createReference(sourceEntity, metadata.getRelationshipMetadata(), metadata.getDirection(), targetEntity);
+        if (fromProperty instanceof EntityReferencePropertyMethodMetadata || fromProperty instanceof RelationReferencePropertyMethodMetadata) {
+            relation = createSingleReference(sourceEntity, fromProperty.getRelationshipMetadata(), fromProperty.getDirection(), targetEntity);
+        } else if (toProperty instanceof EntityReferencePropertyMethodMetadata || toProperty instanceof RelationReferencePropertyMethodMetadata) {
+            relation = createSingleReference(targetEntity, toProperty.getRelationshipMetadata(), toProperty.getDirection(), sourceEntity);
+        } else if (fromProperty instanceof EntityCollectionPropertyMethodMetadata || fromProperty instanceof RelationCollectionPropertyMethodMetadata) {
+            relation = createReference(sourceEntity, fromProperty.getRelationshipMetadata(), fromProperty.getDirection(), targetEntity);
         } else {
-            throw new CdoException("Unsupported relation metadata type " + metadata.getClass().getName());
+            throw new CdoException("Unsupported relation type " + fromProperty.getClass().getName());
         }
         return relation;
     }

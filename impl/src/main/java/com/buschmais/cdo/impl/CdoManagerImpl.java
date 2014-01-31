@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.Set;
 
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
+import static com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction.INCOMING;
+import static com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction.OUTGOING;
 
 /**
  * Generic implementation of a {@link CdoManager}.
@@ -108,9 +110,10 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
     @Override
     public <S, R, T> R create(S from, Class<R> relationType, T to) {
         MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
-        AbstractRelationPropertyMethodMetadata<?> propertyMethodMetadata = metadataProvider.getPropertyMetadata(from.getClass(), relationType);
+        AbstractRelationPropertyMethodMetadata<?> fromProperty = metadataProvider.getPropertyMetadata(from.getClass(), relationType, OUTGOING);
+        AbstractRelationPropertyMethodMetadata<?> toProperty = metadataProvider.getPropertyMetadata(to.getClass(), relationType, INCOMING);
         Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(from);
-        return sessionContext.getEntityPropertyManager().createRelationReference(entity, propertyMethodMetadata, to);
+        return sessionContext.getEntityPropertyManager().createRelationReference(entity, fromProperty, to, toProperty);
     }
 
     @Override

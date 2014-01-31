@@ -1,5 +1,6 @@
 package com.buschmais.cdo.spi.metadata.type;
 
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.spi.metadata.method.MethodMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
 
@@ -11,6 +12,10 @@ public class RelationTypeMetadata<DatastoreMetadata> extends AbstractDatastoreTy
     public enum Direction {
         INCOMING,
         OUTGOING;
+
+        public CdoException createNotSupportedException() {
+            return new CdoException("Relation direction '" + name() + "' is not supported.");
+        }
     }
 
     private Class<?> outgoingType;
