@@ -67,5 +67,4 @@ public class ImplementedByTest extends AbstractEmbeddedCdoManagerTest {
             cdoManager.currentTransaction().commit();
         }
     }
-
 }

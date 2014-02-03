@@ -1,18 +1,17 @@
 package com.buschmais.cdo.impl.proxy.common.property;
 
 import com.buschmais.cdo.impl.AbstractPropertyManager;
-import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 
-public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Entity, Relation> extends AbstractPropertyMethod<DatastoreType, Entity, Relation, PrimitivePropertyMethodMetadata> {
+public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, PropertyManager extends AbstractPropertyManager<DatastoreType, ?, ?>> extends AbstractPropertyMethod<DatastoreType, PropertyManager, PrimitivePropertyMethodMetadata> {
 
-    public AbstractPrimitivePropertyGetMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, PrimitivePropertyMethodMetadata metadata) {
-        super(sessionContext, metadata);
+    public AbstractPrimitivePropertyGetMethod(PropertyManager propertyManager, PrimitivePropertyMethodMetadata metadata) {
+        super(propertyManager, metadata);
     }
 
     public Object invoke(DatastoreType datastoreType, Object instance, Object[] args) {
         PrimitivePropertyMethodMetadata<?> metadata = getMetadata();
-        AbstractPropertyManager<DatastoreType, Entity, Relation> propertyManager = getPropertyManager();
+        PropertyManager propertyManager = getPropertyManager();
         Object value;
         if (!propertyManager.hasProperty(datastoreType, metadata)) {
             value = null;
