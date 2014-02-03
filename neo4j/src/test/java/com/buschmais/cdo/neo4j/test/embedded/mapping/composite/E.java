@@ -1,6 +1,7 @@
 package com.buschmais.cdo.neo4j.test.embedded.mapping.composite;
 
 import com.buschmais.cdo.api.annotation.ResultOf;
+import com.buschmais.cdo.neo4j.api.annotation.Cypher;
 import com.buschmais.cdo.neo4j.api.annotation.Label;
 import com.buschmais.cdo.neo4j.api.annotation.Relation;
 
@@ -29,4 +30,17 @@ public interface E {
 
     @ResultOf
     ByValueUsingImplicitThis getByValueUsingImplicitThis(@Parameter("value") String value);
+
+    List<E2F> getE2F();
+
+    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where e={e} and f.value={value} return f")
+    interface ByValue {
+        F getF();
+    }
+
+    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where e={this} and f.value={value} return f")
+    interface ByValueUsingImplicitThis {
+        F getF();
+    }
+
 }

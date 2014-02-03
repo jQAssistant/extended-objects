@@ -37,7 +37,7 @@ public class EntityProxyMethodService<Entity, Relation, M extends ProxyMethod<?>
                     try {
                         addProxyMethod(proxyMethodType.newInstance(), typeMethod.getAnnotatedElement());
                     } catch (InstantiationException e) {
-                        throw new CdoException("Cannot instantiate query method of type " + proxyMethodType.getName(), e);
+                        throw new CdoException("Cannot instantiate proxy method of type " + proxyMethodType.getName(), e);
                     } catch (IllegalAccessException e) {
                         throw new CdoException("Unexpected exception while instantiating type " + proxyMethodType.getName(), e);
                     }
