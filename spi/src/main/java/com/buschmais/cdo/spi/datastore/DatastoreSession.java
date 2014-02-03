@@ -62,7 +62,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param entity The entity.
      * @return The id of the entity.
      */
-    EntityId getId(Entity entity);
+    EntityId getEntityId(Entity entity);
 
     /**
      * Return the id of a relation.
@@ -79,7 +79,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param discriminators The set of discriminators.
      * @return The created entity.
      */
-    Entity create(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators);
+    Entity createEntity(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators);
 
     /**
      * Delete an entity.
@@ -96,7 +96,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param value         The primitive value (e.g. indexed value).
      * @return An iterator returning matching entities.
      */
-    ResultIterator<Entity> find(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator discriminator, Object value);
+    ResultIterator<Entity> findEntity(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator discriminator, Object value);
 
     /**
      * Execute a query.
@@ -106,7 +106,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param <QL>       The query language type.
      * @return A {@link ResultIterator} instance returning each row as a map of colum names and their values.
      */
-    <QL> ResultIterator<Map<String, Object>> execute(QL query, Map<String, Object> parameters);
+    <QL> ResultIterator<Map<String, Object>> executeQuery(QL query, Map<String, Object> parameters);
 
     /**
      * Migrate an entity of a given type and discriminators to the given target types and target discriminators.
@@ -117,7 +117,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param targetTypes          The entity types after migration.
      * @param targetDiscriminators The discriminators of the entity after migration.
      */
-    void migrate(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<EntityDiscriminator> targetDiscriminators);
+    void migrateEntity(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<EntityDiscriminator> targetDiscriminators);
 
     /**
      * Flush the given entity to the datastore.

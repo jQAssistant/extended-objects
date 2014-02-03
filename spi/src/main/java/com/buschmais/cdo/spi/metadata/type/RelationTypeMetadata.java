@@ -10,33 +10,33 @@ import java.util.Collections;
 public class RelationTypeMetadata<DatastoreMetadata> extends AbstractDatastoreTypeMetadata<DatastoreMetadata> {
 
     public enum Direction {
-        INCOMING,
-        OUTGOING;
+        FROM,
+        TO;
 
         public CdoException createNotSupportedException() {
             return new CdoException("Relation direction '" + name() + "' is not supported.");
         }
     }
 
-    private Class<?> outgoingType;
-    private Class<?> incomingType;
+    private Class<?> fromType;
+    private Class<?> toType;
 
-    public RelationTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, Class<?> outgoingType, Class<?> incomingType, DatastoreMetadata datastoreMetadata) {
+    public RelationTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, Class<?> fromType, Class<?> toType, DatastoreMetadata datastoreMetadata) {
         super(annotatedType, superTypes, properties, datastoreMetadata);
-        this.outgoingType = outgoingType;
-        this.incomingType = incomingType;
+        this.fromType = fromType;
+        this.toType = toType;
     }
 
     public RelationTypeMetadata(DatastoreMetadata datastoreMetadata) {
         this(null, Collections.<TypeMetadata>emptyList(), Collections.<MethodMetadata<?, ?>>emptyList(), null, null, datastoreMetadata);
     }
 
-    public Class<?> getOutgoingType() {
-        return outgoingType;
+    public Class<?> getFromType() {
+        return fromType;
     }
 
-    public Class<?> getIncomingType() {
-        return incomingType;
+    public Class<?> getToType() {
+        return toType;
     }
 
 }

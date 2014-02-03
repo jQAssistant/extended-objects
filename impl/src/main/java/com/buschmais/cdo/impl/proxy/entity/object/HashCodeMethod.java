@@ -1,7 +1,7 @@
 package com.buschmais.cdo.impl.proxy.entity.object;
 
-import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
+import com.buschmais.cdo.impl.SessionContext;
 
 public class HashCodeMethod<Entity> implements ProxyMethod<Entity> {
 
@@ -13,6 +13,6 @@ public class HashCodeMethod<Entity> implements ProxyMethod<Entity> {
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
-        return sessionContext.getDatastoreSession().getId(entity).hashCode();
+        return sessionContext.getDatastoreSession().getEntityId(entity).hashCode();
     }
 }

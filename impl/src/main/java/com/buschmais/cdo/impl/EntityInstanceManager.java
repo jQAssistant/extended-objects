@@ -24,7 +24,7 @@ public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extend
 
     @Override
     protected EntityId getDatastoreId(Entity entity) {
-        return sessionContext.getDatastoreSession().getId(entity);
+        return sessionContext.getDatastoreSession().getEntityId(entity);
     }
 
     @Override

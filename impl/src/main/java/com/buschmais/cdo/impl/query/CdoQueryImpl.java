@@ -60,7 +60,7 @@ public class CdoQueryImpl<T, QL, Entity, Relation> implements Query<T> {
                 effectiveParameters.put(name, value);
             }
         }
-        ResultIterator<Map<String, Object>> iterator = sessionContext.getDatastoreSession().execute(expression, effectiveParameters);
+        ResultIterator<Map<String, Object>> iterator = sessionContext.getDatastoreSession().executeQuery(expression, effectiveParameters);
         SortedSet<Class<?>> resultTypes = getResultTypes();
         QueryResultIterableImpl<Entity, Relation, Map<String, Object>> queryResultIterable = new QueryResultIterableImpl(sessionContext, iterator, resultTypes);
         return new TransactionalQueryResultIterable(queryResultIterable, sessionContext.getCdoTransaction());

@@ -50,10 +50,10 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
     private Entity getReferencedEntity(Relation relation, RelationTypeMetadata.Direction direction) {
         DatastorePropertyManager<Entity, Relation, ?, ?, ? extends DatastoreRelationMetadata<?>> datastorePropertyManager = getSessionContext().getDatastoreSession().getDatastorePropertyManager();
         switch (direction) {
-            case INCOMING:
-                return datastorePropertyManager.getTarget(relation);
-            case OUTGOING:
-                return datastorePropertyManager.getSource(relation);
+            case TO:
+                return datastorePropertyManager.getTo(relation);
+            case FROM:
+                return datastorePropertyManager.getFrom(relation);
             default:
                 throw new CdoException("Unsupported direction: " + direction);
         }

@@ -31,9 +31,9 @@ public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Rela
     @Override
     public Relationship createRelation(Node source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction, Node target) {
         switch (direction) {
-            case OUTGOING:
+            case FROM:
                 return source.createRelationshipTo(target, metadata.getDatastoreMetadata().getDiscriminator());
-            case INCOMING:
+            case TO:
                 return target.createRelationshipTo(source, metadata.getDatastoreMetadata().getDiscriminator());
             default:
                 throw new CdoException("Unsupported direction " + direction);
@@ -47,21 +47,21 @@ public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Rela
 
 
     @Override
-    public Node getTarget(Relationship relationship) {
+    public Node getTo(Relationship relationship) {
         return relationship.getEndNode();
     }
 
     @Override
-    public Node getSource(Relationship relationship) {
+    public Node getFrom(Relationship relationship) {
         return relationship.getStartNode();
     }
 
 
     private Direction getDirection(RelationTypeMetadata.Direction direction) {
         switch (direction) {
-            case OUTGOING:
+            case FROM:
                 return Direction.OUTGOING;
-            case INCOMING:
+            case TO:
                 return Direction.INCOMING;
             default:
                 throw new CdoException("Unsupported direction " + direction);
@@ -71,7 +71,7 @@ public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Rela
     // Properties
 
     @Override
-    public void removeProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
+    public void removeEntityProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
         node.removeProperty(metadata.getDatastoreMetadata().getName());
     }
 
@@ -81,7 +81,7 @@ public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Rela
     }
 
     @Override
-    public boolean hasProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
+    public boolean hasEntityProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
         return node.hasProperty(metadata.getDatastoreMetadata().getName());
     }
 
@@ -101,7 +101,7 @@ public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Rela
     }
 
     @Override
-    public Object getProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
+    public Object getEntityProperty(Node node, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
         return node.getProperty(metadata.getDatastoreMetadata().getName());
     }
 

@@ -141,10 +141,10 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     @Override
     public RelationTypeMetadata.Direction getRelationDirection(Set<Class<?>> sourceTypes, RelationTypeMetadata<RelationMetadata> relationMetadata, Set<Class<?>> targetTypes) {
-        if (sourceTypes.contains(relationMetadata.getOutgoingType()) && targetTypes.contains(relationMetadata.getIncomingType())) {
-            return RelationTypeMetadata.Direction.OUTGOING;
-        } else if (targetTypes.contains(relationMetadata.getOutgoingType()) && sourceTypes.contains(relationMetadata.getIncomingType())) {
-            return RelationTypeMetadata.Direction.INCOMING;
+        if (sourceTypes.contains(relationMetadata.getFromType()) && targetTypes.contains(relationMetadata.getToType())) {
+            return RelationTypeMetadata.Direction.FROM;
+        } else if (targetTypes.contains(relationMetadata.getFromType()) && sourceTypes.contains(relationMetadata.getToType())) {
+            return RelationTypeMetadata.Direction.TO;
         }
         throw new CdoException("The relation '" + relationMetadata + "' is not defined for the instances.");
     }
@@ -206,10 +206,10 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 EntityReferencePropertyMethodMetadata<?> propertyMethodMetadata = (EntityReferencePropertyMethodMetadata<?>) methodMetadata;
                 Class<?> type = propertyMethodMetadata.getAnnotatedMethod().getType();
                 switch (propertyMethodMetadata.getDirection()) {
-                    case OUTGOING:
+                    case FROM:
                         outgoingType = type;
                         break;
-                    case INCOMING:
+                    case TO:
                         incomingType = type;
                         break;
                     default:
@@ -325,10 +325,10 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     private RelationTypeMetadata.Direction getRelationDirection(AnnotatedType annotatedEntityType, RelationTypeMetadata<RelationMetadata> relationMetadata, TypeMetadata propertyTypeMetadata) {
         RelationTypeMetadata.Direction relationDirection;
-        if (annotatedEntityType.getAnnotatedElement().equals(relationMetadata.getOutgoingType())) {
-            relationDirection = RelationTypeMetadata.Direction.OUTGOING;
-        } else if (annotatedEntityType.getAnnotatedElement().equals(relationMetadata.getIncomingType())) {
-            relationDirection = RelationTypeMetadata.Direction.INCOMING;
+        if (annotatedEntityType.getAnnotatedElement().equals(relationMetadata.getFromType())) {
+            relationDirection = RelationTypeMetadata.Direction.FROM;
+        } else if (annotatedEntityType.getAnnotatedElement().equals(relationMetadata.getToType())) {
+            relationDirection = RelationTypeMetadata.Direction.TO;
         } else {
             throw new CdoException("Cannot determine relation direction for type '" + propertyTypeMetadata.getAnnotatedType().getName() + "'");
         }

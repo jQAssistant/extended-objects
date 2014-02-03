@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.Set;
 
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
-import static com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction.INCOMING;
-import static com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction.OUTGOING;
+import static com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction.FROM;
+import static com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction.TO;
 
 /**
  * Generic implementation of a {@link CdoManager}.
@@ -61,7 +61,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         if (entityDiscriminator == null) {
             throw new CdoException("Type " + type.getName() + " has no discriminator (i.e. cannot be identified in datastore).");
         }
-        final ResultIterator<Entity> iterator = sessionContext.getDatastoreSession().find(entityTypeMetadata, entityDiscriminator, value);
+        final ResultIterator<Entity> iterator = sessionContext.getDatastoreSession().findEntity(entityTypeMetadata, entityDiscriminator, value);
         return new TransactionalResultIterable<>(new AbstractResultIterable<T>() {
             @Override
             public ResultIterator<T> iterator() {
@@ -98,7 +98,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = getEffectiveTypes(type, types);
         Set<EntityDiscriminator> entityDiscriminators = sessionContext.getMetadataProvider().getEntityDiscriminators(effectiveTypes);
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
-        Entity entity = datastoreSession.create(effectiveTypes, entityDiscriminators);
+        Entity entity = datastoreSession.createEntity(effectiveTypes, entityDiscriminators);
         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         return entityInstanceManager.getInstance(entity);
     }
@@ -110,8 +110,8 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
     @Override
     public <S, R, T> R create(S from, Class<R> relationType, T to) {
         MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
-        AbstractRelationPropertyMethodMetadata<?> fromProperty = metadataProvider.getPropertyMetadata(from.getClass(), relationType, OUTGOING);
-        AbstractRelationPropertyMethodMetadata<?> toProperty = metadataProvider.getPropertyMetadata(to.getClass(), relationType, INCOMING);
+        AbstractRelationPropertyMethodMetadata<?> fromProperty = metadataProvider.getPropertyMetadata(from.getClass(), relationType, FROM);
+        AbstractRelationPropertyMethodMetadata<?> toProperty = metadataProvider.getPropertyMetadata(to.getClass(), relationType, TO);
         Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(from);
         return sessionContext.getEntityPropertyManager().createRelationReference(entity, fromProperty, to, toProperty);
     }
@@ -126,7 +126,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = metadataProvider.getTypes(entityDiscriminators);
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
         Set<EntityDiscriminator> targetEntityDiscriminators = metadataProvider.getEntityDiscriminators(effectiveTargetTypes);
-        datastoreSession.migrate(entity, types, entityDiscriminators, effectiveTargetTypes, targetEntityDiscriminators);
+        datastoreSession.migrateEntity(entity, types, entityDiscriminators, effectiveTargetTypes, targetEntityDiscriminators);
         entityInstanceManager.removeInstance(instance);
         CompositeObject migratedInstance = entityInstanceManager.getInstance(entity);
         if (migrationStrategy != null) {

@@ -38,7 +38,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyMet
      * @param entity   The entity.
      * @param metadata The property metadata.
      */
-    boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
+    boolean hasEntityProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
 
     /**
      * Determine if the value of a primitive property is set.
@@ -54,7 +54,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyMet
      * @param entity   The entity.
      * @param metadata The property metadata.
      */
-    void removeProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
+    void removeEntityProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
 
     /**
      * Remove the value of a primitive property.
@@ -71,7 +71,7 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyMet
      * @param entity   The entity.
      * @param metadata The property metadata.
      */
-    Object getProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
+    Object getEntityProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata);
 
     /**
      * Get the value of a primitive property.
@@ -129,19 +129,19 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyMet
     void deleteRelation(Relation relation);
 
     /**
-     * Return the source of a relation (i.e. where the direction is {@link com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction#INCOMING}.
+     * Return the source of a relation (i.e. where the direction is {@link com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction#TO}.
      *
      * @param relation The relation.
      * @return The source entity.
      */
-    Entity getSource(Relation relation);
+    Entity getFrom(Relation relation);
 
     /**
-     * Return the target of a relation (i.e. where the direction is {@link com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction#OUTGOING}.
+     * Return the target of a relation (i.e. where the direction is {@link com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction#FROM}.
      *
      * @param relation The relation.
      * @return The target entity.
      */
-    Entity getTarget(Relation relation);
+    Entity getTo(Relation relation);
 
 }

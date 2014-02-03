@@ -47,17 +47,17 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
 
     @Override
     public Object getProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
-        return getSessionContext().getDatastoreSession().getDatastorePropertyManager().getProperty(entity, metadata);
+        return getSessionContext().getDatastoreSession().getDatastorePropertyManager().getEntityProperty(entity, metadata);
     }
 
     @Override
     public boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
-        return getSessionContext().getDatastoreSession().getDatastorePropertyManager().hasProperty(entity, metadata);
+        return getSessionContext().getDatastoreSession().getDatastorePropertyManager().hasEntityProperty(entity, metadata);
     }
 
     @Override
     public void removeProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
-        getSessionContext().getDatastoreSession().getDatastorePropertyManager().removeProperty(entity, metadata);
+        getSessionContext().getDatastoreSession().getDatastorePropertyManager().removeEntityProperty(entity, metadata);
     }
 
     public Object getEntityReference(Entity entity, EntityReferencePropertyMethodMetadata metadata) {
@@ -144,10 +144,10 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     private Entity getReferencedEntity(Relation relation, RelationTypeMetadata.Direction direction) {
         DatastorePropertyManager<Entity, Relation, ?, ?, ? extends DatastoreRelationMetadata<?>> datastorePropertyManager = getSessionContext().getDatastoreSession().getDatastorePropertyManager();
         switch (direction) {
-            case OUTGOING:
-                return datastorePropertyManager.getTarget(relation);
-            case INCOMING:
-                return datastorePropertyManager.getSource(relation);
+            case FROM:
+                return datastorePropertyManager.getTo(relation);
+            case TO:
+                return datastorePropertyManager.getFrom(relation);
             default:
                 throw new CdoException("Unsupported direction: " + direction);
         }

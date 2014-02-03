@@ -13,6 +13,6 @@ public class ToStringMethod<Entity> extends AbstractToStringMethod<Entity> {
 
     @Override
     protected String getId(Entity datastoreType) {
-        return sessionContext.getDatastoreSession().getId(datastoreType).toString();
+        return sessionContext.getDatastoreSession().getEntityId(datastoreType).toString();
     }
 }

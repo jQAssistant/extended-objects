@@ -67,7 +67,7 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public UUID getId(ObjectNode jsonNode) {
+    public UUID getEntityId(ObjectNode jsonNode) {
         return UUID.fromString(jsonNode.get(ID_PROPERTY).asText());
     }
 
@@ -77,7 +77,7 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public ObjectNode create(TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators) {
+    public ObjectNode createEntity(TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators) {
         ObjectNode rootNode = mapper.createObjectNode();
         ArrayNode typesNode = mapper.createArrayNode();
         for (String typeName : discriminators) {
@@ -99,17 +99,17 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public ResultIterator<ObjectNode> find(EntityTypeMetadata<JsonNodeMetadata> type, String discriminator, Object value) {
+    public ResultIterator<ObjectNode> findEntity(EntityTypeMetadata<JsonNodeMetadata> type, String discriminator, Object value) {
         return null;
     }
 
     @Override
-    public <QL> ResultIterator<Map<String, Object>> execute(QL query, Map<String, Object> parameters) {
+    public <QL> ResultIterator<Map<String, Object>> executeQuery(QL query, Map<String, Object> parameters) {
         return null;
     }
 
     @Override
-    public void migrate(ObjectNode jsonNode, TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators, TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> targetTypes, Set<String> targetDiscriminators) {
+    public void migrateEntity(ObjectNode jsonNode, TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators, TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> targetTypes, Set<String> targetDiscriminators) {
     }
 
     @Override
@@ -138,7 +138,7 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
      * @return The file.
      */
     private File getFile(ObjectNode objectNode) {
-        String id = getId(objectNode).toString();
+        String id = getEntityId(objectNode).toString();
         return new File(directory, id + ".json");
     }
 

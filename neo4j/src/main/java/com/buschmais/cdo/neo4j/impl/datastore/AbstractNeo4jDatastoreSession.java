@@ -38,7 +38,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public Node create(TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators) {
+    public Node createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators) {
         Node node = getGraphDatabaseService().createNode();
         for (Label label : discriminators) {
             node.addLabel(label);
@@ -47,7 +47,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public ResultIterator<Node> find(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, Label discriminator, Object value) {
+    public ResultIterator<Node> findEntity(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, Label discriminator, Object value) {
         IndexedPropertyMethodMetadata<?> indexedProperty = entityTypeMetadata.getDatastoreMetadata().getIndexedProperty();
         if (indexedProperty == null) {
             indexedProperty = entityTypeMetadata.getIndexedProperty();
@@ -62,7 +62,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public void migrate(Node entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> targetTypes, Set<Label> targetDiscriminators) {
+    public void migrateEntity(Node entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> targetTypes, Set<Label> targetDiscriminators) {
         Set<Label> labelsToRemove = new HashSet<>(discriminators);
         labelsToRemove.removeAll(targetDiscriminators);
         for (Label label : labelsToRemove) {
@@ -86,7 +86,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public Long getId(Node entity) {
+    public Long getEntityId(Node entity) {
         return Long.valueOf(entity.getId());
     }
 

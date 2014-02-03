@@ -27,7 +27,7 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
     }
 
     @Override
-    public boolean hasProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+    public boolean hasEntityProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
         return objectNode.has(metadata.getAnnotatedMethod().getName());
     }
 
@@ -37,7 +37,7 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
     }
 
     @Override
-    public void removeProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+    public void removeEntityProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
         objectNode.remove(metadata.getAnnotatedMethod().getName());
     }
 
@@ -47,7 +47,7 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
     }
 
     @Override
-    public Object getProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+    public Object getEntityProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
         return objectNode.get(metadata.getAnnotatedMethod().getName());
     }
 
@@ -81,12 +81,12 @@ public class JsonFileStorePropertyManager implements DatastorePropertyManager<Ob
     }
 
     @Override
-    public ObjectNode getTarget(JsonRelation jsonRelation) {
+    public ObjectNode getTo(JsonRelation jsonRelation) {
         return null;
     }
 
     @Override
-    public ObjectNode getSource(JsonRelation jsonRelation) {
+    public ObjectNode getFrom(JsonRelation jsonRelation) {
         return null;
     }
 }

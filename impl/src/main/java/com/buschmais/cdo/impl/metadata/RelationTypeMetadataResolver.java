@@ -37,9 +37,9 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
         for (TypeMetadata typeMetadata : metadataByType.values()) {
             if (typeMetadata instanceof RelationTypeMetadata) {
                 RelationTypeMetadata<RelationMetadata> relationTypeMetadata = (RelationTypeMetadata) typeMetadata;
-                Class<?> outgoingType = relationTypeMetadata.getOutgoingType();
+                Class<?> outgoingType = relationTypeMetadata.getFromType();
                 EntityTypeMetadata<EntityMetadata> outgoingTypeMetadata = (EntityTypeMetadata<EntityMetadata>) metadataByType.get(outgoingType);
-                Class<?> incomingType = relationTypeMetadata.getIncomingType();
+                Class<?> incomingType = relationTypeMetadata.getToType();
                 EntityTypeMetadata<EntityMetadata> incomingTypeMetadata = (EntityTypeMetadata<EntityMetadata>) metadataByType.get(incomingType);
                 RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator> relationMapping = new RelationMapping<>(outgoingTypeMetadata.getDatastoreMetadata().getDiscriminator(), relationTypeMetadata, incomingTypeMetadata.getDatastoreMetadata().getDiscriminator());
                 Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>> mappingSet = relationMappings.get(relationTypeMetadata.getDatastoreMetadata().getDiscriminator());
@@ -89,14 +89,14 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
     public AbstractRelationPropertyMethodMetadata<?> getRelationPropertyMethodMetadata(Class<?> type, RelationTypeMetadata<?> relationTypeMetadata, RelationTypeMetadata.Direction direction) {
         Class<?> containingType = null;
         switch (direction) {
-            case OUTGOING:
-                if (relationTypeMetadata.getOutgoingType().isAssignableFrom(type)) {
-                    containingType = relationTypeMetadata.getOutgoingType();
+            case FROM:
+                if (relationTypeMetadata.getFromType().isAssignableFrom(type)) {
+                    containingType = relationTypeMetadata.getFromType();
                 }
                 break;
-            case INCOMING:
-                if (relationTypeMetadata.getIncomingType().isAssignableFrom(type)) {
-                    containingType = relationTypeMetadata.getIncomingType();
+            case TO:
+                if (relationTypeMetadata.getToType().isAssignableFrom(type)) {
+                    containingType = relationTypeMetadata.getToType();
                 }
                 break;
             default:

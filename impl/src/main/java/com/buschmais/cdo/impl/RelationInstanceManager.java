@@ -33,8 +33,8 @@ public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Re
     @Override
     protected TypeMetadataSet<?> getTypes(Relation relation) {
         DatastoreSession<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
-        Entity source = datastoreSession.getDatastorePropertyManager().getSource(relation);
-        Entity target = datastoreSession.getDatastorePropertyManager().getTarget(relation);
+        Entity source = datastoreSession.getDatastorePropertyManager().getFrom(relation);
+        Entity target = datastoreSession.getDatastorePropertyManager().getTo(relation);
         RelationDiscriminator discriminator = datastoreSession.getRelationDiscriminator(relation);
         if (discriminator == null) {
             throw new CdoException("Cannot determine type discriminators for relation '" + relation + "'");

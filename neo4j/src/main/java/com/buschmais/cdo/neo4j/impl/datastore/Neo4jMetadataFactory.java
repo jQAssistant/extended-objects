@@ -99,8 +99,8 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
             throw new CdoException("A relation property must be either incoming or outgoing: '" + propertyMethod.getName() + "'");
         }
         if (incoming != null) {
-            return RelationTypeMetadata.Direction.INCOMING;
+            return RelationTypeMetadata.Direction.TO;
         }
-        return RelationTypeMetadata.Direction.OUTGOING;
+        return RelationTypeMetadata.Direction.FROM;
     }
 }
