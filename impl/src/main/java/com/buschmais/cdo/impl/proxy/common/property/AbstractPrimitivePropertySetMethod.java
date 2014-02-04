@@ -1,18 +1,17 @@
 package com.buschmais.cdo.impl.proxy.common.property;
 
 import com.buschmais.cdo.impl.AbstractPropertyManager;
-import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 
-public abstract class AbstractPrimitivePropertySetMethod<DatastoreType, Entity, Relation> extends AbstractPropertyMethod<DatastoreType, Entity, Relation, PrimitivePropertyMethodMetadata> {
+public abstract class AbstractPrimitivePropertySetMethod<DatastoreType, PropertyManager extends AbstractPropertyManager<DatastoreType, ?, ?>> extends AbstractPropertyMethod<DatastoreType, PropertyManager, PrimitivePropertyMethodMetadata> {
 
-    public AbstractPrimitivePropertySetMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, PrimitivePropertyMethodMetadata metadata) {
-        super(sessionContext, metadata);
+    public AbstractPrimitivePropertySetMethod(PropertyManager propertyManager, PrimitivePropertyMethodMetadata metadata) {
+        super(propertyManager, metadata);
     }
 
     public Object invoke(DatastoreType datastoreType, Object instance, Object[] args) {
         Object value = args[0];
-        AbstractPropertyManager<DatastoreType, Entity, Relation> propertyManager = getPropertyManager();
+        PropertyManager propertyManager = getPropertyManager();
         PrimitivePropertyMethodMetadata<?> metadata = getMetadata();
         if (value != null) {
             if (Enum.class.isAssignableFrom(metadata.getAnnotatedMethod().getType())) {

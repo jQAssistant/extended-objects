@@ -3,18 +3,19 @@ package com.buschmais.cdo.impl.proxy.relation;
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.api.proxy.ProxyMethod;
+import com.buschmais.cdo.impl.RelationPropertyManager;
 import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.cdo.impl.proxy.common.UnsupportedOperationMethod;
 import com.buschmais.cdo.impl.proxy.common.composite.AsMethod;
 import com.buschmais.cdo.impl.proxy.common.composite.GetDelegateMethod;
-import com.buschmais.cdo.impl.proxy.entity.resultof.ResultOfMethod;
 import com.buschmais.cdo.impl.proxy.relation.object.EqualsMethod;
 import com.buschmais.cdo.impl.proxy.relation.object.HashCodeMethod;
 import com.buschmais.cdo.impl.proxy.relation.object.ToStringMethod;
 import com.buschmais.cdo.impl.proxy.relation.property.EntityReferencePropertyGetMethod;
 import com.buschmais.cdo.impl.proxy.relation.property.PrimitivePropertyGetMethod;
 import com.buschmais.cdo.impl.proxy.relation.property.PrimitivePropertySetMethod;
+import com.buschmais.cdo.impl.proxy.relation.resultof.ResultOfMethod;
 import com.buschmais.cdo.spi.metadata.method.*;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
@@ -38,7 +39,7 @@ public class RelationProxyMethodService<Entity, Relation, M extends ProxyMethod<
                     try {
                         addProxyMethod(proxyMethodType.newInstance(), typeMethod.getAnnotatedElement());
                     } catch (InstantiationException e) {
-                        throw new CdoException("Cannot instantiate query method of type " + proxyMethodType.getName(), e);
+                        throw new CdoException("Cannot instantiate proxy method of type " + proxyMethodType.getName(), e);
                     } catch (IllegalAccessException e) {
                         throw new CdoException("Unexpected exception while instantiating type " + proxyMethodType.getName(), e);
                     }
@@ -48,17 +49,18 @@ public class RelationProxyMethodService<Entity, Relation, M extends ProxyMethod<
                     addProxyMethod(new ResultOfMethod(sessionContext, resultOfMethodMetadata), typeMethod.getAnnotatedElement());
                 }
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
+                    RelationPropertyManager<Entity, Relation> relationPropertyManager = sessionContext.getRelationPropertyManager();
                     PropertyMethod propertyMethod = (PropertyMethod) typeMethod;
                     Method method = propertyMethod.getAnnotatedElement();
                     if (methodMetadata instanceof PrimitivePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new PrimitivePropertyGetMethod(sessionContext, (PrimitivePropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new PrimitivePropertyGetMethod(relationPropertyManager, (PrimitivePropertyMethodMetadata) methodMetadata), method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new PrimitivePropertySetMethod(sessionContext, (PrimitivePropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new PrimitivePropertySetMethod(relationPropertyManager, (PrimitivePropertyMethodMetadata) methodMetadata), method);
                         }
                     } else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new EntityReferencePropertyGetMethod(sessionContext, (EntityReferencePropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new EntityReferencePropertyGetMethod(relationPropertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata), method);
                         }
                     }
                 }

@@ -1,12 +1,12 @@
 package com.buschmais.cdo.neo4j.test.embedded.implementedby.composite;
 
 import com.buschmais.cdo.api.proxy.ProxyMethod;
-import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.PropertyContainer;
 
-public class GetMethod implements ProxyMethod<Node> {
+public class GetMethod implements ProxyMethod<PropertyContainer> {
 
     @Override
-    public Object invoke(Node entity, Object instance, Object[] args) {
-        return entity.getProperty("test") + "_get";
+    public Object invoke(PropertyContainer propertyContainer, Object instance, Object[] args) {
+        return propertyContainer.getProperty("test") + "_get";
     }
 }

@@ -1,10 +1,19 @@
 package com.buschmais.cdo.neo4j.test.embedded.implementedby.composite;
 
 import com.buschmais.cdo.api.annotation.ImplementedBy;
-import com.buschmais.cdo.neo4j.api.annotation.Label;
+import com.buschmais.cdo.neo4j.api.annotation.Relation;
 
-@Label("A")
-public interface A extends Comparable<A> {
+import static com.buschmais.cdo.neo4j.api.annotation.Relation.Incoming;
+import static com.buschmais.cdo.neo4j.api.annotation.Relation.Outgoing;
+
+@Relation("A2B")
+public interface A2B {
+
+    @Outgoing
+    A getA();
+
+    @Incoming
+    B getB();
 
     int getValue();
 
@@ -16,15 +25,8 @@ public interface A extends Comparable<A> {
     @ImplementedBy(GetMethod.class)
     String getCustomValue();
 
-    @ImplementedBy(EntityIncrementValueMethod.class)
+    @ImplementedBy(RelationIncrementValueMethod.class)
     int incrementValue();
 
-    @Override
-    @ImplementedBy(CompareToMethod.class)
-    int compareTo(A other);
-
     void unsupportedOperation();
-
-    A2B getA2B();
-
 }

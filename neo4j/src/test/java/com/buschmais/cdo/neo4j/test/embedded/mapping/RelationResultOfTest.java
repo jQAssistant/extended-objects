@@ -2,9 +2,8 @@ package com.buschmais.cdo.neo4j.test.embedded.mapping;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
-import com.buschmais.cdo.neo4j.test.embedded.mapping.composite.ByValue;
-import com.buschmais.cdo.neo4j.test.embedded.mapping.composite.ByValueUsingImplicitThis;
 import com.buschmais.cdo.neo4j.test.embedded.mapping.composite.E;
+import com.buschmais.cdo.neo4j.test.embedded.mapping.composite.E2F;
 import com.buschmais.cdo.neo4j.test.embedded.mapping.composite.F;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,15 +12,18 @@ import static com.buschmais.cdo.api.Query.Result;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {
+public class RelationResultOfTest extends AbstractEmbeddedCdoManagerTest {
 
     private E e;
     private F f1;
     private F f2;
 
+    private E2F e2f1;
+    private E2F e2f2;
+
     @Override
     protected Class<?>[] getTypes() {
-        return new Class<?>[]{E.class, F.class};
+        return new Class<?>[]{E.class, F.class, E2F.class};
     }
 
     @Before
@@ -30,11 +32,11 @@ public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {
         cdoManager.currentTransaction().begin();
         e = cdoManager.create(E.class);
         f1 = cdoManager.create(F.class);
-        f1.setValue("F1");
-        e.getRelatedTo().add(f1);
+        e2f1 = cdoManager.create(e, E2F.class, f1);
+        e2f1.setValue("E2F1");
         f2 = cdoManager.create(F.class);
-        f2.setValue("F2");
-        e.getRelatedTo().add(f2);
+        e2f2 = cdoManager.create(e, E2F.class, f2);
+        e2f2.setValue("E2F2");
         cdoManager.currentTransaction().commit();
     }
 
@@ -42,7 +44,7 @@ public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {
     public void resultUsingExplicitQuery() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
-        Result<ByValue> byValue = e.getResultByValueUsingExplicitQuery("F1");
+        Result<E2F.ByValue> byValue = e2f1.getResultByValueUsingExplicitQuery("E2F1");
         assertThat(byValue.getSingleResult().getF(), equalTo(f1));
         cdoManager.currentTransaction().commit();
     }
@@ -51,7 +53,7 @@ public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {
     public void resultUsingReturnType() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
-        Result<ByValue> byValue = e.getResultByValueUsingReturnType("F1");
+        Result<E2F.ByValue> byValue = e2f1.getResultByValueUsingReturnType("E2F1");
         assertThat(byValue.getSingleResult().getF(), equalTo(f1));
         cdoManager.currentTransaction().commit();
     }
@@ -60,7 +62,7 @@ public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {
     public void byValueUsingExplicitQuery() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
-        ByValue byValue = e.getByValueUsingExplicitQuery("F1");
+        E2F.ByValue byValue = e2f1.getByValueUsingExplicitQuery("E2F1");
         assertThat(byValue.getF(), equalTo(f1));
         cdoManager.currentTransaction().commit();
     }
@@ -69,9 +71,9 @@ public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {
     public void byValueUsingReturnType() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
-        ByValue byValue = e.getByValueUsingReturnType("F1");
+        E2F.ByValue byValue = e2f1.getByValueUsingReturnType("E2F1");
         assertThat(byValue.getF(), equalTo(f1));
-        byValue = e.getByValueUsingReturnType("unknownF");
+        byValue = e2f1.getByValueUsingReturnType("unknownE2F");
         assertThat(byValue, equalTo(null));
         cdoManager.currentTransaction().commit();
     }
@@ -80,7 +82,7 @@ public class ResultOfTest extends AbstractEmbeddedCdoManagerTest {
     public void byValueUsingImplicitThis() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
-        ByValueUsingImplicitThis byValue = e.getByValueUsingImplicitThis("F1");
+        E2F.ByValueUsingImplicitThis byValue = e2f1.getByValueUsingImplicitThis("E2F1");
         assertThat(byValue.getF(), equalTo(f1));
         cdoManager.currentTransaction().commit();
     }
