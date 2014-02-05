@@ -2,18 +2,11 @@ package com.buschmais.cdo.neo4j.test.embedded.relation.typed;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
-
-import com.buschmais.cdo.neo4j.test.embedded.relation.typed.composite.BaseType;
-import com.buschmais.cdo.neo4j.test.embedded.relation.typed.composite.C;
-import com.buschmais.cdo.neo4j.test.embedded.relation.typed.composite.D;
-import com.buschmais.cdo.neo4j.test.embedded.relation.typed.composite.TypeA;
-import com.buschmais.cdo.neo4j.test.embedded.relation.typed.composite.TypeB;
+import com.buschmais.cdo.neo4j.test.embedded.relation.typed.composite.*;
+import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-
-import org.junit.Ignore;
-import org.junit.Test;
 
 public class RelationSubclassingTest extends AbstractEmbeddedCdoManagerTest {
 

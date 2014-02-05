@@ -77,33 +77,6 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         metadataByType.put(CompositeObject.class, new SimpleTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.<TypeMetadata>emptyList(), Collections.<MethodMetadata<?, ?>>emptyList()));
     }
 
-    private TypeMetadata getOrCreateTypeMetadata(Class<?> type) {
-        AnnotatedType annotatedType = new AnnotatedType(type);
-        TypeMetadata typeMetadata = metadataByType.get(annotatedType.getAnnotatedElement());
-        if (typeMetadata == null) {
-            typeMetadata = createTypeMetadata(annotatedType);
-            LOGGER.debug("Registering class {}", annotatedType.getName());
-            metadataByType.put(annotatedType.getAnnotatedElement(), typeMetadata);
-        }
-        return typeMetadata;
-    }
-
-    private TypeMetadata createTypeMetadata(AnnotatedType annotatedType) {
-        Class<?> currentClass = annotatedType.getAnnotatedElement();
-        List<TypeMetadata> superTypes = getSuperTypeMetadata(annotatedType);
-        Collection<AnnotatedMethod> annotatedMethods = this.annotatedMethods.get(currentClass);
-        Collection<MethodMetadata<?, ?>> methodMetadataOfType = getMethodMetadataOfType(annotatedType, annotatedMethods);
-        TypeMetadata metadata;
-        if (isEntityType(annotatedType)) {
-            metadata = createEntityTypeMetadata(annotatedType, superTypes, methodMetadataOfType);
-        } else if (isRelationType(annotatedType)) {
-            metadata = createRelationTypeMetadata(annotatedType, superTypes, methodMetadataOfType);
-        } else {
-            metadata = new SimpleTypeMetadata(annotatedType, superTypes, methodMetadataOfType);
-        }
-        return metadata;
-    }
-
     @Override
     public TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getTypes(Set<EntityDiscriminator> entityDiscriminators) {
         return entityTypeMetadataResolver.getTypes(entityDiscriminators);
@@ -154,14 +127,73 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         return relationTypeMetadataResolver.getRelationPropertyMethodMetadata(entityType, getRelationMetadata(relationType), direction);
     }
 
+    /**
+     * Return the {@link TypeMetadata} for a given type.
+     * <p>The metadata will be created if it does not exist yet.</p>
+     *
+     * @param type The type.
+     * @return The {@link TypeMetadata}.
+     */
+    private TypeMetadata getOrCreateTypeMetadata(Class<?> type) {
+        AnnotatedType annotatedType = new AnnotatedType(type);
+        TypeMetadata typeMetadata = metadataByType.get(annotatedType.getAnnotatedElement());
+        if (typeMetadata == null) {
+            typeMetadata = createTypeMetadata(annotatedType);
+            LOGGER.debug("Registering class {}", annotatedType.getName());
+            metadataByType.put(annotatedType.getAnnotatedElement(), typeMetadata);
+        }
+        return typeMetadata;
+    }
+
+    /**
+     * Create the {@link TypeMetadata} for the given {@link AnnotatedType}.
+     *
+     * @param annotatedType The {@link AnnotatedType}.
+     * @return The corresponding metadata.
+     */
+    private TypeMetadata createTypeMetadata(AnnotatedType annotatedType) {
+        Class<?> currentClass = annotatedType.getAnnotatedElement();
+        List<TypeMetadata> superTypes = getSuperTypeMetadata(annotatedType);
+        Collection<AnnotatedMethod> annotatedMethods = this.annotatedMethods.get(currentClass);
+        Collection<MethodMetadata<?, ?>> methodMetadataOfType = getMethodMetadataOfType(annotatedType, annotatedMethods);
+        TypeMetadata metadata;
+        if (isEntityType(annotatedType)) {
+            metadata = createEntityTypeMetadata(annotatedType, superTypes, methodMetadataOfType);
+        } else if (isRelationType(annotatedType)) {
+            metadata = createRelationTypeMetadata(annotatedType, superTypes, methodMetadataOfType);
+        } else {
+            metadata = new SimpleTypeMetadata(annotatedType, superTypes, methodMetadataOfType);
+        }
+        return metadata;
+    }
+
+    /**
+     * Determines if an {@link AnnotatedType} represents an entity type.
+     *
+     * @param annotatedType The {@link AnnotatedType}.
+     * @return <code>true</code> if the annotated type represents an entity type.
+     */
     private boolean isEntityType(AnnotatedType annotatedType) {
         return isOfDefinitionType(annotatedType, EntityDefinition.class);
     }
 
+    /**
+     * Determines if an {@link AnnotatedType} represents a relation type.
+     *
+     * @param annotatedType The {@link AnnotatedType}.
+     * @return <code>true</code> if the annotated type represents relation type.
+     */
     private boolean isRelationType(AnnotatedType annotatedType) {
         return isOfDefinitionType(annotatedType, RelationDefinition.class);
     }
 
+    /**
+     * Determines if an {@link AnnotatedType} represents a specific type identified by a meta annotation.
+     *
+     * @param annotatedType  The {@link AnnotatedType}.
+     * @param definitionType The meta annotation.
+     * @return <code>true</code> if the annotated type represents relation type.
+     */
     private boolean isOfDefinitionType(AnnotatedType annotatedType, Class<? extends Annotation> definitionType) {
         Annotation definition = annotatedType.getByMetaAnnotation(definitionType);
         if (definition != null) {
@@ -199,30 +231,46 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      */
     private RelationTypeMetadata<RelationMetadata> createRelationTypeMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes,
                                                                               Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
-        Class<?> outgoingType = null;
-        Class<?> incomingType = null;
-        for (MethodMetadata<?, ?> methodMetadata : methodMetadataOfType) {
-            if (methodMetadata instanceof EntityReferencePropertyMethodMetadata) {
-                EntityReferencePropertyMethodMetadata<?> propertyMethodMetadata = (EntityReferencePropertyMethodMetadata<?>) methodMetadata;
-                Class<?> type = propertyMethodMetadata.getAnnotatedMethod().getType();
-                switch (propertyMethodMetadata.getDirection()) {
-                    case FROM:
-                        outgoingType = type;
-                        break;
-                    case TO:
-                        incomingType = type;
-                        break;
-                    default:
-                        throw new CdoException("Unsupported direction '" + propertyMethodMetadata.getDirection() + "'");
+        Class<?> fromType = null;
+        Class<?> toType = null;
+        Collection<MethodMetadata<?, ?>> current = methodMetadataOfType;
+        Queue<TypeMetadata> queue = new LinkedList<>(superTypes);
+        // Starting from the type to be created search all its properties and those of its super types for reference properties defining the from and to entity types
+        do {
+            for (MethodMetadata<?, ?> methodMetadata : current) {
+                if (methodMetadata instanceof EntityReferencePropertyMethodMetadata) {
+                    EntityReferencePropertyMethodMetadata<?> propertyMethodMetadata = (EntityReferencePropertyMethodMetadata<?>) methodMetadata;
+                    Class<?> type = propertyMethodMetadata.getAnnotatedMethod().getType();
+                    switch (propertyMethodMetadata.getDirection()) {
+                        case FROM:
+                            fromType = type;
+                            break;
+                        case TO:
+                            toType = type;
+                            break;
+                        default:
+                            throw propertyMethodMetadata.getDirection().createNotSupportedException();
+                    }
                 }
             }
-        }
+            TypeMetadata superType = queue.poll();
+            if (superType != null) {
+                queue.addAll(superType.getSuperTypes());
+                current = superType.getProperties();
+            }
+        } while (current != null && fromType == null && toType == null);
         RelationMetadata relationMetadata = metadataFactory.createRelationMetadata(annotatedType, metadataByType);
-        RelationTypeMetadata<RelationMetadata> relationTypeMetadata = new RelationTypeMetadata<>(annotatedType, superTypes, methodMetadataOfType, outgoingType, incomingType, relationMetadata);
+        RelationTypeMetadata<RelationMetadata> relationTypeMetadata = new RelationTypeMetadata<>(annotatedType, superTypes, methodMetadataOfType, fromType, toType, relationMetadata);
         metadataByType.put(annotatedType.getAnnotatedElement(), relationTypeMetadata);
         return relationTypeMetadata;
     }
 
+    /**
+     * Returns a list of {@link TypeMetadata} representing the super types of the given annotated type.
+     *
+     * @param annotatedType The {@link AnnotatedType}.
+     * @return The list of {@link TypeMetadata} representing the super types.
+     */
     private List<TypeMetadata> getSuperTypeMetadata(AnnotatedType annotatedType) {
         List<TypeMetadata> superTypes = new ArrayList<>();
         for (Class<?> i : annotatedType.getAnnotatedElement().getInterfaces()) {
