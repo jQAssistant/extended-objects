@@ -2,12 +2,11 @@ package com.buschmais.cdo.impl;
 
 import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.ConcurrencyMode;
-import com.buschmais.cdo.impl.cache.EntityCacheSynchronization;
-import com.buschmais.cdo.impl.cache.RelationCacheSynchronization;
+import com.buschmais.cdo.impl.cache.CacheSynchronization;
+import com.buschmais.cdo.impl.cache.CacheSynchronizationService;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
 import com.buschmais.cdo.impl.validation.InstanceValidator;
-import com.buschmais.cdo.impl.validation.ValidatorSynchronization;
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
@@ -36,6 +35,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
     private final TransactionalCache<EntityId> entityCache;
     private final TransactionalCache<RelationId> relationCache;
     private final InstanceValidator instanceValidator;
+    private final CacheSynchronizationService<Entity, Relation> cacheSynchronizationService;
     private final CdoTransactionImpl cdoTransaction;
     private final EntityPropertyManager<Entity, Relation> entityPropertyManager;
     private final RelationPropertyManager<Entity, Relation> relationPropertyManager;
@@ -48,7 +48,6 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.datastoreSession = datastoreSession;
         this.entityCache = new TransactionalCache<>();
         this.relationCache = new TransactionalCache<>();
-        this.instanceValidator = new InstanceValidator(validatorFactory, relationCache, entityCache);
         this.cdoTransaction = new CdoTransactionImpl(datastoreSession.getDatastoreTransaction());
         this.interceptorFactory = new InterceptorFactory(cdoTransaction, defaultTransactionAttribute, concurrencyMode);
         this.proxyFactory = new ProxyFactory(interceptorFactory, classLoader);
@@ -56,10 +55,10 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.relationPropertyManager = new RelationPropertyManager<>(this);
         this.relationInstanceManager = new RelationInstanceManager<>(this);
         this.entityInstanceManager = new EntityInstanceManager<>(this);
+        this.instanceValidator = new InstanceValidator(validatorFactory, relationCache, entityCache);
+        this.cacheSynchronizationService = new CacheSynchronizationService<>(entityCache, entityInstanceManager, relationCache, relationInstanceManager, instanceValidator, datastoreSession);
         // Register default synchronizations.
-        cdoTransaction.registerDefaultSynchronization(new ValidatorSynchronization(instanceValidator));
-        cdoTransaction.registerDefaultSynchronization(new EntityCacheSynchronization<>(entityInstanceManager, entityCache, datastoreSession));
-        cdoTransaction.registerDefaultSynchronization(new RelationCacheSynchronization<>(relationInstanceManager, relationCache, datastoreSession));
+        cdoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(cacheSynchronizationService, entityCache, relationCache));
     }
 
 
@@ -85,6 +84,10 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     public InstanceValidator getInstanceValidator() {
         return instanceValidator;
+    }
+
+    public CacheSynchronizationService<Entity, Relation> getCacheSynchronizationService() {
+        return cacheSynchronizationService;
     }
 
     public CdoTransaction getCdoTransaction() {

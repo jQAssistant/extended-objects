@@ -214,14 +214,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public void flush() {
-        for (Object instance : sessionContext.getRelationCache().values()) {
-            Relation relation = sessionContext.getRelationInstanceManager().getDatastoreType(instance);
-            sessionContext.getDatastoreSession().flushRelation(relation);
-        }
-        for (Object instance : sessionContext.getEntityCache().values()) {
-            Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(instance);
-            sessionContext.getDatastoreSession().flushEntity(entity);
-        }
+        sessionContext.getCacheSynchronizationService().flush();
     }
 
     private TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getEffectiveTypes(Class<?> type, Class<?>... types) {
