@@ -31,7 +31,11 @@ public class RelationSubclassingTest extends AbstractEmbeddedCdoManagerTest {
         cdoManager.currentTransaction().begin();
         assertThat(c.getTypeA().getVersion(), equalTo(relation1.getVersion()));
         assertThat(c.getTypeB().getVersion(), equalTo(relation2.getVersion()));
-        cdoManager.currentTransaction().commit();        
+        assertThat(relation1.getC(), equalTo(c));
+        assertThat(relation1.getD(), equalTo(d1));
+        assertThat(relation2.getC(), equalTo(c));
+        assertThat(relation2.getD(), equalTo(d2));
+        cdoManager.currentTransaction().commit();
     }
 
 }
