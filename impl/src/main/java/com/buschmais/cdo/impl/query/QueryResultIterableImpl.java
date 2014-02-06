@@ -22,7 +22,7 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
         this.sessionContext = sessionContext;
         this.iterator = iterator;
         this.types = types;
-        this.rowProxyMethodService = new RowProxyMethodService(sessionContext, types);
+        this.rowProxyMethodService = new RowProxyMethodService<>(sessionContext, types);
     }
 
     @Override
@@ -63,16 +63,22 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
                 } else if (sessionContext.getDatastoreSession().isRelation(value)) {
                     return sessionContext.getRelationInstanceManager().getInstance((Relation) value);
                 } else if (value instanceof List<?>) {
-                    List<?> listValue = (List<?>) value;
-                    List<Object> decodedList = new ArrayList<>();
-                    for (Object o : listValue) {
-                        decodedList.add(decodeValue(o));
-                    }
-                    decodedValue = decodedList;
+                    decodedValue = decodeIterable((Iterable<?>) value, new ArrayList<>());
+                } else if (value instanceof Set<?>) {
+                    decodedValue = decodeIterable((Iterable<?>) value, new HashSet<>());
+                } else if (value instanceof Iterable<?>) {
+                    decodedValue = decodeIterable((Iterable<?>) value, new ArrayList<>());
                 } else {
                     decodedValue = value;
                 }
                 return decodedValue;
+            }
+
+            private Collection<Object> decodeIterable(Iterable<?> iterable, Collection<Object> decodedCollection) {
+                for (Object o : iterable) {
+                    decodedCollection.add(decodeValue(o));
+                }
+                return decodedCollection;
             }
 
             @Override

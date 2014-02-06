@@ -4,7 +4,7 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.query.composite.A;
-import com.buschmais.cdo.neo4j.test.embedded.query.typedquery.InstanceByValue;
+import com.buschmais.cdo.neo4j.test.embedded.query.composite.InstanceByValue;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -257,6 +257,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             if (superType != null) {
                 queue.addAll(superType.getSuperTypes());
                 current = superType.getProperties();
+            } else {
+                current = null;
             }
         } while (current != null && fromType == null && toType == null);
         RelationMetadata relationMetadata = metadataFactory.createRelationMetadata(annotatedType, metadataByType);

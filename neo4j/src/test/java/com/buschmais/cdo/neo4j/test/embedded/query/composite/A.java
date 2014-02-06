@@ -11,4 +11,6 @@ public interface A {
 
     void setValue(String value);
 
+    A2B getA2B();
+
 }
