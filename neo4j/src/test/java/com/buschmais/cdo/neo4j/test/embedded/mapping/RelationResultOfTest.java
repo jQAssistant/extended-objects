@@ -86,4 +86,16 @@ public class RelationResultOfTest extends AbstractEmbeddedCdoManagerTest {
         assertThat(byValue.getF(), equalTo(f1));
         cdoManager.currentTransaction().commit();
     }
+
+    @Test
+    public void mappedResultUsingCypher() {
+        CdoManager cdoManager = getCdoManager();
+        cdoManager.currentTransaction().begin();
+        E2F.MappedResult mappedResult = e2f1.getMappedResultUsingCypher("E2F1");
+        assertThat(mappedResult.getF(), equalTo(f1));
+        mappedResult = e2f1.getMappedResultUsingCypher("unknownF");
+        assertThat(mappedResult, equalTo(null));
+        cdoManager.currentTransaction().commit();
+    }
+
 }

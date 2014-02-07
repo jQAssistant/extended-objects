@@ -15,6 +15,7 @@ import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
 import org.neo4j.graphdb.*;
 
+import java.lang.reflect.AnnotatedElement;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -102,11 +103,11 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     protected <QL> String getCypher(QL expression) {
         if (expression instanceof String) {
             return (String) expression;
-        } else if (expression instanceof Class<?>) {
-            Class<?> typeExpression = (Class) expression;
+        } else if (expression instanceof AnnotatedElement) {
+            AnnotatedElement typeExpression = (AnnotatedElement) expression;
             Cypher cypher = typeExpression.getAnnotation(Cypher.class);
             if (cypher == null) {
-                throw new CdoException(typeExpression.getName() + " must be annotated with " + Cypher.class.getName());
+                throw new CdoException(typeExpression + " must be annotated with " + Cypher.class.getName());
             }
             return cypher.value();
         }

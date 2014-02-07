@@ -13,10 +13,10 @@ public class CdoQueryImpl<T, QL, Entity, Relation> implements Query<T> {
 
     private final QL expression;
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
-    private final Collection<Class<?>> types;
+    private final Collection<? extends Class<?>> types;
     private Map<String, Object> parameters = null;
 
-    public CdoQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QL expression, Collection<Class<?>> types) {
+    public CdoQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QL expression, Collection<? extends Class<?>> types) {
         this.sessionContext = sessionContext;
         this.expression = expression;
         this.types = types;

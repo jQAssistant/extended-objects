@@ -31,6 +31,10 @@ public interface E {
     @ResultOf
     ByValueUsingImplicitThis getByValueUsingImplicitThis(@Parameter("value") String value);
 
+    @ResultOf
+    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where f.value={value} return f")
+    MappedResult getMappedResultUsingCypher(@Parameter("value") String value);
+
     List<E2F> getE2F();
 
     @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where e={e} and f.value={value} return f")
@@ -43,4 +47,7 @@ public interface E {
         F getF();
     }
 
+    public interface MappedResult {
+        F getF();
+    }
 }

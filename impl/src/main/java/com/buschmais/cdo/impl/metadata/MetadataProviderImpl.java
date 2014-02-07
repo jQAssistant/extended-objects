@@ -8,6 +8,7 @@ import com.buschmais.cdo.impl.MetadataProvider;
 import com.buschmais.cdo.impl.reflection.BeanMethodProvider;
 import com.buschmais.cdo.spi.annotation.EntityDefinition;
 import com.buschmais.cdo.spi.annotation.IndexDefinition;
+import com.buschmais.cdo.spi.annotation.QueryDefinition;
 import com.buschmais.cdo.spi.annotation.RelationDefinition;
 import com.buschmais.cdo.spi.datastore.*;
 import com.buschmais.cdo.spi.metadata.method.*;
@@ -23,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -388,7 +390,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     private MethodMetadata<?, ?> createResultOfMetadata(AnnotatedMethod annotatedMethod, ResultOf resultOf) {
         Method method = annotatedMethod.getAnnotatedElement();
         // Determine query type
-        Class<?> queryType = resultOf.query();
+        AnnotatedElement queryType = resultOf.query();
         Class<?> returnType = method.getReturnType();
         if (Object.class.equals(queryType)) {
             if (Iterable.class.isAssignableFrom(returnType)) {
@@ -398,7 +400,11 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                     queryType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
                 }
             } else {
-                queryType = returnType;
+                if (annotatedMethod.getByMetaAnnotation(QueryDefinition.class) != null) {
+                    queryType = annotatedMethod.getAnnotatedElement();
+                } else {
+                    queryType = returnType;
+                }
             }
         }
         // Determine parameter bindings
@@ -417,7 +423,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             parameters.add(parameter);
         }
         boolean singleResult = !Iterable.class.isAssignableFrom(returnType);
-        return new ResultOfMethodMetadata<>(annotatedMethod, queryType, resultOf.usingThisAs(), parameters, singleResult);
+        return new ResultOfMethodMetadata<>(annotatedMethod, returnType, queryType, resultOf.usingThisAs(), parameters, singleResult);
     }
 
     private <T extends TypeMetadata> T getMetadata(Class<?> type, Class<T> metadataType) {

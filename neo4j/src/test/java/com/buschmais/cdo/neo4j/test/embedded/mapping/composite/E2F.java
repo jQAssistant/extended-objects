@@ -33,6 +33,10 @@ public interface E2F {
     @ResultOf
     ByValueUsingImplicitThis getByValueUsingImplicitThis(@Parameter("value") String value);
 
+    @ResultOf
+    @Cypher("match ()-[e2f:E2F]->(f:F) where e2f.value={value} return f")
+    MappedResult getMappedResultUsingCypher(@Parameter("value") String value);
+
     void setValue(String value);
 
     String getValue();
@@ -44,6 +48,10 @@ public interface E2F {
 
     @Cypher("match ()-[e2f:E2F]->(f:F) where e2f={this} and e2f.value={value} return f")
     public interface ByValueUsingImplicitThis {
+        F getF();
+    }
+
+    public interface MappedResult {
         F getF();
     }
 }

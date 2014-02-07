@@ -8,7 +8,8 @@ import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.query.CdoQueryImpl;
 import com.buschmais.cdo.spi.metadata.method.ResultOfMethodMetadata;
 
-import java.util.Collections;
+import java.lang.reflect.AnnotatedElement;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> implements ProxyMethod<DatastoreType> {
@@ -23,7 +24,8 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
 
     @Override
     public Object invoke(DatastoreType datastoreType, Object instance, Object[] args) {
-        CdoQueryImpl<?, Class<?>, ?, ?> query = (CdoQueryImpl<?, Class<?>, ?, ?>) new CdoQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(), Collections.<Class<?>>emptyList());
+        List<? extends Class<?>> returnTypes = Arrays.asList(resultOfMethodMetadata.getReturnType());
+        CdoQueryImpl<?, AnnotatedElement, ?, ?> query = new CdoQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(), returnTypes);
         String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
         query.withParameter(usingThisAs, getInstanceManager(sessionContext).getInstance(datastoreType));
         List<ResultOf.Parameter> parameters = resultOfMethodMetadata.getParameters();
