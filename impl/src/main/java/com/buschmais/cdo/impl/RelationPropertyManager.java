@@ -1,6 +1,5 @@
 package com.buschmais.cdo.impl;
 
-import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.metadata.method.EntityReferencePropertyMethodMetadata;
@@ -25,7 +24,9 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
 
     @Override
     public void setProperty(Relation relation, PrimitivePropertyMethodMetadata metadata, Object value) {
-        getSessionContext().getDatastoreSession().getDatastorePropertyManager().setRelationProperty(relation, metadata, value);
+        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
+        sessionContext.getDatastoreSession().getDatastorePropertyManager().setRelationProperty(relation, metadata, value);
+        sessionContext.getRelationInstanceManager().writeInstance(relation);
     }
 
     @Override
@@ -40,11 +41,13 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
 
     @Override
     public void removeProperty(Relation relation, PrimitivePropertyMethodMetadata metadata) {
-        getSessionContext().getDatastoreSession().getDatastorePropertyManager().removeRelationProperty(relation, metadata);
+        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
+        sessionContext.getDatastoreSession().getDatastorePropertyManager().removeRelationProperty(relation, metadata);
+        sessionContext.getRelationInstanceManager().writeInstance(relation);
     }
 
     public Entity getEntityReference(Relation relation, EntityReferencePropertyMethodMetadata metadata) {
-        return getSessionContext().getEntityInstanceManager().getInstance(getReferencedEntity(relation, metadata.getDirection()));
+        return getSessionContext().getEntityInstanceManager().readInstance(getReferencedEntity(relation, metadata.getDirection()));
     }
 
     private Entity getReferencedEntity(Relation relation, RelationTypeMetadata.Direction direction) {
@@ -55,7 +58,7 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
             case FROM:
                 return datastorePropertyManager.getFrom(relation);
             default:
-                throw new CdoException("Unsupported direction: " + direction);
+                throw direction.createNotSupportedException();
         }
     }
 }

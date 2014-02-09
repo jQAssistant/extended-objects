@@ -20,7 +20,7 @@ public class CacheSynchronization<Entity, Relation> implements CdoTransaction.Sy
     @Override
     public void afterCompletion(boolean committed) {
         for (TransactionalCache<?> cache : caches) {
-            cache.afterCompletion(committed);
+            cache.clear();
         }
     }
 }

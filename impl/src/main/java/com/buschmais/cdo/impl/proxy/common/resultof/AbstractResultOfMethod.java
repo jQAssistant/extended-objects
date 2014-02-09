@@ -27,7 +27,7 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
         List<? extends Class<?>> returnTypes = Arrays.asList(resultOfMethodMetadata.getReturnType());
         CdoQueryImpl<?, AnnotatedElement, ?, ?> query = new CdoQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(), resultOfMethodMetadata.getReturnType(), returnTypes);
         String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
-        query.withParameter(usingThisAs, getInstanceManager(sessionContext).getInstance(datastoreType));
+        query.withParameter(usingThisAs, getInstanceManager(sessionContext).readInstance(datastoreType));
         List<ResultOf.Parameter> parameters = resultOfMethodMetadata.getParameters();
         for (int i = 0; i < parameters.size(); i++) {
             query.withParameter(parameters.get(i).value(), args[i]);

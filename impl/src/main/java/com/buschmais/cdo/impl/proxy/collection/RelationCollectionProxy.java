@@ -25,7 +25,7 @@ public class RelationCollectionProxy<Instance, Entity, Relation> extends Abstrac
 
             @Override
             public Instance next() {
-                return sessionContext.getRelationInstanceManager().getInstance(iterator.next());
+                return sessionContext.getRelationInstanceManager().readInstance(iterator.next());
             }
 
             @Override

@@ -31,11 +31,11 @@ public class CacheSynchronizationService<Entity, Relation> {
         if (!constraintViolations.isEmpty()) {
             throw new ConstraintViolationException(constraintViolations);
         }
-        for (Object instance : relationCache.values()) {
+        for (Object instance : relationCache.readInstances()) {
             Relation relation = relationInstanceManager.getDatastoreType(instance);
             datastoreSession.flushRelation(relation);
         }
-        for (Object instance : entityCache.values()) {
+        for (Object instance : entityCache.readInstances()) {
             Entity entity = entityInstanceManager.getDatastoreType(instance);
             datastoreSession.flushEntity(entity);
         }

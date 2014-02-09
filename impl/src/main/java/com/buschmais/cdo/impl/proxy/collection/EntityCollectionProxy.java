@@ -25,7 +25,7 @@ public class EntityCollectionProxy<Instance, Entity, Relation> extends AbstractC
 
             @Override
             public Instance next() {
-                return sessionContext.getEntityInstanceManager().getInstance(iterator.next());
+                return sessionContext.getEntityInstanceManager().readInstance(iterator.next());
             }
 
             @Override

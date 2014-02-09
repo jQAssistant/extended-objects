@@ -52,6 +52,7 @@ public class ValidationTest extends AbstractEmbeddedCdoManagerTest {
         }
         cdoManager.currentTransaction().commit();
         closeCdoManager();
+        cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
         for (A miller : cdoManager.find(A.class, "Miller")) {
             miller.setName(null);

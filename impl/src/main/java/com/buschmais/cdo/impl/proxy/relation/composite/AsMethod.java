@@ -13,6 +13,6 @@ public class AsMethod<Relation> extends AbstractAsMethod<Relation> {
 
     @Override
     protected Object getInstance(Relation relation) {
-        return sessionContext.getRelationInstanceManager().getInstance(relation);
+        return sessionContext.getRelationInstanceManager().readInstance(relation);
     }
 }

@@ -76,7 +76,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
                     public T next() {
                         Entity entity = iterator.next();
                         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-                        return entityInstanceManager.getInstance(entity);
+                        return entityInstanceManager.readInstance(entity);
                     }
 
                     @Override
@@ -100,7 +100,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
         Entity entity = datastoreSession.createEntity(effectiveTypes, entityDiscriminators);
         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        return entityInstanceManager.getInstance(entity);
+        return entityInstanceManager.writeInstance(entity);
     }
 
     public <T> T create(Class<T> type) {
@@ -128,7 +128,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         Set<EntityDiscriminator> targetEntityDiscriminators = metadataProvider.getEntityDiscriminators(effectiveTargetTypes);
         datastoreSession.migrateEntity(entity, types, entityDiscriminators, effectiveTargetTypes, targetEntityDiscriminators);
         entityInstanceManager.removeInstance(instance);
-        CompositeObject migratedInstance = entityInstanceManager.getInstance(entity);
+        CompositeObject migratedInstance = entityInstanceManager.writeInstance(entity);
         if (migrationStrategy != null) {
             migrationStrategy.migrate(instance, migratedInstance.as(targetType));
         }
@@ -179,7 +179,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public <T> Query<T> createQuery(String query, Class<T> type) {
-        CdoQueryImpl<T, String, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, type, Arrays.asList(new Class<?>[]{type}));
+        CdoQueryImpl<T, String, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, type, Arrays.asList(type));
         return sessionContext.getInterceptorFactory().addInterceptor(cdoQuery);
     }
 
@@ -191,7 +191,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public <T> Query<T> createQuery(Class<T> query) {
-        CdoQueryImpl<T, Class<T>, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, query, Arrays.asList(new Class<?>[]{query}));
+        CdoQueryImpl<T, Class<T>, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, query, Arrays.asList(query));
         return sessionContext.getInterceptorFactory().addInterceptor(cdoQuery);
     }
 

@@ -29,9 +29,9 @@ public class CollectionPropertyMappingTest extends AbstractEmbeddedCdoManagerTes
         Set<B> setOfB = a.getSetOfB();
         assertThat(setOfB.add(b), equalTo(true));
         assertThat(setOfB.add(b), equalTo(false));
-        assertThat(setOfB.size(), equalTo(1));
         cdoManager.currentTransaction().commit();
         cdoManager.currentTransaction().begin();
+        assertThat(setOfB.size(), equalTo(1));
         assertThat(setOfB.remove(b), equalTo(true));
         assertThat(setOfB.remove(b), equalTo(false));
         cdoManager.currentTransaction().commit();
@@ -61,9 +61,9 @@ public class CollectionPropertyMappingTest extends AbstractEmbeddedCdoManagerTes
         List<B> listOfB = a.getListOfB();
         assertThat(listOfB.add(b), equalTo(true));
         assertThat(listOfB.add(b), equalTo(true));
-        assertThat(listOfB.size(), equalTo(2));
         cdoManager.currentTransaction().commit();
         cdoManager.currentTransaction().begin();
+        assertThat(listOfB.size(), equalTo(2));
         assertThat(listOfB.remove(b), equalTo(true));
         assertThat(listOfB.remove(b), equalTo(true));
         assertThat(listOfB.remove(b), equalTo(false));

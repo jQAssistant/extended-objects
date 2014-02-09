@@ -30,20 +30,42 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
     }
 
     /**
+     * Return the proxy instance which corresponds to the given datastore type for reading.
+     *
+     * @param datastoreType The datastore type.
+     * @param <T>           The instance type.
+     * @return The instance.
+     */
+    public <T> T readInstance(DatastoreType datastoreType) {
+        return getInstance(datastoreType, TransactionalCache.Mode.READ);
+    }
+
+    /**
+     * Return the proxy instance which corresponds to the given datastore type for writing.
+     *
+     * @param datastoreType The datastore type.
+     * @param <T>           The instance type.
+     * @return The instance.
+     */
+    public <T> T writeInstance(DatastoreType datastoreType) {
+        return getInstance(datastoreType, TransactionalCache.Mode.WRITE);
+    }
+
+    /**
      * Return the proxy instance which corresponds to the given datastore type.
      *
      * @param datastoreType The datastore type.
      * @param <T>           The instance type.
      * @return The instance.
      */
-    public <T> T getInstance(DatastoreType datastoreType) {
+    private <T> T getInstance(DatastoreType datastoreType, TransactionalCache.Mode cacheMode) {
         DatastoreId id = getDatastoreId(datastoreType);
         TypeMetadataSet<?> types = getTypes(datastoreType);
         Object instance = cache.get(id);
         if (instance == null) {
             InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(datastoreType, getProxyMethodService());
             instance = proxyFactory.createInstance(invocationHandler, types.toClasses(), CompositeObject.class);
-            cache.put(id, instance);
+            cache.put(id, instance, cacheMode);
         }
         return (T) instance;
     }
@@ -102,7 +124,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      * Closes this manager instance.
      */
     public void close() {
-        for (Object instance : cache.values()) {
+        for (Object instance : cache.readInstances()) {
             destroyInstance(instance);
         }
         cache.clear();

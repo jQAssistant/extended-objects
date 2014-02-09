@@ -13,6 +13,6 @@ public class AsMethod<Entity> extends AbstractAsMethod<Entity> {
 
     @Override
     protected Object getInstance(Entity entity) {
-        return sessionContext.getEntityInstanceManager().getInstance(entity);
+        return sessionContext.getEntityInstanceManager().readInstance(entity);
     }
 }
