@@ -5,10 +5,7 @@ import com.buschmais.cdo.api.ConcurrencyMode;
 import com.buschmais.cdo.api.ValidationMode;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import static com.buschmais.cdo.api.Transaction.TransactionAttribute;
 
@@ -35,6 +32,8 @@ public class CdoUnit {
 
     private final Properties properties;
 
+    private final List<Class<?>> entityListeners;
+
     /**
      * Constructs a CDO unit.
      *
@@ -43,12 +42,13 @@ public class CdoUnit {
      * @param uri                         The datastore specific URI.
      * @param provider                    The provider class to use.
      * @param types                       The entity types to register.
-     * @param validationMode              The {@link ValidationMode} to use.
-     * @param concurrencyMode             The {@link ConcurrencyMode} to use.
-     * @param defaultTransactionAttribute The {@link TransactionAttribute} to use.
+     * @param validationMode              The {@link com.buschmais.cdo.api.ValidationMode} to use.
+     * @param concurrencyMode             The {@link com.buschmais.cdo.api.ConcurrencyMode} to use.
+     * @param defaultTransactionAttribute The {@link com.buschmais.cdo.api.Transaction.TransactionAttribute} to use.
      * @param properties                  Additional properties to be passed to the provider.
+     * @param entityListeners             The Entity listener types.
      */
-    public CdoUnit(String name, String description, URI uri, Class<?> provider, Set<Class<?>> types, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
+    public CdoUnit(String name, String description, URI uri, Class<?> provider, Set<Class<?>> types, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties, List<Class<?>> entityListeners) {
         this.name = name;
         this.description = description;
         this.uri = uri;
@@ -58,6 +58,7 @@ public class CdoUnit {
         this.concurrencyMode = concurrencyMode;
         this.defaultTransactionAttribute = defaultTransactionAttribute;
         this.properties = properties;
+        this.entityListeners = entityListeners;
     }
 
     /**
@@ -68,13 +69,14 @@ public class CdoUnit {
      * @param uri                         The datastore specific URI.
      * @param provider                    The provider class to use.
      * @param types                       The entity types to register.
-     * @param validationMode              The {@link ValidationMode} to use.
-     * @param concurrencyMode             The {@link ConcurrencyMode} to use.
-     * @param defaultTransactionAttribute The {@link TransactionAttribute} to use.
+     * @param validationMode              The {@link com.buschmais.cdo.api.ValidationMode} to use.
+     * @param concurrencyMode             The {@link com.buschmais.cdo.api.ConcurrencyMode} to use.
+     * @param defaultTransactionAttribute The {@link com.buschmais.cdo.api.Transaction.TransactionAttribute} to use.
      * @param properties                  Additional properties to be passed to the provider.
+     * @param entityListeners             The Entity listener types.
      */
-    public CdoUnit(String name, String description, URI uri, Class<?> provider, Class<?>[] types, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
-        this(name, description, uri, provider, new HashSet<>(Arrays.asList(types)), validationMode, concurrencyMode, defaultTransactionAttribute, properties);
+    public CdoUnit(String name, String description, URI uri, Class<?> provider, Class<?>[] types, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties, List<Class<?>> entityListeners) {
+        this(name, description, uri, provider, new HashSet<>(Arrays.asList(types)), validationMode, concurrencyMode, defaultTransactionAttribute, properties, entityListeners);
     }
 
     public String getName() {
@@ -111,5 +113,9 @@ public class CdoUnit {
 
     public Properties getProperties() {
         return properties;
+    }
+
+    public List<Class<?>> getEntityListeners() {
+        return entityListeners;
     }
 }

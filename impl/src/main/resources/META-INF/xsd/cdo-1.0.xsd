@@ -29,6 +29,7 @@
             <xs:element name="concurrency-mode" type="cdo:ConcurrencyModeType" minOccurs="0"/>
             <xs:element name="default-transaction-attribute" type="cdo:TransactionAttributeType" minOccurs="0"/>
             <xs:element name="properties" type="cdo:PropertiesType" minOccurs="0"/>
+            <xs:element name="entity-listeners" type="cdo:EntityListenersType" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="name" use="required"/>
     </xs:complexType>
@@ -75,6 +76,12 @@
     <xs:complexType name="PropertyType">
         <xs:attribute name="name" use="required"/>
         <xs:attribute name="value" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="EntityListenersType">
+        <xs:sequence>
+            <xs:element name="entity-listener" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
     </xs:complexType>
 
 </xs:schema>

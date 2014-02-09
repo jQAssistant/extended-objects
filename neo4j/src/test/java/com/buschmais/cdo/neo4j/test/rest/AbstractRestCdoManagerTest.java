@@ -16,6 +16,7 @@ import org.neo4j.test.TestGraphDatabaseFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.Properties;
 
 public abstract class AbstractRestCdoManagerTest extends AbstractCdoManagerTest {
@@ -25,7 +26,7 @@ public abstract class AbstractRestCdoManagerTest extends AbstractCdoManagerTest 
     @Override
     protected CdoManagerFactory getNeo4jCdoManagerFactory(Class<?>[] types) throws URISyntaxException {
         CdoUnit cdoUnit = new CdoUnit("rest", "REST CDO unit", new URI("http://localhost:7474/db/data"),
-                Neo4jCdoProvider.class, types, ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, getTransactionAttribute(), new Properties());
+                Neo4jCdoProvider.class, types, ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, getTransactionAttribute(), new Properties(), Collections.<Class<?>>emptyList());
         return Cdo.createCdoManagerFactory(cdoUnit);
     }
 

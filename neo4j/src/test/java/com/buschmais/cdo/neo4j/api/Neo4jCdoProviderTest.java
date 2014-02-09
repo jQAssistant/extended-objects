@@ -31,6 +31,6 @@ public class Neo4jCdoProviderTest {
     }
 
     private CdoUnit unit(String uri) throws Exception {
-        return new CdoUnit(null, null, new URI(uri), null, new Class<?>[0], null, null, null, null);
+        return new CdoUnit(null, null, new URI(uri), null, new Class<?>[0], null, null, null, null, null);
     }
 }
