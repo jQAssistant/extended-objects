@@ -1,28 +1,35 @@
 package com.buschmais.cdo.impl.query;
 
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.impl.AbstractResultIterable;
 import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.proxy.query.RowInvocationHandler;
 import com.buschmais.cdo.impl.proxy.query.RowProxyMethodService;
+import com.buschmais.cdo.spi.annotation.QueryDefinition;
+import com.buschmais.cdo.spi.reflection.AnnotatedType;
 
 import java.io.IOException;
 import java.util.*;
 
 class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterable<T> implements Query.Result<T> {
 
-    private SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
-    private ResultIterator<Map<String, Object>> iterator;
-    private SortedSet<Class<?>> types;
-    private RowProxyMethodService rowProxyMethodService;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final ResultIterator<Map<String, Object>> iterator;
+    private final SortedSet<Class<?>> returnTypes;
+    private final RowProxyMethodService rowProxyMethodService;
 
     QueryResultIterableImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext,
-                            ResultIterator<Map<String, Object>> iterator, SortedSet<Class<?>> types) {
+                            ResultIterator<Map<String, Object>> iterator, Class<?> returnType, SortedSet<Class<?>> returnTypes) {
         this.sessionContext = sessionContext;
         this.iterator = iterator;
-        this.types = types;
-        this.rowProxyMethodService = new RowProxyMethodService<>(sessionContext, types);
+        this.returnTypes = returnTypes;
+        if (CompositeRowObject.class.equals(returnType) || new AnnotatedType(returnType).getByMetaAnnotation(QueryDefinition.class) != null) {
+            this.rowProxyMethodService = new RowProxyMethodService<>(sessionContext, returnTypes);
+        } else {
+            this.rowProxyMethodService = null;
+        }
     }
 
     @Override
@@ -44,8 +51,14 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
                     Object decodedValue = decodeValue(value);
                     row.put(column, decodedValue);
                 }
-                RowInvocationHandler invocationHandler = new RowInvocationHandler(row, rowProxyMethodService);
-                return (T) sessionContext.getProxyFactory().createInstance(invocationHandler, types, CompositeRowObject.class);
+                if (rowProxyMethodService != null) {
+                    RowInvocationHandler invocationHandler = new RowInvocationHandler(row, rowProxyMethodService);
+                    return (T) sessionContext.getProxyFactory().createInstance(invocationHandler, returnTypes, CompositeRowObject.class);
+                }
+                if (row.size() != 1) {
+                    throw new CdoException("Only single columns per row can be returned.");
+                }
+                return (T) row.values().iterator().next();
             }
 
             @Override

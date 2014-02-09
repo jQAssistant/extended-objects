@@ -1,12 +1,16 @@
 package com.buschmais.cdo.neo4j.test;
 
-import com.buschmais.cdo.api.*;
+import com.buschmais.cdo.api.CdoManager;
+import com.buschmais.cdo.api.CdoManagerFactory;
+import com.buschmais.cdo.api.ConcurrencyMode;
+import com.buschmais.cdo.api.Transaction;
 import org.junit.After;
 import org.junit.Before;
 
 import java.net.URISyntaxException;
 import java.util.*;
 
+import static com.buschmais.cdo.api.Query.Result;
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 
 public abstract class AbstractCdoManagerTest {
@@ -58,7 +62,7 @@ public abstract class AbstractCdoManagerTest {
      * @return The {@link TestResult}.
      */
     protected TestResult executeQuery(String query, Map<String, Object> parameters) {
-        Query.Result<CompositeRowObject> result = cdoManager.createQuery(query).withParameters(parameters).execute();
+        Result<CompositeRowObject> result = cdoManager.createQuery(query).withParameters(parameters).execute();
         Map<String, List<Object>> columns = new HashMap<>();
         for (CompositeRowObject row : result) {
             Iterable<String> columnNames = row.getColumns();

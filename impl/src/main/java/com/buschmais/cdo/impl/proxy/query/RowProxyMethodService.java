@@ -4,8 +4,8 @@ import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
-import com.buschmais.cdo.impl.proxy.common.composite.AsMethod;
 import com.buschmais.cdo.impl.proxy.common.composite.GetDelegateMethod;
+import com.buschmais.cdo.impl.proxy.query.composite.AsMethod;
 import com.buschmais.cdo.impl.proxy.query.object.EqualsMethod;
 import com.buschmais.cdo.impl.proxy.query.object.HashCodeMethod;
 import com.buschmais.cdo.impl.proxy.query.object.ToStringMethod;
@@ -37,7 +37,7 @@ public class RowProxyMethodService<Entity, Relation> extends AbstractProxyMethod
                 addProxyMethod(proxyMethod, propertyMethod.getAnnotatedElement());
             }
         }
-        addMethod(new AsMethod<Map<String, Object>, Entity, Relation>(sessionContext), CompositeObject.class, "as", Class.class);
+        addMethod(new AsMethod(), CompositeObject.class, "as", Class.class);
         addMethod(new GetDelegateMethod<Map<String, Object>>(), CompositeObject.class, "getDelegate");
         addMethod(new com.buschmais.cdo.impl.proxy.query.row.GetMethod(), CompositeRowObject.class, "get", String.class, Class.class);
         addMethod(new GetColumnsMethod(), CompositeRowObject.class, "getColumns");

@@ -8,9 +8,9 @@ import java.util.List;
 
 public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMetadata<AnnotatedMethod, DatastoreMetadata> {
 
-    private Class<?> returnType;
-
     private AnnotatedElement query;
+
+    private Class<?> returnType;
 
     private String usingThisAs;
 
@@ -18,11 +18,10 @@ public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMet
 
     private boolean singleResult;
 
-    public ResultOfMethodMetadata(AnnotatedMethod annotatedMethod, Class<?> returnType, AnnotatedElement query, String usingThisAs, List<ResultOf.Parameter> parameters, boolean singleResult) {
+    public ResultOfMethodMetadata(AnnotatedMethod annotatedMethod, AnnotatedElement query, Class<?> returnType, String usingThisAs, List<ResultOf.Parameter> parameters, boolean singleResult) {
         super(annotatedMethod, null);
-        this.returnType = returnType;
-
         this.query = query;
+        this.returnType = returnType;
         this.usingThisAs = usingThisAs;
         this.parameters = parameters;
         this.singleResult = singleResult;

@@ -13,13 +13,15 @@ public class CdoQueryImpl<T, QL, Entity, Relation> implements Query<T> {
 
     private final QL expression;
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
-    private final Collection<? extends Class<?>> types;
+    private final Class<?> returnType;
+    private final Collection<? extends Class<?>> returnTypes;
     private Map<String, Object> parameters = null;
 
-    public CdoQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QL expression, Collection<? extends Class<?>> types) {
+    public CdoQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QL expression, Class<?> returnType, Collection<? extends Class<?>> returnTypes) {
         this.sessionContext = sessionContext;
         this.expression = expression;
-        this.types = types;
+        this.returnType = returnType;
+        this.returnTypes = returnTypes;
     }
 
     @Override
@@ -62,7 +64,7 @@ public class CdoQueryImpl<T, QL, Entity, Relation> implements Query<T> {
         }
         ResultIterator<Map<String, Object>> iterator = sessionContext.getDatastoreSession().executeQuery(expression, effectiveParameters);
         SortedSet<Class<?>> resultTypes = getResultTypes();
-        QueryResultIterableImpl<Entity, Relation, Map<String, Object>> queryResultIterable = new QueryResultIterableImpl(sessionContext, iterator, resultTypes);
+        QueryResultIterableImpl<Entity, Relation, Map<String, Object>> queryResultIterable = new QueryResultIterableImpl(sessionContext, iterator, returnType, resultTypes);
         return new TransactionalQueryResultIterable(queryResultIterable, sessionContext.getCdoTransaction());
     }
 
@@ -73,7 +75,7 @@ public class CdoQueryImpl<T, QL, Entity, Relation> implements Query<T> {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        resultTypes.addAll(types);
+        resultTypes.addAll(returnTypes);
         if (expression instanceof Class<?>) {
             resultTypes.add((Class<?>) expression);
         }

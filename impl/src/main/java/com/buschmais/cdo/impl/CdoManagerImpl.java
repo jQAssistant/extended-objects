@@ -173,31 +173,31 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public Query<CompositeRowObject> createQuery(String query) {
-        CdoQueryImpl<CompositeRowObject, String, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, Collections.<Class<?>>emptyList());
+        CdoQueryImpl<CompositeRowObject, String, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, CompositeRowObject.class, Collections.<Class<?>>emptyList());
         return sessionContext.getInterceptorFactory().addInterceptor(cdoQuery);
     }
 
     @Override
     public <T> Query<T> createQuery(String query, Class<T> type) {
-        CdoQueryImpl<T, String, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, Arrays.asList(new Class<?>[]{type}));
+        CdoQueryImpl<T, String, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, type, Arrays.asList(new Class<?>[]{type}));
         return sessionContext.getInterceptorFactory().addInterceptor(cdoQuery);
     }
 
     @Override
     public Query<CompositeRowObject> createQuery(String query, Class<?> type, Class<?>... types) {
-        CdoQueryImpl<CompositeRowObject, String, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, Arrays.asList(types));
+        CdoQueryImpl<CompositeRowObject, String, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, type, Arrays.asList(types));
         return sessionContext.getInterceptorFactory().addInterceptor(cdoQuery);
     }
 
     @Override
     public <T> Query<T> createQuery(Class<T> query) {
-        CdoQueryImpl<T, Class<T>, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, Arrays.asList(new Class<?>[]{query}));
+        CdoQueryImpl<T, Class<T>, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, query, Arrays.asList(new Class<?>[]{query}));
         return sessionContext.getInterceptorFactory().addInterceptor(cdoQuery);
     }
 
     @Override
     public <Q> Query<CompositeRowObject> createQuery(Class<Q> query, Class<?>... types) {
-        CdoQueryImpl<CompositeRowObject, Class<Q>, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, Arrays.asList(types));
+        CdoQueryImpl<CompositeRowObject, Class<Q>, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, query, Arrays.asList(types));
         return sessionContext.getInterceptorFactory().addInterceptor(cdoQuery);
     }
 

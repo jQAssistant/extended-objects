@@ -2,6 +2,7 @@ package com.buschmais.cdo.impl.metadata;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
+import com.buschmais.cdo.api.ResultIterable;
 import com.buschmais.cdo.api.annotation.ImplementedBy;
 import com.buschmais.cdo.api.annotation.ResultOf;
 import com.buschmais.cdo.impl.MetadataProvider;
@@ -29,6 +30,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+
+import static com.buschmais.cdo.api.Query.Result;
 
 /**
  * Implementation of the {@link MetadataProvider}.
@@ -389,22 +392,25 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     private MethodMetadata<?, ?> createResultOfMetadata(AnnotatedMethod annotatedMethod, ResultOf resultOf) {
         Method method = annotatedMethod.getAnnotatedElement();
+
         // Determine query type
-        AnnotatedElement queryType = resultOf.query();
-        Class<?> returnType = method.getReturnType();
-        if (Object.class.equals(queryType)) {
-            if (Iterable.class.isAssignableFrom(returnType)) {
-                java.lang.reflect.Type genericReturnType = method.getGenericReturnType();
-                if (genericReturnType instanceof ParameterizedType) {
-                    ParameterizedType parameterizedType = (ParameterizedType) genericReturnType;
-                    queryType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
-                }
+        Class<?> methodReturnType = method.getReturnType();
+        Class<?> returnType;
+        if (Result.class.isAssignableFrom(methodReturnType)) {
+            Type genericReturnType = method.getGenericReturnType();
+            ParameterizedType parameterizedType = (ParameterizedType) genericReturnType;
+            returnType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+        } else {
+            returnType = methodReturnType;
+        }
+
+        // Determine query type
+        AnnotatedElement query = resultOf.query();
+        if (Object.class.equals(query)) {
+            if (annotatedMethod.getByMetaAnnotation(QueryDefinition.class) != null) {
+                query = annotatedMethod.getAnnotatedElement();
             } else {
-                if (annotatedMethod.getByMetaAnnotation(QueryDefinition.class) != null) {
-                    queryType = annotatedMethod.getAnnotatedElement();
-                } else {
-                    queryType = returnType;
-                }
+                query = returnType;
             }
         }
         // Determine parameter bindings
@@ -422,8 +428,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             }
             parameters.add(parameter);
         }
-        boolean singleResult = !Iterable.class.isAssignableFrom(returnType);
-        return new ResultOfMethodMetadata<>(annotatedMethod, returnType, queryType, resultOf.usingThisAs(), parameters, singleResult);
+        boolean singleResult = !(Result.class.equals(methodReturnType) || ResultIterable.class.equals(methodReturnType) || (Iterable.class.equals(methodReturnType)));
+        return new ResultOfMethodMetadata<>(annotatedMethod, query, returnType, resultOf.usingThisAs(), parameters, singleResult);
     }
 
     private <T extends TypeMetadata> T getMetadata(Class<?> type, Class<T> metadataType) {

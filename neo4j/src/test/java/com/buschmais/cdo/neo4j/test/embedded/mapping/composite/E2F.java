@@ -1,10 +1,10 @@
 package com.buschmais.cdo.neo4j.test.embedded.mapping.composite;
 
-import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.api.annotation.ResultOf;
 import com.buschmais.cdo.neo4j.api.annotation.Cypher;
 import com.buschmais.cdo.neo4j.api.annotation.Relation;
 
+import static com.buschmais.cdo.api.Query.Result;
 import static com.buschmais.cdo.api.annotation.ResultOf.Parameter;
 import static com.buschmais.cdo.neo4j.api.annotation.Relation.Incoming;
 import static com.buschmais.cdo.neo4j.api.annotation.Relation.Outgoing;
@@ -19,10 +19,10 @@ public interface E2F {
     F getF();
 
     @ResultOf(query = ByValue.class, usingThisAs = "e2f")
-    Query.Result<ByValue> getResultByValueUsingExplicitQuery(@Parameter("value") String value);
+    Result<ByValue> getResultByValueUsingExplicitQuery(@Parameter("value") String value);
 
     @ResultOf(usingThisAs = "e2f")
-    Query.Result<ByValue> getResultByValueUsingReturnType(@Parameter("value") String value);
+    Result<ByValue> getResultByValueUsingReturnType(@Parameter("value") String value);
 
     @ResultOf(query = ByValue.class, usingThisAs = "e2f")
     ByValue getByValueUsingExplicitQuery(@Parameter("value") String value);
@@ -35,7 +35,11 @@ public interface E2F {
 
     @ResultOf
     @Cypher("match ()-[e2f:E2F]->(f:F) where e2f.value={value} return f")
-    MappedResult getMappedResultUsingCypher(@Parameter("value") String value);
+    Result<F> getResultUsingCypher(@Parameter("value") String value);
+
+    @ResultOf
+    @Cypher("match ()-[e2f:E2F]->(f:F) where e2f.value={value} return f")
+    F getSingleResultUsingCypher(@Parameter("value") String value);
 
     void setValue(String value);
 
@@ -48,10 +52,6 @@ public interface E2F {
 
     @Cypher("match ()-[e2f:E2F]->(f:F) where e2f={this} and e2f.value={value} return f")
     public interface ByValueUsingImplicitThis {
-        F getF();
-    }
-
-    public interface MappedResult {
         F getF();
     }
 }

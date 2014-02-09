@@ -2,7 +2,6 @@ package com.buschmais.cdo.neo4j.test.embedded.delegate;
 
 import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CompositeObject;
-import com.buschmais.cdo.api.Query;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.delegate.composite.A;
 import com.buschmais.cdo.neo4j.test.embedded.delegate.composite.A2B;
@@ -16,6 +15,8 @@ import org.neo4j.graphdb.Relationship;
 import java.util.List;
 import java.util.Map;
 
+import static com.buschmais.cdo.api.Query.Result;
+import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -54,7 +55,7 @@ public class DelegateTest extends AbstractEmbeddedCdoManagerTest {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
         A a = cdoManager.create(A.class);
-        Query.Result<Query.Result.CompositeRowObject> row = cdoManager.createQuery("match (a:A) return a").execute();
+        Result<CompositeRowObject> row = cdoManager.createQuery("match (a:A) return a").execute();
         Map<String, Object> delegate = row.getSingleResult().getDelegate();
         assertThat(delegate, IsMapContaining.<String, Object>hasEntry("a", a));
         cdoManager.currentTransaction().commit();

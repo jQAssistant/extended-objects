@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import static com.buschmais.cdo.api.Query.Result;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertThat;
 
 public class EntityResultOfTest extends AbstractEmbeddedCdoManagerTest {
@@ -85,13 +86,24 @@ public class EntityResultOfTest extends AbstractEmbeddedCdoManagerTest {
     }
 
     @Test
-    public void mappedResultUsingCypher() {
+    public void resultUsingCypher() {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
-        E.MappedResult mappedResult = e.getMappedResultUsingCypher("F1");
-        assertThat(mappedResult.getF(), equalTo(f1));
-        mappedResult = e.getMappedResultUsingCypher("unknownF");
-        assertThat(mappedResult, equalTo(null));
+        Result<F> result = e.getResultUsingCypher("F1");
+        assertThat(result, hasItems(equalTo(f1)));
+        result = e.getResultUsingCypher("unknownF");
+        assertThat(result.iterator().hasNext(), equalTo(false));
+        cdoManager.currentTransaction().commit();
+    }
+
+    @Test
+    public void singleResultUsingCypher() {
+        CdoManager cdoManager = getCdoManager();
+        cdoManager.currentTransaction().begin();
+        F result = e.getSingleResultUsingCypher("F1");
+        assertThat(result, equalTo(f1));
+        result = e.getSingleResultUsingCypher("unknownF");
+        assertThat(result, equalTo(null));
         cdoManager.currentTransaction().commit();
     }
 }
