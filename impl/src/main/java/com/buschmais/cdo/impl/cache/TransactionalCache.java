@@ -52,14 +52,15 @@ public class TransactionalCache<Id> {
     /**
      * Lookup an instance in the cache identified by its id.
      *
-     * @param id The id.
+     * @param id   The id.
+     * @param mode The mode.
      * @return The corresponding instance or <code>null</code> if no instance is available.
      */
-    public Object get(Id id) {
+    public Object get(Id id, Mode mode) {
         Object value = writeCache.get(id);
         if (value == null) {
             value = readCache.get(id);
-            if (value != null) {
+            if (value != null && Mode.WRITE.equals(mode)) {
                 writeCache.put(id, value);
             }
         }
