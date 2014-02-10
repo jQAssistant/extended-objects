@@ -25,13 +25,13 @@ public class CacheSynchronizationService<Entity, Relation> {
         }
         DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?> datastoreSession = sessionContext.getDatastoreSession();
         InstanceListenerService instanceListenerService = sessionContext.getInstanceListenerService();
-        for (Object instance : sessionContext.getRelationCache().readInstances()) {
+        for (Object instance : sessionContext.getRelationCache().writtenInstances()) {
             Relation relation = sessionContext.getRelationInstanceManager().getDatastoreType(instance);
             instanceListenerService.preUpdate(instance);
             datastoreSession.flushRelation(relation);
             instanceListenerService.postUpdate(instance);
         }
-        for (Object instance : sessionContext.getEntityCache().readInstances()) {
+        for (Object instance : sessionContext.getEntityCache().writtenInstances()) {
             Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(instance);
             instanceListenerService.preUpdate(instance);
             datastoreSession.flushEntity(entity);
