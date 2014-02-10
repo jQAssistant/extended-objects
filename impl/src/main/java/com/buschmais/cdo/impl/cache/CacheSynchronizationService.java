@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class CacheSynchronizationService<Entity, Relation> {
 
-    private SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
 
     public CacheSynchronizationService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext) {
         this.sessionContext = sessionContext;
