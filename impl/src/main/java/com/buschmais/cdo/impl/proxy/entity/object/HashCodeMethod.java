@@ -5,7 +5,7 @@ import com.buschmais.cdo.impl.SessionContext;
 
 public class HashCodeMethod<Entity> implements ProxyMethod<Entity> {
 
-    private SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext;
+    private final SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext;
 
     public HashCodeMethod(SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext) {
         this.sessionContext = sessionContext;

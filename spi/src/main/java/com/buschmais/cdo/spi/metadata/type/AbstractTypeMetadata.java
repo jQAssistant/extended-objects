@@ -7,11 +7,11 @@ import java.util.Collection;
 
 public abstract class AbstractTypeMetadata implements TypeMetadata {
 
-    private AnnotatedType annotatedType;
+    private final AnnotatedType annotatedType;
 
-    private Collection<MethodMetadata<?, ?>> properties;
+    private final Collection<MethodMetadata<?, ?>> properties;
 
-    private Collection<TypeMetadata> superTypes;
+    private final Collection<TypeMetadata> superTypes;
 
     protected AbstractTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties) {
         this.annotatedType = annotatedType;

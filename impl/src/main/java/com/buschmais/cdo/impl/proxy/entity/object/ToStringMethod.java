@@ -5,7 +5,7 @@ import com.buschmais.cdo.impl.proxy.common.object.AbstractToStringMethod;
 
 public class ToStringMethod<Entity> extends AbstractToStringMethod<Entity> {
 
-    private SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext;
+    private final SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext;
 
     public ToStringMethod(SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext) {
         this.sessionContext = sessionContext;

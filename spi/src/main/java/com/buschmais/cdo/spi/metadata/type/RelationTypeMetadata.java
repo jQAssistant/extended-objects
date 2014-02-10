@@ -18,8 +18,8 @@ public class RelationTypeMetadata<DatastoreMetadata> extends AbstractDatastoreTy
         }
     }
 
-    private Class<?> fromType;
-    private Class<?> toType;
+    private final Class<?> fromType;
+    private final Class<?> toType;
 
     public RelationTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, Class<?> fromType, Class<?> toType, DatastoreMetadata datastoreMetadata) {
         super(annotatedType, superTypes, properties, datastoreMetadata);

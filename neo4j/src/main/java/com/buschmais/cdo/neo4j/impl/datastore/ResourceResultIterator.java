@@ -4,11 +4,11 @@ import com.buschmais.cdo.api.ResultIterator;
 import org.neo4j.graphdb.ResourceIterator;
 
 /**
-* A {@link ResultIterator} implement wrapping a {@link ResultIterator} provided by the Neo4j APIs.
-*/
+ * A {@link ResultIterator} implement wrapping a {@link ResultIterator} provided by the Neo4j APIs.
+ */
 final class ResourceResultIterator<T> implements ResultIterator<T> {
 
-    private ResourceIterator<T> iterator;
+    private final ResourceIterator<T> iterator;
 
     ResourceResultIterator(ResourceIterator<T> iterator) {
         this.iterator = iterator;

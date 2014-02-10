@@ -9,9 +9,9 @@ import java.lang.reflect.Type;
  */
 public abstract class AbstractPropertyMethod extends AbstractAnnotatedElement<Method> implements PropertyMethod {
 
-    private String name = null;
-    private Class<?> type = null;
-    private Type genericType = null;
+    private final String name;
+    private final Class<?> type;
+    private final Type genericType;
 
     /**
      * Constructor.

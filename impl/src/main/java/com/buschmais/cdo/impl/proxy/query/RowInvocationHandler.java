@@ -6,9 +6,9 @@ import java.util.Map;
 
 public class RowInvocationHandler implements InvocationHandler {
 
-    private Map<String, Object> row;
+    private final Map<String, Object> row;
 
-    private RowProxyMethodService rowProxyMethodService;
+    private final RowProxyMethodService rowProxyMethodService;
 
     public RowInvocationHandler(Map<String, Object> row, RowProxyMethodService rowProxyMethodService) {
         this.row = row;

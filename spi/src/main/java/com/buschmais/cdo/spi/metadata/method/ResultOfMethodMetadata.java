@@ -8,15 +8,15 @@ import java.util.List;
 
 public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMetadata<AnnotatedMethod, DatastoreMetadata> {
 
-    private AnnotatedElement query;
+    private final AnnotatedElement query;
 
-    private Class<?> returnType;
+    private final Class<?> returnType;
 
-    private String usingThisAs;
+    private final String usingThisAs;
 
-    private List<ResultOf.Parameter> parameters;
+    private final List<ResultOf.Parameter> parameters;
 
-    private boolean singleResult;
+    private final boolean singleResult;
 
     public ResultOfMethodMetadata(AnnotatedMethod annotatedMethod, AnnotatedElement query, Class<?> returnType, String usingThisAs, List<ResultOf.Parameter> parameters, boolean singleResult) {
         super(annotatedMethod, null);

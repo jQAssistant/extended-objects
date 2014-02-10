@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class RelationCollectionPropertyGetMethod<Entity, Relation> extends AbstractPropertyMethod<Entity, EntityPropertyManager<Entity, Relation>, RelationCollectionPropertyMethodMetadata> {
 
-    private SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
 
     public RelationCollectionPropertyGetMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, RelationCollectionPropertyMethodMetadata<?> metadata) {
         super(sessionContext.getEntityPropertyManager(), metadata);

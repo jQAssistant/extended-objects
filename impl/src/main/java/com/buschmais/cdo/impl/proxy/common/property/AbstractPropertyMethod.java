@@ -6,9 +6,9 @@ import com.buschmais.cdo.spi.metadata.method.AbstractMethodMetadata;
 
 public abstract class AbstractPropertyMethod<DatastoreType, PropertyManager extends AbstractPropertyManager<DatastoreType, ?, ?>, M extends AbstractMethodMetadata> implements ProxyMethod<DatastoreType> {
 
-    private M metadata;
+    private final M metadata;
 
-    private PropertyManager propertyManager;
+    private final PropertyManager propertyManager;
 
     protected AbstractPropertyMethod(PropertyManager propertyManager, M metadata) {
         this.propertyManager = propertyManager;

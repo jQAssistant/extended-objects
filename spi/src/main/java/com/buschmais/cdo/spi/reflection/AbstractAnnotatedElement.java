@@ -9,7 +9,7 @@ import java.lang.annotation.Annotation;
  */
 public abstract class AbstractAnnotatedElement<AE extends java.lang.reflect.AnnotatedElement> implements AnnotatedElement<AE> {
 
-    private AE annotated;
+    private final AE annotated;
 
     /**
      * Constructor.

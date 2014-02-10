@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public abstract class AbstractDatastoreTypeMetadata<DatastoreMetadata> extends AbstractTypeMetadata implements DatastoreTypeMetadata<DatastoreMetadata> {
 
-    private DatastoreMetadata datastoreMetadata;
+    private final DatastoreMetadata datastoreMetadata;
 
     protected AbstractDatastoreTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, DatastoreMetadata datastoreMetadata) {
         super(annotatedType, superTypes, properties);

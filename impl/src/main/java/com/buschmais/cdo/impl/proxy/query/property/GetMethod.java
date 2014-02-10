@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class GetMethod implements RowProxyMethod {
 
-    private String name;
-    private Class<?> type;
+    private final String name;
+    private final Class<?> type;
 
     public GetMethod(String name, Class<?> type) {
         this.name = name;

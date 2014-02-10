@@ -133,7 +133,7 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
 
     private void removeRelation(Entity source, Relation relation, AbstractRelationPropertyMethodMetadata<?> metadata) {
         SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
-        DatastorePropertyManager<Entity, Relation, ?, ?, ? extends DatastoreRelationMetadata<?>> datastorePropertyManager = sessionContext.getDatastoreSession().getDatastorePropertyManager();
+        DatastorePropertyManager<Entity, Relation, ?, ? extends DatastoreRelationMetadata<?>> datastorePropertyManager = sessionContext.getDatastoreSession().getDatastorePropertyManager();
         AbstractInstanceManager<?, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         entityInstanceManager.updateInstance(source);
         entityInstanceManager.updateInstance(getReferencedEntity(relation, metadata.getDirection()));
@@ -148,7 +148,7 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     }
 
     private Entity getReferencedEntity(Relation relation, RelationTypeMetadata.Direction direction) {
-        DatastorePropertyManager<Entity, Relation, ?, ?, ? extends DatastoreRelationMetadata<?>> datastorePropertyManager = getSessionContext().getDatastoreSession().getDatastorePropertyManager();
+        DatastorePropertyManager<Entity, Relation, ?, ? extends DatastoreRelationMetadata<?>> datastorePropertyManager = getSessionContext().getDatastoreSession().getDatastorePropertyManager();
         switch (direction) {
             case FROM:
                 return datastorePropertyManager.getTo(relation);
@@ -174,7 +174,7 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     }
 
     private Relation createSingleReference(Entity sourceEntity, AbstractRelationPropertyMethodMetadata<?> metadata, Entity targetEntity) {
-        DatastorePropertyManager<Entity, Relation, ?, ?, ?> datastorePropertyManager = getSessionContext().getDatastoreSession().getDatastorePropertyManager();
+        DatastorePropertyManager<Entity, Relation, ?, ?> datastorePropertyManager = getSessionContext().getDatastoreSession().getDatastorePropertyManager();
         if (datastorePropertyManager.hasSingleRelation(sourceEntity, metadata.getRelationshipMetadata(), metadata.getDirection())) {
             Relation relation = datastorePropertyManager.getSingleRelation(sourceEntity, metadata.getRelationshipMetadata(), metadata.getDirection());
             removeRelation(sourceEntity, relation, metadata);
@@ -183,7 +183,7 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     }
 
     private Relation createReference(Entity sourceEntity, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction, Entity targetEntity) {
-        DatastorePropertyManager<Entity, Relation, ?, ?, ?> datastorePropertyManager = getSessionContext().getDatastoreSession().getDatastorePropertyManager();
+        DatastorePropertyManager<Entity, Relation, ?, ?> datastorePropertyManager = getSessionContext().getDatastoreSession().getDatastorePropertyManager();
         return datastorePropertyManager.createRelation(sourceEntity, metadata, direction, targetEntity);
     }
 }

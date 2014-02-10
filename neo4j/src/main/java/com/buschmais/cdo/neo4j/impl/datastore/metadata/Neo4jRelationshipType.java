@@ -4,7 +4,7 @@ import org.neo4j.graphdb.RelationshipType;
 
 public class Neo4jRelationshipType implements RelationshipType {
 
-    private RelationshipType delegate;
+    private final RelationshipType delegate;
 
     public Neo4jRelationshipType(RelationshipType delegate) {
         this.delegate = delegate;

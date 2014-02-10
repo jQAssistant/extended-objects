@@ -9,7 +9,7 @@ import com.buschmais.cdo.spi.datastore.DatastoreSession;
 
 public class EqualsMethod<Relation> implements ProxyMethod<Relation> {
 
-    private SessionContext<?, ?, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, ?, ?, ?, ?, Relation, ?, ?> sessionContext;
 
 
     public EqualsMethod(SessionContext<?, ?, ?, ?, ?, Relation, ?, ?> sessionContext) {

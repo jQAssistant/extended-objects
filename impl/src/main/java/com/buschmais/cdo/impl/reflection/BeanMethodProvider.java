@@ -13,11 +13,11 @@ import java.util.*;
 
 public final class BeanMethodProvider {
 
-    private Set<Method> methods = new HashSet<>();
-    private Map<String, Method> getters = new HashMap<>();
-    private Map<String, Method> setters = new HashMap<>();
-    private Map<String, Class<?>> types = new HashMap<>();
-    private Map<String, Type> genericTypes = new HashMap<>();
+    private final Set<Method> methods = new HashSet<>();
+    private final Map<String, Method> getters = new HashMap<>();
+    private final Map<String, Method> setters = new HashMap<>();
+    private final Map<String, Class<?>> types = new HashMap<>();
+    private final Map<String, Type> genericTypes = new HashMap<>();
 
     private BeanMethodProvider() {
     }
