@@ -2,7 +2,6 @@ package com.buschmais.cdo.impl.proxy.query;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.CompositeObject;
-import com.buschmais.cdo.impl.SessionContext;
 import com.buschmais.cdo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.cdo.impl.proxy.common.composite.GetDelegateMethod;
 import com.buschmais.cdo.impl.proxy.query.composite.AsMethod;
@@ -22,9 +21,9 @@ import java.util.SortedSet;
 
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
 
-public class RowProxyMethodService<Entity, Relation> extends AbstractProxyMethodService<Map<String, Object>, RowProxyMethod> {
+public class RowProxyMethodService extends AbstractProxyMethodService<Map<String, Object>, RowProxyMethod> {
 
-    public RowProxyMethodService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, SortedSet<Class<?>> types) {
+    public RowProxyMethodService(SortedSet<Class<?>> types) {
         BeanMethodProvider beanMethodProvider = BeanMethodProvider.newInstance();
         for (Class<?> type : types) {
             Collection<AnnotatedMethod> typeMethodsOfType = beanMethodProvider.getMethods(type);

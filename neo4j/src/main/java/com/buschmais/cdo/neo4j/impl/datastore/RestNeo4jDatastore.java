@@ -1,15 +1,13 @@
 package com.buschmais.cdo.neo4j.impl.datastore;
 
-import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import org.neo4j.rest.graphdb.RestGraphDatabase;
 
 import java.util.Collection;
 
-public class RestNeo4jDatastore extends  AbstractNeo4jDatastore<RestNeo4jDatastoreSession> {
+public class RestNeo4jDatastore extends AbstractNeo4jDatastore<RestNeo4jDatastoreSession> {
 
-    private String url;
+    private final String url;
 
     public RestNeo4jDatastore(String url) {
         this.url = url;

@@ -4,8 +4,8 @@ import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedElement;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
-import com.buschmais.cdo.spi.reflection.PropertyMethod;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
+import com.buschmais.cdo.spi.reflection.PropertyMethod;
 
 import java.util.Map;
 
@@ -13,8 +13,8 @@ import java.util.Map;
  * The metadata factory of the datastore.
  * <p>This factory is used on initialization to determine datastore specific entity, property, enumeration and relation metadata.</p>
  *
- * @param <EntityMetadata>      The type of entities used by the datastore.
- * @param <EntityDiscriminator> The type of entity discriminators used by the datastore.
+ * @param <EntityMetadata>        The type of entities used by the datastore.
+ * @param <EntityDiscriminator>   The type of entity discriminators used by the datastore.
  * @param <RelationMetadata>      The type of relations used by the datastore.
  * @param <RelationDiscriminator> The type of relations discriminators used by the datastore.
  */
@@ -60,14 +60,6 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * @return An instance of datastore specific method metadata.
      */
     <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPrimitivePropertyMetadata(PropertyMethod propertyMethod);
-
-    /**
-     * Create the datastore specific metadata for a property representing an enumeration value.
-     *
-     * @param propertyMethod The method.
-     * @return An instance of datastore specific method metadata.
-     */
-    <EnumPropertyMetadata> EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod propertyMethod);
 
     /**
      * Create the datastore specific metadata for a property representing an indexed property.

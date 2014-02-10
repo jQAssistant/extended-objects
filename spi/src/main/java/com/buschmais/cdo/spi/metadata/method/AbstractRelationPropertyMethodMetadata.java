@@ -7,9 +7,9 @@ import static com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction
 
 public abstract class AbstractRelationPropertyMethodMetadata<DatastoreMetadata> extends AbstractPropertyMethodMetadata<DatastoreMetadata> {
 
-    private RelationTypeMetadata relationTypeMetadata;
+    private final RelationTypeMetadata relationTypeMetadata;
 
-    private Direction direction;
+    private final Direction direction;
 
     public AbstractRelationPropertyMethodMetadata(PropertyMethod propertyMethod, RelationTypeMetadata relationTypeMetadata, Direction direction, DatastoreMetadata datastoreMetadata) {
         super(propertyMethod, datastoreMetadata);

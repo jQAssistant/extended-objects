@@ -27,9 +27,9 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     private static final String ID_PROPERTY = "id";
     private static final String TYPES_PROPERTY = "types";
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    private File directory;
+    private final File directory;
 
     public JsonFileStoreSession(File directory) {
         this.directory = directory;

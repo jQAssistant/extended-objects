@@ -4,7 +4,7 @@ import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 
 public class RelationshipMetadata implements DatastoreRelationMetadata<Neo4jRelationshipType> {
 
-    private Neo4jRelationshipType relationshipType;
+    private final Neo4jRelationshipType relationshipType;
 
     public RelationshipMetadata(Neo4jRelationshipType relationshipType) {
         this.relationshipType = relationshipType;

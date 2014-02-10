@@ -138,6 +138,6 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      *
      * @return The {@link DatastorePropertyManager}.
      */
-    DatastorePropertyManager<Entity, Relation, ?, ?, RelationMetadata> getDatastorePropertyManager();
+    DatastorePropertyManager<Entity, Relation, ?, RelationMetadata> getDatastorePropertyManager();
 
 }

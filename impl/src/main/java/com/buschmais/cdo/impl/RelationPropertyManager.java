@@ -51,7 +51,7 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
     }
 
     private Entity getReferencedEntity(Relation relation, RelationTypeMetadata.Direction direction) {
-        DatastorePropertyManager<Entity, Relation, ?, ?, ? extends DatastoreRelationMetadata<?>> datastorePropertyManager = getSessionContext().getDatastoreSession().getDatastorePropertyManager();
+        DatastorePropertyManager<Entity, Relation, ?, ? extends DatastoreRelationMetadata<?>> datastorePropertyManager = getSessionContext().getDatastoreSession().getDatastorePropertyManager();
         switch (direction) {
             case TO:
                 return datastorePropertyManager.getTo(relation);

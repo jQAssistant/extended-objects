@@ -10,12 +10,12 @@ import java.util.Set;
 
 public class CacheSynchronizationService<Entity, Relation> {
 
-    private TransactionalCache<?> entityCache;
-    private AbstractInstanceManager<?, Entity> entityInstanceManager;
-    private TransactionalCache<?> relationCache;
-    private AbstractInstanceManager<?, Relation> relationInstanceManager;
-    private InstanceValidator instanceValidator;
-    private DatastoreSession<?, Entity, ?, ?, ?, Relation, ?, ?> datastoreSession;
+    private final TransactionalCache<?> entityCache;
+    private final AbstractInstanceManager<?, Entity> entityInstanceManager;
+    private final TransactionalCache<?> relationCache;
+    private final AbstractInstanceManager<?, Relation> relationInstanceManager;
+    private final InstanceValidator instanceValidator;
+    private final DatastoreSession<?, Entity, ?, ?, ?, Relation, ?, ?> datastoreSession;
 
     public CacheSynchronizationService(TransactionalCache<?> entityCache, AbstractInstanceManager<?, Entity> entityInstanceManager, TransactionalCache<?> relationCache, AbstractInstanceManager<?, Relation> relationInstanceManager, InstanceValidator instanceValidator, DatastoreSession<?, Entity, ?, ?, ?, Relation, ?, ?> datastoreSession) {
         this.entityCache = entityCache;

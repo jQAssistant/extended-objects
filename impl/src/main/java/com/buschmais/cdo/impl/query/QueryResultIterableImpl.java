@@ -26,7 +26,7 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
         this.iterator = iterator;
         this.returnTypes = returnTypes;
         if (CompositeRowObject.class.equals(returnType) || new AnnotatedType(returnType).getByMetaAnnotation(QueryDefinition.class) != null) {
-            this.rowProxyMethodService = new RowProxyMethodService<>(sessionContext, returnTypes);
+            this.rowProxyMethodService = new RowProxyMethodService(returnTypes);
         } else {
             this.rowProxyMethodService = null;
         }

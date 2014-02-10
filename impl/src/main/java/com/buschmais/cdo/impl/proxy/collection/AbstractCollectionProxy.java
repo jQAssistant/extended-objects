@@ -9,9 +9,9 @@ import java.util.Iterator;
 
 public abstract class AbstractCollectionProxy<Instance, Entity, Relation, PropertyMetadata extends AbstractRelationPropertyMethodMetadata<?>> extends AbstractCollection<Instance> implements Collection<Instance> {
 
-    private SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
-    private Entity entity;
-    private PropertyMetadata metadata;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final Entity entity;
+    private final PropertyMetadata metadata;
 
     public AbstractCollectionProxy(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, Entity entity, PropertyMetadata metadata) {
         this.sessionContext = sessionContext;

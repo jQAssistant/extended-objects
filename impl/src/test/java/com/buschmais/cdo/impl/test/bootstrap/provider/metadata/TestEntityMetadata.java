@@ -4,10 +4,14 @@ import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 
 public class TestEntityMetadata implements DatastoreEntityMetadata<String> {
 
-    private String type;
+    private final String type;
 
     public TestEntityMetadata(String type) {
         this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 
     @Override

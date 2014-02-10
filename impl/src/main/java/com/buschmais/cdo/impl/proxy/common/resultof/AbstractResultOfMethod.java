@@ -14,8 +14,8 @@ import java.util.List;
 
 public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> implements ProxyMethod<DatastoreType> {
 
-    private SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
-    private ResultOfMethodMetadata<?> resultOfMethodMetadata;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final ResultOfMethodMetadata<?> resultOfMethodMetadata;
 
     public AbstractResultOfMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, ResultOfMethodMetadata<?> resultOfMethodMetadata) {
         this.sessionContext = sessionContext;

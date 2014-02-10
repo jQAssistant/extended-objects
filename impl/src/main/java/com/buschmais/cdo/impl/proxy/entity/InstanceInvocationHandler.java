@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 public class InstanceInvocationHandler<DatastoreType> implements InvocationHandler {
 
     private DatastoreType datastoreType;
-    private ProxyMethodService<DatastoreType, ?> proxyMethodService;
+    private final ProxyMethodService<DatastoreType, ?> proxyMethodService;
 
     public InstanceInvocationHandler(DatastoreType datastoreType, ProxyMethodService<DatastoreType, ?> proxyMethodService) {
         this.datastoreType = datastoreType;

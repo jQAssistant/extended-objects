@@ -1,7 +1,6 @@
 package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.neo4j.impl.datastore.metadata.EnumPropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
@@ -11,7 +10,7 @@ import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 
-public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Relationship, PrimitivePropertyMetadata, EnumPropertyMetadata, RelationshipMetadata> {
+public class Neo4jPropertyManager implements DatastorePropertyManager<Node, Relationship, PrimitivePropertyMetadata, RelationshipMetadata> {
 
     @Override
     public boolean hasSingleRelation(Node source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction) {

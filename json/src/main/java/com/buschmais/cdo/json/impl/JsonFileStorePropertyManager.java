@@ -1,7 +1,6 @@
 package com.buschmais.cdo.json.impl;
 
 import com.buschmais.cdo.api.CdoException;
-import com.buschmais.cdo.json.impl.metadata.JsonEnumPropertyMetadata;
 import com.buschmais.cdo.json.impl.metadata.JsonPrimitivePropertyMetadata;
 import com.buschmais.cdo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
@@ -9,7 +8,7 @@ import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import org.codehaus.jackson.node.ObjectNode;
 
-public class JsonFileStorePropertyManager implements DatastorePropertyManager<ObjectNode, JsonRelation, JsonPrimitivePropertyMetadata, JsonEnumPropertyMetadata, JsonRelationMetadata> {
+public class JsonFileStorePropertyManager implements DatastorePropertyManager<ObjectNode, JsonRelation, JsonPrimitivePropertyMetadata, JsonRelationMetadata> {
 
     @Override
     public void setEntityProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {

@@ -40,11 +40,6 @@ public class JsonMetadataFactory implements DatastoreMetadataFactory<JsonNodeMet
     }
 
     @Override
-    public <EnumPropertyMetadata> EnumPropertyMetadata createEnumPropertyMetadata(PropertyMethod propertyMethod) {
-        return null;
-    }
-
-    @Override
     public <IndexedPropertyMetadata> IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod propertyMethod) {
         return null;
     }

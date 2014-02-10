@@ -6,9 +6,9 @@ import org.neo4j.graphdb.Label;
 
 public class NodeMetadata implements DatastoreEntityMetadata<Label> {
 
-    private Label label;
+    private final Label label;
 
-    private IndexedPropertyMethodMetadata<?> indexedProperty;
+    private final IndexedPropertyMethodMetadata<?> indexedProperty;
 
     public NodeMetadata(Label label, IndexedPropertyMethodMetadata<?> indexedProperty) {
         this.label = label;

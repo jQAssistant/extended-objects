@@ -7,9 +7,9 @@ import java.lang.reflect.Method;
 
 public class UnsupportedOperationMethod<DatastoreType> implements ProxyMethod<DatastoreType> {
 
-    private UnsupportedOperationMethodMetadata methodMetadata;
+    private final UnsupportedOperationMethodMetadata<?> methodMetadata;
 
-    public UnsupportedOperationMethod(UnsupportedOperationMethodMetadata methodMetadata) {
+    public UnsupportedOperationMethod(UnsupportedOperationMethodMetadata<?> methodMetadata) {
         this.methodMetadata = methodMetadata;
     }
 

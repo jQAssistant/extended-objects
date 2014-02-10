@@ -4,8 +4,6 @@ import com.buschmais.cdo.api.CdoTransaction;
 import com.buschmais.cdo.api.ResultIterable;
 import com.buschmais.cdo.api.ResultIterator;
 import com.buschmais.cdo.impl.AbstractResultIterable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,9 +11,9 @@ import java.util.List;
 
 public class TransactionalResultIterable<E> extends AbstractResultIterable<E> implements CdoTransaction.Synchronization {
 
-    private ResultIterable<E> delegate;
+    private final CdoTransaction cdoTransaction;
 
-    private CdoTransaction cdoTransaction;
+    private ResultIterable<E> delegate;
 
     public TransactionalResultIterable(ResultIterable<E> delegate, CdoTransaction cdoTransaction) {
         this.delegate = delegate;
@@ -39,7 +37,7 @@ public class TransactionalResultIterable<E> extends AbstractResultIterable<E> im
         this.delegate = new AbstractResultIterable<E>() {
             @Override
             public ResultIterator<E> iterator() {
-                final Iterator<E> detachedIterator=detachedList.iterator();
+                final Iterator<E> detachedIterator = detachedList.iterator();
                 return new ResultIterator<E>() {
                     @Override
                     public void close() {
@@ -57,7 +55,7 @@ public class TransactionalResultIterable<E> extends AbstractResultIterable<E> im
 
                     @Override
                     public void remove() {
-                       throw new UnsupportedOperationException("Remove is not supported for this iterator.");
+                        throw new UnsupportedOperationException("Remove is not supported for this iterator.");
                     }
                 };
             }
@@ -69,13 +67,12 @@ public class TransactionalResultIterable<E> extends AbstractResultIterable<E> im
         unregisterSynchronization();
     }
 
-    protected  ResultIterable<E> getDelegate() {
+    protected ResultIterable<E> getDelegate() {
         return delegate;
     }
 
     private void unregisterSynchronization() {
         cdoTransaction.unregisterSynchronization(this);
-        this.cdoTransaction = null;
     }
 
 }

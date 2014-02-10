@@ -11,7 +11,7 @@ import java.util.Collection;
 
 public class JsonFileStore implements Datastore<JsonFileStoreSession, JsonNodeMetadata, String, JsonRelationMetadata, String> {
 
-    private File directory;
+    private final File directory;
 
     public JsonFileStore(String directory) {
         this.directory = new File(directory);

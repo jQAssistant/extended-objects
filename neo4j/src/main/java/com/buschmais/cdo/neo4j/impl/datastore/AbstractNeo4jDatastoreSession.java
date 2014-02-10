@@ -21,8 +21,8 @@ import java.util.Set;
 
 public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, NodeMetadata, Label, Long, Relationship, RelationshipMetadata, Neo4jRelationshipType> {
 
-    private GDS graphDatabaseService;
-    private Neo4jPropertyManager propertyManager;
+    private final GDS graphDatabaseService;
+    private final Neo4jPropertyManager propertyManager;
 
     public AbstractNeo4jDatastoreSession(GDS graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;

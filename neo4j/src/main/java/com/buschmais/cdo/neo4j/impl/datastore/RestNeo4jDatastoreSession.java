@@ -32,7 +32,7 @@ public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<Res
         }
     }
 
-    private DatastoreTransaction transaction;
+    private final DatastoreTransaction transaction;
 
     public RestNeo4jDatastoreSession(RestGraphDatabase graphDatabaseService) {
         super(graphDatabaseService);
