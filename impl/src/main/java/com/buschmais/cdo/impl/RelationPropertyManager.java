@@ -26,7 +26,7 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
     public void setProperty(Relation relation, PrimitivePropertyMethodMetadata metadata, Object value) {
         SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
         sessionContext.getDatastoreSession().getDatastorePropertyManager().setRelationProperty(relation, metadata, value);
-        sessionContext.getRelationInstanceManager().writeInstance(relation);
+        sessionContext.getRelationInstanceManager().updateInstance(relation);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
     public void removeProperty(Relation relation, PrimitivePropertyMethodMetadata metadata) {
         SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
         sessionContext.getDatastoreSession().getDatastorePropertyManager().removeRelationProperty(relation, metadata);
-        sessionContext.getRelationInstanceManager().writeInstance(relation);
+        sessionContext.getRelationInstanceManager().updateInstance(relation);
     }
 
     public Entity getEntityReference(Relation relation, EntityReferencePropertyMethodMetadata metadata) {

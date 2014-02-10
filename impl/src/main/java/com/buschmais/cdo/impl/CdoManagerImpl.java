@@ -100,7 +100,9 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
         Entity entity = datastoreSession.createEntity(effectiveTypes, entityDiscriminators);
         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        return entityInstanceManager.writeInstance(entity);
+        CompositeObject instance = entityInstanceManager.createInstance(entity);
+        sessionContext.getInstanceListenerService().postCreate(instance);
+        return instance;
     }
 
     public <T> T create(Class<T> type) {
@@ -113,7 +115,9 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         AbstractRelationPropertyMethodMetadata<?> fromProperty = metadataProvider.getPropertyMetadata(from.getClass(), relationType, FROM);
         AbstractRelationPropertyMethodMetadata<?> toProperty = metadataProvider.getPropertyMetadata(to.getClass(), relationType, TO);
         Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(from);
-        return sessionContext.getEntityPropertyManager().createRelationReference(entity, fromProperty, to, toProperty);
+        R instance = sessionContext.getEntityPropertyManager().createRelationReference(entity, fromProperty, to, toProperty);
+        sessionContext.getInstanceListenerService().postCreate(instance);
+        return instance;
     }
 
     @Override
@@ -128,11 +132,11 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         Set<EntityDiscriminator> targetEntityDiscriminators = metadataProvider.getEntityDiscriminators(effectiveTargetTypes);
         datastoreSession.migrateEntity(entity, types, entityDiscriminators, effectiveTargetTypes, targetEntityDiscriminators);
         entityInstanceManager.removeInstance(instance);
-        CompositeObject migratedInstance = entityInstanceManager.writeInstance(entity);
+        CompositeObject migratedInstance = entityInstanceManager.updateInstance(entity);
         if (migrationStrategy != null) {
             migrationStrategy.migrate(instance, migratedInstance.as(targetType));
         }
-        entityInstanceManager.destroyInstance(instance);
+        entityInstanceManager.closeInstance(instance);
         return migratedInstance;
     }
 
@@ -158,14 +162,18 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
         if (entityInstanceManager.isInstance(instance)) {
             Entity entity = entityInstanceManager.getDatastoreType(instance);
+            sessionContext.getInstanceListenerService().preDelete(instance);
             datastoreSession.deleteEntity(entity);
             entityInstanceManager.removeInstance(instance);
-            entityInstanceManager.destroyInstance(instance);
+            entityInstanceManager.closeInstance(instance);
+            sessionContext.getInstanceListenerService().postDelete(instance);
         } else if (relationInstanceManager.isInstance(instance)) {
             Relation relation = relationInstanceManager.getDatastoreType(instance);
+            sessionContext.getInstanceListenerService().preDelete(instance);
             datastoreSession.getDatastorePropertyManager().deleteRelation(relation);
             relationInstanceManager.removeInstance(instance);
-            relationInstanceManager.destroyInstance(instance);
+            relationInstanceManager.closeInstance(instance);
+            sessionContext.getInstanceListenerService().postDelete(instance);
         } else {
             throw new CdoException(instance + " is not a managed CDO instance.");
         }

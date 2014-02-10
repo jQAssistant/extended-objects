@@ -15,7 +15,7 @@ public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Re
     private final ProxyMethodService<Relation, ?> proxyMethodService;
 
     public RelationInstanceManager(SessionContext<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> sessionContext) {
-        super(sessionContext.getRelationCache(), sessionContext.getProxyFactory());
+        super(sessionContext.getRelationCache(), sessionContext.getInstanceListenerService(), sessionContext.getProxyFactory());
         this.sessionContext = sessionContext;
         this.proxyMethodService = new RelationProxyMethodService<>(sessionContext);
     }

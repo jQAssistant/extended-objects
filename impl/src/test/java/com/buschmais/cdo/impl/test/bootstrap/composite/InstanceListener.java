@@ -7,31 +7,27 @@ import com.buschmais.cdo.api.annotation.*;
  */
 public class InstanceListener {
 
-    @PreCreate
-    public void preCreate() {
-    }
-
     @PostCreate
-    public void postCreate() {
+    public void postCreate(Object instance) {
     }
 
     @PreUpdate
-    public void preUpdate() {
+    public void preUpdate(Object instance) {
     }
 
     @PostUpdate
-    public void postUpdate() {
+    public void postUpdate(Object instance) {
     }
 
-    @PreRemove
-    public void preRemove() {
+    @PreDelete
+    public void preDelete(Object instance) {
     }
 
-    @PostRemove
-    public void postRemove() {
+    @PostDelete
+    public void postDelete(Object instance) {
     }
 
     @PostLoad
-    public void postLoad() {
+    public void postLoad(Object instance) {
     }
 }

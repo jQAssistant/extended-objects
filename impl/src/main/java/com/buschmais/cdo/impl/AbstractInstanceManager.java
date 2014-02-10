@@ -2,6 +2,7 @@ package com.buschmais.cdo.impl;
 
 import com.buschmais.cdo.api.CompositeObject;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
+import com.buschmais.cdo.impl.instancelistener.InstanceListenerService;
 import com.buschmais.cdo.impl.proxy.ProxyMethodService;
 import com.buschmais.cdo.impl.proxy.entity.InstanceInvocationHandler;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
@@ -16,7 +17,9 @@ import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
 
     private final TransactionalCache<DatastoreId> cache;
+    private final InstanceListenerService instanceListenerService;
     private final ProxyFactory proxyFactory;
+
 
     /**
      * Constructor.
@@ -24,8 +27,9 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      * @param cache        The transactional cache.
      * @param proxyFactory The proxy factory.
      */
-    public AbstractInstanceManager(TransactionalCache<DatastoreId> cache, ProxyFactory proxyFactory) {
+    public AbstractInstanceManager(TransactionalCache<DatastoreId> cache, InstanceListenerService instanceListenerService, ProxyFactory proxyFactory) {
         this.cache = cache;
+        this.instanceListenerService = instanceListenerService;
         this.proxyFactory = proxyFactory;
     }
 
@@ -47,7 +51,11 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      * @param <T>           The instance type.
      * @return The instance.
      */
-    public <T> T writeInstance(DatastoreType datastoreType) {
+    public <T> T createInstance(DatastoreType datastoreType) {
+        return getInstance(datastoreType, TransactionalCache.Mode.WRITE);
+    }
+
+    public <T> T updateInstance(DatastoreType datastoreType) {
         return getInstance(datastoreType, TransactionalCache.Mode.WRITE);
     }
 
@@ -66,6 +74,9 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
             InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(datastoreType, getProxyMethodService());
             instance = proxyFactory.createInstance(invocationHandler, types.toClasses(), CompositeObject.class);
             cache.put(id, instance, cacheMode);
+            if (TransactionalCache.Mode.READ.equals(cacheMode)) {
+                instanceListenerService.postLoad(instance);
+            }
         }
         return (T) instance;
     }
@@ -88,7 +99,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      * @param instance   The instance.
      * @param <Instance> The instance type.
      */
-    public <Instance> void destroyInstance(Instance instance) {
+    public <Instance> void closeInstance(Instance instance) {
         proxyFactory.getInvocationHandler(instance).close();
     }
 
@@ -125,7 +136,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      */
     public void close() {
         for (Object instance : cache.readInstances()) {
-            destroyInstance(instance);
+            closeInstance(instance);
         }
         cache.clear();
     }

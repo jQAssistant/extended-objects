@@ -28,7 +28,7 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     public void setProperty(Entity entity, PrimitivePropertyMethodMetadata metadata, Object value) {
         SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
         sessionContext.getDatastoreSession().getDatastorePropertyManager().setEntityProperty(entity, metadata, value);
-        sessionContext.getEntityInstanceManager().writeInstance(entity);
+        sessionContext.getEntityInstanceManager().updateInstance(entity);
     }
 
     @Override
@@ -45,14 +45,14 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     public void removeProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
         SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
         sessionContext.getDatastoreSession().getDatastorePropertyManager().removeEntityProperty(entity, metadata);
-        sessionContext.getEntityInstanceManager().writeInstance(entity);
+        sessionContext.getEntityInstanceManager().updateInstance(entity);
     }
 
     public <T> T createEntityReference(Entity sourceEntity, AbstractRelationPropertyMethodMetadata<?> metadata, Object target) {
         AbstractInstanceManager<?, Entity> instanceManager = getSessionContext().getEntityInstanceManager();
         Entity targetEntity = target != null ? instanceManager.getDatastoreType(target) : null;
         Relation relation = createRelation(sourceEntity, metadata, targetEntity, null);
-        return relation != null ? (T) instanceManager.writeInstance(getReferencedEntity(relation, metadata.getDirection())) : null;
+        return relation != null ? (T) instanceManager.updateInstance(getReferencedEntity(relation, metadata.getDirection())) : null;
     }
 
     public <T> T createRelationReference(Entity sourceEntity, AbstractRelationPropertyMethodMetadata<?> fromProperty, Object target, AbstractRelationPropertyMethodMetadata<?> toProperty) {
@@ -61,8 +61,9 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
         if (target != null) {
             Entity targetEntity = entityInstanceManager.getDatastoreType(target);
             Relation relation = createRelation(sourceEntity, fromProperty, targetEntity, toProperty);
-            entityInstanceManager.writeInstance(targetEntity);
-            return sessionContext.getRelationInstanceManager().writeInstance(relation);
+            entityInstanceManager.updateInstance(targetEntity);
+            T instance = sessionContext.getRelationInstanceManager().createInstance(relation);
+            return instance;
         }
         return null;
     }
@@ -134,14 +135,14 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
         SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
         DatastorePropertyManager<Entity, Relation, ?, ?, ? extends DatastoreRelationMetadata<?>> datastorePropertyManager = sessionContext.getDatastoreSession().getDatastorePropertyManager();
         AbstractInstanceManager<?, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        entityInstanceManager.writeInstance(source);
-        entityInstanceManager.writeInstance(getReferencedEntity(relation, metadata.getDirection()));
+        entityInstanceManager.updateInstance(source);
+        entityInstanceManager.updateInstance(getReferencedEntity(relation, metadata.getDirection()));
         datastorePropertyManager.deleteRelation(relation);
         AbstractInstanceManager<?, Relation> relationInstanceManager = getSessionContext().getRelationInstanceManager();
         if (metadata.getRelationshipMetadata().getAnnotatedType() != null) {
             Object instance = relationInstanceManager.readInstance(relation);
             relationInstanceManager.removeInstance(instance);
-            relationInstanceManager.destroyInstance(instance);
+            relationInstanceManager.closeInstance(instance);
         }
 
     }

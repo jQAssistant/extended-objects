@@ -44,6 +44,10 @@ public abstract class AbstractCdoManagerTest {
         return ConcurrencyMode.SINGLETHREADED;
     }
 
+    protected List<Class<?>> getInstanceListenerTypes() {
+        return Collections.emptyList();
+    }
+
     /**
      * Executes a createQuery and returns a {@link TestResult}.
      *

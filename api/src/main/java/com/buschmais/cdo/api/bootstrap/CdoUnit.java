@@ -46,7 +46,7 @@ public class CdoUnit {
      * @param concurrencyMode             The {@link com.buschmais.cdo.api.ConcurrencyMode} to use.
      * @param defaultTransactionAttribute The {@link com.buschmais.cdo.api.Transaction.TransactionAttribute} to use.
      * @param properties                  Additional properties to be passed to the provider.
-     * @param instanceListeners             The Entity listener types.
+     * @param instanceListeners           The instance listener types.
      */
     public CdoUnit(String name, String description, URI uri, Class<?> provider, Set<Class<?>> types, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties, List<Class<?>> instanceListeners) {
         this.name = name;
@@ -73,7 +73,7 @@ public class CdoUnit {
      * @param concurrencyMode             The {@link com.buschmais.cdo.api.ConcurrencyMode} to use.
      * @param defaultTransactionAttribute The {@link com.buschmais.cdo.api.Transaction.TransactionAttribute} to use.
      * @param properties                  Additional properties to be passed to the provider.
-     * @param instanceListeners             The Entity listener types.
+     * @param instanceListeners           The instance listener types.
      */
     public CdoUnit(String name, String description, URI uri, Class<?> provider, Class<?>[] types, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties, List<Class<?>> instanceListeners) {
         this(name, description, uri, provider, new HashSet<>(Arrays.asList(types)), validationMode, concurrencyMode, defaultTransactionAttribute, properties, instanceListeners);

@@ -73,7 +73,7 @@ public class CdoManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Data
     @Override
     public CdoManager createCdoManager() {
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = datastore.createSession();
-        SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext = new SessionContext<>(metadataProvider, datastoreSession, validatorFactory, defaultTransactionAttribute, concurrencyMode, classLoader);
+        SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext = new SessionContext<>(metadataProvider, datastoreSession, validatorFactory, cdoUnit.getInstanceListeners(), defaultTransactionAttribute, concurrencyMode, classLoader);
         CdoManagerImpl<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> cdoManager = new CdoManagerImpl<>(sessionContext);
         return sessionContext.getInterceptorFactory().addInterceptor(cdoManager);
     }

@@ -12,7 +12,7 @@ public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extend
     private final ProxyMethodService<Entity, ?> proxyMethodService;
 
     public EntityInstanceManager(SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?> sessionContext) {
-        super(sessionContext.getEntityCache(), sessionContext.getProxyFactory());
+        super(sessionContext.getEntityCache(), sessionContext.getInstanceListenerService(), sessionContext.getProxyFactory());
         this.sessionContext = sessionContext;
         this.proxyMethodService = new EntityProxyMethodService<>(sessionContext);
     }
