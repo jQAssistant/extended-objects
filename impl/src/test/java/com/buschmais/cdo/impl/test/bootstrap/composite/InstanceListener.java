@@ -3,9 +3,9 @@ package com.buschmais.cdo.impl.test.bootstrap.composite;
 import com.buschmais.cdo.api.annotation.*;
 
 /**
- * Test implementation of an entity listener.
+ * Test implementation of an instance listener.
  */
-public class EntityListener {
+public class InstanceListener {
 
     @PreCreate
     public void preCreate() {

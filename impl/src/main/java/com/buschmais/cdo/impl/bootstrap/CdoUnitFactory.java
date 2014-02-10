@@ -101,15 +101,15 @@ public class CdoUnitFactory {
                     properties.setProperty(propertyType.getName(), propertyType.getValue());
                 }
             }
-            List<Class<?>> entityListeners = new ArrayList<>();
-            EntityListenersType entityListenersType = cdoUnitType.getEntityListeners();
-            if (entityListenersType != null) {
-                for (String entityListenerName : entityListenersType.getEntityListener()) {
-                    entityListeners.add(ClassHelper.getType(entityListenerName));
+            List<Class<?>> instanceListeners = new ArrayList<>();
+            InstanceListenersType instanceListenersType = cdoUnitType.getInstanceListeners();
+            if (instanceListenersType != null) {
+                for (String instanceListenerName : instanceListenersType.getInstanceListener()) {
+                    instanceListeners.add(ClassHelper.getType(instanceListenerName));
                 }
 
             }
-            CdoUnit cdoUnit = new CdoUnit(name, description, uri, provider, types, validationMode, concurrencyMode, defaultTransactionAttribute, properties, entityListeners);
+            CdoUnit cdoUnit = new CdoUnit(name, description, uri, provider, types, validationMode, concurrencyMode, defaultTransactionAttribute, properties, instanceListeners);
             cdoUnits.add(cdoUnit);
         }
         return cdoUnits;

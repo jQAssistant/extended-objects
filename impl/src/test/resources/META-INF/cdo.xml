@@ -12,9 +12,9 @@
         <properties>
             <property name="foo" value="bar"/>
         </properties>
-        <entity-listeners>
-            <entity-listener>com.buschmais.cdo.impl.test.bootstrap.composite.EntityListener</entity-listener>
-        </entity-listeners>
+        <instance-listeners>
+            <instance-listener>com.buschmais.cdo.impl.test.bootstrap.composite.InstanceListener</instance-listener>
+        </instance-listeners>
     </cdo-unit>
     <cdo-unit name="testUnitWithBlankOptionals">
         <url>file://foo</url>
