@@ -4,6 +4,8 @@ import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.api.CdoManagerFactory;
 import com.buschmais.cdo.api.ConcurrencyMode;
 import com.buschmais.cdo.api.Transaction;
+import com.buschmais.cdo.api.bootstrap.Cdo;
+import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import org.junit.After;
 import org.junit.Before;
 
@@ -20,11 +22,12 @@ public abstract class AbstractCdoManagerTest {
 
     @Before
     public void createCdoManagerFactory() throws URISyntaxException {
-        cdoManagerFactory = getNeo4jCdoManagerFactory(getTypes());
+        CdoUnit cdoUnit = getCdoUnit(getTypes());
+        cdoManagerFactory = Cdo.createCdoManagerFactory(cdoUnit);
         dropDatabase();
     }
 
-    protected abstract CdoManagerFactory getNeo4jCdoManagerFactory(Class<?>[] types) throws URISyntaxException;
+    protected abstract CdoUnit getCdoUnit(Class<?>[] types) throws URISyntaxException;
 
     protected abstract Class<?>[] getTypes();
 
