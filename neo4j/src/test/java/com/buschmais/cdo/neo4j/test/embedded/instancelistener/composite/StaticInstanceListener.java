@@ -5,7 +5,7 @@ import com.buschmais.cdo.api.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InstanceListener {
+public class StaticInstanceListener {
 
     private static final List<Object> postCreate = new ArrayList<>();
 

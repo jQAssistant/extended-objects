@@ -191,6 +191,15 @@ public interface CdoManager extends AutoCloseable {
     void flush();
 
     /**
+     * Register an instance listener containing life cycle methods (e.g. annotated with {@link com.buschmais.cdo.api.annotation.PostCreate}.
+     *
+     * @param instanceListener The instance listener.
+     * @param <I>              The instance listener type.
+     */
+    @Transaction(NOT_SUPPORTED)
+    <I> void registerInstanceListener(I instanceListener);
+
+    /**
      * Defines the interface of strategies for migration between different composite object types.
      *
      * @param <T> The instance type.

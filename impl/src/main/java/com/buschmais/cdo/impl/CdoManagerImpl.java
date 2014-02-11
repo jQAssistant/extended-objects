@@ -225,6 +225,11 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
         sessionContext.getCacheSynchronizationService().flush();
     }
 
+    @Override
+    public <I> void registerInstanceListener(I instanceListener) {
+        sessionContext.getInstanceListenerService().registerInstanceListener(instanceListener);
+    }
+
     private TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getEffectiveTypes(Class<?> type, Class<?>... types) {
         MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = new TypeMetadataSet<>();
