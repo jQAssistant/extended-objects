@@ -1,20 +1,25 @@
 package com.buschmais.cdo.neo4j.test.embedded.relation.qualified.composite;
 
+import com.buschmais.cdo.neo4j.api.annotation.Label;
+
 import java.util.List;
 
-import static com.buschmais.cdo.neo4j.api.annotation.Relation.Outgoing;
+import static com.buschmais.cdo.neo4j.api.annotation.Relation.Incoming;
 
+@Label
 public interface B {
 
-    @Outgoing
+    @Incoming
     @OneToOne
     A getOneToOne();
 
-    @Outgoing
+    void setOneToOne(A a);
+
+    @Incoming
     @OneToMany
     A getManyToOne();
 
-    @Outgoing
+    @Incoming
     @ManyToMany
     List<A> getManyToMany();
 

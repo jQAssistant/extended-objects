@@ -1,4 +1,4 @@
-package com.buschmais.cdo.neo4j.test.embedded.relation.composite;
+package com.buschmais.cdo.neo4j.test.embedded.relation.typed.composite;
 
 public interface TypedRelation {
 
