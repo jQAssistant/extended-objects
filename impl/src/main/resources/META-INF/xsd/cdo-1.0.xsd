@@ -25,11 +25,11 @@
             <xs:element name="url" type="xs:anyURI" minOccurs="0"/>
             <xs:element name="provider" type="cdo:NonEmptyStringType" minOccurs="1"/>
             <xs:element name="types" type="cdo:TypesType" minOccurs="1"/>
+            <xs:element name="instance-listeners" type="cdo:InstanceListenersType" minOccurs="0"/>
             <xs:element name="validation-mode" type="cdo:ValidationModeType" minOccurs="0"/>
             <xs:element name="concurrency-mode" type="cdo:ConcurrencyModeType" minOccurs="0"/>
             <xs:element name="default-transaction-attribute" type="cdo:TransactionAttributeType" minOccurs="0"/>
             <xs:element name="properties" type="cdo:PropertiesType" minOccurs="0"/>
-            <xs:element name="instance-listeners" type="cdo:InstanceListenersType" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="name" use="required"/>
     </xs:complexType>
@@ -37,6 +37,12 @@
     <xs:complexType name="TypesType">
         <xs:sequence>
             <xs:element name="type" type="cdo:NonEmptyStringType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="InstanceListenersType">
+        <xs:sequence>
+            <xs:element name="instance-listener" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -77,11 +83,4 @@
         <xs:attribute name="name" use="required"/>
         <xs:attribute name="value" use="required"/>
     </xs:complexType>
-
-    <xs:complexType name="InstanceListenersType">
-        <xs:sequence>
-            <xs:element name="instance-listener" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
 </xs:schema>

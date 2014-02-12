@@ -24,7 +24,7 @@ public abstract class AbstractRestCdoManagerTest extends AbstractCdoManagerTest 
     @Override
     protected CdoUnit getCdoUnit(Class<?>[] types) throws URISyntaxException {
         return new CdoUnit("rest", "REST CDO unit", new URI("http://localhost:7474/db/data"),
-                Neo4jCdoProvider.class, types, ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, getTransactionAttribute(), new Properties(), Collections.<Class<?>>emptyList());
+                Neo4jCdoProvider.class, types, Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, getTransactionAttribute(), new Properties());
     }
 
     @BeforeClass

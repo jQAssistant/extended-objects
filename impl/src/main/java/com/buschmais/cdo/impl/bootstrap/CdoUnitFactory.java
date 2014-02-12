@@ -91,6 +91,13 @@ public class CdoUnitFactory {
             for (String typeName : cdoUnitType.getTypes().getType()) {
                 types.add(ClassHelper.getType(typeName));
             }
+            List<Class<?>> instanceListeners = new ArrayList<>();
+            InstanceListenersType instanceListenersType = cdoUnitType.getInstanceListeners();
+            if (instanceListenersType != null) {
+                for (String instanceListenerName : instanceListenersType.getInstanceListener()) {
+                    instanceListeners.add(ClassHelper.getType(instanceListenerName));
+                }
+            }
             ValidationMode validationMode = getValidationMode(cdoUnitType.getValidationMode());
             ConcurrencyMode concurrencyMode = getConcurrencyMode(cdoUnitType.getConcurrencyMode());
             Transaction.TransactionAttribute defaultTransactionAttribute = getTransactionAttribute(cdoUnitType.getDefaultTransactionAttribute());
@@ -101,15 +108,7 @@ public class CdoUnitFactory {
                     properties.setProperty(propertyType.getName(), propertyType.getValue());
                 }
             }
-            List<Class<?>> instanceListeners = new ArrayList<>();
-            InstanceListenersType instanceListenersType = cdoUnitType.getInstanceListeners();
-            if (instanceListenersType != null) {
-                for (String instanceListenerName : instanceListenersType.getInstanceListener()) {
-                    instanceListeners.add(ClassHelper.getType(instanceListenerName));
-                }
-
-            }
-            CdoUnit cdoUnit = new CdoUnit(name, description, uri, provider, types, validationMode, concurrencyMode, defaultTransactionAttribute, properties, instanceListeners);
+            CdoUnit cdoUnit = new CdoUnit(name, description, uri, provider, types, instanceListeners, validationMode, concurrencyMode, defaultTransactionAttribute, properties);
             cdoUnits.add(cdoUnit);
         }
         return cdoUnits;

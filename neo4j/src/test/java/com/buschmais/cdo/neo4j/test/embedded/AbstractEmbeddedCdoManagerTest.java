@@ -14,7 +14,7 @@ public abstract class AbstractEmbeddedCdoManagerTest extends AbstractCdoManagerT
     @Override
     protected CdoUnit getCdoUnit(Class<?>[] types) throws URISyntaxException {
         return new CdoUnit("embedded", "Embedded CDO unit", new URI("memory:///"), Neo4jCdoProvider.class,
-                types, ValidationMode.AUTO, getConcurrencyMode(), getTransactionAttribute(), new Properties(), getInstanceListenerTypes());
+                types, getInstanceListenerTypes(), ValidationMode.AUTO, getConcurrencyMode(), getTransactionAttribute(), new Properties());
     }
 
 }

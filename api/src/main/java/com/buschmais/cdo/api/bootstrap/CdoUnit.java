@@ -24,6 +24,8 @@ public class CdoUnit {
 
     private final Set<Class<?>> types;
 
+    private final List<Class<?>> instanceListeners;
+
     private final ValidationMode validationMode;
 
     private final ConcurrencyMode concurrencyMode;
@@ -32,7 +34,6 @@ public class CdoUnit {
 
     private final Properties properties;
 
-    private final List<Class<?>> instanceListeners;
 
     /**
      * Constructs a CDO unit.
@@ -42,13 +43,13 @@ public class CdoUnit {
      * @param uri                         The datastore specific URI.
      * @param provider                    The provider class to use.
      * @param types                       The entity types to register.
+     * @param instanceListeners           The instance listener types.
      * @param validationMode              The {@link com.buschmais.cdo.api.ValidationMode} to use.
      * @param concurrencyMode             The {@link com.buschmais.cdo.api.ConcurrencyMode} to use.
      * @param defaultTransactionAttribute The {@link com.buschmais.cdo.api.Transaction.TransactionAttribute} to use.
      * @param properties                  Additional properties to be passed to the provider.
-     * @param instanceListeners           The instance listener types.
      */
-    public CdoUnit(String name, String description, URI uri, Class<?> provider, Set<Class<?>> types, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties, List<Class<?>> instanceListeners) {
+    public CdoUnit(String name, String description, URI uri, Class<?> provider, Set<Class<?>> types, List<Class<?>> instanceListeners, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
         this.name = name;
         this.description = description;
         this.uri = uri;
@@ -69,14 +70,14 @@ public class CdoUnit {
      * @param uri                         The datastore specific URI.
      * @param provider                    The provider class to use.
      * @param types                       The entity types to register.
+     * @param instanceListeners           The instance listener types.
      * @param validationMode              The {@link com.buschmais.cdo.api.ValidationMode} to use.
      * @param concurrencyMode             The {@link com.buschmais.cdo.api.ConcurrencyMode} to use.
      * @param defaultTransactionAttribute The {@link com.buschmais.cdo.api.Transaction.TransactionAttribute} to use.
      * @param properties                  Additional properties to be passed to the provider.
-     * @param instanceListeners           The instance listener types.
      */
-    public CdoUnit(String name, String description, URI uri, Class<?> provider, Class<?>[] types, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties, List<Class<?>> instanceListeners) {
-        this(name, description, uri, provider, new HashSet<>(Arrays.asList(types)), validationMode, concurrencyMode, defaultTransactionAttribute, properties, instanceListeners);
+    public CdoUnit(String name, String description, URI uri, Class<?> provider, Class<?>[] types, List<Class<?>> instanceListeners, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
+        this(name, description, uri, provider, new HashSet<>(Arrays.asList(types)), instanceListeners, validationMode, concurrencyMode, defaultTransactionAttribute, properties);
     }
 
     public String getName() {

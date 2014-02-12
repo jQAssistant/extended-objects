@@ -6,15 +6,15 @@
         <types>
             <type>com.buschmais.cdo.impl.test.bootstrap.composite.A</type>
         </types>
+        <instance-listeners>
+            <instance-listener>com.buschmais.cdo.impl.test.bootstrap.composite.InstanceListener</instance-listener>
+        </instance-listeners>
         <validation-mode>NONE</validation-mode>
         <concurrency-mode>MULTITHREADED</concurrency-mode>
         <default-transaction-attribute>MANDATORY</default-transaction-attribute>
         <properties>
             <property name="foo" value="bar"/>
         </properties>
-        <instance-listeners>
-            <instance-listener>com.buschmais.cdo.impl.test.bootstrap.composite.InstanceListener</instance-listener>
-        </instance-listeners>
     </cdo-unit>
     <cdo-unit name="testUnitWithBlankOptionals">
         <url>file://foo</url>
