@@ -21,6 +21,9 @@ import org.neo4j.graphdb.DynamicRelationshipType;
 
 import java.util.Map;
 
+/**
+ * {@link com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory} implementation for Neo4j datastores.
+ */
 public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label, RelationshipMetadata, Neo4jRelationshipType> {
 
     @Override
@@ -59,7 +62,7 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
     }
 
     @Override
-    public PropertyMetadata createPrimitivePropertyMetadata(PropertyMethod propertyMethod) {
+    public PropertyMetadata createPropertyMetadata(PropertyMethod propertyMethod) {
         Property property = propertyMethod.getAnnotationOfProperty(Property.class);
         String name = property != null ? property.value() : propertyMethod.getName();
         return new PropertyMetadata(name);
@@ -73,13 +76,22 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
 
     @Override
     public RelationshipMetadata createRelationMetadata(AnnotatedElement<?> annotatedElement, Map<Class<?>, TypeMetadata> metadataByType) {
-        Relation relation;
+        Relation relationAnnotation;
         if (annotatedElement instanceof PropertyMethod) {
-            relation = ((PropertyMethod) annotatedElement).getAnnotationOfProperty(Relation.class);
+            relationAnnotation = ((PropertyMethod) annotatedElement).getAnnotationOfProperty(Relation.class);
         } else {
-            relation = annotatedElement.getAnnotation(Relation.class);
+            relationAnnotation = annotatedElement.getAnnotation(Relation.class);
         }
-        String name = relation != null ? relation.value() : StringUtils.capitalize(annotatedElement.getName());
+        String name = null;
+        if (relationAnnotation != null) {
+            String value = relationAnnotation.value();
+            if (!Relation.DEFAULT_VALUE.equals(value)) {
+                name = value;
+            }
+        }
+        if (name == null) {
+            name = StringUtils.capitalize(annotatedElement.getName());
+        }
         Neo4jRelationshipType relationshipType = new Neo4jRelationshipType(DynamicRelationshipType.withName(name));
         return new RelationshipMetadata(relationshipType);
     }

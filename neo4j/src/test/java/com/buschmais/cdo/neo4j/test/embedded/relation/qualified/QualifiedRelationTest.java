@@ -29,7 +29,7 @@ public class QualifiedRelationTest extends AbstractEmbeddedCdoManagerTest {
         cdoManager.currentTransaction().begin();
         assertThat(a.getOneToOne(), equalTo(b1));
         assertThat(b1.getOneToOne(), equalTo(a));
-        assertThat(executeQuery("MATCH (a:A)-[:QualifiedOneToOne]->(b:B) RETURN b").getColumn("b"), hasItem(b1));
+        assertThat(executeQuery("MATCH (a:A)-[:OneToOne]->(b:B) RETURN b").getColumn("b"), hasItem(b1));
         B b2 = cdoManager.create(B.class);
         a.setOneToOne(b2);
         cdoManager.currentTransaction().commit();
@@ -37,7 +37,7 @@ public class QualifiedRelationTest extends AbstractEmbeddedCdoManagerTest {
         assertThat(a.getOneToOne(), equalTo(b2));
         assertThat(b2.getOneToOne(), equalTo(a));
         assertThat(b1.getOneToOne(), equalTo(null));
-        assertThat(executeQuery("MATCH (a:A)-[:QualifiedOneToOne]->(b:B) RETURN b").getColumn("b"), hasItem(b2));
+        assertThat(executeQuery("MATCH (a:A)-[:OneToOne]->(b:B) RETURN b").getColumn("b"), hasItem(b2));
         a.setOneToOne(null);
         cdoManager.currentTransaction().commit();
         cdoManager.currentTransaction().begin();
@@ -61,7 +61,7 @@ public class QualifiedRelationTest extends AbstractEmbeddedCdoManagerTest {
         assertThat(a.getOneToMany(), hasItems(b1, b2));
         assertThat(b1.getManyToOne(), equalTo(a));
         assertThat(b2.getManyToOne(), equalTo(a));
-        assertThat(executeQuery("MATCH (a:A)-[:QualifiedOneToMany]->(b:B) RETURN b").<B>getColumn("b"), hasItems(b1, b2));
+        assertThat(executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN b").<B>getColumn("b"), hasItems(b1, b2));
         a.getOneToMany().remove(b1);
         a.getOneToMany().remove(b2);
         B b3 = cdoManager.create(B.class);
@@ -75,7 +75,7 @@ public class QualifiedRelationTest extends AbstractEmbeddedCdoManagerTest {
         assertThat(b2.getManyToOne(), equalTo(null));
         assertThat(b3.getManyToOne(), equalTo(a));
         assertThat(b4.getManyToOne(), equalTo(a));
-        assertThat(executeQuery("MATCH (a:A)-[:QualifiedOneToMany]->(b:B) RETURN b").<B>getColumn("b"), hasItems(b3, b4));
+        assertThat(executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN b").<B>getColumn("b"), hasItems(b3, b4));
         cdoManager.currentTransaction().commit();
     }
 
@@ -97,8 +97,8 @@ public class QualifiedRelationTest extends AbstractEmbeddedCdoManagerTest {
         assertThat(a2.getManyToMany(), hasItems(b1, b2));
         assertThat(b1.getManyToMany(), hasItems(a1, a2));
         assertThat(b2.getManyToMany(), hasItems(a1, a2));
-        assertThat(executeQuery("MATCH (a:A)-[:QualifiedManyToMany]->(b:B) RETURN a, collect(b) as listOfB ORDER BY ID(a)").<A>getColumn("a"), hasItems(a1, a2));
-        assertThat(executeQuery("MATCH (a:A)-[:QualifiedManyToMany]->(b:B) RETURN a, collect(b) as listOfB ORDER BY ID(a)").<Iterable<B>>getColumn("listOfB"), hasItems(hasItems(b1, b2), hasItems(b1, b2)));
+        assertThat(executeQuery("MATCH (a:A)-[:ManyToMany]->(b:B) RETURN a, collect(b) as listOfB ORDER BY ID(a)").<A>getColumn("a"), hasItems(a1, a2));
+        assertThat(executeQuery("MATCH (a:A)-[:ManyToMany]->(b:B) RETURN a, collect(b) as listOfB ORDER BY ID(a)").<Iterable<B>>getColumn("listOfB"), hasItems(hasItems(b1, b2), hasItems(b1, b2)));
         a1.getManyToMany().remove(b1);
         a2.getManyToMany().remove(b1);
         cdoManager.currentTransaction().commit();

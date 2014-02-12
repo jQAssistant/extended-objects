@@ -35,7 +35,7 @@ public class JsonMetadataFactory implements DatastoreMetadataFactory<JsonNodeMet
     }
 
     @Override
-    public <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPrimitivePropertyMetadata(PropertyMethod propertyMethod) {
+    public <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPropertyMetadata(PropertyMethod propertyMethod) {
         return null;
     }
 

@@ -48,7 +48,7 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
             }
 
             @Override
-            public <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPrimitivePropertyMetadata(PropertyMethod propertyMethod) {
+            public <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPropertyMetadata(PropertyMethod propertyMethod) {
                 return null;
             }
 

@@ -59,7 +59,7 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * @param propertyMethod The method.
      * @return An instance of datastore specific method metadata.
      */
-    <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPrimitivePropertyMetadata(PropertyMethod propertyMethod);
+    <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPropertyMetadata(PropertyMethod propertyMethod);
 
     /**
      * Create the datastore specific metadata for a property representing an indexed property.

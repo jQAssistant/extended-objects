@@ -382,7 +382,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 throw new CdoException("Unsupported type for reference property: " + propertyType.getName());
             }
         } else {
-            methodMetadata = new PrimitivePropertyMethodMetadata<>(propertyMethod, metadataFactory.createPrimitivePropertyMetadata(propertyMethod));
+            methodMetadata = new PrimitivePropertyMethodMetadata<>(propertyMethod, metadataFactory.createPropertyMetadata(propertyMethod));
         }
         return methodMetadata;
     }

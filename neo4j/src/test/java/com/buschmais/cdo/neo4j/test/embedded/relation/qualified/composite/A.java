@@ -10,17 +10,17 @@ import static com.buschmais.cdo.neo4j.api.annotation.Relation.Outgoing;
 public interface A {
 
     @Outgoing
-    @OneToOne
+    @QualifiedOneToOne
     B getOneToOne();
 
     void setOneToOne(B b);
 
     @Outgoing
-    @OneToMany
+    @QualifiedOneToMany
     List<B> getOneToMany();
 
     @Outgoing
-    @ManyToMany
+    @QualifiedManyToMany
     List<B> getManyToMany();
 
 }

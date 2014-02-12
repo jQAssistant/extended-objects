@@ -5,7 +5,7 @@ import com.buschmais.cdo.neo4j.api.annotation.Relation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@Relation("QualifiedManyToMany")
+@Relation("OneToMany")
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ManyToMany {
+public @interface QualifiedOneToMany {
 }
