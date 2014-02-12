@@ -19,23 +19,28 @@ public class CacheSynchronizationService<Entity, Relation> {
     }
 
     public void flush() {
-        Set<ConstraintViolation<Object>> constraintViolations = sessionContext.getInstanceValidator().validate();
-        if (!constraintViolations.isEmpty()) {
-            throw new ConstraintViolationException(constraintViolations);
-        }
         DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?> datastoreSession = sessionContext.getDatastoreSession();
         InstanceListenerService instanceListenerService = sessionContext.getInstanceListenerService();
         for (Object instance : sessionContext.getRelationCache().writtenInstances()) {
             Relation relation = sessionContext.getRelationInstanceManager().getDatastoreType(instance);
             instanceListenerService.preUpdate(instance);
+            validateInstance(instance);
             datastoreSession.flushRelation(relation);
             instanceListenerService.postUpdate(instance);
         }
         for (Object instance : sessionContext.getEntityCache().writtenInstances()) {
             Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(instance);
             instanceListenerService.preUpdate(instance);
+            validateInstance(instance);
             datastoreSession.flushEntity(entity);
             instanceListenerService.postUpdate(instance);
+        }
+    }
+
+    private void validateInstance(Object instance) {
+        Set<ConstraintViolation<Object>> constraintViolations = sessionContext.getInstanceValidationService().validate(instance);
+        if (!constraintViolations.isEmpty()) {
+            throw new ConstraintViolationException(constraintViolations);
         }
     }
 }

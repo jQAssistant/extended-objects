@@ -7,7 +7,7 @@ import com.buschmais.cdo.impl.cache.CacheSynchronizationService;
 import com.buschmais.cdo.impl.cache.TransactionalCache;
 import com.buschmais.cdo.impl.instancelistener.InstanceListenerService;
 import com.buschmais.cdo.impl.interceptor.InterceptorFactory;
-import com.buschmais.cdo.impl.validation.InstanceValidator;
+import com.buschmais.cdo.impl.validation.InstanceValidationService;
 import com.buschmais.cdo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
@@ -37,7 +37,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
     private final InstanceListenerService instanceListenerService;
     private final TransactionalCache<EntityId> entityCache;
     private final TransactionalCache<RelationId> relationCache;
-    private final InstanceValidator instanceValidator;
+    private final InstanceValidationService instanceValidationService;
     private final CacheSynchronizationService<Entity, Relation> cacheSynchronizationService;
     private final CdoTransactionImpl cdoTransaction;
     private final EntityPropertyManager<Entity, Relation> entityPropertyManager;
@@ -59,7 +59,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.relationPropertyManager = new RelationPropertyManager<>(this);
         this.relationInstanceManager = new RelationInstanceManager<>(this);
         this.entityInstanceManager = new EntityInstanceManager<>(this);
-        this.instanceValidator = new InstanceValidator(validatorFactory, relationCache, entityCache);
+        this.instanceValidationService = new InstanceValidationService(validatorFactory, relationCache, entityCache);
         this.cacheSynchronizationService = new CacheSynchronizationService<>(this);
         // Register default synchronizations.
         cdoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(cacheSynchronizationService, entityCache, relationCache));
@@ -89,8 +89,8 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         return relationCache;
     }
 
-    public InstanceValidator getInstanceValidator() {
-        return instanceValidator;
+    public InstanceValidationService getInstanceValidationService() {
+        return instanceValidationService;
     }
 
     public CacheSynchronizationService<Entity, Relation> getCacheSynchronizationService() {

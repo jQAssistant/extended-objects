@@ -51,7 +51,7 @@ public class CdoManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     @Override
     public Set<ConstraintViolation<Object>> validate() {
-        return sessionContext.getInstanceValidator().validate();
+        return sessionContext.getInstanceValidationService().validate();
     }
 
     @Override

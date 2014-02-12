@@ -10,22 +10,22 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class InstanceValidator {
+public class InstanceValidationService {
 
     private final ValidatorFactory validatorFactory;
 
     private final TransactionalCache<?>[] caches;
 
-    public InstanceValidator(ValidatorFactory validatorFactory, TransactionalCache<?>... caches) {
+    public InstanceValidationService(ValidatorFactory validatorFactory, TransactionalCache<?>... caches) {
         this.validatorFactory = validatorFactory;
         this.caches = caches;
     }
 
     public Set<ConstraintViolation<Object>> validate() {
-        if (validatorFactory == null) {
+        Validator validator = getValidator();
+        if (validator == null) {
             return Collections.emptySet();
         }
-        Validator validator = validatorFactory.getValidator();
         Set<ConstraintViolation<Object>> violations = new HashSet<>();
         for (TransactionalCache<?> cache : caches) {
             for (Object instance : new ArrayList<>(cache.writtenInstances())) {
@@ -34,4 +34,14 @@ public class InstanceValidator {
         }
         return violations;
     }
+
+    public Set<ConstraintViolation<Object>> validate(Object instance) {
+        Validator validator = getValidator();
+        return validator != null ? validator.validate(instance) : Collections.<ConstraintViolation<Object>>emptySet();
+    }
+
+    private Validator getValidator() {
+        return validatorFactory != null ? validatorFactory.getValidator() : null;
+    }
+
 }

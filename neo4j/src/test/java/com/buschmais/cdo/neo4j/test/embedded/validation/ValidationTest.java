@@ -1,6 +1,7 @@
 package com.buschmais.cdo.neo4j.test.embedded.validation;
 
 import com.buschmais.cdo.api.CdoManager;
+import com.buschmais.cdo.api.annotation.PreUpdate;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.validation.composite.A;
 import com.buschmais.cdo.neo4j.test.embedded.validation.composite.B;
@@ -45,7 +46,7 @@ public class ValidationTest extends AbstractEmbeddedCdoManagerTest {
         CdoManager cdoManager = getCdoManager();
         cdoManager.currentTransaction().begin();
         B b = cdoManager.create(B.class);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 2; i++) {
             A a = cdoManager.create(A.class);
             a.setName("Miller");
             a.setB(b);
@@ -64,8 +65,32 @@ public class ValidationTest extends AbstractEmbeddedCdoManagerTest {
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
         }
-        assertThat(constraintViolations.size(), equalTo(100));
+        assertThat(constraintViolations.size(), equalTo(1));
         cdoManager.currentTransaction().rollback();
     }
 
+    @Test
+    public void validationAfterPreUpdate() {
+        CdoManager cdoManager = getCdoManager();
+        cdoManager.currentTransaction().begin();
+        B b = cdoManager.create(B.class);
+        A a = cdoManager.create(A.class);
+        a.setB(b);
+        Set<ConstraintViolation<?>> constraintViolations = null;
+        try {
+            cdoManager.currentTransaction().commit();
+        } catch (ConstraintViolationException e) {
+            constraintViolations = e.getConstraintViolations();
+        }
+        assertThat(constraintViolations.size(), equalTo(1));
+        cdoManager.registerInstanceListener(new InstanceListener());
+        cdoManager.currentTransaction().commit();
+    }
+
+    public static final class InstanceListener {
+        @PreUpdate
+        public void setName(A instance) {
+            instance.setName("Miller");
+        }
+    }
 }
