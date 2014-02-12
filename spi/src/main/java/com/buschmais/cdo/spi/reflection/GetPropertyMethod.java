@@ -25,4 +25,14 @@ public class GetPropertyMethod extends AbstractPropertyMethod {
         return getAnnotation(type);
     }
 
+    @Override
+    public <T extends Annotation> T getByMetaAnnotationOfProperty(Class<T> type) {
+        return getByMetaAnnotation(type);
+    }
+
+    @Override
+    public Annotation[] getAnnotationsOfProperty() {
+        return getAnnotations();
+    }
+
 }

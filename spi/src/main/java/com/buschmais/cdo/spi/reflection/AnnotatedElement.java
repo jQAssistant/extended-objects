@@ -35,6 +35,13 @@ public interface AnnotatedElement<AE extends java.lang.reflect.AnnotatedElement>
     <T extends Annotation, M extends Annotation> T getByMetaAnnotation(Class<M> metaAnnotation);
 
     /**
+     * Return the declared annotations of the element.
+     *
+     * @return The declared annotations.
+     */
+    Annotation[] getAnnotations();
+
+    /**
      * Return the name of the annotated element, e.g. the simple name of a class or method.
      *
      * @return The name of the annotated element.

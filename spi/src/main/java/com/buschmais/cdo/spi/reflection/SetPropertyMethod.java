@@ -26,10 +26,16 @@ public class SetPropertyMethod extends AbstractPropertyMethod {
 
     @Override
     public <T extends Annotation> T getAnnotationOfProperty(Class<T> type) {
-        T annotation = getAnnotation(type);
-        if (annotation == null) {
-            annotation = getter.getAnnotation(type);
-        }
-        return annotation;
+        return getter.getAnnotation(type);
+    }
+
+    @Override
+    public <T extends Annotation> T getByMetaAnnotationOfProperty(Class<T> type) {
+        return getter.getByMetaAnnotation(type);
+    }
+
+    @Override
+    public Annotation[] getAnnotationsOfProperty() {
+        return getter.getAnnotationsOfProperty();
     }
 }

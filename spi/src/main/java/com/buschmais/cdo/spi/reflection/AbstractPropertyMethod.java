@@ -41,4 +41,6 @@ public abstract class AbstractPropertyMethod extends AbstractAnnotatedElement<Me
     }
 
     public abstract <T extends Annotation> T getAnnotationOfProperty(Class<T> type);
+
+    public abstract <T extends Annotation> T getByMetaAnnotationOfProperty(Class<T> type);
 }

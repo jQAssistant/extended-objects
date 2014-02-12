@@ -334,6 +334,13 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         return methodMetadataOfType;
     }
 
+    /**
+     * Create the {@link MethodMetadata} for a property method.
+     *
+     * @param annotatedType  The annotated type containing the property.
+     * @param propertyMethod The property method.
+     * @return The {@link MethodMetadata}.
+     */
     private MethodMetadata<?, ?> createPropertyMethodMetadata(AnnotatedType annotatedType, PropertyMethod propertyMethod) {
         MethodMetadata<?, ?> methodMetadata;
         Class<?> propertyType = propertyMethod.getType();
@@ -344,7 +351,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             AnnotatedType annotatedTypeArgument = new AnnotatedType(typeArgument);
             if (isEntityType(annotatedTypeArgument)) {
                 RelationTypeMetadata.Direction relationDirection = metadataFactory.getRelationDirection(propertyMethod);
-                RelationTypeMetadata relationshipType = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(propertyMethod, metadataByType));
+                com.buschmais.cdo.spi.reflection.AnnotatedElement<?> relationElement = getRelationDefinitionElement(propertyMethod);
+                RelationTypeMetadata relationshipType = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(relationElement, metadataByType));
                 methodMetadata = new EntityCollectionPropertyMethodMetadata<>(propertyMethod, relationshipType, relationDirection,
                         metadataFactory.createCollectionPropertyMetadata(propertyMethod));
             } else if (isRelationType(annotatedTypeArgument)) {
@@ -362,7 +370,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             RelationTypeMetadata<RelationMetadata> relationMetadata;
             if (isEntityType(referencedType)) {
                 relationDirection = metadataFactory.getRelationDirection(propertyMethod);
-                relationMetadata = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(propertyMethod, metadataByType));
+                com.buschmais.cdo.spi.reflection.AnnotatedElement<?> relationElement = getRelationDefinitionElement(propertyMethod);
+                relationMetadata = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(relationElement, metadataByType));
                 methodMetadata = new EntityReferencePropertyMethodMetadata<>(propertyMethod, relationMetadata, relationDirection, metadataFactory.createReferencePropertyMetadata(propertyMethod));
             } else if (isRelationType(referencedType)) {
                 TypeMetadata propertyTypeMetadata = getOrCreateTypeMetadata(propertyType);
@@ -390,6 +399,33 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         return relationDirection;
     }
 
+    /**
+     * Determines the {@link AnnotatedElement} which is annotated with {@link RelationDefinition}.
+     *
+     * @param propertyMethod The property method to start with.
+     * @return The annotated element.
+     */
+    private com.buschmais.cdo.spi.reflection.AnnotatedElement<?> getRelationDefinitionElement(PropertyMethod propertyMethod) {
+        if (propertyMethod.getByMetaAnnotationOfProperty(RelationDefinition.class) != null) {
+            return propertyMethod;
+        }
+        Annotation[] declaredAnnotations = propertyMethod.getAnnotationsOfProperty();
+        for (int i = 0; i < declaredAnnotations.length; i++) {
+            com.buschmais.cdo.spi.reflection.AnnotatedElement<?> annotationTypeElement = new AnnotatedType(declaredAnnotations[i].annotationType());
+            if (annotationTypeElement.getByMetaAnnotation(RelationDefinition.class) != null) {
+                return annotationTypeElement;
+            }
+        }
+        return propertyMethod;
+    }
+
+    /**
+     * Creates the method metadata for methods annotated with {@link ResultOf}.
+     *
+     * @param annotatedMethod The annotated method-
+     * @param resultOf        The {@link com.buschmais.cdo.api.annotation.ResultOf} annotation.
+     * @return The method metadata.
+     */
     private MethodMetadata<?, ?> createResultOfMetadata(AnnotatedMethod annotatedMethod, ResultOf resultOf) {
         Method method = annotatedMethod.getAnnotatedElement();
 
@@ -432,6 +468,14 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         return new ResultOfMethodMetadata<>(annotatedMethod, query, returnType, resultOf.usingThisAs(), parameters, singleResult);
     }
 
+    /**
+     * Return the {@link TypeMetadata} instance representing the given type.
+     *
+     * @param type         The type.
+     * @param metadataType The expected metadata type.
+     * @param <T>          The metadata type.
+     * @return The {@link TypeMetadata} instance.
+     */
     private <T extends TypeMetadata> T getMetadata(Class<?> type, Class<T> metadataType) {
         TypeMetadata typeMetadata = metadataByType.get(type);
         if (typeMetadata == null) {

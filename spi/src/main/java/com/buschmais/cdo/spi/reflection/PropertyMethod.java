@@ -37,4 +37,15 @@ public interface PropertyMethod extends AnnotatedMethod {
      * @return The annotation or <code>null</code>.
      */
     <T extends Annotation> T getAnnotationOfProperty(Class<T> type);
+
+    /**
+     * Return an annotation dentified by a meta annotation type which is present on the property (i.e. including the get/is method if it is not present on the set method).
+     *
+     * @param type The annotation type.
+     * @param <T>  The annotation type.
+     * @return The annotation or <code>null</code>.
+     */
+    <T extends Annotation> T getByMetaAnnotationOfProperty(Class<T> type);
+
+    Annotation[] getAnnotationsOfProperty();
 }
