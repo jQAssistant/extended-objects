@@ -19,6 +19,8 @@ public class StaticInstanceListener {
 
     private static final List<Object> postLoad = new ArrayList<>();
 
+    private static final List<Object> aggregated = new ArrayList<>();
+
     @PostCreate
     public void postCreate(Object instance) {
         postCreate.add(instance);
@@ -49,6 +51,17 @@ public class StaticInstanceListener {
         postLoad.add(instance);
     }
 
+    @PostCreate
+    @PreUpdate
+    @PostUpdate
+    @PreDelete
+    @PostDelete
+    @PostLoad
+    public void aggregate(Object instance) {
+        aggregated.add(instance);
+    }
+
+
     public static List<Object> getPostCreate() {
         return postCreate;
     }
@@ -72,5 +85,10 @@ public class StaticInstanceListener {
     public static List<Object> getPostLoad() {
         return postLoad;
     }
+
+    public static List<Object> getAggregated() {
+        return aggregated;
+    }
+
 }
 

@@ -4,6 +4,7 @@ import com.buschmais.cdo.api.CdoManager;
 import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
 import com.buschmais.cdo.neo4j.test.embedded.instancelistener.composite.*;
 import org.hamcrest.core.IsCollectionContaining;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -23,6 +24,17 @@ public class InstanceListenerTest extends AbstractEmbeddedCdoManagerTest {
     @Override
     protected List<Class<?>> getInstanceListenerTypes() {
         return Arrays.<Class<?>>asList(StaticInstanceListener.class);
+    }
+
+    @Before
+    public void reset() {
+        StaticInstanceListener.getPostCreate().clear();
+        StaticInstanceListener.getPreUpdate().clear();
+        StaticInstanceListener.getPostUpdate().clear();
+        StaticInstanceListener.getPreDelete().clear();
+        StaticInstanceListener.getPostDelete().clear();
+        StaticInstanceListener.getPostLoad().clear();
+        StaticInstanceListener.getAggregated().clear();
     }
 
     @Test
@@ -65,6 +77,29 @@ public class InstanceListenerTest extends AbstractEmbeddedCdoManagerTest {
         cdoManager.delete(b);
         assertThat(StaticInstanceListener.getPreDelete().size(), equalTo(3));
         assertThat(StaticInstanceListener.getPostDelete().size(), equalTo(3));
+        cdoManager.currentTransaction().commit();
+    }
+
+    @Test
+    public void aggregatedLifecycleEvents() {
+        CdoManager cdoManager = getCdoManager();
+        cdoManager.currentTransaction().begin();
+        A a = cdoManager.create(A.class);
+        // @PostCreate
+        assertThat(StaticInstanceListener.getAggregated().size(), equalTo(1));
+        a.setVersion(1);
+        cdoManager.currentTransaction().commit();
+        // @PreUpdate and @PostUpdate
+        assertThat(StaticInstanceListener.getAggregated().size(), equalTo(3));
+        closeCdoManager();
+        cdoManager = getCdoManager();
+        cdoManager.currentTransaction().begin();
+        a = cdoManager.createQuery("match (a:A) return a", A.class).execute().getSingleResult();
+        // @PostLoad
+        assertThat(StaticInstanceListener.getAggregated().size(), equalTo(4));
+        cdoManager.delete(a);
+        // @PreDelete and @PostDelete
+        assertThat(StaticInstanceListener.getAggregated().size(), equalTo(6));
         cdoManager.currentTransaction().commit();
     }
 
