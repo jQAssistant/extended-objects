@@ -1,10 +1,10 @@
 package com.buschmais.cdo.neo4j.impl.datastore.metadata;
 
-public class PrimitivePropertyMetadata {
+public class PropertyMetadata {
 
     private final String name;
 
-    public PrimitivePropertyMetadata(String name) {
+    public PropertyMetadata(String name) {
         this.name = name;
     }
 

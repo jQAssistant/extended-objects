@@ -1,5 +1,6 @@
 package com.buschmais.cdo.neo4j.api;
 
+import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
 import com.buschmais.cdo.spi.bootstrap.CdoDatastoreProvider;
 import com.buschmais.cdo.spi.datastore.Datastore;
@@ -21,7 +22,7 @@ public class Neo4jCdoProvider implements CdoDatastoreProvider {
         try {
             return datastoreFactory.createGraphDatabaseService(uri);
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            throw new CdoException("Cannot create datastore.", e);
         }
 
     }
@@ -34,7 +35,7 @@ public class Neo4jCdoProvider implements CdoDatastoreProvider {
         try {
             return ((Class<? extends DatastoreFactory>) Class.forName(factoryClass)).newInstance();
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
+            throw new CdoException("Cannot create datastore factory.", e);
         }
     }
 

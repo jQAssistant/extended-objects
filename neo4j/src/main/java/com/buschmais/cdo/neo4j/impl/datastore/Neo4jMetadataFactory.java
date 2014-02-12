@@ -59,10 +59,10 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
     }
 
     @Override
-    public PrimitivePropertyMetadata createPrimitivePropertyMetadata(PropertyMethod propertyMethod) {
+    public PropertyMetadata createPrimitivePropertyMetadata(PropertyMethod propertyMethod) {
         Property property = propertyMethod.getAnnotationOfProperty(Property.class);
         String name = property != null ? property.value() : propertyMethod.getName();
-        return new PrimitivePropertyMetadata(name);
+        return new PropertyMetadata(name);
     }
 
     @Override

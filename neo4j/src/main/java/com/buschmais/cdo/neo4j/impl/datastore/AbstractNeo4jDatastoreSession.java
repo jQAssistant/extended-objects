@@ -2,13 +2,12 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.api.ResultIterator;
+import com.buschmais.cdo.neo4j.api.Neo4jDatastoreSession;
 import com.buschmais.cdo.neo4j.api.annotation.Cypher;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.Neo4jRelationshipType;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
-import com.buschmais.cdo.neo4j.impl.datastore.metadata.RelationshipMetadata;
+import com.buschmais.cdo.neo4j.impl.datastore.metadata.PropertyMetadata;
 import com.buschmais.cdo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.cdo.spi.datastore.DatastoreSession;
 import com.buschmais.cdo.spi.datastore.TypeMetadataSet;
 import com.buschmais.cdo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
@@ -19,7 +18,12 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements DatastoreSession<Long, Node, NodeMetadata, Label, Long, Relationship, RelationshipMetadata, Neo4jRelationshipType> {
+/**
+ * Abstract base implementation of a Neo4j database session based on the {@link org.neo4j.graphdb.GraphDatabaseService} API.
+ *
+ * @param <GDS> The type of {@link org.neo4j.graphdb.GraphDatabaseService}.
+ */
+public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements Neo4jDatastoreSession<GDS> {
 
     private final GDS graphDatabaseService;
     private final Neo4jPropertyManager propertyManager;
@@ -34,6 +38,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         return propertyManager;
     }
 
+    @Override
     public GDS getGraphDatabaseService() {
         return graphDatabaseService;
     }
@@ -56,7 +61,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         if (indexedProperty == null) {
             throw new CdoException("Type " + entityTypeMetadata.getAnnotatedType().getAnnotatedElement().getName() + " has no indexed property.");
         }
-        PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
+        PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
         ResourceIterable<Node> nodesByLabelAndProperty = getGraphDatabaseService().findNodesByLabelAndProperty(discriminator, propertyMethodMetadata.getDatastoreMetadata().getName(), value);
         ResourceIterator<Node> iterator = nodesByLabelAndProperty.iterator();
         return new ResourceResultIterator(iterator);

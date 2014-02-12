@@ -2,7 +2,7 @@ package com.buschmais.cdo.neo4j.impl.datastore;
 
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.IndexedPropertyMetadata;
 import com.buschmais.cdo.neo4j.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.cdo.neo4j.impl.datastore.metadata.PrimitivePropertyMetadata;
+import com.buschmais.cdo.neo4j.impl.datastore.metadata.PropertyMetadata;
 import com.buschmais.cdo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
@@ -70,12 +70,12 @@ public class EmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedNeo4j
     }
 
     private void reCreateIndex(Label label, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
-        PrimitivePropertyMetadata primitivePropertyMetadata = ((PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata>) propertyMethodMetadata).getDatastoreMetadata();
-        IndexDefinition index = findIndex(label, primitivePropertyMetadata.getName());
+        PropertyMetadata propertyMetadata = ((PrimitivePropertyMethodMetadata<PropertyMetadata>) propertyMethodMetadata).getDatastoreMetadata();
+        IndexDefinition index = findIndex(label, propertyMetadata.getName());
         //TODO propertyMethodMetadata is always != null
         if (propertyMethodMetadata != null && index == null) {
-            LOGGER.info("Creating index for label {} on property '{}'.", label, primitivePropertyMetadata.getName());
-            graphDatabaseService.schema().indexFor(label).on(primitivePropertyMetadata.getName()).create();
+            LOGGER.info("Creating index for label {} on property '{}'.", label, propertyMetadata.getName());
+            graphDatabaseService.schema().indexFor(label).on(propertyMetadata.getName()).create();
         } else if (propertyMethodMetadata == null && index != null) {
             LOGGER.info("Dropping index for label {} on properties '{}'.", label, index.getPropertyKeys());
             index.drop();
@@ -84,12 +84,12 @@ public class EmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedNeo4j
 
 
     private void reCreateUniqueConstraint(Label label, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
-        PrimitivePropertyMetadata primitivePropertyMetadata = ((PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata>) propertyMethodMetadata).getDatastoreMetadata();
-        ConstraintDefinition constraint = findUniqueConstraint(label, primitivePropertyMetadata.getName());
+        PropertyMetadata propertyMetadata = ((PrimitivePropertyMethodMetadata<PropertyMetadata>) propertyMethodMetadata).getDatastoreMetadata();
+        ConstraintDefinition constraint = findUniqueConstraint(label, propertyMetadata.getName());
         //TODO propertyMethodMetadata is always != null
         if (propertyMethodMetadata != null && constraint == null) {
-            LOGGER.info("Creating constraint for label {} on property '{}'.", label, primitivePropertyMetadata.getName());
-            graphDatabaseService.schema().constraintFor(label).assertPropertyIsUnique(primitivePropertyMetadata.getName()).create();
+            LOGGER.info("Creating constraint for label {} on property '{}'.", label, propertyMetadata.getName());
+            graphDatabaseService.schema().constraintFor(label).assertPropertyIsUnique(propertyMetadata.getName()).create();
         } else if (propertyMethodMetadata == null && constraint != null) {
             LOGGER.info("Dropping constraint for label {} on properties '{}'.", label, constraint.getPropertyKeys());
             constraint.drop();
