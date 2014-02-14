@@ -1,42 +1,31 @@
 package com.buschmais.cdo.impl.proxy.entity.property;
 
-import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.impl.EntityPropertyManager;
 import com.buschmais.cdo.impl.SessionContext;
+import com.buschmais.cdo.impl.proxy.collection.AbstractCollectionProxy;
 import com.buschmais.cdo.impl.proxy.collection.EntityCollectionProxy;
-import com.buschmais.cdo.impl.proxy.collection.ListProxy;
-import com.buschmais.cdo.impl.proxy.collection.SetProxy;
-import com.buschmais.cdo.impl.proxy.common.property.AbstractPropertyMethod;
 import com.buschmais.cdo.spi.metadata.method.EntityCollectionPropertyMethodMetadata;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+/**
+ * Get method for entity collections.
+ *
+ * @param <Entity>   The entity type.
+ * @param <Relation> The relation type.
+ */
+public class EntityCollectionPropertyGetMethod<Entity, Relation> extends AbstractCollectionPropertyGetMethod<Entity, Entity, Relation, EntityPropertyManager<Entity, Relation>, EntityCollectionPropertyMethodMetadata<?>> {
 
-public class EntityCollectionPropertyGetMethod<Entity, Relation> extends AbstractPropertyMethod<Entity, EntityPropertyManager<Entity, Relation>, EntityCollectionPropertyMethodMetadata> {
-
-    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
-
+    /**
+     * Constructor.
+     *
+     * @param sessionContext The session context.
+     * @param metadata       The metadata.
+     */
     public EntityCollectionPropertyGetMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, EntityCollectionPropertyMethodMetadata<?> metadata) {
-        super(sessionContext.getEntityPropertyManager(), metadata);
-        this.sessionContext = sessionContext;
+        super(sessionContext, sessionContext.getEntityPropertyManager(), metadata);
     }
 
     @Override
-    public Object invoke(Entity entity, Object instance, Object[] args) {
-        EntityCollectionPropertyMethodMetadata<?> collectionPropertyMetadata = getMetadata();
-        EntityCollectionProxy<?, Entity, Relation> collectionProxy = new EntityCollectionProxy<>(sessionContext, entity, getMetadata());
-        Collection<?> collection;
-        if (Set.class.isAssignableFrom(collectionPropertyMetadata.getAnnotatedMethod().getType())) {
-            collection = new SetProxy<>(collectionProxy);
-        } else if (List.class.isAssignableFrom(collectionPropertyMetadata.getAnnotatedMethod().getType())) {
-            collection = new ListProxy<>(collectionProxy);
-        } else if (Collection.class.isAssignableFrom(collectionPropertyMetadata.getAnnotatedMethod().getType())) {
-            collection = collectionProxy;
-        } else {
-            throw new CdoException("Unsupported collection type " + collectionPropertyMetadata.getAnnotatedMethod().getType());
-        }
-        Collection<?> result = sessionContext.getInterceptorFactory().addInterceptor(collection);
-        return result;
+    protected AbstractCollectionProxy<?, ?, ?, ?> createCollectionProxy(Entity entity, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext) {
+        return new EntityCollectionProxy<>(sessionContext, entity, getMetadata());
     }
 }

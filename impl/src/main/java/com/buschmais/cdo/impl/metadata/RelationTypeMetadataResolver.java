@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction;
+
 /**
  * Allows resolving types from relation discriminators as provided by the datastores.
  *
@@ -24,7 +26,7 @@ import java.util.Set;
 public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> {
 
     private final Map<RelationDiscriminator, Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>>> relationMappings;
-    private final Map<Class<?>, Map<RelationTypeMetadata<?>, AbstractRelationPropertyMethodMetadata<?>>> relationProperties;
+    private final Map<RelationPropertyKey, AbstractRelationPropertyMethodMetadata<RelationMetadata>> relationProperties;
 
     /**
      * Constructor.
@@ -49,20 +51,16 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
                 }
                 mappingSet.add(relationMapping);
             } else if (typeMetadata instanceof EntityTypeMetadata) {
-                EntityTypeMetadata entityTypeMetadata = (EntityTypeMetadata) typeMetadata;
+                EntityTypeMetadata<EntityMetadata> entityTypeMetadata = (EntityTypeMetadata<EntityMetadata>) typeMetadata;
                 for (MethodMetadata<?, ?> methodMetadata : entityTypeMetadata.getProperties()) {
                     if (methodMetadata instanceof AbstractRelationPropertyMethodMetadata<?>) {
-                        AbstractRelationPropertyMethodMetadata propertyMethodMetadata = (AbstractRelationPropertyMethodMetadata) methodMetadata;
+                        AbstractRelationPropertyMethodMetadata<RelationMetadata> propertyMethodMetadata = (AbstractRelationPropertyMethodMetadata<RelationMetadata>) methodMetadata;
                         AnnotatedType relationType = propertyMethodMetadata.getRelationshipMetadata().getAnnotatedType();
                         if (relationType != null) {
-                            RelationTypeMetadata<?> relationTypeMetadata = (RelationTypeMetadata<?>) metadataByType.get(relationType.getAnnotatedElement());
                             Class<?> entityType = entityTypeMetadata.getAnnotatedType().getAnnotatedElement();
-                            Map<RelationTypeMetadata<?>, AbstractRelationPropertyMethodMetadata<?>> relationProperties = this.relationProperties.get(entityType);
-                            if (relationProperties == null) {
-                                relationProperties = new HashMap<>();
-                                this.relationProperties.put(entityType, relationProperties);
-                            }
-                            relationProperties.put(relationTypeMetadata, propertyMethodMetadata);
+                            RelationTypeMetadata<?> relationTypeMetadata = (RelationTypeMetadata<?>) metadataByType.get(relationType.getAnnotatedElement());
+                            Direction direction = propertyMethodMetadata.getDirection();
+                            relationProperties.put(new RelationPropertyKey(entityType, relationTypeMetadata, direction), propertyMethodMetadata);
                         }
                     }
                 }
@@ -86,7 +84,7 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
         return types;
     }
 
-    public AbstractRelationPropertyMethodMetadata<?> getRelationPropertyMethodMetadata(Class<?> type, RelationTypeMetadata<?> relationTypeMetadata, RelationTypeMetadata.Direction direction) {
+    public AbstractRelationPropertyMethodMetadata<?> getRelationPropertyMethodMetadata(Class<?> type, RelationTypeMetadata<?> relationTypeMetadata, Direction direction) {
         Class<?> containingType = null;
         switch (direction) {
             case FROM:
@@ -103,14 +101,54 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
                 throw direction.createNotSupportedException();
         }
         if (containingType == null) {
-            throw new CdoException("Cannot resolve containing entity type for relation type '" + relationTypeMetadata.getAnnotatedType().getName() + "'.");
+            throw new CdoException("Cannot resolve entity type containing a relation of type '" + relationTypeMetadata.getAnnotatedType().getName() + "'.");
         }
-        Map<RelationTypeMetadata<?>, AbstractRelationPropertyMethodMetadata<?>> relationProperties = this.relationProperties.get(containingType);
-        AbstractRelationPropertyMethodMetadata<?> propertyMethodMetadata = relationProperties.get(relationTypeMetadata);
+        RelationPropertyKey relationPropertyKey = new RelationPropertyKey(containingType, relationTypeMetadata, direction);
+        AbstractRelationPropertyMethodMetadata<?> propertyMethodMetadata = relationProperties.get(relationPropertyKey);
         if (propertyMethodMetadata == null) {
-            throw new CdoException("Cannot resolve property for relation type '" + relationTypeMetadata.getAnnotatedType().getName());
+            throw new CdoException("Cannot resolve property in type '" + containingType.getName() + "' for relation type '" + relationTypeMetadata.getAnnotatedType().getAnnotatedElement().getName() + "'.");
         }
         return propertyMethodMetadata;
+    }
+
+    private static class RelationPropertyKey {
+        private final Class<?> entityType;
+        private final RelationTypeMetadata<?> relationTypeMetadata;
+        private final Direction direction;
+
+        private RelationPropertyKey(Class<?> entityType, RelationTypeMetadata<?> relationTypeMetadata, Direction direction) {
+            this.entityType = entityType;
+            this.relationTypeMetadata = relationTypeMetadata;
+            this.direction = direction;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            RelationPropertyKey that = (RelationPropertyKey) o;
+            if (direction != that.direction) return false;
+            if (!entityType.equals(that.entityType)) return false;
+            if (!relationTypeMetadata.equals(that.relationTypeMetadata)) return false;
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = entityType.hashCode();
+            result = 31 * result + relationTypeMetadata.hashCode();
+            result = 31 * result + direction.hashCode();
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "RelationPropertyKey{" +
+                    "entityType=" + entityType +
+                    ", relationTypeMetadata=" + relationTypeMetadata +
+                    ", direction=" + direction +
+                    '}';
+        }
     }
 
     private static class RelationMapping<EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> {

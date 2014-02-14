@@ -1,6 +1,5 @@
 package com.buschmais.cdo.neo4j.impl.datastore;
 
-import com.buschmais.cdo.api.CdoException;
 import com.buschmais.cdo.neo4j.api.annotation.Indexed;
 import com.buschmais.cdo.neo4j.api.annotation.Label;
 import com.buschmais.cdo.neo4j.api.annotation.Property;
@@ -9,7 +8,6 @@ import com.buschmais.cdo.neo4j.impl.datastore.metadata.*;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.cdo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.type.EntityTypeMetadata;
-import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedElement;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
@@ -94,18 +92,5 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
         }
         Neo4jRelationshipType relationshipType = new Neo4jRelationshipType(DynamicRelationshipType.withName(name));
         return new RelationshipMetadata(relationshipType);
-    }
-
-    @Override
-    public RelationTypeMetadata.Direction getRelationDirection(PropertyMethod propertyMethod) {
-        Relation.Incoming incoming = propertyMethod.getAnnotationOfProperty(Relation.Incoming.class);
-        Relation.Outgoing outgoing = propertyMethod.getAnnotationOfProperty(Relation.Outgoing.class);
-        if (incoming != null && outgoing != null) {
-            throw new CdoException("A relation property must be either incoming or outgoing: '" + propertyMethod.getName() + "'");
-        }
-        if (incoming != null) {
-            return RelationTypeMetadata.Direction.TO;
-        }
-        return RelationTypeMetadata.Direction.FROM;
     }
 }

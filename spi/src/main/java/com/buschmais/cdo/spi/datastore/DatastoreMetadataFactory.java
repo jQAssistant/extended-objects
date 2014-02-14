@@ -1,6 +1,5 @@
 package com.buschmais.cdo.spi.datastore;
 
-import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedElement;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
@@ -77,6 +76,4 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * @return An instance of datastore specific method metadata.
      */
     RelationMetadata createRelationMetadata(AnnotatedElement<?> annotatedElement, Map<Class<?>, TypeMetadata> metadataByType);
-
-    RelationTypeMetadata.Direction getRelationDirection(PropertyMethod propertyMethod);
 }
