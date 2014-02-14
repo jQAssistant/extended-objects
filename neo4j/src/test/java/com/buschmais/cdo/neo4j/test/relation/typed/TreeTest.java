@@ -1,23 +1,31 @@
-package com.buschmais.cdo.neo4j.test.embedded.relation.typed;
+package com.buschmais.cdo.neo4j.test.relation.typed;
 
 import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.neo4j.test.embedded.AbstractEmbeddedCdoManagerTest;
-import com.buschmais.cdo.neo4j.test.embedded.relation.typed.composite.TreeNode;
-import com.buschmais.cdo.neo4j.test.embedded.relation.typed.composite.TreeNodeRelation;
+import com.buschmais.cdo.api.bootstrap.CdoUnit;
+import com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.cdo.neo4j.test.relation.typed.composite.TreeNode;
+import com.buschmais.cdo.neo4j.test.relation.typed.composite.TreeNodeRelation;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import java.net.URISyntaxException;
+import java.util.Collection;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by dimahler on 2/13/14.
- */
-public class TreeTest extends AbstractEmbeddedCdoManagerTest {
+@RunWith(Parameterized.class)
+public class TreeTest extends AbstractCdoManagerTest {
 
-    @Override
-    protected Class<?>[] getTypes() {
-        return new Class<?>[]{TreeNode.class, TreeNodeRelation.class};
+    public TreeTest(CdoUnit cdoUnit) {
+        super(cdoUnit);
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> getCdoUnits() throws URISyntaxException {
+        return cdoUnits(TreeNode.class, TreeNodeRelation.class);
     }
 
     @Test
