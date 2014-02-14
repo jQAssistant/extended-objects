@@ -32,6 +32,8 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 import static com.buschmais.cdo.api.Query.Result;
+import static com.buschmais.cdo.spi.annotation.RelationDefinition.FromDefinition;
+import static com.buschmais.cdo.spi.annotation.RelationDefinition.ToDefinition;
 import static com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata.Direction;
 
 /**
@@ -392,7 +394,18 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     }
 
     private Direction getRelationDirection(PropertyMethod propertyMethod, Direction defaultDirection) {
-        Direction direction = metadataFactory.getRelationDirection(propertyMethod);
+        Annotation fromAnnotation = propertyMethod.getByMetaAnnotationOfProperty(FromDefinition.class);
+        Annotation toAnnotation = propertyMethod.getByMetaAnnotationOfProperty(ToDefinition.class);
+        if (fromAnnotation != null && toAnnotation != null) {
+            throw new CdoException("The relation property '" + propertyMethod.getName() + "' must not specifiy both directions.'");
+        }
+        Direction direction = null;
+        if (fromAnnotation != null) {
+            direction = RelationTypeMetadata.Direction.FROM;
+        }
+        if (toAnnotation != null) {
+            direction = RelationTypeMetadata.Direction.TO;
+        }
         return direction != null ? direction : defaultDirection;
     }
 

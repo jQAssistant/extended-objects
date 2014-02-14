@@ -6,7 +6,6 @@ import com.buschmais.cdo.impl.test.bootstrap.provider.metadata.TestRelationMetad
 import com.buschmais.cdo.spi.datastore.Datastore;
 import com.buschmais.cdo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.cdo.spi.datastore.DatastoreSession;
-import com.buschmais.cdo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.cdo.spi.metadata.type.TypeMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedElement;
 import com.buschmais.cdo.spi.reflection.AnnotatedMethod;
@@ -59,11 +58,6 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
 
             @Override
             public TestRelationMetadata createRelationMetadata(AnnotatedElement<?> annotatedElement, Map<Class<?>, TypeMetadata> metadataByType) {
-                return null;
-            }
-
-            @Override
-            public RelationTypeMetadata.Direction getRelationDirection(PropertyMethod propertyMethod) {
                 return null;
             }
         };
