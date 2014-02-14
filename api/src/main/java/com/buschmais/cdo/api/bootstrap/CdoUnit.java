@@ -22,9 +22,9 @@ public class CdoUnit {
 
     private final Class<?> provider;
 
-    private final Set<Class<?>> types;
+    private final Set<? extends Class<?>> types;
 
-    private final List<Class<?>> instanceListeners;
+    private final List<? extends Class<?>> instanceListeners;
 
     private final ValidationMode validationMode;
 
@@ -49,7 +49,7 @@ public class CdoUnit {
      * @param defaultTransactionAttribute The {@link com.buschmais.cdo.api.Transaction.TransactionAttribute} to use.
      * @param properties                  Additional properties to be passed to the provider.
      */
-    public CdoUnit(String name, String description, URI uri, Class<?> provider, Set<Class<?>> types, List<Class<?>> instanceListeners, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
+    public CdoUnit(String name, String description, URI uri, Class<?> provider, Set<? extends Class<?>> types, List<? extends Class<?>> instanceListeners, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
         this.name = name;
         this.description = description;
         this.uri = uri;
@@ -76,7 +76,7 @@ public class CdoUnit {
      * @param defaultTransactionAttribute The {@link com.buschmais.cdo.api.Transaction.TransactionAttribute} to use.
      * @param properties                  Additional properties to be passed to the provider.
      */
-    public CdoUnit(String name, String description, URI uri, Class<?> provider, Class<?>[] types, List<Class<?>> instanceListeners, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
+    public CdoUnit(String name, String description, URI uri, Class<?> provider, Class<?>[] types, List<? extends Class<?>> instanceListeners, ValidationMode validationMode, ConcurrencyMode concurrencyMode, TransactionAttribute defaultTransactionAttribute, Properties properties) {
         this(name, description, uri, provider, new HashSet<>(Arrays.asList(types)), instanceListeners, validationMode, concurrencyMode, defaultTransactionAttribute, properties);
     }
 
@@ -96,7 +96,7 @@ public class CdoUnit {
         return provider;
     }
 
-    public Set<Class<?>> getTypes() {
+    public Set<? extends Class<?>> getTypes() {
         return types;
     }
 
@@ -116,7 +116,7 @@ public class CdoUnit {
         return properties;
     }
 
-    public List<Class<?>> getInstanceListeners() {
+    public List<? extends Class<?>> getInstanceListeners() {
         return instanceListeners;
     }
 }

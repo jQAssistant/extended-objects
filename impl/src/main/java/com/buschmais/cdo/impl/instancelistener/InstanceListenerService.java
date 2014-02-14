@@ -26,7 +26,7 @@ public class InstanceListenerService {
      *
      * @param instanceListenerTypes The statically registered instance listener types.
      */
-    public InstanceListenerService(List<Class<?>> instanceListenerTypes) {
+    public InstanceListenerService(List<? extends Class<?>> instanceListenerTypes) {
         postCreateMethods = new IdentityHashMap<>();
         preUpdateMethods = new IdentityHashMap<>();
         postUpdateMethods = new IdentityHashMap<>();

@@ -4,7 +4,7 @@
         <url>memory:///</url>
         <provider>com.buschmais.cdo.neo4j.api.Neo4jCdoProvider</provider>
         <types>
-            <type>com.buschmais.cdo.neo4j.test.embedded.bootstrap.composite.A</type>
+            <type>com.buschmais.cdo.neo4j.test.bootstrap.composite.A</type>
         </types>
     </cdo-unit>
 </v1:cdo>

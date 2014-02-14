@@ -1,35 +1,69 @@
 package com.buschmais.cdo.neo4j.test;
 
-import com.buschmais.cdo.api.CdoManager;
-import com.buschmais.cdo.api.CdoManagerFactory;
-import com.buschmais.cdo.api.ConcurrencyMode;
-import com.buschmais.cdo.api.Transaction;
+import com.buschmais.cdo.api.*;
 import com.buschmais.cdo.api.bootstrap.Cdo;
 import com.buschmais.cdo.api.bootstrap.CdoUnit;
+import com.buschmais.cdo.neo4j.api.Neo4jCdoProvider;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.kernel.GraphDatabaseAPI;
+import org.neo4j.server.WrappingNeoServer;
+import org.neo4j.test.TestGraphDatabaseFactory;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
 import static com.buschmais.cdo.api.Query.Result;
 import static com.buschmais.cdo.api.Query.Result.CompositeRowObject;
+import static com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest.Database.MEMORY;
+import static com.buschmais.cdo.neo4j.test.AbstractCdoManagerTest.Database.REST;
 
 public abstract class AbstractCdoManagerTest {
 
+    protected enum Database {
+        MEMORY("memory:///"),
+        REST("http://localhost:7474/db/data");
+        private URI uri;
+
+        private Database(String uri) {
+            try {
+                this.uri = new URI(uri);
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+
+        public URI getUri() {
+            return uri;
+        }
+    }
+
+    private static WrappingNeoServer server;
+
+    private CdoUnit cdoUnit;
     private CdoManagerFactory cdoManagerFactory;
     private CdoManager cdoManager = null;
 
+    protected AbstractCdoManagerTest(CdoUnit cdoUnit) {
+        this.cdoUnit = cdoUnit;
+    }
+
+    @BeforeClass
+    public static void startServer() {
+        GraphDatabaseService graphDatabaseService = new TestGraphDatabaseFactory().newImpermanentDatabase();
+        server = new WrappingNeoServer((GraphDatabaseAPI) graphDatabaseService);
+        server.start();
+    }
+
     @Before
     public void createCdoManagerFactory() throws URISyntaxException {
-        CdoUnit cdoUnit = getCdoUnit(getTypes());
         cdoManagerFactory = Cdo.createCdoManagerFactory(cdoUnit);
         dropDatabase();
     }
-
-    protected abstract CdoUnit getCdoUnit(Class<?>[] types) throws URISyntaxException;
-
-    protected abstract Class<?>[] getTypes();
 
     @After
     public void closeNodeManagerFactory() {
@@ -39,16 +73,30 @@ public abstract class AbstractCdoManagerTest {
         }
     }
 
-    protected Transaction.TransactionAttribute getTransactionAttribute() {
-        return Transaction.TransactionAttribute.MANDATORY;
+    protected static Collection<Object[]> cdoUnits(Class<?>... types) {
+        return cdoUnits(Arrays.asList(MEMORY, REST), Arrays.asList(types), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
     }
 
-    protected ConcurrencyMode getConcurrencyMode() {
-        return ConcurrencyMode.SINGLETHREADED;
+    protected static Collection<Object[]> cdoUnits(List<Database> databases, List<? extends Class<?>> types) {
+        return cdoUnits(databases, types, Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
     }
 
-    protected List<Class<?>> getInstanceListenerTypes() {
-        return Collections.emptyList();
+    protected static Collection<Object[]> cdoUnits(List<? extends Class<?>> types, List<? extends Class<?>> instanceListeners, ValidationMode validationMode, ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
+        return cdoUnits(Arrays.asList(MEMORY, REST), types, instanceListeners, validationMode, concurrencyMode, transactionAttribute);
+    }
+
+    protected static Collection<Object[]> cdoUnits(List<Database> databases, List<? extends Class<?>> types, List<? extends Class<?>> instanceListenerTypes, ValidationMode valiationMode, ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
+        List<Object[]> cdoUnits = new ArrayList<>(databases.size());
+        for (Database database : databases) {
+            CdoUnit unit = new CdoUnit("default", "Default CDO unit", database.getUri(), Neo4jCdoProvider.class, new HashSet<>(types), instanceListenerTypes, valiationMode, concurrencyMode, transactionAttribute, new Properties());
+            cdoUnits.add(new Object[]{unit});
+        }
+        return cdoUnits;
+    }
+
+    @AfterClass
+    public static void stopServer() {
+        server.stop();
     }
 
     /**
