@@ -49,6 +49,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jqassistant.version>1.0.0-M2</jqassistant.version>
+        <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
     </properties>
 
     <build>
@@ -85,6 +86,46 @@
         </pluginManagement>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>set-osgi-version</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                            <Bundle-Name>${project.name} (Source)</Bundle-Name>
+                            <Bundle-SymbolicName>${bundle.name}.source</Bundle-SymbolicName>
+                            <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                            <Bundle-Version>${parsedVersion.osgiVersion}</Bundle-Version>
+                            <Eclipse-SourceBundle>${bundle.name};version="${parsedVersion.osgiVersion}";roots:="."</Eclipse-SourceBundle>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
@@ -119,8 +160,6 @@
                         <configuration>
                             <instructions>
                                 <Bundle-Name>${project.name}</Bundle-Name>
-                                <_snapshot>${maven.build.timestamp}</_snapshot>
-                                <_sources>true</_sources>
                             </instructions>
                         </configuration>
                     </execution>
