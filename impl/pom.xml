@@ -23,6 +23,7 @@
                     <instructions>
                         <Bundle-Activator>com.buschmais.cdo.impl.bootstrap.osgi.CdoUnitBundleListener</Bundle-Activator>
                         <DynamicImport-Package>*</DynamicImport-Package>
+                        <Service-Component>OSGI-INF/service-factory.xml</Service-Component>
                     </instructions>
                 </configuration>
             </plugin>
@@ -72,6 +73,12 @@
             <artifactId>org.osgi.core</artifactId>
             <version>4.3.1</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+        	<groupId>org.osgi</groupId>
+        	<artifactId>org.osgi.compendium</artifactId>
+        	<version>4.3.1</version>
+        	<scope>provided</scope>
         </dependency>
     </dependencies>
 

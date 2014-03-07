@@ -8,6 +8,11 @@ import com.buschmais.cdo.api.bootstrap.CdoUnit;
 public interface CdoManagerFactory extends AutoCloseable {
 
     /**
+     * The persistent identifier (PID).
+     */
+    public static final String FACTORY_PID = "com.buschmais.cdo.factory";
+
+    /**
      * Create a {@link CdoManager} instance.
      *
      * @return The {@link CdoManager} instance.
