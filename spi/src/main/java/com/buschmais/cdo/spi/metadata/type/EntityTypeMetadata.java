@@ -9,14 +9,7 @@ import java.util.Collection;
 
 public class EntityTypeMetadata<DatastoreMetadata extends DatastoreEntityMetadata<?>> extends AbstractDatastoreTypeMetadata<DatastoreMetadata> {
 
-    private final IndexedPropertyMethodMetadata indexedProperty;
-
     public EntityTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?,?>> properties, IndexedPropertyMethodMetadata indexedProperty, DatastoreMetadata datastoreMetadata) {
-        super(annotatedType, superTypes, properties, datastoreMetadata);
-        this.indexedProperty = indexedProperty;
-    }
-
-    public IndexedPropertyMethodMetadata getIndexedProperty() {
-        return indexedProperty;
+        super(annotatedType, superTypes, properties, indexedProperty, datastoreMetadata);
     }
 }

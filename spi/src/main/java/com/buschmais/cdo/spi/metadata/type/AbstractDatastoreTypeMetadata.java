@@ -1,5 +1,6 @@
 package com.buschmais.cdo.spi.metadata.type;
 
+import com.buschmais.cdo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.method.MethodMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
 
@@ -9,8 +10,8 @@ public abstract class AbstractDatastoreTypeMetadata<DatastoreMetadata> extends A
 
     private final DatastoreMetadata datastoreMetadata;
 
-    protected AbstractDatastoreTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, DatastoreMetadata datastoreMetadata) {
-        super(annotatedType, superTypes, properties);
+    protected AbstractDatastoreTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, IndexedPropertyMethodMetadata indexedProperty, DatastoreMetadata datastoreMetadata) {
+        super(annotatedType, superTypes, properties, indexedProperty);
         this.datastoreMetadata = datastoreMetadata;
     }
 
@@ -18,4 +19,5 @@ public abstract class AbstractDatastoreTypeMetadata<DatastoreMetadata> extends A
     public DatastoreMetadata getDatastoreMetadata() {
         return datastoreMetadata;
     }
+
 }

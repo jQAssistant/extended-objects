@@ -82,7 +82,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         }
         entityTypeMetadataResolver = new EntityTypeMetadataResolver<>(metadataByType);
         relationTypeMetadataResolver = new RelationTypeMetadataResolver<>(metadataByType);
-        metadataByType.put(CompositeObject.class, new SimpleTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.<TypeMetadata>emptyList(), Collections.<MethodMetadata<?, ?>>emptyList()));
+        metadataByType.put(CompositeObject.class, new SimpleTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.<TypeMetadata>emptyList(), Collections.<MethodMetadata<?, ?>>emptyList(), null));
     }
 
     @Override
@@ -170,7 +170,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         } else if (isRelationType(annotatedType)) {
             metadata = createRelationTypeMetadata(annotatedType, superTypes, methodMetadataOfType);
         } else {
-            metadata = new SimpleTypeMetadata(annotatedType, superTypes, methodMetadataOfType);
+            IndexedPropertyMethodMetadata indexedProperty = getIndexedPropertyMethodMetadata(methodMetadataOfType);
+            metadata = new SimpleTypeMetadata(annotatedType, superTypes, methodMetadataOfType, indexedProperty);
         }
         return metadata;
     }

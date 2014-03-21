@@ -1,5 +1,6 @@
 package com.buschmais.cdo.spi.metadata.type;
 
+import com.buschmais.cdo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.method.MethodMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
 
@@ -30,5 +31,10 @@ public interface TypeMetadata {
      * @return The metadata of all properties declared in the type
      */
     Collection<MethodMetadata<?, ?>> getProperties();
+
+    /**
+     * Return the property which is used for indexing.
+     */
+    IndexedPropertyMethodMetadata getIndexedProperty();
 
 }

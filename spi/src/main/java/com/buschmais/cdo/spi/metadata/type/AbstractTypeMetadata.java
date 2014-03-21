@@ -1,5 +1,6 @@
 package com.buschmais.cdo.spi.metadata.type;
 
+import com.buschmais.cdo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.cdo.spi.metadata.method.MethodMetadata;
 import com.buschmais.cdo.spi.reflection.AnnotatedType;
 
@@ -13,10 +14,13 @@ public abstract class AbstractTypeMetadata implements TypeMetadata {
 
     private final Collection<TypeMetadata> superTypes;
 
-    protected AbstractTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties) {
+    private final IndexedPropertyMethodMetadata indexedProperty;
+
+    protected AbstractTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, IndexedPropertyMethodMetadata indexedProperty) {
         this.annotatedType = annotatedType;
         this.superTypes = superTypes;
         this.properties = properties;
+        this.indexedProperty = indexedProperty;
     }
 
     @Override
@@ -32,6 +36,11 @@ public abstract class AbstractTypeMetadata implements TypeMetadata {
     @Override
     public Collection<MethodMetadata<?, ?>> getProperties() {
         return properties;
+    }
+
+
+    public IndexedPropertyMethodMetadata getIndexedProperty() {
+        return indexedProperty;
     }
 
     @Override

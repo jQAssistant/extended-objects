@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.buschmais.cdo</groupId>
         <artifactId>cdo.parent</artifactId>
@@ -11,7 +12,7 @@
     <name>Composite Data Objects - Documentation</name>
 
     <properties>
-        <asciidoctor.version />
+        <asciidoctor.version/>
     </properties>
 
     <build>
@@ -19,7 +20,7 @@
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>0.1.3.1</version>
+                <version>0.1.4</version>
                 <configuration>
                     <backend>html</backend>
                 </configuration>
