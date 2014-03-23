@@ -1,5 +1,7 @@
 package com.buschmais.cdo.spi.reflection;
 
+import com.buschmais.cdo.api.CdoException;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -21,6 +23,9 @@ public class SetPropertyMethod extends AbstractPropertyMethod {
      */
     public SetPropertyMethod(Method setter, GetPropertyMethod getter, String name, Class<?> type, Type genericType) {
         super(setter, name, type, genericType);
+        if (getter == null) {
+            throw new CdoException("No getter defined for property '" + name + "' of type '" + type.getName() + "'");
+        }
         this.getter = getter;
     }
 
