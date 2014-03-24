@@ -1,24 +1,24 @@
-Composite Data Objects - Neo4j
-==============================
+eXtended Objects
+================
 Dirk Mahler <dirk.mahler@buschmais.com>
 
-This document describes Composite Data Objects for Java.
+This document describes the core concepts of eXtended Objects.
 
 :numbered!:
 [abstract]
-Composite Data Objects
-----------------------
+eXtended Objects
+----------------
 Modeling data objects for datastores (i.e. databases) in various domains often requires common properties
 (e.g. lastChangedBy, created, name, etc.) to be present in several data types. This is commonly solved by defining
 abstract base types representing a specific aspect or role and defining these properties here. Concrete data types may
 derive from these base types if the information is needed. This approach comes to its limits if more than one aspect
-shall be re-used in one Java POJO as multiple inheritance is not supported for classes in the Java language.
+shall be re-used in one POJO as multiple inheritance is not supported for classes in the Java language.
 
-Composite Data Objects (CDO) allows modeling types as interfaces by specifying the required accessor methods
-(i.e. getter and setter) and composing these types either statically or dynamically. The CDO API uses well-known
+eXtended Objects (XO) allows modeling types as interfaces by specifying the required accessor methods
+(i.e. getter and setter) and composing these types either statically or dynamically. The XO API uses well-known
 concepts from existing persistence APIs (e.g. JPA, JDO) but extends them with functionality which is enabled by using
 interfaces to define the data objects, e.g. type migration at runtime.
-The CDO implementation itself is datastore-agnostic, i.e. it does not depend on specific datastore concepts like
+The XO implementation itself is datastore-agnostic, i.e. it does not depend on specific datastore concepts like
 relational or graph databases, document stores etc. but allows using them. Datastore specific implementations can be
 provided by implementing the SPI (Service Provider Interface), the reference implementation is based on the
 graph database Neo4j.
@@ -66,7 +66,7 @@ public interface Movie {
 }
 ----
 
-Using the CDO API the following use case can be implemented:
+Using the XO API the following use case can be implemented:
 
 RaidersOfTheLostArk.java
 [source,java]
@@ -74,25 +74,25 @@ RaidersOfTheLostArk.java
 public class RaidersOfTheLostArk {
 
   public static void main(String[] args) {
-    // Bootstrap CDO, a file META-INF/cdo.xml is expected on the classpath
-    CdoManagerFactory cmf = Cdo.createCdoManagerFactory("movies");
+    // Bootstrap XO, a file META-INF/xo.xml is expected on the classpath
+    XOManagerFactory xmf = XO.createXOManagerFactory("movies");
 
-    // Obtain a CdoManager (i.e. a connection to the datastore)
-    CdoManager cm = cmf.createCdoManager();
+    // Obtain a XOManager (i.e. a connection to the datastore)
+    XOManager xm = xmf.createXOManager();
 
     // Begin a transaction
-    cm.currentTransaction.begin();
+    xm.currentTransaction.begin();
 
     // Create a data object representing an actor
-    Actor harrison = cm.create(Actor.class);
+    Actor harrison = xm.create(Actor.class);
     harrison.setName("Harrison Ford");
 
     // Create a data object representing a director
-    Directory steven = cm.create(Director.class);
+    Directory steven = xm.create(Director.class);
     steven.setName("Steven Spielberg");
 
     // Create a data object representing a movie
-    Movie raiders = cm.create(Movie.class);
+    Movie raiders = xm.create(Movie.class);
     raiders.setTitle("Raiders Of The Lost Ark");
 
     // Set the relations between all the created data objects
@@ -100,13 +100,13 @@ public class RaidersOfTheLostArk {
     raiders.getActors().add(harrison);
 
     // Commit the transaction
-    cm.currentTransaction.commit();
+    xm.currentTransaction.commit();
 
-    // Close the CdoManager
-    cm.close();
+    // Close the XOManager
+    xm.close();
 
-    // Close the CdoManagerFactory (on shutdown of the application)
-    cmf.close();
+    // Close the XOManagerFactory (on shutdown of the application)
+    xmf.close();
   }
 }
 ----
@@ -130,19 +130,19 @@ TempleOfDoom.java
 public class TempleOfDoom {
 
   public static void main(String[] args) {
-    CdoManagerFactory cmf = Cdo.createCdoManagerFactory("movies");
-    CdoManager cm = cmf.createCdoManager();
-    cm.currentTransaction.begin();
-    Actor harrison = cm.create(Actor.class);
+    XOManagerFactory xmf = XO.createXOManagerFactory("movies");
+    XOManager xm = xmf.createXOManager();
+    xm.currentTransaction.begin();
+    Actor harrison = xm.create(Actor.class);
     harrison.setName("Harrison Ford");
 
     // Create Steven as composite object using more than one role
-    CompositeObject steven = cm.create(Director.class, Actor.class);
+    CompositeObject steven = xm.create(Director.class, Actor.class);
 
     // Use Steven in the role of an actor
     steven.as(Actor.class).setName("Steven Spielberg");
 
-    Movie temple = cm.create(Movie.class);
+    Movie temple = xm.create(Movie.class);
     temple.setTitle("Temple Of Doom");
 
     // Use Steven in the role of a director as the "director" property of the type Movie requires it
@@ -151,8 +151,8 @@ public class TempleOfDoom {
 
     // Steven also acted in "Temple Of Doom" (according to IMDB...)
     temple.getActors().add(steven.as(Actor.class));
-    cm.currentTransaction.commit();
-    cmf.close();
+    xm.currentTransaction.commit();
+    xmf.close();
   }
 }
 ----
@@ -160,7 +160,7 @@ Migration
 ---------
 There may be situations where an existing data object needs to be migrated to also represent other types. Using the
 above example the fact that the director also acted in the movie might have been discovered after the data object
-has been created using the type Director. CDO offers a way to perform a migration at runtime and allows adding (or
+has been created using the type Director. XO offers a way to perform a migration at runtime and allows adding (or
 removing) roles (i.e. types):
 
 TempleOfDoom.java
@@ -169,31 +169,31 @@ TempleOfDoom.java
 public class TempleOfDoom {
 
   public static void main(String[] args) {
-    CdoManagerFactory cmf = Cdo.createCdoManagerFactory("movies");
-    CdoManager cm = cmf.createCdoManager();
-    cm.currentTransaction.begin();
+    XOManagerFactory xmf = XO.createXOManagerFactory("movies");
+    XOManager xm = xmf.createXOManager();
+    xm.currentTransaction.begin();
 
     // Create Steven as a director
-    Director steven = cm.create(Director.class);
+    Director steven = xm.create(Director.class);
     steven.setName("Steven Spielberg");
 
-    Movie temple = cm.create(Movie.class);
+    Movie temple = xm.create(Movie.class);
     temple.setTitle("Temple Of Doom");
     temple.setDirectedBy(steven);
-    cm.currentTransaction.commit();
+    xm.currentTransaction.commit();
 
     // Some days later a fan discovers that Steven also acted in Temple Of Doom
-    cm.currentTransaction.begin();
-    CompositeObject multiTalentedSteven = cm.migrate(steven, Director.class, Actor.class);
+    xm.currentTransaction.begin();
+    CompositeObject multiTalentedSteven = xm.migrate(steven, Director.class, Actor.class);
     temple.getActors().add(multiTalentedSteven.as(Actor.class));
 
-    cm.currentTransaction.commit();
-    cmf.close();
+    xm.currentTransaction.commit();
+    xmf.close();
   }
 }
 ----
 
-Mapping Composite Data Objects to Neo4j
+Mapping eXtended Objects to Neo4j
 ---------------------------------------
 
 As a graph database Neo4j provides very powerful capabilities to store and query highly interconnected data structures
