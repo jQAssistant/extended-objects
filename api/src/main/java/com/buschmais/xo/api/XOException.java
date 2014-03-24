@@ -1,7 +1,7 @@
 package com.buschmais.xo.api;
 
 /**
- * The exception thrown by the CDO implementation-
+ * The exception thrown by the XO implementation.
  */
 public class XOException extends RuntimeException {
 

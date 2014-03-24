@@ -5,7 +5,7 @@ import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
 import com.buschmais.xo.neo4j.test.concurrency.composite.A;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,23 +20,23 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class MultithreadedTest extends AbstractCdoManagerTest {
+public class MultithreadedTest extends AbstractXOManagerTest {
 
-    public MultithreadedTest(XOUnit XOUnit) {
-        super(XOUnit);
+    public MultithreadedTest(XOUnit xoUnit) {
+        super(xoUnit);
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCdoUnits() {
-        return cdoUnits(asList(A.class), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.MULTITHREADED, Transaction.TransactionAttribute.REQUIRES);
+    public static Collection<Object[]> getXOUnits() {
+        return xoUnits(asList(A.class), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.MULTITHREADED, Transaction.TransactionAttribute.REQUIRES);
     }
 
     @Test
     public void instance() throws ExecutionException, InterruptedException {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
-        XOManager.currentTransaction().commit();
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
+        xoManager.currentTransaction().commit();
         ExecutorService executorService = Executors.newCachedThreadPool();
         Future<Integer> future1 = executorService.submit(new Worker(a));
         TimeUnit.SECONDS.sleep(1);

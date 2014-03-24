@@ -9,10 +9,10 @@ public class InvocationContext {
     private final Object instance;
     private final Method method;
     private final Object[] args;
-    private final List<CdoInterceptor> chain;
+    private final List<XOInterceptor> chain;
     private int index = 0;
 
-    public InvocationContext(Object instance, Method method, Object[] args, List<CdoInterceptor> chain) {
+    public InvocationContext(Object instance, Method method, Object[] args, List<XOInterceptor> chain) {
         this.instance = instance;
         this.method = method;
         this.args = args;
@@ -21,9 +21,9 @@ public class InvocationContext {
 
     public Object proceed() throws Throwable {
         if (index < chain.size()) {
-            CdoInterceptor cdoInterceptor = chain.get(index);
+            XOInterceptor XOInterceptor = chain.get(index);
             index++;
-            return cdoInterceptor.invoke(this);
+            return XOInterceptor.invoke(this);
         } else {
             try {
                 return method.invoke(instance, args);

@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.inheritance;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
 import com.buschmais.xo.neo4j.test.inheritance.composite.A;
 import com.buschmais.xo.neo4j.test.inheritance.composite.B;
 import org.junit.Test;
@@ -16,29 +16,29 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class AnonymousSuperTypeTest extends AbstractCdoManagerTest {
+public class AnonymousSuperTypeTest extends AbstractXOManagerTest {
 
-    public AnonymousSuperTypeTest(XOUnit XOUnit) {
-        super(XOUnit);
+    public AnonymousSuperTypeTest(XOUnit xoUnit) {
+        super(xoUnit);
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCdoUnits() throws URISyntaxException {
-        return cdoUnits(A.class, B.class);
+    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+        return xoUnits(A.class, B.class);
     }
 
     @Test
     public void anonymousSuperType() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        B b = XOManager.create(B.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        B b = xoManager.create(B.class);
         b.setIndex("1");
         b.setVersion(1);
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.find(A.class, "1").iterator().next();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.find(A.class, "1").iterator().next();
         assertThat(b, equalTo(a));
         assertThat(a.getVersion().longValue(), equalTo(1L));
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().commit();
     }
 }

@@ -15,8 +15,8 @@ import java.net.URI;
 public class JsonFileStoreProvider implements XODatastoreProvider {
 
     @Override
-    public Datastore<JsonFileStoreSession, JsonNodeMetadata, String, JsonRelationMetadata, String> createDatastore(XOUnit XOUnit) {
-        URI uri = XOUnit.getUri();
+    public Datastore<JsonFileStoreSession, JsonNodeMetadata, String, JsonRelationMetadata, String> createDatastore(XOUnit xoUnit) {
+        URI uri = xoUnit.getUri();
         if (!"file".equals(uri.getScheme())) {
             throw new XOException("Only file URIs are supported by this store.");
         }

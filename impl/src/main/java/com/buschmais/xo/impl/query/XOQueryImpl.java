@@ -9,7 +9,7 @@ import com.buschmais.xo.impl.transaction.TransactionalQueryResultIterable;
 
 import java.util.*;
 
-public class CdoQueryImpl<T, QL, Entity, Relation> implements Query<T> {
+public class XOQueryImpl<T, QL, Entity, Relation> implements Query<T> {
 
     private final QL expression;
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
@@ -17,7 +17,7 @@ public class CdoQueryImpl<T, QL, Entity, Relation> implements Query<T> {
     private final Collection<? extends Class<?>> returnTypes;
     private Map<String, Object> parameters = null;
 
-    public CdoQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QL expression, Class<?> returnType, Collection<? extends Class<?>> returnTypes) {
+    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QL expression, Class<?> returnType, Collection<? extends Class<?>> returnTypes) {
         this.sessionContext = sessionContext;
         this.expression = expression;
         this.returnType = returnType;
@@ -65,7 +65,7 @@ public class CdoQueryImpl<T, QL, Entity, Relation> implements Query<T> {
         ResultIterator<Map<String, Object>> iterator = sessionContext.getDatastoreSession().executeQuery(expression, effectiveParameters);
         SortedSet<Class<?>> resultTypes = getResultTypes();
         QueryResultIterableImpl<Entity, Relation, Map<String, Object>> queryResultIterable = new QueryResultIterableImpl(sessionContext, iterator, returnType, resultTypes);
-        return new TransactionalQueryResultIterable(queryResultIterable, sessionContext.getCdoTransaction());
+        return new TransactionalQueryResultIterable(queryResultIterable, sessionContext.getXOTransaction());
     }
 
     private SortedSet<Class<?>> getResultTypes() {

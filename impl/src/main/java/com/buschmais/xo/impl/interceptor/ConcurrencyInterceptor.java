@@ -5,7 +5,7 @@ import com.buschmais.xo.api.XOException;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ConcurrencyInterceptor implements CdoInterceptor {
+public class ConcurrencyInterceptor implements XOInterceptor {
 
     private final ConcurrencyMode concurrencyMode;
     private final ReentrantLock lock;

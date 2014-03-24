@@ -14,46 +14,47 @@ import java.util.Map;
 
 public class XOBootstrapServiceImpl implements XOBootstrapService {
 
-    private final CdoUnitFactory cdoUnitFactory = CdoUnitFactory.getInstance();
-    private final Map<String, XOUnit> cdoUnits;
+    private final XOUnitFactory xoUnitFactory;
+    private final Map<String, XOUnit> xoUnits;
 
     public XOBootstrapServiceImpl() {
-        this.cdoUnits = readCdoDescriptors();
+        xoUnitFactory = XOUnitFactory.getInstance();
+        this.xoUnits = readXODescriptors();
     }
 
     @Override
     public XOManagerFactory createXOManagerFactory(String name) {
-        XOUnit XOUnit = cdoUnits.get(name);
+        XOUnit XOUnit = xoUnits.get(name);
         if (XOUnit == null) {
-            throw new XOException("CDO unit with name '" + name + "' does not exist.");
+            throw new XOException("XO unit with name '" + name + "' does not exist.");
         }
         return createXOManagerFactory(XOUnit);
     }
 
     @Override
-    public XOManagerFactory createXOManagerFactory(XOUnit XOUnit) {
-        return new XOManagerFactoryImpl(XOUnit);
+    public XOManagerFactory createXOManagerFactory(XOUnit xoUnit) {
+        return new XOManagerFactoryImpl(xoUnit);
     }
 
-    private Map<String, XOUnit> readCdoDescriptors() {
+    private Map<String, XOUnit> readXODescriptors() {
         Map<String, XOUnit> result = new HashMap<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (classLoader == null) {
-            classLoader = CdoUnitFactory.class.getClassLoader();
+            classLoader = XOUnitFactory.class.getClassLoader();
         }
         try {
             Enumeration<URL> resources = classLoader.getResources(XO_DESCRIPTOR_RESOURCE);
             while (resources.hasMoreElements()) {
                 URL url = resources.nextElement();
-                for (XOUnit XOUnit : cdoUnitFactory.getCdoUnits(url)) {
-                    XOUnit existingXOUnit = result.put(XOUnit.getName(), XOUnit);
+                for (XOUnit xoUnit : xoUnitFactory.getXOUnits(url)) {
+                    XOUnit existingXOUnit = result.put(xoUnit.getName(), xoUnit);
                     if (existingXOUnit != null) {
-                        throw new XOException("Found more than one CDO unit with name '" + XOUnit.getName() + "'.");
+                        throw new XOException("Found more than one XO unit with name '" + xoUnit.getName() + "'.");
                     }
                 }
             }
         } catch (IOException e) {
-            throw new XOException("Cannot read cdo.xml descriptors.", e);
+            throw new XOException("Cannot read xo.xml descriptors.", e);
         }
         return result;
     }

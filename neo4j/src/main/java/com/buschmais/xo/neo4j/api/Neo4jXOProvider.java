@@ -16,8 +16,8 @@ public class Neo4jXOProvider implements XODatastoreProvider {
     private static final Logger LOG = LoggerFactory.getLogger(Neo4jXOProvider.class);
 
     @Override
-    public Datastore<?, ?, ?, ?, ?> createDatastore(XOUnit XOUnit) {
-        URI uri = XOUnit.getUri();
+    public Datastore<?, ?, ?, ?, ?> createDatastore(XOUnit xoUnit) {
+        URI uri = xoUnit.getUri();
         DatastoreFactory datastoreFactory = lookupFactory(uri);
         try {
             return datastoreFactory.createGraphDatabaseService(uri);

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class InterceptorFactory {
 
-    private final List<CdoInterceptor> chain;
+    private final List<XOInterceptor> chain;
 
     public InterceptorFactory(XOTransaction XOTransaction, Transaction.TransactionAttribute transactionAttribute, ConcurrencyMode concurrencyMode) {
         this.chain = new ArrayList<>();

@@ -29,37 +29,37 @@ public class GuiceXOManagerFactoryInjectionTest {
     );
 
     @Test
-    public void testInjectedFieldCdoManager() {
+    public void testInjectedFieldXOManager() {
         A a = injector.getInstance(A.class);
-        assertEquals("guice", ((XOManagerFactoryImpl) a.guiceCdoManager).getXOUnit().getName());
-        assertEquals("default", ((XOManagerFactoryImpl) a.defaultCdoManager).getXOUnit().getName());
+        assertEquals("guice", ((XOManagerFactoryImpl) a.guiceXOManager).getXOUnit().getName());
+        assertEquals("default", ((XOManagerFactoryImpl) a.defaultXOManager).getXOUnit().getName());
     }
 
     @Test
-    public void testInjectedConstructorCdoManager() {
+    public void testInjectedConstructorXOManager() {
         B b = injector.getInstance(B.class);
-        assertEquals("guice", ((XOManagerFactoryImpl) b.guiceCdoManager).getXOUnit().getName());
-        assertEquals("default", ((XOManagerFactoryImpl) b.defaultCdoManager).getXOUnit().getName());
+        assertEquals("guice", ((XOManagerFactoryImpl) b.guiceXOManager).getXOUnit().getName());
+        assertEquals("default", ((XOManagerFactoryImpl) b.defaultXOManager).getXOUnit().getName());
     }
 
     static class A {
         @Inject
         @Named("guice")
-        XOManagerFactory guiceCdoManager;
+        XOManagerFactory guiceXOManager;
 
         @Inject
-        XOManagerFactory defaultCdoManager;
+        XOManagerFactory defaultXOManager;
     }
 
     static class B {
 
-        private final XOManagerFactory guiceCdoManager;
-        private final XOManagerFactory defaultCdoManager;
+        private final XOManagerFactory guiceXOManager;
+        private final XOManagerFactory defaultXOManager;
 
         @Inject
-        public B(@Named("guice") XOManagerFactory guiceCdoManager, XOManagerFactory defaultCdoManager) {
-            this.guiceCdoManager = guiceCdoManager;
-            this.defaultCdoManager = defaultCdoManager;
+        public B(@Named("guice") XOManagerFactory guiceXOManager, XOManagerFactory defaultXOManager) {
+            this.guiceXOManager = guiceXOManager;
+            this.defaultXOManager = defaultXOManager;
         }
     }
 }

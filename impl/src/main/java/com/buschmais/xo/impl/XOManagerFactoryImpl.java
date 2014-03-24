@@ -20,7 +20,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XOManagerFactoryImpl.class);
 
-    private final XOUnit XOUnit;
+    private final XOUnit xoUnit;
     private final MetadataProvider metadataProvider;
     private final ClassLoader classLoader;
     private final Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore;
@@ -28,21 +28,21 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
     private final ConcurrencyMode concurrencyMode;
     private final Transaction.TransactionAttribute defaultTransactionAttribute;
 
-    public XOManagerFactoryImpl(XOUnit XOUnit) {
-        this.XOUnit = XOUnit;
-        Class<?> providerType = XOUnit.getProvider();
+    public XOManagerFactoryImpl(XOUnit xoUnit) {
+        this.xoUnit = xoUnit;
+        Class<?> providerType = xoUnit.getProvider();
         if (providerType == null) {
-            throw new XOException("No provider specified for CDO unit '" + XOUnit.getName() + "'.");
+            throw new XOException("No provider specified for XO unit '" + xoUnit.getName() + "'.");
         }
         if (!XODatastoreProvider.class.isAssignableFrom(providerType)) {
-            throw new XOException(providerType.getName() + " specified as CDO provider must implement " + XODatastoreProvider.class.getName());
+            throw new XOException(providerType.getName() + " specified as XO provider must implement " + XODatastoreProvider.class.getName());
         }
         XODatastoreProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> XODatastoreProvider = XODatastoreProvider.class.cast(ClassHelper.newInstance(providerType));
-        this.datastore = XODatastoreProvider.createDatastore(XOUnit);
-        this.concurrencyMode = XOUnit.getConcurrencyMode();
-        this.defaultTransactionAttribute = XOUnit.getDefaultTransactionAttribute();
+        this.datastore = XODatastoreProvider.createDatastore(xoUnit);
+        this.concurrencyMode = xoUnit.getConcurrencyMode();
+        this.defaultTransactionAttribute = xoUnit.getDefaultTransactionAttribute();
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        final ClassLoader parentClassLoader = contextClassLoader != null ? contextClassLoader : XOUnit.getClass().getClassLoader();
+        final ClassLoader parentClassLoader = contextClassLoader != null ? contextClassLoader : xoUnit.getClass().getClassLoader();
         LOGGER.debug("Using class loader '{}'.", parentClassLoader.toString());
         classLoader = new ClassLoader() {
             @Override
@@ -50,7 +50,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
                 return parentClassLoader.loadClass(name);
             }
         };
-        metadataProvider = new MetadataProviderImpl(XOUnit.getTypes(), datastore);
+        metadataProvider = new MetadataProviderImpl(xoUnit.getTypes(), datastore);
         this.validatorFactory = getValidatorFactory();
         datastore.init(metadataProvider.getRegisteredMetadata());
     }
@@ -73,9 +73,9 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
     @Override
     public XOManager createXOManager() {
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = datastore.createSession();
-        SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext = new SessionContext<>(metadataProvider, datastoreSession, validatorFactory, XOUnit.getInstanceListeners(), defaultTransactionAttribute, concurrencyMode, classLoader);
-        XOManagerImpl<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> cdoManager = new XOManagerImpl<>(sessionContext);
-        return sessionContext.getInterceptorFactory().addInterceptor(cdoManager);
+        SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext = new SessionContext<>(metadataProvider, datastoreSession, validatorFactory, xoUnit.getInstanceListeners(), defaultTransactionAttribute, concurrencyMode, classLoader);
+        XOManagerImpl<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> xoManager = new XOManagerImpl<>(sessionContext);
+        return sessionContext.getInterceptorFactory().addInterceptor(xoManager);
     }
 
     @Override
@@ -85,6 +85,6 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
 
     @Override
     public XOUnit getXOUnit() {
-        return XOUnit;
+        return xoUnit;
     }
 }

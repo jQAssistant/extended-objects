@@ -10,14 +10,14 @@ public class EmbeddedNeo4jBootstrapTest {
 
     @Test
     public void bootstrap() {
-        XOManagerFactory XOManagerFactory = XO.createXOManagerFactory("Neo4jEmbedded");
-        XOManager XOManager = XOManagerFactory.createXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
+        XOManagerFactory xoManagerFactory = XO.createXOManagerFactory("Neo4jEmbedded");
+        XOManager xoManager = xoManagerFactory.createXOManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
         a.setName("Test");
-        XOManager.currentTransaction().commit();
-        XOManager.close();
-        XOManagerFactory.close();
+        xoManager.currentTransaction().commit();
+        xoManager.close();
+        xoManagerFactory.close();
     }
 
 }

@@ -39,7 +39,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
     private final TransactionalCache<RelationId> relationCache;
     private final InstanceValidationService instanceValidationService;
     private final CacheSynchronizationService<Entity, Relation> cacheSynchronizationService;
-    private final XOTransactionImpl cdoTransaction;
+    private final XOTransactionImpl xoTransaction;
     private final EntityPropertyManager<Entity, Relation> entityPropertyManager;
     private final RelationPropertyManager<Entity, Relation> relationPropertyManager;
     private final InterceptorFactory interceptorFactory;
@@ -51,8 +51,8 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.datastoreSession = datastoreSession;
         this.entityCache = new TransactionalCache<>();
         this.relationCache = new TransactionalCache<>();
-        this.cdoTransaction = new XOTransactionImpl(datastoreSession.getDatastoreTransaction());
-        this.interceptorFactory = new InterceptorFactory(cdoTransaction, defaultTransactionAttribute, concurrencyMode);
+        this.xoTransaction = new XOTransactionImpl(datastoreSession.getDatastoreTransaction());
+        this.interceptorFactory = new InterceptorFactory(xoTransaction, defaultTransactionAttribute, concurrencyMode);
         this.proxyFactory = new ProxyFactory(interceptorFactory, classLoader);
         this.instanceListenerService = new InstanceListenerService(instanceListenerTypes);
         this.entityPropertyManager = new EntityPropertyManager<>(this);
@@ -62,7 +62,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.instanceValidationService = new InstanceValidationService(validatorFactory, relationCache, entityCache);
         this.cacheSynchronizationService = new CacheSynchronizationService<>(this);
         // Register default synchronizations.
-        cdoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(cacheSynchronizationService, entityCache, relationCache));
+        xoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(cacheSynchronizationService, entityCache, relationCache));
     }
 
     public MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> getMetadataProvider() {
@@ -97,8 +97,8 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         return cacheSynchronizationService;
     }
 
-    public XOTransaction getCdoTransaction() {
-        return cdoTransaction;
+    public XOTransaction getXOTransaction() {
+        return xoTransaction;
     }
 
     public EntityPropertyManager<Entity, Relation> getEntityPropertyManager() {

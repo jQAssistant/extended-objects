@@ -19,24 +19,24 @@ import org.slf4j.LoggerFactory;
 import java.net.URISyntaxException;
 import java.util.*;
 
-public class CdoManagerFactoryServiceFactory implements ManagedServiceFactory {
+public class XOManagerFactoryServiceFactory implements ManagedServiceFactory {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CdoManagerFactoryServiceFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XOManagerFactoryServiceFactory.class);
 
     private final Map<String, XOManagerFactory> pidsToFactories;
 
     private final Map<String, ServiceRegistration<XOManagerFactory>> pidsToServiceRegistrations;
 
-    private final Set<String> registeredCdoUnits;
+    private final Set<String> registeredXOUnits;
 
     private ComponentContext componentContext;
 
     private String componentName;
 
-    public CdoManagerFactoryServiceFactory() {
+    public XOManagerFactoryServiceFactory() {
         pidsToFactories = new HashMap<>();
         pidsToServiceRegistrations = new HashMap<>();
-        registeredCdoUnits = new HashSet<>();
+        registeredXOUnits = new HashSet<>();
     }
 
     @Override
@@ -46,25 +46,24 @@ public class CdoManagerFactoryServiceFactory implements ManagedServiceFactory {
 
     @Override
     public void updated(String pid, Dictionary<String, ?> properties) throws ConfigurationException {
-        XOUnit XOUnit;
+        XOUnit xoUnit;
         try {
-            XOUnit = getCdoUnit(properties);
+            xoUnit = getXOUnit(properties);
         } catch (XOException e) {
             throw new ConfigurationException(XOUnitParameter.NAME.getKey(), e.getMessage(), e);
         }
-        if (registeredCdoUnits.contains(XOUnit.getName())) {
+        if (registeredXOUnits.contains(xoUnit.getName())) {
             LOGGER.debug("Update not yet supported {}", pid);
             return;
         }
-        XOManagerFactory XOManagerFactory = new XOManagerFactoryImpl<>(XOUnit);
+        XOManagerFactory xoManagerFactory = new XOManagerFactoryImpl(xoUnit);
 
         Dictionary<String, Object> p = new Hashtable<>();
-        p.put("name", XOUnit.getName());
-        ServiceRegistration<XOManagerFactory> serviceRegistration = componentContext.getBundleContext().registerService(XOManagerFactory.class,
-                XOManagerFactory, p);
+        p.put("name", xoUnit.getName());
+        ServiceRegistration<XOManagerFactory> serviceRegistration = componentContext.getBundleContext().registerService(XOManagerFactory.class, xoManagerFactory, p);
 
-        registeredCdoUnits.add(XOUnit.getName());
-        pidsToFactories.put(pid, XOManagerFactory);
+        registeredXOUnits.add(xoUnit.getName());
+        pidsToFactories.put(pid, xoManagerFactory);
         pidsToServiceRegistrations.put(pid, serviceRegistration);
     }
 
@@ -72,8 +71,8 @@ public class CdoManagerFactoryServiceFactory implements ManagedServiceFactory {
     public void deleted(String pid) {
         XOManagerFactory XOManagerFactory = pidsToFactories.remove(pid);
         if (XOManagerFactory != null) {
-            registeredCdoUnits.remove(XOManagerFactory.getXOUnit().getName());
-            closeCdoManagerFactory(XOManagerFactory);
+            registeredXOUnits.remove(XOManagerFactory.getXOUnit().getName());
+            closeXOManagerFactory(XOManagerFactory);
 
         }
         ServiceRegistration<XOManagerFactory> registration = pidsToServiceRegistrations.remove(pid);
@@ -97,13 +96,13 @@ public class CdoManagerFactoryServiceFactory implements ManagedServiceFactory {
         }
     }
 
-    private void closeCdoManagerFactory(XOManagerFactory XOManagerFactory) {
-        if (XOManagerFactory != null) {
-            XOManagerFactory.close();
+    private void closeXOManagerFactory(XOManagerFactory xoManagerFactory) {
+        if (xoManagerFactory != null) {
+            xoManagerFactory.close();
         }
     }
 
-    private XOUnit getCdoUnit(Dictionary<String, ?> properties) throws ConfigurationException {
+    private XOUnit getXOUnit(Dictionary<String, ?> properties) throws ConfigurationException {
         // must: url
         String url = (String) properties.get(XOUnitParameter.URL.getKey());
         if (url == null) {

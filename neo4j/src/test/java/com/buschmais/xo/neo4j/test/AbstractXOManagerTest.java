@@ -19,10 +19,10 @@ import java.util.*;
 
 import static com.buschmais.xo.api.Query.Result;
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import static com.buschmais.xo.neo4j.test.AbstractCdoManagerTest.Database.MEMORY;
-import static com.buschmais.xo.neo4j.test.AbstractCdoManagerTest.Database.REST;
+import static com.buschmais.xo.neo4j.test.AbstractXOManagerTest.Database.MEMORY;
+import static com.buschmais.xo.neo4j.test.AbstractXOManagerTest.Database.REST;
 
-public abstract class AbstractCdoManagerTest {
+public abstract class AbstractXOManagerTest {
 
     protected enum Database {
         MEMORY("memory:///"),
@@ -44,12 +44,12 @@ public abstract class AbstractCdoManagerTest {
 
     private static WrappingNeoServer server;
 
-    private XOUnit XOUnit;
-    private XOManagerFactory XOManagerFactory;
-    private XOManager XOManager = null;
+    private XOUnit xoUnit;
+    private XOManagerFactory xoManagerFactory;
+    private XOManager xoManager = null;
 
-    protected AbstractCdoManagerTest(XOUnit XOUnit) {
-        this.XOUnit = XOUnit;
+    protected AbstractXOManagerTest(XOUnit xoUnit) {
+        this.xoUnit = xoUnit;
     }
 
     @BeforeClass
@@ -60,38 +60,38 @@ public abstract class AbstractCdoManagerTest {
     }
 
     @Before
-    public void createCdoManagerFactory() throws URISyntaxException {
-        XOManagerFactory = XO.createXOManagerFactory(XOUnit);
+    public void createXOManagerFactory() throws URISyntaxException {
+        xoManagerFactory = XO.createXOManagerFactory(xoUnit);
         dropDatabase();
     }
 
     @After
-    public void closeNodeManagerFactory() {
-        closeCdoManager();
-        if (XOManagerFactory != null) {
-            XOManagerFactory.close();
+    public void closeXOManagerFactory() {
+        closeXOmanager();
+        if (xoManagerFactory != null) {
+            xoManagerFactory.close();
         }
     }
 
-    protected static Collection<Object[]> cdoUnits(Class<?>... types) {
-        return cdoUnits(Arrays.asList(MEMORY, REST), Arrays.asList(types), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
+    protected static Collection<Object[]> xoUnits(Class<?>... types) {
+        return xoUnits(Arrays.asList(MEMORY, REST), Arrays.asList(types), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
     }
 
-    protected static Collection<Object[]> cdoUnits(List<Database> databases, List<? extends Class<?>> types) {
-        return cdoUnits(databases, types, Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
+    protected static Collection<Object[]> xoUnits(List<Database> databases, List<? extends Class<?>> types) {
+        return xoUnits(databases, types, Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
     }
 
-    protected static Collection<Object[]> cdoUnits(List<? extends Class<?>> types, List<? extends Class<?>> instanceListeners, ValidationMode validationMode, ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
-        return cdoUnits(Arrays.asList(MEMORY, REST), types, instanceListeners, validationMode, concurrencyMode, transactionAttribute);
+    protected static Collection<Object[]> xoUnits(List<? extends Class<?>> types, List<? extends Class<?>> instanceListeners, ValidationMode validationMode, ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
+        return xoUnits(Arrays.asList(MEMORY, REST), types, instanceListeners, validationMode, concurrencyMode, transactionAttribute);
     }
 
-    protected static Collection<Object[]> cdoUnits(List<Database> databases, List<? extends Class<?>> types, List<? extends Class<?>> instanceListenerTypes, ValidationMode valiationMode, ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
-        List<Object[]> cdoUnits = new ArrayList<>(databases.size());
+    protected static Collection<Object[]> xoUnits(List<Database> databases, List<? extends Class<?>> types, List<? extends Class<?>> instanceListenerTypes, ValidationMode valiationMode, ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
+        List<Object[]> xoUnits = new ArrayList<>(databases.size());
         for (Database database : databases) {
-            XOUnit unit = new XOUnit("default", "Default CDO unit", database.getUri(), Neo4jXOProvider.class, new HashSet<>(types), instanceListenerTypes, valiationMode, concurrencyMode, transactionAttribute, new Properties());
-            cdoUnits.add(new Object[]{unit});
+            XOUnit unit = new XOUnit("default", "Default XO unit", database.getUri(), Neo4jXOProvider.class, new HashSet<>(types), instanceListenerTypes, valiationMode, concurrencyMode, transactionAttribute, new Properties());
+            xoUnits.add(new Object[]{unit});
         }
-        return cdoUnits;
+        return xoUnits;
     }
 
     @AfterClass
@@ -117,7 +117,7 @@ public abstract class AbstractCdoManagerTest {
      * @return The {@link TestResult}.
      */
     protected TestResult executeQuery(String query, Map<String, Object> parameters) {
-        Result<CompositeRowObject> result = XOManager.createQuery(query).withParameters(parameters).execute();
+        Result<CompositeRowObject> result = xoManager.createQuery(query).withParameters(parameters).execute();
         Map<String, List<Object>> columns = new HashMap<>();
         for (CompositeRowObject row : result) {
             Iterable<String> columnNames = row.getColumns();
@@ -133,29 +133,29 @@ public abstract class AbstractCdoManagerTest {
         return new TestResult(columns);
     }
 
-    protected XOManagerFactory getXOManagerFactory() {
-        return XOManagerFactory;
+    protected XOManagerFactory getXoManagerFactory() {
+        return xoManagerFactory;
     }
 
-    protected XOManager getXOManager() {
-        if (XOManager == null) {
-            XOManager = getXOManagerFactory().createXOManager();
+    protected XOManager getXoManager() {
+        if (xoManager == null) {
+            xoManager = getXoManagerFactory().createXOManager();
         }
-        return XOManager;
+        return xoManager;
     }
 
-    protected void closeCdoManager() {
-        if (XOManager != null) {
-            if (XOManager.currentTransaction().isActive()) {
-                XOManager.currentTransaction().rollback();
+    protected void closeXOmanager() {
+        if (xoManager != null) {
+            if (xoManager.currentTransaction().isActive()) {
+                xoManager.currentTransaction().rollback();
             }
-            XOManager.close();
-            XOManager = null;
+            xoManager.close();
+            xoManager = null;
         }
     }
 
     private void dropDatabase() {
-        XOManager manager = getXOManager();
+        XOManager manager = getXoManager();
         manager.currentTransaction().begin();
         manager.createQuery("MATCH (n)-[r]-() DELETE r").execute();
         manager.createQuery("MATCH (n) DELETE n").execute();

@@ -5,7 +5,7 @@ import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
-import com.buschmais.xo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,40 +18,40 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(Parameterized.class)
-public class CrudTest extends AbstractCdoManagerTest {
+public class CrudTest extends AbstractXOManagerTest {
 
-    public CrudTest(XOUnit XOUnit) {
-        super(XOUnit);
+    public CrudTest(XOUnit xoUnit) {
+        super(xoUnit);
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCdoUnits() throws URISyntaxException {
-        return cdoUnits(A.class);
+    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+        return xoUnits(A.class);
     }
 
     @Test
     public void create() throws InterruptedException {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
         a.setName("Foo");
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
-        a = XOManager.find(A.class, "Foo").getSingleResult();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
+        a = xoManager.find(A.class, "Foo").getSingleResult();
         assertThat(a.getName(), equalTo("Foo"));
         a.setName("Bar");
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
-        XOManager.createQuery("match (a:A) where a.name={name} return a").withParameter("name", "Bar").execute().getSingleResult();
-        XOManager.delete(a);
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
+        xoManager.createQuery("match (a:A) where a.name={name} return a").withParameter("name", "Bar").execute().getSingleResult();
+        xoManager.delete(a);
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         try {
-            XOManager.createQuery("match (a:A) return a").execute().getSingleResult();
+            xoManager.createQuery("match (a:A) return a").execute().getSingleResult();
             Assert.fail("An exception is expected.");
         } catch (XOException e) {
         }
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().commit();
     }
 
     @Label("A")

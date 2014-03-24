@@ -7,9 +7,9 @@ import java.util.List;
 public class InterceptorInvocationHandler implements InvocationHandler {
 
     private final Object instance;
-    private final List<CdoInterceptor> chain;
+    private final List<XOInterceptor> chain;
 
-    public InterceptorInvocationHandler(Object instance, List<CdoInterceptor> chain) {
+    public InterceptorInvocationHandler(Object instance, List<XOInterceptor> chain) {
         this.instance = instance;
         this.chain = chain;
     }

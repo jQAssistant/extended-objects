@@ -15,12 +15,12 @@ import com.buschmais.xo.spi.reflection.PropertyMethod;
 import java.util.Collection;
 import java.util.Map;
 
-public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D, TestEntityMetadata, String, TestRelationMetadata, String> {
+public class TestXODatastore<D extends DatastoreSession> implements Datastore<D, TestEntityMetadata, String, TestRelationMetadata, String> {
 
-    private final XOUnit XOUnit;
+    private final XOUnit xoUnit;
 
-    public TestCdoDatastore(XOUnit XOUnit) {
-        this.XOUnit = XOUnit;
+    public TestXODatastore(XOUnit xoUnit) {
+        this.xoUnit = xoUnit;
     }
 
     @Override
@@ -77,6 +77,6 @@ public class TestCdoDatastore<D extends DatastoreSession> implements Datastore<D
     }
 
     public XOUnit getXOUnit() {
-        return XOUnit;
+        return xoUnit;
     }
 }

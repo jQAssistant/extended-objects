@@ -21,7 +21,7 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>com.buschmais.xo.impl.bootstrap.osgi.CdoUnitBundleListener</Bundle-Activator>
+                        <Bundle-Activator>com.buschmais.xo.impl.bootstrap.osgi.XOUnitBundleListener</Bundle-Activator>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Service-Component>OSGI-INF/service-factory.xml</Service-Component>
                     </instructions>

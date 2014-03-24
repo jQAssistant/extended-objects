@@ -57,7 +57,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Constructor.
      *
-     * @param types     All classes as provided by the CDO unit.
+     * @param types     All classes as provided by the XO unit.
      * @param datastore The datastore.
      */
     public MetadataProviderImpl(Collection<Class<?>> types, Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore) {

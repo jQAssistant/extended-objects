@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.mapping;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
 import com.buschmais.xo.neo4j.test.mapping.composite.A;
 import com.buschmais.xo.neo4j.test.mapping.composite.B;
 import org.junit.Test;
@@ -17,51 +17,51 @@ import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class ReferencePropertyMappingTest extends AbstractCdoManagerTest {
+public class ReferencePropertyMappingTest extends AbstractXOManagerTest {
 
-    public ReferencePropertyMappingTest(XOUnit XOUnit) {
-        super(XOUnit);
+    public ReferencePropertyMappingTest(XOUnit xoUnit) {
+        super(xoUnit);
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCdoUnits() throws URISyntaxException {
-        return cdoUnits(A.class, B.class);
+    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+        return xoUnits(A.class, B.class);
     }
 
     @Test
     public void referenceProperty() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
-        B b1 = XOManager.create(B.class);
-        B b2 = XOManager.create(B.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
+        B b1 = xoManager.create(B.class);
+        B b2 = xoManager.create(B.class);
         a.setB(b1);
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         assertThat(a.getB(), equalTo(b1));
         a.setB(b2);
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         assertThat(a.getB(), equalTo(b2));
         a.setB(null);
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         assertThat(a.getB(), equalTo(null));
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().commit();
     }
 
     @Test
     public void mappedReferenceProperty() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
-        B b = XOManager.create(B.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
+        B b = xoManager.create(B.class);
         a.setMappedB(b);
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         TestResult result = executeQuery("match (a:A)-[:MAPPED_B]->(b) return b");
         assertThat(result.getColumn("b"), hasItem(b));
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().commit();
     }
 
 }

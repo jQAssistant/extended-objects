@@ -24,94 +24,93 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
-public class CdoUnitFactory {
+public class XOUnitFactory {
 
-    private static final CdoUnitFactory instance = new CdoUnitFactory();
+    private static final XOUnitFactory instance = new XOUnitFactory();
 
-    private final JAXBContext cdoContext;
-    private final Schema cdoXsd;
+    private final JAXBContext xoContext;
+    private final Schema xoXsd;
 
-    private CdoUnitFactory() {
+    private XOUnitFactory() {
         try {
-            cdoContext = JAXBContext.newInstance(ObjectFactory.class);
+            xoContext = JAXBContext.newInstance(ObjectFactory.class);
             SchemaFactory xsdFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            cdoXsd = xsdFactory.newSchema(new StreamSource(CdoUnitFactory.class.getResourceAsStream("/META-INF/xsd/xo-1.0.xsd")));
+            xoXsd = xsdFactory.newSchema(new StreamSource(XOUnitFactory.class.getResourceAsStream("/META-INF/xsd/xo-1.0.xsd")));
         } catch (JAXBException e) {
-            throw new XOException("Cannot create JAXBContext for reading cdo.xml descriptors.", e);
+            throw new XOException("Cannot create JAXBContext for reading xo.xml descriptors.", e);
         } catch (SAXException e) {
-            throw new XOException("Cannot create Schema for validation of cdo.xml descriptors.", e);
+            throw new XOException("Cannot create Schema for validation of xo.xml descriptors.", e);
         }
     }
 
-    public static CdoUnitFactory getInstance() {
+    public static XOUnitFactory getInstance() {
         return instance;
     }
 
-    public List<XOUnit> getCdoUnits(URL url) throws IOException {
-        Xo cdo = readCdoDescriptor(cdoContext, url, cdoXsd);
-        return getCdoUnits(cdo);
+    public List<XOUnit> getXOUnits(URL url) throws IOException {
+        Xo xo = readXODescriptor(url, xoXsd);
+        return getXOUnits(xo);
     }
 
-    private Xo readCdoDescriptor(JAXBContext cdoContext, URL url, Schema cdoXsd)
+    private Xo readXODescriptor(URL url, Schema xoXsd)
             throws IOException {
         try (InputStream is = url.openStream()) {
             try {
-                Unmarshaller unmarshaller = cdoContext.createUnmarshaller();
-                CdoUnitValidationHandler validationHandler = new CdoUnitValidationHandler();
-                unmarshaller.setSchema(cdoXsd);
+                Unmarshaller unmarshaller = xoContext.createUnmarshaller();
+                XOUnitValidationHandler validationHandler = new XOUnitValidationHandler();
+                unmarshaller.setSchema(xoXsd);
                 unmarshaller.setEventHandler(validationHandler);
-                Xo cdoXmlContent = unmarshaller.unmarshal(new StreamSource(is), Xo.class).getValue();
+                Xo xoXmlContent = unmarshaller.unmarshal(new StreamSource(is), Xo.class).getValue();
                 if (validationHandler.isValid()) {
-                    return cdoXmlContent;
+                    return xoXmlContent;
                 } else {
-                    throw new XOException("Invalid cdo.xml descriptor detected: "
-                            + validationHandler.getValidationMessages());
+                    throw new XOException("Invalid xo.xml descriptor detected: " + validationHandler.getValidationMessages());
                 }
             } catch (JAXBException e) {
-                throw new XOException("Cannot create JAXB unmarshaller for reading cdo.xml descriptors.");
+                throw new XOException("Cannot create JAXB unmarshaller for reading xo.xml descriptors.");
             }
         }
     }
 
-    private List<XOUnit> getCdoUnits(Xo cdo) {
-        List<XOUnit> XOUnits = new LinkedList<>();
-        for (XoUnitType cdoUnitType : cdo.getXoUnit()) {
-            String name = cdoUnitType.getName();
-            String description = cdoUnitType.getDescription();
-            String urlName = cdoUnitType.getUrl();
+    private List<XOUnit> getXOUnits(Xo xo) {
+        List<XOUnit> xoUnits = new LinkedList<>();
+        for (XOUnitType xoUnitType : xo.getXoUnit()) {
+            String name = xoUnitType.getName();
+            String description = xoUnitType.getDescription();
+            String urlName = xoUnitType.getUrl();
             URI uri;
             try {
                 uri = new URI(urlName);
             } catch (URISyntaxException e) {
                 throw new XOException("Cannot convert '" + urlName + "' to url.");
             }
-            String providerName = cdoUnitType.getProvider();
+            String providerName = xoUnitType.getProvider();
             Class<? extends XODatastoreProvider> provider = ClassHelper.getType(providerName);
             Set<Class<?>> types = new HashSet<>();
-            for (String typeName : cdoUnitType.getTypes().getType()) {
+            for (String typeName : xoUnitType.getTypes().getType()) {
                 types.add(ClassHelper.getType(typeName));
             }
             List<Class<?>> instanceListeners = new ArrayList<>();
-            InstanceListenersType instanceListenersType = cdoUnitType.getInstanceListeners();
+            InstanceListenersType instanceListenersType = xoUnitType.getInstanceListeners();
             if (instanceListenersType != null) {
                 for (String instanceListenerName : instanceListenersType.getInstanceListener()) {
                     instanceListeners.add(ClassHelper.getType(instanceListenerName));
                 }
             }
-            ValidationMode validationMode = getValidationMode(cdoUnitType.getValidationMode());
-            ConcurrencyMode concurrencyMode = getConcurrencyMode(cdoUnitType.getConcurrencyMode());
-            Transaction.TransactionAttribute defaultTransactionAttribute = getTransactionAttribute(cdoUnitType.getDefaultTransactionAttribute());
+            ValidationMode validationMode = getValidationMode(xoUnitType.getValidationMode());
+            ConcurrencyMode concurrencyMode = getConcurrencyMode(xoUnitType.getConcurrencyMode());
+            Transaction.TransactionAttribute defaultTransactionAttribute = getTransactionAttribute(xoUnitType.getDefaultTransactionAttribute());
             Properties properties = new Properties();
-            PropertiesType propertiesType = cdoUnitType.getProperties();
+            PropertiesType propertiesType = xoUnitType.getProperties();
             if (propertiesType != null) {
                 for (PropertyType propertyType : propertiesType.getProperty()) {
                     properties.setProperty(propertyType.getName(), propertyType.getValue());
                 }
             }
-            XOUnit XOUnit = new XOUnit(name, description, uri, provider, types, instanceListeners, validationMode, concurrencyMode, defaultTransactionAttribute, properties);
-            XOUnits.add(XOUnit);
+            XOUnit xoUnit = new XOUnit(name, description, uri, provider, types, instanceListeners, validationMode, concurrencyMode, defaultTransactionAttribute, properties);
+            xoUnits.add(xoUnit);
         }
-        return XOUnits;
+        return xoUnits;
     }
 
     private ConcurrencyMode getConcurrencyMode(ConcurrencyModeType concurrencyModeType) {
@@ -122,7 +121,7 @@ public class CdoUnitFactory {
             case MULTITHREADED:
                 return ConcurrencyMode.MULTITHREADED;
             default:
-                throw new XOException("Unknown conucrrency mode type " + concurrencyModeType);
+                throw new XOException("Unknown concurrency mode type " + concurrencyModeType);
         }
     }
 

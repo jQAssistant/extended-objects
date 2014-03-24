@@ -7,7 +7,7 @@ import com.buschmais.xo.spi.datastore.Datastore;
 public class TestXOProvider implements XODatastoreProvider {
 
     @Override
-    public Datastore<?, ?, ?, ?, ?> createDatastore(XOUnit XOUnit) {
-        return new TestCdoDatastore(XOUnit);
+    public Datastore<?, ?, ?, ?, ?> createDatastore(XOUnit xoUnit) {
+        return new TestXODatastore(xoUnit);
     }
 }

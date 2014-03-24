@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.transaction;
 
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
 import com.buschmais.xo.neo4j.test.transaction.composite.A;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,25 +19,25 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class TransactionAttributeMandatoryTest extends AbstractCdoManagerTest {
+public class TransactionAttributeMandatoryTest extends AbstractXOManagerTest {
 
-    public TransactionAttributeMandatoryTest(XOUnit XOUnit) {
-        super(XOUnit);
+    public TransactionAttributeMandatoryTest(XOUnit xoUnit) {
+        super(xoUnit);
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCdoUnits() throws URISyntaxException {
-        return cdoUnits(asList(Database.MEMORY), Arrays.asList(A.class), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
+    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+        return xoUnits(asList(Database.MEMORY), Arrays.asList(A.class), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
     }
 
     @Test
     public void withoutTransactionContext() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
         a.setValue("value1");
-        XOManager.currentTransaction().commit();
-        assertThat(XOManager.currentTransaction().isActive(), equalTo(false));
+        xoManager.currentTransaction().commit();
+        assertThat(xoManager.currentTransaction().isActive(), equalTo(false));
         try {
             a.getValue();
             Assert.fail("A XOException is expected.");

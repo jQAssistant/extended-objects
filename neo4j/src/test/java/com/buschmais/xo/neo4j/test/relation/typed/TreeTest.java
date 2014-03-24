@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.relation.typed;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNode;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNodeRelation;
 import org.junit.Test;
@@ -17,33 +17,33 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class TreeTest extends AbstractCdoManagerTest {
+public class TreeTest extends AbstractXOManagerTest {
 
-    public TreeTest(XOUnit XOUnit) {
-        super(XOUnit);
+    public TreeTest(XOUnit xoUnit) {
+        super(xoUnit);
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCdoUnits() throws URISyntaxException {
-        return cdoUnits(TreeNode.class, TreeNodeRelation.class);
+    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+        return xoUnits(TreeNode.class, TreeNodeRelation.class);
     }
 
     @Test
     public void tree() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        TreeNode parent = XOManager.create(TreeNode.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        TreeNode parent = xoManager.create(TreeNode.class);
         parent.setName("parent");
-        TreeNode child1 = XOManager.create(TreeNode.class);
+        TreeNode child1 = xoManager.create(TreeNode.class);
         child1.setName("child 1");
-        TreeNode child2 = XOManager.create(TreeNode.class);
+        TreeNode child2 = xoManager.create(TreeNode.class);
         child2.setName("child 2");
-        TreeNodeRelation relation1 = XOManager.create(parent, TreeNodeRelation.class, child1);
+        TreeNodeRelation relation1 = xoManager.create(parent, TreeNodeRelation.class, child1);
         relation1.setVersion(1);
-        TreeNodeRelation relation2 = XOManager.create(parent, TreeNodeRelation.class, child2);
+        TreeNodeRelation relation2 = xoManager.create(parent, TreeNodeRelation.class, child2);
         relation2.setVersion(1);
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         assertThat(parent.getParent(), equalTo(null));
         assertThat(parent.getChildren(), hasItems(relation1, relation2));
         assertThat(relation1.getParent(), equalTo(parent));

@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.demo;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
 import com.buschmais.xo.neo4j.test.demo.composite.Group;
 import com.buschmais.xo.neo4j.test.demo.composite.Person;
 import org.hamcrest.Matchers;
@@ -15,27 +15,27 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class IndexedDemoTest extends AbstractCdoManagerTest {
+public class IndexedDemoTest extends AbstractXOManagerTest {
 
-    public IndexedDemoTest(XOUnit XOUnit) {
-        super(XOUnit);
+    public IndexedDemoTest(XOUnit xoUnit) {
+        super(xoUnit);
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCdoUnits() throws URISyntaxException {
-        return cdoUnits(Group.class, Person.class);
+    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+        return xoUnits(Group.class, Person.class);
     }
 
     @Test
     public void test() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        Person person1 = XOManager.create(Person.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        Person person1 = xoManager.create(Person.class);
         person1.setName("Peter");
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
-        Person person2 = XOManager.find(Person.class, "Peter").getSingleResult();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
+        Person person2 = xoManager.find(Person.class, "Peter").getSingleResult();
         Assert.assertThat(person2, Matchers.equalTo(person1));
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().commit();
     }
 }

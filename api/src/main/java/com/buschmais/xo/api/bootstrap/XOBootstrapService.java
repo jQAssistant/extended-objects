@@ -15,9 +15,9 @@ public interface XOBootstrapService {
 
     /**
      * Create a {@link com.buschmais.xo.api.XOManagerFactory} using the name of a XO unit.
-     * <p>CDO units are defined in XML descriptors located as classpath resources with the name "/META-INF/cdo.xml".</p>
+     * <p>XO units are defined in XML descriptors located as classpath resources with the name "/META-INF/xo.xml".</p>
      *
-     * @param unit The name of the CDO unit.
+     * @param unit The name of the XO unit.
      * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
      */
     XOManagerFactory createXOManagerFactory(String unit);
@@ -25,7 +25,7 @@ public interface XOBootstrapService {
     /**
      * Create a {@link com.buschmais.xo.api.XOManagerFactory} using the name of a XO unit.
      *
-     * @param XOUnit The CDO unit.
+     * @param XOUnit The XO unit.
      * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
      */
     XOManagerFactory createXOManagerFactory(XOUnit XOUnit);

@@ -24,8 +24,8 @@ public class BootstrapTest {
     public void bootstrap() {
         XOManagerFactory XOManagerFactory = XO.createXOManagerFactory("testUnit");
         assertThat(XOManagerFactory, not(equalTo(null)));
-        XOManagerFactoryImpl cdoManagerFactoryImpl = (XOManagerFactoryImpl) XOManagerFactory;
-        XOUnit XOUnit = cdoManagerFactoryImpl.getXOUnit();
+        XOManagerFactoryImpl xoManagerFactoryImpl = (XOManagerFactoryImpl) XOManagerFactory;
+        XOUnit XOUnit = xoManagerFactoryImpl.getXOUnit();
         assertThat(XOUnit.getName(), equalTo("testUnit"));
         assertThat(XOUnit.getDescription(), equalTo("This is a test unit."));
         assertThat(XOUnit.getUri().toString(), equalTo("file://foo"));

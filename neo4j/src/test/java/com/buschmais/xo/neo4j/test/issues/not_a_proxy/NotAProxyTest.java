@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.issues.not_a_proxy;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
 import com.buschmais.xo.neo4j.test.issues.not_a_proxy.composite.A;
 import com.buschmais.xo.neo4j.test.issues.not_a_proxy.composite.B;
 import com.buschmais.xo.neo4j.test.issues.not_a_proxy.composite.C;
@@ -20,28 +20,28 @@ import static org.junit.Assert.assertThat;
  * https://github.com/buschmais/cdo-neo4j/issues/57
  */
 @RunWith(Parameterized.class)
-public class NotAProxyTest extends AbstractCdoManagerTest {
+public class NotAProxyTest extends AbstractXOManagerTest {
 
-    public NotAProxyTest(XOUnit XOUnit) {
-        super(XOUnit);
+    public NotAProxyTest(XOUnit xoUnit) {
+        super(xoUnit);
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCdoUnits() throws URISyntaxException {
-        return cdoUnits(A.class, B.class, C.class);
+    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+        return xoUnits(A.class, B.class, C.class);
     }
 
     @Test
     public void test() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
-        C c = XOManager.create(C.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
+        C c = xoManager.create(C.class);
         a.getB().add(c);
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         assertThat(a.equals(a.getB()), is(false));
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().commit();
     }
 
 }

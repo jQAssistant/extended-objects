@@ -170,7 +170,7 @@ public interface XOManager extends AutoCloseable {
     <Q> Query<CompositeRowObject> createQuery(Class<Q> query, Class<?>... types);
 
     /**
-     * Close the {@CdoManager}.
+     * Close the {@link com.buschmais.xo.api.XOManager}.
      */
     @Transaction(NOT_SUPPORTED)
     void close();

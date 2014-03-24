@@ -5,7 +5,7 @@ import javax.xml.bind.ValidationEventHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CdoUnitValidationHandler implements ValidationEventHandler {
+public class XOUnitValidationHandler implements ValidationEventHandler {
 
     private final List<String> errorMessages = new ArrayList<>();
 

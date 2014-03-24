@@ -7,7 +7,7 @@
     <xs:element name="xo">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="xo-unit" type="xo:XoUnitType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="xo-unit" type="xo:XOUnitType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="version" type="xo:VersionType" use="required"/>
         </xs:complexType>
@@ -19,7 +19,7 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:complexType name="XoUnitType">
+    <xs:complexType name="XOUnitType">
         <xs:sequence>
             <xs:element name="description" type="xs:string" minOccurs="0"/>
             <xs:element name="url" type="xs:anyURI" minOccurs="0"/>

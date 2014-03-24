@@ -3,7 +3,7 @@ package com.buschmais.xo.neo4j.test.validation;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.annotation.PreUpdate;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
 import com.buschmais.xo.neo4j.test.validation.composite.A;
 import com.buschmais.xo.neo4j.test.validation.composite.B;
 import org.junit.Assert;
@@ -21,80 +21,80 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class ValidationTest extends AbstractCdoManagerTest {
+public class ValidationTest extends AbstractXOManagerTest {
 
-    public ValidationTest(XOUnit XOUnit) {
-        super(XOUnit);
+    public ValidationTest(XOUnit xoUnit) {
+        super(xoUnit);
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCdoUnits() throws URISyntaxException {
-        return cdoUnits(A.class, B.class);
+    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+        return xoUnits(A.class, B.class);
     }
 
     @Test
     public void validationOnCommitAfterInsert() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
         Set<ConstraintViolation<?>> constraintViolations = null;
         try {
-            XOManager.currentTransaction().commit();
+            xoManager.currentTransaction().commit();
             Assert.fail("Validation must fail.");
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
         }
         assertThat(constraintViolations.size(), equalTo(2));
-        B b = XOManager.create(B.class);
+        B b = xoManager.create(B.class);
         a.setB(b);
         a.setName("Indiana Jones");
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().commit();
     }
 
     @Test
     public void validationOnCommitAfterQuery() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        B b = XOManager.create(B.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        B b = xoManager.create(B.class);
         for (int i = 0; i < 2; i++) {
-            A a = XOManager.create(A.class);
+            A a = xoManager.create(A.class);
             a.setName("Miller");
             a.setB(b);
         }
-        XOManager.currentTransaction().commit();
-        closeCdoManager();
-        XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        for (A miller : XOManager.find(A.class, "Miller")) {
+        xoManager.currentTransaction().commit();
+        closeXOmanager();
+        xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        for (A miller : xoManager.find(A.class, "Miller")) {
             miller.setName(null);
         }
         Set<ConstraintViolation<?>> constraintViolations = null;
         try {
-            XOManager.currentTransaction().commit();
+            xoManager.currentTransaction().commit();
             Assert.fail("Validation must fail.");
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
         }
         assertThat(constraintViolations.size(), equalTo(1));
-        XOManager.currentTransaction().rollback();
+        xoManager.currentTransaction().rollback();
     }
 
     @Test
     public void validationAfterPreUpdate() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        B b = XOManager.create(B.class);
-        A a = XOManager.create(A.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        B b = xoManager.create(B.class);
+        A a = xoManager.create(A.class);
         a.setB(b);
         Set<ConstraintViolation<?>> constraintViolations = null;
         try {
-            XOManager.currentTransaction().commit();
+            xoManager.currentTransaction().commit();
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
         }
         assertThat(constraintViolations.size(), equalTo(1));
-        XOManager.registerInstanceListener(new InstanceListener());
-        XOManager.currentTransaction().commit();
+        xoManager.registerInstanceListener(new InstanceListener());
+        xoManager.currentTransaction().commit();
     }
 
     public static final class InstanceListener {

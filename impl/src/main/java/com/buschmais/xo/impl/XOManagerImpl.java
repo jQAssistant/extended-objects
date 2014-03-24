@@ -1,7 +1,7 @@
 package com.buschmais.xo.impl;
 
 import com.buschmais.xo.api.*;
-import com.buschmais.xo.impl.query.CdoQueryImpl;
+import com.buschmais.xo.impl.query.XOQueryImpl;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterable;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
@@ -46,7 +46,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public XOTransaction currentTransaction() {
-        return sessionContext.getCdoTransaction();
+        return sessionContext.getXOTransaction();
     }
 
     @Override
@@ -90,7 +90,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
                     }
                 };
             }
-        }, sessionContext.getCdoTransaction());
+        }, sessionContext.getXOTransaction());
     }
 
     @Override
@@ -175,38 +175,38 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
             relationInstanceManager.closeInstance(instance);
             sessionContext.getInstanceListenerService().postDelete(instance);
         } else {
-            throw new XOException(instance + " is not a managed CDO instance.");
+            throw new XOException(instance + " is not a managed XO instance.");
         }
     }
 
     @Override
     public Query<CompositeRowObject> createQuery(String query) {
-        CdoQueryImpl<CompositeRowObject, String, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, CompositeRowObject.class, Collections.<Class<?>>emptyList());
-        return sessionContext.getInterceptorFactory().addInterceptor(cdoQuery);
+        XOQueryImpl<CompositeRowObject, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, CompositeRowObject.class, Collections.<Class<?>>emptyList());
+        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
     public <T> Query<T> createQuery(String query, Class<T> type) {
-        CdoQueryImpl<T, String, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, type, Arrays.asList(type));
-        return sessionContext.getInterceptorFactory().addInterceptor(cdoQuery);
+        XOQueryImpl<T, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type, Arrays.asList(type));
+        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
     public Query<CompositeRowObject> createQuery(String query, Class<?> type, Class<?>... types) {
-        CdoQueryImpl<CompositeRowObject, String, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, type, Arrays.asList(types));
-        return sessionContext.getInterceptorFactory().addInterceptor(cdoQuery);
+        XOQueryImpl<CompositeRowObject, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type, Arrays.asList(types));
+        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
     public <T> Query<T> createQuery(Class<T> query) {
-        CdoQueryImpl<T, Class<T>, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, query, Arrays.asList(query));
-        return sessionContext.getInterceptorFactory().addInterceptor(cdoQuery);
+        XOQueryImpl<T, Class<T>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query, Arrays.asList(query));
+        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
     public <Q> Query<CompositeRowObject> createQuery(Class<Q> query, Class<?>... types) {
-        CdoQueryImpl<CompositeRowObject, Class<Q>, Entity, Relation> cdoQuery = new CdoQueryImpl<>(sessionContext, query, query, Arrays.asList(types));
-        return sessionContext.getInterceptorFactory().addInterceptor(cdoQuery);
+        XOQueryImpl<CompositeRowObject, Class<Q>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query, Arrays.asList(types));
+        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override

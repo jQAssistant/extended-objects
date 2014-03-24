@@ -21,46 +21,46 @@ public class GuiceInjectionTest {
     @Inject
     private XOManagerFactory XOManagerFactory;
 
-    private XOManager XOManager;
+    private XOManager xoManager;
 
     @Before
     public void setUp() {
         Injector injector = Guice.createInjector(new GuiceModule());
         injector.injectMembers(this);
-        XOManager = XOManagerFactory.createXOManager();
+        xoManager = XOManagerFactory.createXOManager();
         dropDatabase();
     }
 
     @After
     public void tearDown() {
-        closeCdoManager();
+        closeXOManager();
         XOManagerFactory.close();
     }
 
     @Test
-    public void testInjectedCdoManager() {
+    public void testInjectedXOManager() {
         assertThat(XOManagerFactory, notNullValue());
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
         a.setValue("Google Guice");
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().commit();
 
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().begin();
         assertEquals("Google Guice", a.getValue());
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().commit();
     }
 
-    private void closeCdoManager() {
-        if (XOManager != null) {
-            XOManager.close();
-            XOManager = null;
+    private void closeXOManager() {
+        if (xoManager != null) {
+            xoManager.close();
+            xoManager = null;
         }
     }
 
     private void dropDatabase() {
-        XOManager.currentTransaction().begin();
-        XOManager.createQuery("MATCH (n)-[r]-() DELETE r").execute();
-        XOManager.createQuery("MATCH (n) DELETE n").execute();
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
+        xoManager.createQuery("MATCH (n)-[r]-() DELETE r").execute();
+        xoManager.createQuery("MATCH (n) DELETE n").execute();
+        xoManager.currentTransaction().commit();
     }
 }

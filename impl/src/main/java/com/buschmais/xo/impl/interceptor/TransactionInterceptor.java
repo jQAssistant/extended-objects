@@ -6,7 +6,7 @@ import com.buschmais.xo.api.XOTransaction;
 
 import java.lang.reflect.Method;
 
-public class TransactionInterceptor implements CdoInterceptor {
+public class TransactionInterceptor implements XOInterceptor {
 
     private final XOTransaction XOTransaction;
     private final Transaction.TransactionAttribute defaultTransactionAttribute;

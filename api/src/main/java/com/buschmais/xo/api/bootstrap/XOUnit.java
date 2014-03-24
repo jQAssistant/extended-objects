@@ -9,7 +9,7 @@ import java.util.*;
 import static com.buschmais.xo.api.Transaction.TransactionAttribute;
 
 /**
- * Represents a CDO unit, i.e. a configuration for a {@link com.buschmais.xo.api.XOManagerFactory}.
+ * Represents a XO unit, i.e. a configuration for a {@link com.buschmais.xo.api.XOManagerFactory}.
  */
 public class XOUnit {
 
@@ -35,9 +35,9 @@ public class XOUnit {
 
 
     /**
-     * Constructs a CDO unit.
+     * Constructs a XO unit.
      *
-     * @param name                        The name which is used to uniquely identify the CDO unit.
+     * @param name                        The name which is used to uniquely identify the XO unit.
      * @param description                 A human readable description (optional).
      * @param uri                         The datastore specific URI.
      * @param provider                    The provider class to use.
@@ -62,9 +62,9 @@ public class XOUnit {
     }
 
     /**
-     * Constructs a CDO unit.
+     * Constructs a XO unit.
      *
-     * @param name                        The name which is used to uniquely identify the CDO unit.
+     * @param name                        The name which is used to uniquely identify the XO unit.
      * @param description                 A human readable description (optional).
      * @param uri                         The datastore specific URI.
      * @param provider                    The provider class to use.

@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.mapping;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
 import com.buschmais.xo.neo4j.test.mapping.composite.A;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,47 +16,47 @@ import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class PrimitivePropertyMappingTest extends AbstractCdoManagerTest {
+public class PrimitivePropertyMappingTest extends AbstractXOManagerTest {
 
-    public PrimitivePropertyMappingTest(XOUnit XOUnit) {
-        super(XOUnit);
+    public PrimitivePropertyMappingTest(XOUnit xoUnit) {
+        super(xoUnit);
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCdoUnits() throws URISyntaxException {
-        return cdoUnits(A.class);
+    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+        return xoUnits(A.class);
     }
 
     @Test
     public void primitiveProperty() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
         a.setString("value");
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         assertThat(a.getString(), equalTo("value"));
         a.setString("updatedValue");
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         assertThat(a.getString(), equalTo("updatedValue"));
         a.setString(null);
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         assertThat(a.getString(), equalTo(null));
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().commit();
     }
 
     @Test
     public void mappedPrimitiveProperty() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
         a.setMappedString("mappedValue");
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         TestResult result = executeQuery("match (a:A) return a.MAPPED_STRING as v");
         assertThat(result.getColumn("v"), hasItem("mappedValue"));
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().commit();
     }
 }

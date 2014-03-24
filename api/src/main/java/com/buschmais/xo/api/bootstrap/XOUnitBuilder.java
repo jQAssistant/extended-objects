@@ -19,7 +19,7 @@ public class XOUnitBuilder {
 
     private String name = "default";
 
-    private String description = "The default CDO unit.";
+    private String description = "The default XO unit.";
 
     private URI uri;
 

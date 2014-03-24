@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.generics;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
 import com.buschmais.xo.neo4j.test.generics.composite.BoundType;
 import com.buschmais.xo.neo4j.test.generics.composite.GenericSuperType;
 import org.junit.Test;
@@ -13,24 +13,24 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class GenericTypeTest extends AbstractCdoManagerTest {
+public class GenericTypeTest extends AbstractXOManagerTest {
 
-    public GenericTypeTest(XOUnit XOUnit) {
-        super(XOUnit);
+    public GenericTypeTest(XOUnit xoUnit) {
+        super(xoUnit);
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCdoUnits() throws URISyntaxException {
-        return cdoUnits(GenericSuperType.class, BoundType.class);
+    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+        return xoUnits(GenericSuperType.class, BoundType.class);
     }
 
     @Test
     public void composite() {
-        XOManager XOManager = getXOManager();
-        XOManager.currentTransaction().begin();
-        BoundType b = XOManager.create(BoundType.class);
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        BoundType b = xoManager.create(BoundType.class);
         b.setValue("value");
-        XOManager.currentTransaction().commit();
+        xoManager.currentTransaction().commit();
     }
 
 }

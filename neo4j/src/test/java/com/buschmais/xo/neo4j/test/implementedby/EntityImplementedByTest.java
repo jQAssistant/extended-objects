@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.implementedby;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractCdoManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
 import com.buschmais.xo.neo4j.test.implementedby.composite.A;
 import com.buschmais.xo.neo4j.test.implementedby.composite.A2B;
 import com.buschmais.xo.neo4j.test.implementedby.composite.B;
@@ -17,67 +17,67 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class EntityImplementedByTest extends AbstractCdoManagerTest {
+public class EntityImplementedByTest extends AbstractXOManagerTest {
 
-    public EntityImplementedByTest(XOUnit XOUnit) {
-        super(XOUnit);
+    public EntityImplementedByTest(XOUnit xoUnit) {
+        super(xoUnit);
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getCdoUnits() throws URISyntaxException {
-        return cdoUnits(A.class, B.class, A2B.class);
+    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+        return xoUnits(A.class, B.class, A2B.class);
     }
 
     @Test
     public void nonPropertyMethod() {
-        XOManager XOManager = getXOManagerFactory().createXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
+        XOManager xoManager = getXoManagerFactory().createXOManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
         a.setValue(1);
         int i = a.incrementValue();
         assertThat(i, equalTo(2));
-        XOManager.currentTransaction().commit();
-        XOManager.close();
+        xoManager.currentTransaction().commit();
+        xoManager.close();
     }
 
     @Test
     public void propertyMethods() {
-        XOManager XOManager = getXOManagerFactory().createXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
+        XOManager xoManager = getXoManagerFactory().createXOManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
         a.setCustomValue("VALUE");
         String value = a.getCustomValue();
         assertThat(value, equalTo("set_VALUE_get"));
-        XOManager.currentTransaction().commit();
-        XOManager.close();
+        xoManager.currentTransaction().commit();
+        xoManager.close();
     }
 
     @Test
     public void compareTo() {
-        XOManager XOManager = getXOManagerFactory().createXOManager();
-        XOManager.currentTransaction().begin();
-        A a1 = XOManager.create(A.class);
+        XOManager xoManager = getXoManagerFactory().createXOManager();
+        xoManager.currentTransaction().begin();
+        A a1 = xoManager.create(A.class);
         a1.setValue(100);
-        A a2 = XOManager.create(A.class);
+        A a2 = xoManager.create(A.class);
         a2.setValue(200);
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         assertThat(a1.compareTo(a2), equalTo(-100));
-        XOManager.currentTransaction().commit();
-        XOManager.close();
+        xoManager.currentTransaction().commit();
+        xoManager.close();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void unsupportedOperation() {
-        XOManager XOManager = getXOManagerFactory().createXOManager();
-        XOManager.currentTransaction().begin();
-        A a = XOManager.create(A.class);
-        XOManager.currentTransaction().commit();
-        XOManager.currentTransaction().begin();
+        XOManager xoManager = getXoManagerFactory().createXOManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
         try {
             a.unsupportedOperation();
         } finally {
-            XOManager.currentTransaction().commit();
+            xoManager.currentTransaction().commit();
         }
     }
 }
