@@ -1,0 +1,18 @@
+<v1:xo version="1.0" xmlns:v1="http://buschmais.com/xo/schema/v1.0">
+    <xo-unit name="default">
+        <description>This is a test unit for Neo4j embedded.</description>
+        <url>memory:///</url>
+        <provider>com.buschmais.xo.neo4j.api.Neo4jXOProvider</provider>
+        <types>
+            <type>com.buschmais.xo.inject.test.composite.A</type>
+        </types>
+    </xo-unit>
+    <xo-unit name="guice">
+        <description>This is a test unit for Neo4j embedded.</description>
+        <url>memory:///</url>
+        <provider>com.buschmais.xo.neo4j.api.Neo4jXOProvider</provider>
+        <types>
+            <type>com.buschmais.xo.inject.test.composite.A</type>
+        </types>
+    </xo-unit>
+</v1:xo>

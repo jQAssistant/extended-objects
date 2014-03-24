@@ -1,12 +1,12 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
 
     <concept id="module-inject:Module">
-        <description>Labels the module com.buschmais.cdo.inject as MODULE and CDO_INJECT.</description>
+        <description>Labels the module com.buschmais.xo.inject as MODULE and CDO_INJECT.</description>
         <cypher><![CDATA[
 			MATCH
 				(package:PACKAGE)
 			WHERE
-				package.FQN = "com.buschmais.cdo.inject"
+				package.FQN = "com.buschmais.xo.inject"
 			SET
 			    package:MODULE:CDO_INJECT
 			RETURN

@@ -1,0 +1,26 @@
+<v1:xo version="1.0" xmlns:v1="http://buschmais.com/xo/schema/v1.0">
+    <xo-unit name="testUnit">
+        <description>This is a test unit.</description>
+        <url>file://foo</url>
+        <provider>com.buschmais.xo.impl.test.bootstrap.provider.TestXOProvider</provider>
+        <types>
+            <type>com.buschmais.xo.impl.test.bootstrap.composite.A</type>
+        </types>
+        <instance-listeners>
+            <instance-listener>com.buschmais.xo.impl.test.bootstrap.composite.InstanceListener</instance-listener>
+        </instance-listeners>
+        <validation-mode>NONE</validation-mode>
+        <concurrency-mode>MULTITHREADED</concurrency-mode>
+        <default-transaction-attribute>MANDATORY</default-transaction-attribute>
+        <properties>
+            <property name="foo" value="bar"/>
+        </properties>
+    </xo-unit>
+    <xo-unit name="testUnitWithBlankOptionals">
+        <url>file://foo</url>
+        <provider>com.buschmais.xo.impl.test.bootstrap.provider.TestXOProvider</provider>
+        <types>
+            <type>com.buschmais.xo.impl.test.bootstrap.composite.A</type>
+        </types>
+    </xo-unit>
+</v1:xo>

@@ -6,7 +6,7 @@
 			MATCH
 				(package:PACKAGE)
 			WHERE
-				package.FQN = "com.buschmais.cdo.neo4j"
+				package.FQN = "com.buschmais.xo.neo4j"
 			SET
 			    package:MODULE:CDO_NEO4J
 			RETURN
