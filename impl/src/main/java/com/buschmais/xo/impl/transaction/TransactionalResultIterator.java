@@ -10,14 +10,13 @@ import java.util.List;
 public class TransactionalResultIterator<E> implements ResultIterator<E>, XOTransaction.Synchronization {
 
     private ResultIterator<E> delegateIterator;
-    private XOTransaction XOTransaction;
+    private XOTransaction xoTransaction;
 
-    public TransactionalResultIterator(ResultIterator<E> delegateIterator, XOTransaction XOTransaction) {
-        this.XOTransaction = XOTransaction;
+    public TransactionalResultIterator(ResultIterator<E> delegateIterator, XOTransaction xoTransaction) {
+        this.xoTransaction = xoTransaction;
         this.delegateIterator = delegateIterator;
-        this.XOTransaction = XOTransaction;
-        if (XOTransaction != null) {
-            XOTransaction.registerSynchronization(this);
+        if (xoTransaction != null) {
+            xoTransaction.registerSynchronization(this);
         }
     }
 
@@ -29,7 +28,7 @@ public class TransactionalResultIterator<E> implements ResultIterator<E>, XOTran
     @Override
     public boolean hasNext() {
         boolean hasNext = delegateIterator.hasNext();
-        if (!hasNext && XOTransaction != null) {
+        if (!hasNext && xoTransaction != null) {
             unregisterSynchronization();
         }
         return hasNext;
@@ -80,7 +79,9 @@ public class TransactionalResultIterator<E> implements ResultIterator<E>, XOTran
     }
 
     private void unregisterSynchronization() {
-        XOTransaction.unregisterSynchronization(this);
-        this.XOTransaction = null;
+        if (this.xoTransaction != null) {
+            this.xoTransaction.unregisterSynchronization(this);
+            this.xoTransaction = null;
+        }
     }
 }

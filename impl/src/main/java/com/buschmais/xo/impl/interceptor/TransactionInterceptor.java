@@ -8,11 +8,11 @@ import java.lang.reflect.Method;
 
 public class TransactionInterceptor implements XOInterceptor {
 
-    private final XOTransaction XOTransaction;
+    private final XOTransaction xoTransaction;
     private final Transaction.TransactionAttribute defaultTransactionAttribute;
 
-    public TransactionInterceptor(XOTransaction XOTransaction, Transaction.TransactionAttribute defaultTransactionAttribute) {
-        this.XOTransaction = XOTransaction;
+    public TransactionInterceptor(XOTransaction xoTransaction, Transaction.TransactionAttribute defaultTransactionAttribute) {
+        this.xoTransaction = xoTransaction;
         this.defaultTransactionAttribute = defaultTransactionAttribute;
     }
 
@@ -28,26 +28,26 @@ public class TransactionInterceptor implements XOInterceptor {
         }
         switch (transactionAttribute) {
             case MANDATORY:
-                if (!this.XOTransaction.isActive()) {
+                if (!this.xoTransaction.isActive()) {
                     throw new XOException("An active transaction is MANDATORY when calling method '" +
                             method.getDeclaringClass().getName() + "#" + method.getName() + "'");
                 }
                 return context.proceed();
             case REQUIRES: {
-                if (!this.XOTransaction.isActive()) {
+                if (!this.xoTransaction.isActive()) {
                     try {
-                        this.XOTransaction.begin();
+                        this.xoTransaction.begin();
                         Object result = context.proceed();
-                        this.XOTransaction.commit();
+                        this.xoTransaction.commit();
                         return result;
                     } catch (RuntimeException e) {
-                        if (this.XOTransaction.isActive()) {
-                            this.XOTransaction.rollback();
+                        if (this.xoTransaction.isActive()) {
+                            this.xoTransaction.rollback();
                         }
                         throw e;
                     } catch (Exception e) {
-                        if (this.XOTransaction.isActive()) {
-                            this.XOTransaction.commit();
+                        if (this.xoTransaction.isActive()) {
+                            this.xoTransaction.commit();
                         }
                         throw e;
                     }

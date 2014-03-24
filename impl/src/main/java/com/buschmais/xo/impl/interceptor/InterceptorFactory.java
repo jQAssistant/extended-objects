@@ -15,10 +15,10 @@ public class InterceptorFactory {
 
     private final List<XOInterceptor> chain;
 
-    public InterceptorFactory(XOTransaction XOTransaction, Transaction.TransactionAttribute transactionAttribute, ConcurrencyMode concurrencyMode) {
+    public InterceptorFactory(XOTransaction xoTransaction, Transaction.TransactionAttribute transactionAttribute, ConcurrencyMode concurrencyMode) {
         this.chain = new ArrayList<>();
         chain.add(new ConcurrencyInterceptor(concurrencyMode));
-        chain.add(new TransactionInterceptor(XOTransaction, transactionAttribute));
+        chain.add(new TransactionInterceptor(xoTransaction, transactionAttribute));
     }
 
     public <T> T addInterceptor(T instance) {

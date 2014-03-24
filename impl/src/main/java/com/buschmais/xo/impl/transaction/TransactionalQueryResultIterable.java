@@ -7,8 +7,8 @@ import java.io.IOException;
 
 public class TransactionalQueryResultIterable<E extends Query.Result<E>> extends TransactionalResultIterable<E> implements Query.Result<E> {
 
-    public TransactionalQueryResultIterable(Query.Result<E> delegate, XOTransaction XOTransaction) {
-        super(delegate, XOTransaction);
+    public TransactionalQueryResultIterable(Query.Result<E> delegate, XOTransaction xoTransaction) {
+        super(delegate, xoTransaction);
     }
 
     @Override

@@ -15,10 +15,10 @@ public class TransactionalResultIterable<E> extends AbstractResultIterable<E> im
 
     private ResultIterable<E> delegate;
 
-    public TransactionalResultIterable(ResultIterable<E> delegate, XOTransaction XOTransaction) {
+    public TransactionalResultIterable(ResultIterable<E> delegate, XOTransaction xoTransaction) {
         this.delegate = delegate;
-        this.XOTransaction = XOTransaction;
-        XOTransaction.registerSynchronization(this);
+        this.XOTransaction = xoTransaction;
+        xoTransaction.registerSynchronization(this);
     }
 
     @Override
