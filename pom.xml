@@ -5,15 +5,15 @@
         <artifactId>oss-parent</artifactId>
         <version>7</version>
     </parent>
-    <groupId>com.buschmais.cdo</groupId>
-    <artifactId>cdo.parent</artifactId>
+    <groupId>com.buschmais.xo</groupId>
+    <artifactId>xo.parent</artifactId>
     <version>0.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Composite Data Objects</name>
+    <name>eXtended Objects</name>
 
-    <url>https://github.com/buschmais/cdo-neo4j</url>
-    <description>Composite Data Objects - Neo4j.</description>
+    <url>https://github.com/buschmais/xo-neo4j</url>
+    <description>eXtended Objects</description>
 
     <organization>
         <name>buschmais GbR</name>
@@ -28,13 +28,13 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git://github.com/buschmais/cdo-neo4j.git</connection>
-        <developerConnection>scm:git:git@github.com:buschmais/cdo-neo4j.git</developerConnection>
-        <url>https://github.com/buschmais/cdo-neo4j</url>
+        <connection>scm:git:git://github.com/buschmais/xo.git</connection>
+        <developerConnection>scm:git:git@github.com:buschmais/xo.git</developerConnection>
+        <url>https://github.com/buschmais/xo</url>
     </scm>
 
     <ciManagement>
-        <url>https://travis-ci.org/buschmais/cdo-neo4j</url>
+        <url>https://travis-ci.org/buschmais/xo</url>
     </ciManagement>
 
     <developers>
@@ -211,18 +211,18 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.buschmais.cdo</groupId>
-                <artifactId>cdo.spi</artifactId>
+                <groupId>com.buschmais.xo</groupId>
+                <artifactId>xo.spi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.buschmais.cdo</groupId>
-                <artifactId>cdo.api</artifactId>
+                <groupId>com.buschmais.xo</groupId>
+                <artifactId>xo.api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.buschmais.cdo</groupId>
-                <artifactId>cdo.impl</artifactId>
+                <groupId>com.buschmais.xo</groupId>
+                <artifactId>xo.impl</artifactId>
                 <version>${project.version}</version>
                 <scope>runtime</scope>
             </dependency>

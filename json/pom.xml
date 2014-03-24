@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.buschmais.cdo</groupId>
-        <artifactId>cdo.parent</artifactId>
+        <groupId>com.buschmais.xo</groupId>
+        <artifactId>xo.parent</artifactId>
         <version>0.3.0-SNAPSHOT</version>
     </parent>
-    <artifactId>cdo.json</artifactId>
+    <artifactId>xo.json</artifactId>
 
-    <name>Composite Data Objects - JSON File Store Binding</name>
+    <name>eXtended Objects - JSON File Store Binding</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,12 +49,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.buschmais.cdo</groupId>
-            <artifactId>cdo.api</artifactId>
+            <groupId>com.buschmais.xo</groupId>
+            <artifactId>xo.api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.buschmais.cdo</groupId>
-            <artifactId>cdo.spi</artifactId>
+            <groupId>com.buschmais.xo</groupId>
+            <artifactId>xo.spi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
@@ -69,8 +69,8 @@
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.buschmais.cdo</groupId>
-            <artifactId>cdo.impl</artifactId>
+            <groupId>com.buschmais.xo</groupId>
+            <artifactId>xo.impl</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
