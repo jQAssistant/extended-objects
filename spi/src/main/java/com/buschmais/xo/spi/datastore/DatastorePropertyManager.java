@@ -25,11 +25,11 @@ public interface DatastorePropertyManager<Entity, Relation, PrimitivePropertyMet
     /**
      * Set the value of a primitive property.
      *
-     * @param entity   The entity.
+     * @param relation The relation.
      * @param metadata The property metadata.
      * @param value    The value
      */
-    void setRelationProperty(Relation entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata, Object value);
+    void setRelationProperty(Relation relation, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata, Object value);
 
     /**
      * Determine if the value of a primitive property is set.
