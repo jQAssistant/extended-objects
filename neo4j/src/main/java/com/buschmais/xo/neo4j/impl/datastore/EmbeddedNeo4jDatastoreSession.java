@@ -6,8 +6,11 @@ import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<GraphDatabaseService> {
@@ -64,7 +67,21 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
 
     @Override
     public <QL> ResultIterator<Map<String, Object>> executeQuery(QL expression, Map<String, Object> parameters) {
-        ExecutionResult executionResult = executionEngine.execute(getCypher(expression), parameters);
+        ExecutionResult executionResult = executionEngine.execute(getCypher(expression), translateParameters(parameters));
         return new ResourceResultIterator(executionResult.iterator());
+    }
+
+    private Map<String, Object> translateParameters(Map<String, Object> parameters) {
+        Map<String, Object> effectiveParameters = new HashMap<>();
+        for (Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
+            Object value = parameterEntry.getValue();
+            if (value instanceof Node) {
+                value = ((Node) value).getId();
+            } else if (value instanceof Relationship) {
+                value = ((Relationship) value).getId();
+            }
+            effectiveParameters.put(parameterEntry.getKey(), value);
+        }
+        return effectiveParameters;
     }
 }

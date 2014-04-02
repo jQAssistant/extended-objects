@@ -15,7 +15,6 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 
 import static com.buschmais.xo.api.Query.Result;
-import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertThat;
@@ -36,7 +35,7 @@ public class RelationResultOfTest extends AbstractXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(Database.MEMORY), asList(E.class, F.class, E2F.class));
+        return xoUnits(E.class, F.class, E2F.class);
     }
 
     @Before

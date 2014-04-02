@@ -27,7 +27,7 @@ public class QualifiedRelationTest extends AbstractXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(Database.MEMORY), asList(A.class, B.class));
+        return xoUnits(A.class, B.class);
     }
 
     @Test

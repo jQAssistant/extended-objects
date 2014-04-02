@@ -45,12 +45,12 @@ public interface E2F {
 
     String getValue();
 
-    @Cypher("match ()-[e2f:E2F]->(f:F) where e2f={e2f} and e2f.value={value} return f")
+    @Cypher("match ()-[e2f:E2F]->(f:F) where id(e2f)={e2f} and e2f.value={value} return f")
     public interface ByValue {
         F getF();
     }
 
-    @Cypher("match ()-[e2f:E2F]->(f:F) where e2f={this} and e2f.value={value} return f")
+    @Cypher("match ()-[e2f:E2F]->(f:F) where id(e2f)={this} and e2f.value={value} return f")
     public interface ByValueUsingImplicitThis {
         F getF();
     }

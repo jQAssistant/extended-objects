@@ -16,7 +16,7 @@ public interface Group {
     @ResultOf
     MemberByName getMemberByName(@Parameter("name") String name);
 
-    @Cypher("match (g:Group)-[:Members]->(p:Person) where g={this} and p.name={name} return p as member")
+    @Cypher("match (g:Group)-[:Members]->(p:Person) where id(g)={this} and p.name={name} return p as member")
     public interface MemberByName {
         Person getMember();
     }

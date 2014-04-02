@@ -16,7 +16,6 @@ import java.util.Collection;
 
 import static com.buschmais.xo.api.Query.Result;
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 
@@ -33,7 +32,7 @@ public class QueryTest extends AbstractXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(Database.MEMORY), asList(A.class));
+        return xoUnits(A.class);
     }
 
     @Before
@@ -73,8 +72,8 @@ public class QueryTest extends AbstractXOManagerTest {
         Result<CompositeRowObject> result = xoManager.createQuery("MATCH (a:A) RETURN a.value LIMIT 1").execute();
         assertEquals("A1", result.getSingleResult().as(String.class));
 
-        Result<CompositeRowObject> longResult = xoManager.createQuery("MATCH (a:A) RETURN 10 LIMIT 1").execute();
-        assertEquals(10L, (long) longResult.getSingleResult().as(Long.class));
+        Result<CompositeRowObject> numberResult = xoManager.createQuery("MATCH (a:A) RETURN 10 LIMIT 1").execute();
+        assertEquals(10, numberResult.getSingleResult().as(Number.class).intValue());
 
         xoManager.currentTransaction().commit();
     }
@@ -109,7 +108,7 @@ public class QueryTest extends AbstractXOManagerTest {
     public void instanceParameter() {
         XOManager xoManager = getXoManager();
         xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where a={instance} return a").withParameter("instance", a1).execute();
+        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where id(a)={instance} return a").withParameter("instance", a1).execute();
         A a = row.getSingleResult().get("a", A.class);
         assertThat(a, equalTo(a1));
         xoManager.currentTransaction().commit();

@@ -41,12 +41,12 @@ public interface E {
 
     List<E2F> getE2F();
 
-    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where e={e} and f.value={value} return f")
+    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where id(e)={e} and f.value={value} return f")
     interface ByValue {
         F getF();
     }
 
-    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where e={this} and f.value={value} return f")
+    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where id(e)={this} and f.value={value} return f")
     interface ByValueUsingImplicitThis {
         F getF();
     }

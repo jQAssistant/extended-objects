@@ -26,7 +26,7 @@ public class QueryDemoTest extends AbstractXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(Database.MEMORY), asList(Group.class, Person.class));
+        return xoUnits(Group.class, Person.class);
     }
 
     @Test
