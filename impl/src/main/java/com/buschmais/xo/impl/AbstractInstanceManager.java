@@ -132,6 +132,14 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
     }
 
     /**
+     * Return the unique id of a datastore type.
+     *
+     * @param datastoreType The datastore type.
+     * @return The id.
+     */
+    public abstract DatastoreId getDatastoreId(DatastoreType datastoreType);
+
+    /**
      * Closes this manager instance.
      */
     public void close() {
@@ -148,14 +156,6 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      * @return <code>true</code> If the given object is a datastore type.
      */
     protected abstract boolean isDatastoreType(Object o);
-
-    /**
-     * Return the unique id of a datastore type.
-     *
-     * @param datastoreType The datastore type.
-     * @return The id.
-     */
-    protected abstract DatastoreId getDatastoreId(DatastoreType datastoreType);
 
     /**
      * Determines the {@link com.buschmais.xo.spi.datastore.TypeMetadataSet} of a datastore type.

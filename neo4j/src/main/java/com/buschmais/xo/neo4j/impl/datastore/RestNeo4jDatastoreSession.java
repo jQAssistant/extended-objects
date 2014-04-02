@@ -4,9 +4,12 @@ import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import org.neo4j.rest.graphdb.RestAPI;
 import org.neo4j.rest.graphdb.RestGraphDatabase;
+import org.neo4j.rest.graphdb.entity.RestEntity;
+import org.neo4j.rest.graphdb.entity.RestNode;
 import org.neo4j.rest.graphdb.query.RestCypherQueryEngine;
 import org.neo4j.rest.graphdb.util.QueryResult;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -46,9 +49,11 @@ public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<Res
 
     @Override
     public <QL> ResultIterator<Map<String, Object>> executeQuery(QL expression, Map<String, Object> parameters) {
+        Map<String, Object> effectiveParameters = getEffectiveParameters(parameters);
         RestAPI restAPI = getGraphDatabaseService().getRestAPI();
         RestCypherQueryEngine restCypherQueryEngine = new RestCypherQueryEngine(restAPI);
-        QueryResult<Map<String, Object>> queryResult = restCypherQueryEngine.query(getCypher(expression), parameters);
+        QueryResult<Map<String, Object>> queryResult = restCypherQueryEngine.query(getCypher(expression), effectiveParameters);
+
         final Iterator<Map<String, Object>> iterator = queryResult.iterator();
         return new ResultIterator<Map<String, Object>>() {
 
@@ -71,6 +76,18 @@ public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<Res
             public void close() {
             }
         };
+    }
+
+    private Map<String, Object> getEffectiveParameters(Map<String, Object> parameters) {
+        Map<String, Object> effectiveParameters = new HashMap<>();
+        for (Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
+            Object value = parameterEntry.getValue();
+            if (value instanceof RestEntity) {
+                value = ((RestEntity) value).getId();
+            }
+            effectiveParameters.put(parameterEntry.getKey(), value);
+        }
+        return effectiveParameters;
     }
 
 }

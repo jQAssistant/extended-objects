@@ -9,6 +9,7 @@ import com.buschmais.xo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.xo.impl.proxy.common.UnsupportedOperationMethod;
 import com.buschmais.xo.impl.proxy.common.composite.GetDelegateMethod;
 import com.buschmais.xo.impl.proxy.relation.composite.AsMethod;
+import com.buschmais.xo.impl.proxy.relation.composite.GetIdMethod;
 import com.buschmais.xo.impl.proxy.relation.object.EqualsMethod;
 import com.buschmais.xo.impl.proxy.relation.object.HashCodeMethod;
 import com.buschmais.xo.impl.proxy.relation.object.ToStringMethod;
@@ -67,6 +68,7 @@ public class RelationProxyMethodService<Entity, Relation, M extends ProxyMethod<
             }
         }
         addMethod(new AsMethod<>(sessionContext), CompositeObject.class, "as", Class.class);
+        addMethod(new GetIdMethod<Relation>(sessionContext), CompositeObject.class, "getId");
         addMethod(new GetDelegateMethod<Relation>(), CompositeObject.class, "getDelegate");
         addMethod(new HashCodeMethod<>(sessionContext), Object.class, "hashCode");
         addMethod(new EqualsMethod<>(sessionContext), Object.class, "equals", Object.class);

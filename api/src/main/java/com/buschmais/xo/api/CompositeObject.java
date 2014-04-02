@@ -6,6 +6,11 @@ package com.buschmais.xo.api;
 public interface CompositeObject {
 
     /**
+     * Return the id of the object
+     */
+    <I> I getId();
+
+    /**
      * Cast the instance to a specific type.
      *
      * @param type The type.

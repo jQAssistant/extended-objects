@@ -121,6 +121,20 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
+    public <T, Id> Id getId(T instance) {
+        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+        AbstractInstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
+        if (entityInstanceManager.isInstance(instance)) {
+            Entity entity = entityInstanceManager.getDatastoreType(instance);
+            return (Id) sessionContext.getDatastoreSession().getEntityId(entity);
+        } else if (relationInstanceManager.isInstance(instance)) {
+            Relation relation = relationInstanceManager.getDatastoreType(instance);
+            return (Id) sessionContext.getDatastoreSession().getRelationId(relation);
+        }
+        throw new XOException(instance + " is not a managed XO instance.");
+    }
+
+    @Override
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         Entity entity = entityInstanceManager.getDatastoreType(instance);

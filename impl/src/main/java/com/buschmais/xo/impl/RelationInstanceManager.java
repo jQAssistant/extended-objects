@@ -26,7 +26,7 @@ public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Re
     }
 
     @Override
-    protected RelationId getDatastoreId(Relation relation) {
+    public RelationId getDatastoreId(Relation relation) {
         return sessionContext.getDatastoreSession().getRelationId(relation);
     }
 

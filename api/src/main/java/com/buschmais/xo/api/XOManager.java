@@ -68,6 +68,11 @@ public interface XOManager extends AutoCloseable {
     <S, R, T> R create(S source, Class<R> relationType, T target);
 
     /**
+     * Return the id of the given instance.
+     */
+    <T, Id> Id getId(T instance);
+
+    /**
      * Migrates the type of a property instance to the given target types and returns it. The original instance will not be usable anymore after migration.
      *
      * @param <T>         The property type.
