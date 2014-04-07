@@ -5,7 +5,7 @@ import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.impl.reflection.ClassHelper;
+import com.buschmais.xo.spi.reflection.ClassHelper;
 import com.buschmais.xo.impl.schema.v1.*;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import org.xml.sax.SAXException;

@@ -3,7 +3,7 @@ package com.buschmais.xo.impl;
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.metadata.MetadataProviderImpl;
-import com.buschmais.xo.impl.reflection.ClassHelper;
+import com.buschmais.xo.spi.reflection.ClassHelper;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;

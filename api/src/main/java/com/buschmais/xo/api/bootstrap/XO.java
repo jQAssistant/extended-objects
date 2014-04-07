@@ -20,9 +20,9 @@ public class XO {
     public static XOManagerFactory createXOManagerFactory(String name) {
         ServiceLoader<XOBootstrapService> serviceLoader = ServiceLoader.load(XOBootstrapService.class);
         for (XOBootstrapService XOBootstrapService : serviceLoader) {
-            XOManagerFactory XOManagerFactory = XOBootstrapService.createXOManagerFactory(name);
-            if (XOManagerFactory != null) {
-                return XOManagerFactory;
+            XOManagerFactory xoManagerFactory = XOBootstrapService.createXOManagerFactory(name);
+            if (xoManagerFactory != null) {
+                return xoManagerFactory;
             }
         }
         throw new XOException("Cannot bootstrap XO implementation.");
@@ -37,9 +37,9 @@ public class XO {
     public static XOManagerFactory createXOManagerFactory(XOUnit xoUnit) {
         ServiceLoader<XOBootstrapService> serviceLoader = ServiceLoader.load(XOBootstrapService.class);
         for (XOBootstrapService XOBootstrapService : serviceLoader) {
-            XOManagerFactory XOManagerFactory = XOBootstrapService.createXOManagerFactory(xoUnit);
-            if (XOManagerFactory != null) {
-                return XOManagerFactory;
+            XOManagerFactory xoManagerFactory = XOBootstrapService.createXOManagerFactory(xoUnit);
+            if (xoManagerFactory != null) {
+                return xoManagerFactory;
             }
         }
         throw new XOException("Cannot bootstrap XO implementation.");

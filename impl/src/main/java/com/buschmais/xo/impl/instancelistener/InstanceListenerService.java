@@ -2,7 +2,7 @@ package com.buschmais.xo.impl.instancelistener;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.annotation.*;
-import com.buschmais.xo.impl.reflection.ClassHelper;
+import com.buschmais.xo.spi.reflection.ClassHelper;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;

@@ -6,7 +6,7 @@ import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.api.bootstrap.XOUnitBuilder;
 import com.buschmais.xo.api.bootstrap.XOUnitParameter;
 import com.buschmais.xo.impl.XOManagerFactoryImpl;
-import com.buschmais.xo.impl.reflection.ClassHelper;
+import com.buschmais.xo.spi.reflection.ClassHelper;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;

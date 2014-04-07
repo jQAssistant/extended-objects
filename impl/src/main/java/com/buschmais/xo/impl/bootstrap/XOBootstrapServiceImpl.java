@@ -24,11 +24,11 @@ public class XOBootstrapServiceImpl implements XOBootstrapService {
 
     @Override
     public XOManagerFactory createXOManagerFactory(String name) {
-        XOUnit XOUnit = xoUnits.get(name);
-        if (XOUnit == null) {
+        XOUnit xoUnit = xoUnits.get(name);
+        if (xoUnit == null) {
             throw new XOException("XO unit with name '" + name + "' does not exist.");
         }
-        return createXOManagerFactory(XOUnit);
+        return createXOManagerFactory(xoUnit);
     }
 
     @Override

@@ -1,6 +1,6 @@
 <jqa:jqassistant-rules xmlns:jqa="http://www.buschmais.com/jqassistant/core/analysis/rules/schema/v1.0">
 
-    <concept id="modules:DeclaredModules">
+    <concept id="modules:DefinedModules">
         <requiresConcept refId="module-api:Module"/>
         <requiresConcept refId="module-spi:Module"/>
         <requiresConcept refId="module-impl:Module"/>
@@ -46,12 +46,14 @@
         ]]></cypher>
     </concept>
 
-    <concept id="modules:PackagesPerModule">
-        <requiresConcept refId="modules:DeclaredModules"/>
+    <concept id="modules:PackagesOfModule">
+        <requiresConcept refId="modules:DefinedModules"/>
         <description>Return the number of packages per module.</description>
         <cypher><![CDATA[
             MATCH
                 (module:PACKAGE:MODULE)-[:CONTAINS*0..]->(p:PACKAGE)
+            CREATE UNIQUE
+                (module)-[:CONTAINS]->(p)
             RETURN
                 module, COUNT(p) as packages
             ORDER BY
@@ -59,13 +61,15 @@
         ]]></cypher>
     </concept>
 
-    <concept id="modules:TypesPerModule">
-        <requiresConcept refId="modules:DeclaredModules"/>
+    <concept id="modules:TypesOfModule">
+        <requiresConcept refId="modules:DefinedModules"/>
         <description>Return the number of types (i.e. classes, interfaces, enumerations and annotations) per module.</description>
         <cypher><![CDATA[
             MATCH
                 (module:PACKAGE:MODULE)-[:CONTAINS*0..]->(p:PACKAGE),
                 (p)-[:CONTAINS]->(t:TYPE)
+            CREATE UNIQUE
+                (module)-[:CONTAINS]->(t)
             RETURN
                 module, COUNT(t) as types
             ORDER BY
@@ -73,8 +77,8 @@
         ]]></cypher>
     </concept>
 
-    <constraint id="modules:UnknownModules">
-        <requiresConcept refId="modules:DeclaredModules"/>
+    <constraint id="modules:UndefinedModules">
+        <requiresConcept refId="modules:DefinedModules"/>
         <description>Every child package of "com.buschmais.cdo" must be labeled as MODULE.</description>
         <cypher><![CDATA[
 			MATCH
@@ -91,6 +95,7 @@
     <constraint id="modules:ApiMustNotDependOnImplementation">
         <requiresConcept refId="modules:API"/>
         <requiresConcept refId="modules:Implementation"/>
+        <requiresConcept refId="dependency:Package"/>
         <description>API packages must not have dependencies to implementation packages.</description>
         <cypher><![CDATA[
             MATCH
@@ -106,12 +111,13 @@
 
     <constraint id="modules:ModuleMustDependOnApiOfOtherModule">
         <requiresConcept refId="modules:API"/>
-        <requiresConcept refId="modules:DeclaredModules"/>
+        <requiresConcept refId="modules:PackagesOfModule"/>
+        <requiresConcept refId="dependency:Package"/>
         <description>A module must only have dependencies to API packages of other modules.</description>
         <cypher><![CDATA[
             MATCH
-                r1=(module:PACKAGE:MODULE)-[:CONTAINS*0..]->(p1:PACKAGE),
-                r2=(otherModule:PACKAGE:MODULE)-[:CONTAINS*0..]->(p2:PACKAGE),
+                r1=(module:PACKAGE:MODULE)-[:CONTAINS]->(p1:PACKAGE),
+                r2=(otherModule:PACKAGE:MODULE)-[:CONTAINS]->(p2:PACKAGE),
                 (p1)-[:DEPENDS_ON]->(p2)
             WHERE
                 module<>otherModule

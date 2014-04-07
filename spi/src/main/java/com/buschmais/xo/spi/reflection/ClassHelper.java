@@ -1,4 +1,4 @@
-package com.buschmais.xo.impl.reflection;
+package com.buschmais.xo.spi.reflection;
 
 import com.buschmais.xo.api.XOException;
 

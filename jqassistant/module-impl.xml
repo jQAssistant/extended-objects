@@ -15,13 +15,13 @@
     </concept>
 
     <constraint id="module-impl:Dependency">
-        <requiresConcept refId="modules:DeclaredModules"/>
+        <requiresConcept refId="modules:TypesOfModule"/>
         <requiresConcept refId="dependency:Type"/>
         <description>The module "cdo.impl" must only have dependencies to "cdo.api" and "cdo.spi".</description>
         <cypher><![CDATA[
 			MATCH
-			    (module:MODULE:CDO_IMPL)-[:CONTAINS*]->(type:TYPE),
-                (otherModule:MODULE)-[:CONTAINS*]->(otherType:TYPE),
+			    (module:MODULE:CDO_IMPL)-[:CONTAINS]->(type:TYPE),
+                (otherModule:MODULE)-[:CONTAINS]->(otherType:TYPE),
 				(type)-[:DEPENDS_ON]->(otherType:TYPE)
 			WHERE
 			    module<>otherModule
