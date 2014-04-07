@@ -3,6 +3,8 @@ package com.buschmais.xo.impl.interceptor;
 import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOTransaction;
+import com.buschmais.xo.spi.interceptor.InvocationContext;
+import com.buschmais.xo.spi.interceptor.XOInterceptor;
 
 import java.lang.reflect.Method;
 

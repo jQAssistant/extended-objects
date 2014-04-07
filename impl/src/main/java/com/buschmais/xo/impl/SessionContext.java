@@ -6,13 +6,17 @@ import com.buschmais.xo.impl.cache.CacheSynchronization;
 import com.buschmais.xo.impl.cache.CacheSynchronizationService;
 import com.buschmais.xo.impl.cache.TransactionalCache;
 import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
-import com.buschmais.xo.impl.interceptor.InterceptorFactory;
+import com.buschmais.xo.impl.interceptor.ConcurrencyInterceptor;
+import com.buschmais.xo.spi.interceptor.InterceptorFactory;
+import com.buschmais.xo.impl.interceptor.TransactionInterceptor;
+import com.buschmais.xo.spi.interceptor.XOInterceptor;
 import com.buschmais.xo.impl.validation.InstanceValidationService;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 
 import javax.validation.ValidatorFactory;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.buschmais.xo.api.Transaction.TransactionAttribute;
@@ -52,7 +56,10 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.entityCache = new TransactionalCache<>();
         this.relationCache = new TransactionalCache<>();
         this.xoTransaction = new XOTransactionImpl(datastoreSession.getDatastoreTransaction());
-        this.interceptorFactory = new InterceptorFactory(xoTransaction, defaultTransactionAttribute, concurrencyMode);
+        List<XOInterceptor> interceptorChain = new ArrayList<>();
+        interceptorChain.add(new ConcurrencyInterceptor(concurrencyMode));
+        interceptorChain.add(new TransactionInterceptor(xoTransaction, defaultTransactionAttribute));
+        this.interceptorFactory = new InterceptorFactory(interceptorChain);
         this.proxyFactory = new ProxyFactory(interceptorFactory, classLoader);
         this.instanceListenerService = new InstanceListenerService(instanceListenerTypes);
         this.entityPropertyManager = new EntityPropertyManager<>(this);

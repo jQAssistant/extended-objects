@@ -227,6 +227,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     public void close() {
         sessionContext.getEntityInstanceManager().close();
         sessionContext.getRelationInstanceManager().close();
+        sessionContext.getDatastoreSession().close();
     }
 
     @Override

@@ -131,6 +131,10 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
         return new JsonFileStorePropertyManager();
     }
 
+    @Override
+    public void close() {
+    }
+
     /**
      * Return the file for the given root object node.
      *

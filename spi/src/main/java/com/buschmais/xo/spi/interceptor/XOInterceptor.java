@@ -1,4 +1,4 @@
-package com.buschmais.xo.impl.interceptor;
+package com.buschmais.xo.spi.interceptor;
 
 public interface XOInterceptor {
 

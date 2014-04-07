@@ -282,6 +282,7 @@
         <module>spi</module>
         <module>api</module>
         <module>impl</module>
+        <module>trace</module>
         <module>neo4j</module>
         <module>json</module>
         <module>doc</module>

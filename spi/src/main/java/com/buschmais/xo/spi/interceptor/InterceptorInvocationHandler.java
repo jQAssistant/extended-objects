@@ -1,4 +1,4 @@
-package com.buschmais.xo.impl.interceptor;
+package com.buschmais.xo.spi.interceptor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -7,9 +7,9 @@ import java.util.List;
 public class InterceptorInvocationHandler implements InvocationHandler {
 
     private final Object instance;
-    private final List<XOInterceptor> chain;
+    private final List<? extends XOInterceptor> chain;
 
-    public InterceptorInvocationHandler(Object instance, List<XOInterceptor> chain) {
+    public InterceptorInvocationHandler(Object instance, List<? extends XOInterceptor> chain) {
         this.instance = instance;
         this.chain = chain;
     }

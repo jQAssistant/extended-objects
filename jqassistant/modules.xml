@@ -18,17 +18,17 @@
         ]]></cypher>
     </concept>
 
-    <concept id="modules:API">
-        <description>Labels all .api packages as API.</description>
+    <concept id="modules:XPI">
+        <description>Labels all .api and .spi packages as XPI.</description>
         <cypher><![CDATA[
 			MATCH
-				(apiPackage:PACKAGE)
+				(xpiPackage:PACKAGE)
 			WHERE
-				apiPackage.NAME = "api"
+				xpiPackage.NAME = "api" or xpiPackage.NAME = "spi"
 			SET
-			    apiPackage:API
+			    xpiPackage:XPI
 			RETURN
-				apiPackage
+				xpiPackage
         ]]></cypher>
     </concept>
 
@@ -93,13 +93,13 @@
     </constraint>
 
     <constraint id="modules:ApiMustNotDependOnImplementation">
-        <requiresConcept refId="modules:API"/>
+        <requiresConcept refId="modules:XPI"/>
         <requiresConcept refId="modules:Implementation"/>
         <requiresConcept refId="dependency:Package"/>
-        <description>API packages must not have dependencies to implementation packages.</description>
+        <description>API/SPI packages must not have dependencies to implementation packages.</description>
         <cypher><![CDATA[
             MATCH
-                (a:PACKAGE:API)-[:CONTAINS*0..]->(p1:PACKAGE),
+                (a:PACKAGE:XPI)-[:CONTAINS*0..]->(p1:PACKAGE),
                 (i:PACKAGE:IMPLEMENTATION)-[:CONTAINS*0..]->(p2:PACKAGE),
                 (p1)-[:DEPENDS_ON]->(p2)
             RETURN
@@ -110,7 +110,7 @@
     </constraint>
 
     <constraint id="modules:ModuleMustDependOnApiOfOtherModule">
-        <requiresConcept refId="modules:API"/>
+        <requiresConcept refId="modules:XPI"/>
         <requiresConcept refId="modules:PackagesOfModule"/>
         <requiresConcept refId="dependency:Package"/>
         <description>A module must only have dependencies to API packages of other modules.</description>
@@ -121,7 +121,7 @@
                 (p1)-[:DEPENDS_ON]->(p2)
             WHERE
                 module<>otherModule
-                AND NONE (p IN NODES(r2) WHERE p:API)
+                AND NONE (p IN NODES(r2) WHERE p:XPI)
             RETURN
               p1 as dependent,
               COLLECT(p2.FQN) as dependencies

@@ -1,28 +1,26 @@
-package com.buschmais.xo.impl.interceptor;
+package com.buschmais.xo.spi.interceptor;
 
-import com.buschmais.xo.api.ConcurrencyMode;
-import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.api.XOTransaction;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class InterceptorFactory {
 
-    private final List<XOInterceptor> chain;
+    private final List<? extends XOInterceptor> chain;
 
-    public InterceptorFactory(XOTransaction xoTransaction, Transaction.TransactionAttribute transactionAttribute, ConcurrencyMode concurrencyMode) {
-        this.chain = new ArrayList<>();
-        chain.add(new ConcurrencyInterceptor(concurrencyMode));
-        chain.add(new TransactionInterceptor(xoTransaction, transactionAttribute));
+    public InterceptorFactory(List<? extends XOInterceptor> chain) {
+        this.chain = chain;
     }
 
     public <T> T addInterceptor(T instance) {
-        Class<?>[] interfaces = instance.getClass().getInterfaces();
+        return addInterceptor(instance, instance.getClass().getInterfaces());
+    }
+
+    public <T> T addInterceptor(T instance, Class<?>... interfaces) {
         InterceptorInvocationHandler invocationHandler = new InterceptorInvocationHandler(instance, chain);
         return (T) Proxy.newProxyInstance(instance.getClass().getClassLoader(), interfaces, invocationHandler);
     }

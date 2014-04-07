@@ -6,7 +6,6 @@ import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.XOManagerFactoryImpl;
 import com.buschmais.xo.impl.test.bootstrap.composite.A;
 import com.buschmais.xo.impl.test.bootstrap.provider.TestXOProvider;
-import com.buschmais.xo.spi.trace.TraceDatastoreProvider;
 import org.hamcrest.collection.IsArrayContaining;
 import org.junit.Test;
 
@@ -38,19 +37,5 @@ public class BootstrapTest {
         assertThat(xoUnit.getConcurrencyMode(), equalTo(MULTITHREADED));
         assertThat(xoUnit.getDefaultTransactionAttribute(), equalTo(MANDATORY));
         assertThat(xoUnit.getProperties(), hasEntry(equalTo((Object) "foo"), equalTo((Object) "bar")));
-    }
-
-    @Test
-    public void traceProvider() {
-        XOManagerFactory XOManagerFactory = XO.createXOManagerFactory("traceProvider");
-        assertThat(XOManagerFactory, not(equalTo(null)));
-        XOManagerFactoryImpl xoManagerFactoryImpl = (XOManagerFactoryImpl) XOManagerFactory;
-        XOUnit xoUnit = xoManagerFactoryImpl.getXOUnit();
-        assertThat(xoUnit.getName(), equalTo("traceProvider"));
-        assertThat(xoUnit.getProvider(), typeCompatibleWith(TraceDatastoreProvider.class));
-        Set<? extends Class<?>> types = xoUnit.getTypes();
-        assertThat(types.size(), equalTo(1));
-        assertThat(types.toArray(), IsArrayContaining.<Object>hasItemInArray(A.class));
-        assertThat(xoUnit.getDefaultTransactionAttribute(), equalTo(MANDATORY));
     }
 }

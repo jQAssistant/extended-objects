@@ -2,6 +2,8 @@ package com.buschmais.xo.impl.interceptor;
 
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.spi.interceptor.InvocationContext;
+import com.buschmais.xo.spi.interceptor.XOInterceptor;
 
 import java.util.concurrent.locks.ReentrantLock;
 

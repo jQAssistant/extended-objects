@@ -1,4 +1,4 @@
-package com.buschmais.xo.impl.interceptor;
+package com.buschmais.xo.spi.interceptor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -9,10 +9,10 @@ public class InvocationContext {
     private final Object instance;
     private final Method method;
     private final Object[] args;
-    private final List<XOInterceptor> chain;
+    private final List<? extends XOInterceptor> chain;
     private int index = 0;
 
-    public InvocationContext(Object instance, Method method, Object[] args, List<XOInterceptor> chain) {
+    public InvocationContext(Object instance, Method method, Object[] args, List<? extends XOInterceptor> chain) {
         this.instance = instance;
         this.method = method;
         this.args = args;

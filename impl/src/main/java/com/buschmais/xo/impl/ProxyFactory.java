@@ -1,7 +1,7 @@
 package com.buschmais.xo.impl;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.impl.interceptor.InterceptorFactory;
+import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 import com.buschmais.xo.impl.proxy.entity.InstanceInvocationHandler;
 
 import java.lang.reflect.InvocationHandler;
@@ -22,7 +22,7 @@ public class ProxyFactory {
     /**
      * Constructor.
      *
-     * @param interceptorFactory The {@link com.buschmais.xo.impl.interceptor.InterceptorFactory}.
+     * @param interceptorFactory The {@link com.buschmais.xo.spi.interceptor.InterceptorFactory}.
      * @param classLoader        The class loader.
      */
     public ProxyFactory(InterceptorFactory interceptorFactory, ClassLoader classLoader) {

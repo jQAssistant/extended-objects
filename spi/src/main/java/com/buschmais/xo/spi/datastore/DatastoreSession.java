@@ -140,4 +140,8 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      */
     DatastorePropertyManager<Entity, Relation, ?, RelationMetadata> getDatastorePropertyManager();
 
+    /**
+     * Close the session.
+     */
+    void close();
 }

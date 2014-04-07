@@ -1,7 +1,8 @@
-package com.buschmais.xo.spi.trace;
+package com.buschmais.xo.trace.impl;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.spi.datastore.*;
+import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
 import java.util.Map;
@@ -14,13 +15,17 @@ public class TraceDatastoreSession<EntityId, Entity, EntityMetadata extends Data
 
     private DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> delegate;
 
-    public TraceDatastoreSession(DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> delegate) {
+    private InterceptorFactory interceptorFactory;
+
+    public TraceDatastoreSession(DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> delegate, InterceptorFactory interceptorFactory) {
         this.delegate = delegate;
+        this.interceptorFactory = interceptorFactory;
     }
 
     @Override
     public DatastoreTransaction getDatastoreTransaction() {
-        return delegate.getDatastoreTransaction();
+        DatastoreTransaction delegateDatastoreTransaction = delegate.getDatastoreTransaction();
+        return new TraceDatastoreTransaction(interceptorFactory.addInterceptor(delegateDatastoreTransaction, DatastoreTransaction.class));
     }
 
     @Override
@@ -81,6 +86,11 @@ public class TraceDatastoreSession<EntityId, Entity, EntityMetadata extends Data
     @Override
     public DatastorePropertyManager<Entity, Relation, ?, RelationMetadata> getDatastorePropertyManager() {
         DatastorePropertyManager<Entity, Relation, ?, RelationMetadata> delegateDatastorePropertyManager = delegate.getDatastorePropertyManager();
-        return new TraceDatastorePropertyManager<>(delegateDatastorePropertyManager);
+        return new TraceDatastorePropertyManager<>(interceptorFactory.addInterceptor(delegateDatastorePropertyManager, DatastorePropertyManager.class));
+    }
+
+    @Override
+    public void close() {
+        delegate.close();
     }
 }

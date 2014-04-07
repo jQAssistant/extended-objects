@@ -23,14 +23,4 @@
             <type>com.buschmais.xo.impl.test.bootstrap.composite.A</type>
         </types>
     </xo-unit>
-    <xo-unit name="traceProvider">
-        <url>file://foo</url>
-        <provider>com.buschmais.xo.spi.trace.TraceDatastoreProvider</provider>
-        <types>
-            <type>com.buschmais.xo.impl.test.bootstrap.composite.A</type>
-        </types>
-        <properties>
-            <property name="com.buschmais.xo.spi.trace.DelegateProvider" value="com.buschmais.xo.impl.test.bootstrap.provider.TestXOProvider"/>
-        </properties>
-    </xo-unit>
 </v1:xo>

@@ -141,4 +141,8 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     @Override
     public void flushRelation(Relationship relationship) {
     }
+
+    @Override
+    public void close() {
+    }
 }

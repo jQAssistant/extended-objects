@@ -1,11 +1,11 @@
-package com.buschmais.xo.spi.trace;
+package com.buschmais.xo.trace.impl;
 
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 
 /**
  * {@link DatastoreTransaction} implementation allowing tracing on delegates.
  */
-public class TraceDatastoreTransaction implements DatastoreTransaction {
+class TraceDatastoreTransaction implements DatastoreTransaction {
 
     private DatastoreTransaction delegate;
 

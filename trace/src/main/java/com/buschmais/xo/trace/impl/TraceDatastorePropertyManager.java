@@ -1,4 +1,4 @@
-package com.buschmais.xo.spi.trace;
+package com.buschmais.xo.trace.impl;
 
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
