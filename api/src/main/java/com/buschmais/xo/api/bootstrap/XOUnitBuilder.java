@@ -43,11 +43,11 @@ public class XOUnitBuilder {
         this.types = types;
     }
 
-    public static XOUnitBuilder create(URI uri, Class<?> provider, Class<?>[] types) {
+    public static XOUnitBuilder create(URI uri, Class<?> provider, Class<?>... types) {
         return new XOUnitBuilder(uri, provider, types);
     }
 
-    public static XOUnitBuilder create(String uri, Class<?> provider, Class<?>[] types) throws URISyntaxException {
+    public static XOUnitBuilder create(String uri, Class<?> provider, Class<?>... types) throws URISyntaxException {
         return create(new URI(uri), provider, types);
     }
 
@@ -106,6 +106,11 @@ public class XOUnitBuilder {
 
     public XOUnitBuilder instanceListenerTypes(Class<?>... instanceListenerTypes) {
         this.instanceListenerTypes = Arrays.asList(instanceListenerTypes);
+        return this;
+    }
+
+    public XOUnitBuilder property(String key, String value) {
+        this.properties.setProperty(key, value);
         return this;
     }
 
