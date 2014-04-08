@@ -1,6 +1,7 @@
 package com.buschmais.xo.impl;
 
 import com.buschmais.xo.api.ConcurrencyMode;
+import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOTransaction;
 import com.buschmais.xo.impl.cache.CacheSynchronization;
 import com.buschmais.xo.impl.cache.CacheSynchronizationService;
@@ -50,7 +51,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
     private final ProxyFactory proxyFactory;
     private final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession;
 
-    public SessionContext(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, ValidatorFactory validatorFactory, List<? extends Class<?>> instanceListenerTypes, TransactionAttribute defaultTransactionAttribute, ConcurrencyMode concurrencyMode, ClassLoader classLoader) {
+    public SessionContext(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, ValidatorFactory validatorFactory, List<? extends Class<?>> instanceListenerTypes, TransactionAttribute defaultTransactionAttribute, ValidationMode validationMode, ConcurrencyMode concurrencyMode, ClassLoader classLoader) {
         this.metadataProvider = metadataProvider;
         this.datastoreSession = datastoreSession;
         this.entityCache = new TransactionalCache<>();
@@ -67,7 +68,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.relationInstanceManager = new RelationInstanceManager<>(this);
         this.entityInstanceManager = new EntityInstanceManager<>(this);
         this.instanceValidationService = new InstanceValidationService(validatorFactory, relationCache, entityCache);
-        this.cacheSynchronizationService = new CacheSynchronizationService<>(this);
+        this.cacheSynchronizationService = new CacheSynchronizationService<>(this, validationMode);
         // Register default synchronizations.
         xoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(cacheSynchronizationService, entityCache, relationCache));
     }

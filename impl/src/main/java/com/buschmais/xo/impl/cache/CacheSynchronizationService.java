@@ -1,5 +1,6 @@
 package com.buschmais.xo.impl.cache;
 
+import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
@@ -13,9 +14,11 @@ import java.util.Set;
 public class CacheSynchronizationService<Entity, Relation> {
 
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private ValidationMode validationMode;
 
-    public CacheSynchronizationService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext) {
+    public CacheSynchronizationService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, ValidationMode validationMode) {
         this.sessionContext = sessionContext;
+        this.validationMode = validationMode;
     }
 
     public void flush() {
@@ -38,9 +41,11 @@ public class CacheSynchronizationService<Entity, Relation> {
     }
 
     private void validateInstance(Object instance) {
-        Set<ConstraintViolation<Object>> constraintViolations = sessionContext.getInstanceValidationService().validate(instance);
-        if (!constraintViolations.isEmpty()) {
-            throw new ConstraintViolationException(constraintViolations);
+        if (!ValidationMode.NONE.equals(validationMode)) {
+            Set<ConstraintViolation<Object>> constraintViolations = sessionContext.getInstanceValidationService().validate(instance);
+            if (!constraintViolations.isEmpty()) {
+                throw new ConstraintViolationException(constraintViolations);
+            }
         }
     }
 }

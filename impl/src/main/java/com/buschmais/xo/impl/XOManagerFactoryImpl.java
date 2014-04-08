@@ -25,6 +25,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
     private final ClassLoader classLoader;
     private final Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore;
     private final ValidatorFactory validatorFactory;
+    private final ValidationMode validationMode;
     private final ConcurrencyMode concurrencyMode;
     private final Transaction.TransactionAttribute defaultTransactionAttribute;
 
@@ -39,6 +40,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
         }
         XODatastoreProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> XODatastoreProvider = XODatastoreProvider.class.cast(ClassHelper.newInstance(providerType));
         this.datastore = XODatastoreProvider.createDatastore(xoUnit);
+        this.validationMode = xoUnit.getValidationMode();
         this.concurrencyMode = xoUnit.getConcurrencyMode();
         this.defaultTransactionAttribute = xoUnit.getDefaultTransactionAttribute();
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
@@ -73,7 +75,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
     @Override
     public XOManager createXOManager() {
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = datastore.createSession();
-        SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext = new SessionContext<>(metadataProvider, datastoreSession, validatorFactory, xoUnit.getInstanceListeners(), defaultTransactionAttribute, concurrencyMode, classLoader);
+        SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext = new SessionContext<>(metadataProvider, datastoreSession, validatorFactory, xoUnit.getInstanceListeners(), defaultTransactionAttribute, validationMode, concurrencyMode, classLoader);
         XOManagerImpl<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> xoManager = new XOManagerImpl<>(sessionContext);
         return sessionContext.getInterceptorFactory().addInterceptor(xoManager);
     }

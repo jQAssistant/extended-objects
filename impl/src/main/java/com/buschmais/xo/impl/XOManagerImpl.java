@@ -232,7 +232,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <DS> DS getDatastoreSession(Class<DS> sessionType) {
-        return sessionType.cast(sessionContext.getDatastoreSession());
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
+        return sessionType.cast(datastoreSession);
     }
 
     @Override
