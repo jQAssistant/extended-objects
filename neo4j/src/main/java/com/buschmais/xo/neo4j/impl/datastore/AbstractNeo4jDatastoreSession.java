@@ -45,11 +45,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
 
     @Override
     public Node createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators) {
-        Node node = getGraphDatabaseService().createNode();
-        for (Label label : discriminators) {
-            node.addLabel(label);
-        }
-        return node;
+        return getGraphDatabaseService().createNode(discriminators.toArray(new Label[discriminators.size()]));
     }
 
     @Override

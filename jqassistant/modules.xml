@@ -79,12 +79,12 @@
 
     <constraint id="modules:UndefinedModules">
         <requiresConcept refId="modules:DefinedModules"/>
-        <description>Every child package of "com.buschmais.cdo" must be labeled as MODULE.</description>
+        <description>Every child package of "com.buschmais.xo" must be labeled as MODULE.</description>
         <cypher><![CDATA[
 			MATCH
 				(rootPackage:PACKAGE)-[:CONTAINS]->(modulePackage:PACKAGE)
 			WHERE
-				rootPackage.FQN = "com.buschmais.cdo"
+				rootPackage.FQN = "com.buschmais.xo"
 				AND NOT
 				  modulePackage:MODULE
 			RETURN

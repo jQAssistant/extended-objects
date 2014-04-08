@@ -154,7 +154,7 @@ public abstract class AbstractXOManagerTest {
         }
     }
 
-    private void dropDatabase() {
+    protected void dropDatabase() {
         XOManager manager = getXoManager();
         manager.currentTransaction().begin();
         manager.createQuery("MATCH (n)-[r]-() DELETE r").execute();
