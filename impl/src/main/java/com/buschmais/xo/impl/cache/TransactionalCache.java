@@ -100,6 +100,6 @@ public class TransactionalCache<Id> {
      * @return The written instances.
      */
     public Collection<?> writtenInstances() {
-        return readCache.values();
+        return writeCache.values();
     }
 }
