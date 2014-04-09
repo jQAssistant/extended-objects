@@ -9,21 +9,21 @@ public class InvocationContext {
     private final Object instance;
     private final Method method;
     private final Object[] args;
-    private final List<? extends XOInterceptor> chain;
+    private final XOInterceptor[] chain;
     private int index = 0;
 
     public InvocationContext(Object instance, Method method, Object[] args, List<? extends XOInterceptor> chain) {
         this.instance = instance;
         this.method = method;
         this.args = args;
-        this.chain = chain;
+        this.chain = chain.toArray(new XOInterceptor[chain.size()]);
     }
 
     public Object proceed() throws Throwable {
-        if (index < chain.size()) {
-            XOInterceptor XOInterceptor = chain.get(index);
+        if (index < chain.length) {
+            XOInterceptor xoInterceptor = chain[index];
             index++;
-            return XOInterceptor.invoke(this);
+            return xoInterceptor.invoke(this);
         } else {
             try {
                 return method.invoke(instance, args);

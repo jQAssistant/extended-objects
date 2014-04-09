@@ -40,11 +40,14 @@ public class ProxyFactory {
      * @return The instance.
      */
     public <Instance> Instance createInstance(InvocationHandler invocationHandler, Set<Class<?>> types, Class<?> baseType) {
-        List<Class<?>> effectiveTypes = new ArrayList<>(types.size() + 1);
-        effectiveTypes.addAll(types);
-        effectiveTypes.add(baseType);
-        Object instance = Proxy.newProxyInstance(classLoader, effectiveTypes.toArray(new Class<?>[effectiveTypes.size()]), invocationHandler);
-        return (Instance) interceptorFactory.addInterceptor(instance);
+        Class<?>[] effectiveTypes = new Class<?>[types.size() + 1];
+        effectiveTypes[0] = baseType;
+        int i = 1;
+        for (Class<?> type : types) {
+            effectiveTypes[i++] = type;
+        }
+        Instance instance = (Instance) Proxy.newProxyInstance(classLoader, effectiveTypes, invocationHandler);
+        return interceptorFactory.addInterceptor(instance, effectiveTypes);
     }
 
     /**
@@ -56,10 +59,13 @@ public class ProxyFactory {
      * @return The {@link com.buschmais.xo.impl.proxy.entity.InstanceInvocationHandler}.
      */
     public <DatastoreType, Instance> InstanceInvocationHandler<DatastoreType> getInvocationHandler(Instance instance) {
+        Instance effectiveInstance;
         if (interceptorFactory.hasInterceptor(instance)) {
-            return getInvocationHandler(interceptorFactory.removeInterceptor(instance));
+            effectiveInstance = interceptorFactory.removeInterceptor(instance);
+        } else {
+            effectiveInstance = instance;
         }
-        InvocationHandler invocationHandler = Proxy.getInvocationHandler(instance);
+        InvocationHandler invocationHandler = Proxy.getInvocationHandler(effectiveInstance);
         if (!(invocationHandler instanceof InstanceInvocationHandler)) {
             throw new XOException("Instance " + instance + " implementing " + Arrays.asList(instance.getClass().getInterfaces()) + " is not a " + InstanceInvocationHandler.class.getName());
         }

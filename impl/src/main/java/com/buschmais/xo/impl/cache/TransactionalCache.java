@@ -9,6 +9,24 @@ import java.util.Collection;
  */
 public class TransactionalCache<Id> {
 
+    private static class CacheKey<Id> {
+        private Id id;
+
+        private CacheKey(Id id) {
+            this.id = id;
+        }
+
+        @Override
+        public int hashCode() {
+            return id.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj != null && id.equals(((CacheKey) obj).id);
+        }
+    }
+
     /**
      * The access mode indicating how an instance has been accessed.
      */
@@ -20,7 +38,7 @@ public class TransactionalCache<Id> {
     /**
      * The read cache.
      */
-    private final WeakReferenceCache<Id> readCache;
+    private final WeakReferenceCache<CacheKey> readCache;
 
     /**
      * The write cache.
@@ -46,7 +64,7 @@ public class TransactionalCache<Id> {
         if (Mode.WRITE.equals(mode)) {
             writeCache.put(id, value);
         }
-        readCache.put(id, value);
+        readCache.put(new CacheKey(id), value);
     }
 
     /**
@@ -59,7 +77,7 @@ public class TransactionalCache<Id> {
     public Object get(Id id, Mode mode) {
         Object value = writeCache.get(id);
         if (value == null) {
-            value = readCache.get(id);
+            value = readCache.get(new CacheKey(id));
             if (value != null && Mode.WRITE.equals(mode)) {
                 writeCache.put(id, value);
             }
@@ -73,7 +91,7 @@ public class TransactionalCache<Id> {
      * @param id The id.
      */
     public void remove(Id id) {
-        readCache.remove(id);
+        readCache.remove(new CacheKey(id));
         writeCache.remove(id);
     }
 
