@@ -2,10 +2,7 @@ package com.buschmais.xo.spi.datastore;
 
 import com.buschmais.xo.spi.metadata.type.DatastoreTypeMetadata;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Represents a set of type metadata.
@@ -24,11 +21,11 @@ public final class TypeMetadataSet<TypeMetadata extends DatastoreTypeMetadata<?>
         });
     }
 
-    public Set<Class<?>> toClasses() {
-        Set<Class<?>> classes = new HashSet<>();
+    public Class<?>[] toClasses() {
+        List<Class<?>> classes = new ArrayList<>();
         for (TypeMetadata typeMetadata : this) {
             classes.add(typeMetadata.getAnnotatedType().getAnnotatedElement());
         }
-        return classes;
+        return classes.toArray(new Class[classes.size()]);
     }
 }

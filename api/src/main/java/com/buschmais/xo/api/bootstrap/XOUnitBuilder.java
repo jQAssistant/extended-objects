@@ -31,7 +31,7 @@ public class XOUnitBuilder {
 
     private ConcurrencyMode concurrencyMode = ConcurrencyMode.SINGLETHREADED;
 
-    private Transaction.TransactionAttribute transactionAttribute = Transaction.TransactionAttribute.MANDATORY;
+    private Transaction.TransactionAttribute transactionAttribute = Transaction.TransactionAttribute.NONE;
 
     private List<Class<?>> instanceListenerTypes = Collections.emptyList();
 

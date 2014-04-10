@@ -39,8 +39,8 @@ public class ProxyFactory {
      * @param <Instance>        The instance type.
      * @return The instance.
      */
-    public <Instance> Instance createInstance(InvocationHandler invocationHandler, Set<Class<?>> types, Class<?> baseType) {
-        Class<?>[] effectiveTypes = new Class<?>[types.size() + 1];
+    public <Instance> Instance createInstance(InvocationHandler invocationHandler, Class<?>[] types, Class<?> baseType) {
+        Class<?>[] effectiveTypes = new Class<?>[types.length + 1];
         effectiveTypes[0] = baseType;
         int i = 1;
         for (Class<?> type : types) {
