@@ -12,11 +12,11 @@ public class InvocationContext {
     private final XOInterceptor[] chain;
     private int index = 0;
 
-    public InvocationContext(Object instance, Method method, Object[] args, List<? extends XOInterceptor> chain) {
+    public InvocationContext(Object instance, Method method, Object[] args, XOInterceptor[] chain) {
         this.instance = instance;
         this.method = method;
         this.args = args;
-        this.chain = chain.toArray(new XOInterceptor[chain.size()]);
+        this.chain = chain;
     }
 
     public Object proceed() throws Throwable {

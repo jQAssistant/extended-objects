@@ -10,10 +10,10 @@ import java.util.List;
 
 public class InterceptorFactory {
 
-    private final List<? extends XOInterceptor> chain;
+    private final XOInterceptor[] chain;
 
     public InterceptorFactory(List<? extends XOInterceptor> chain) {
-        this.chain = chain;
+        this.chain = chain.toArray(new XOInterceptor[chain.size()]);
     }
 
     public <T> T addInterceptor(T instance) {
