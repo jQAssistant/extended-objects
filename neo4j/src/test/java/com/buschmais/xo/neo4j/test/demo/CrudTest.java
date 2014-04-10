@@ -5,7 +5,7 @@ import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(Parameterized.class)
-public class CrudTest extends AbstractXOManagerTest {
+public class CrudTest extends AbstractNeo4jXOManagerTest {
 
     public CrudTest(XOUnit xoUnit) {
         super(xoUnit);

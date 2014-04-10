@@ -237,6 +237,12 @@
                 <scope>runtime</scope>
             </dependency>
             <dependency>
+                <groupId>com.buschmais.xo</groupId>
+                <artifactId>xo.test</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
                 <version>1.1.0.Final</version>
@@ -282,7 +288,7 @@
         <module>spi</module>
         <module>api</module>
         <module>impl</module>
-        <module>trace</module>
+        <module>test</module>
         <module>neo4j</module>
         <module>json</module>
         <module>doc</module>

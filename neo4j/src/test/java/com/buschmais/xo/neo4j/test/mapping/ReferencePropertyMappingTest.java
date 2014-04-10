@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.mapping;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.mapping.composite.A;
 import com.buschmais.xo.neo4j.test.mapping.composite.B;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class ReferencePropertyMappingTest extends AbstractXOManagerTest {
+public class ReferencePropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     public ReferencePropertyMappingTest(XOUnit xoUnit) {
         super(xoUnit);

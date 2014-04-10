@@ -3,7 +3,7 @@ package com.buschmais.xo.neo4j.test.query;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.query.composite.B;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
-public class UniqueTest extends AbstractXOManagerTest {
+public class UniqueTest extends AbstractNeo4jXOManagerTest {
 
     public UniqueTest(XOUnit xoUnit) {
         super(xoUnit);
@@ -27,7 +27,7 @@ public class UniqueTest extends AbstractXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(Database.MEMORY), asList(B.class));
+        return xoUnits(asList(Neo4jDatabase.MEMORY), asList(B.class));
     }
 
     @Test(expected = ConstraintViolationException.class)

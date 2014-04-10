@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.query;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.query.composite.A;
 import com.buschmais.xo.neo4j.test.query.composite.A2B;
 import com.buschmais.xo.neo4j.test.query.composite.B;
@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class PathTest extends AbstractXOManagerTest {
+public class PathTest extends AbstractNeo4jXOManagerTest {
 
     public PathTest(XOUnit xoUnit) {
         super(xoUnit);
@@ -30,7 +30,7 @@ public class PathTest extends AbstractXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(Database.MEMORY), asList(A.class, B.class, A2B.class));
+        return xoUnits(asList(Neo4jDatabase.MEMORY), asList(A.class, B.class, A2B.class));
     }
 
     @Test

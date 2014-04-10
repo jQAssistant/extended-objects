@@ -5,7 +5,7 @@ import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNode;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNodeRelation;
 import org.junit.Before;
@@ -27,7 +27,7 @@ import static com.buschmais.xo.api.Transaction.TransactionAttribute;
 import static java.util.Arrays.asList;
 
 @RunWith(Parameterized.class)
-public class XoVsNativePerformanceIT extends AbstractXOManagerTest {
+public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XoVsNativePerformanceIT.class);
 

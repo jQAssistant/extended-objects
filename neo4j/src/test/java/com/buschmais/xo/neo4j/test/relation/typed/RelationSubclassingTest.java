@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.relation.typed;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class RelationSubclassingTest extends AbstractXOManagerTest {
+public class RelationSubclassingTest extends AbstractNeo4jXOManagerTest {
 
     public RelationSubclassingTest(XOUnit xoUnit) {
         super(xoUnit);

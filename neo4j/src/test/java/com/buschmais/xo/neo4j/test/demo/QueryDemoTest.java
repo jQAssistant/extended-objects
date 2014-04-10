@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.demo;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.demo.composite.Group;
 import com.buschmais.xo.neo4j.test.demo.composite.Person;
 import org.junit.Test;
@@ -13,12 +13,11 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 
 import static com.buschmais.xo.neo4j.test.demo.composite.Group.MemberByName;
-import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class QueryDemoTest extends AbstractXOManagerTest {
+public class QueryDemoTest extends AbstractNeo4jXOManagerTest {
 
     public QueryDemoTest(XOUnit xoUnit) {
         super(xoUnit);

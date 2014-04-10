@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.mapping;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.mapping.composite.A;
 import com.buschmais.xo.neo4j.test.mapping.composite.Enumeration;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class EnumPropertyMappingTest extends AbstractXOManagerTest {
+public class EnumPropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     public EnumPropertyMappingTest(XOUnit xoUnit) {
         super(xoUnit);

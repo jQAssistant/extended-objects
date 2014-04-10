@@ -5,7 +5,7 @@ import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.instancelistener.composite.*;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.Before;
@@ -22,7 +22,7 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class InstanceListenerTest extends AbstractXOManagerTest {
+public class InstanceListenerTest extends AbstractNeo4jXOManagerTest {
 
     public InstanceListenerTest(XOUnit xoUnit) {
         super(xoUnit);

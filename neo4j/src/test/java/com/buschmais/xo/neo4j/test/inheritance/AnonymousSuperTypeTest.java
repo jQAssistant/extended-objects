@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.inheritance;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.inheritance.composite.A;
 import com.buschmais.xo.neo4j.test.inheritance.composite.B;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class AnonymousSuperTypeTest extends AbstractXOManagerTest {
+public class AnonymousSuperTypeTest extends AbstractNeo4jXOManagerTest {
 
     public AnonymousSuperTypeTest(XOUnit xoUnit) {
         super(xoUnit);

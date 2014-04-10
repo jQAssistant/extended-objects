@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.label;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.label.composite.ExplicitLabel;
 import com.buschmais.xo.neo4j.test.label.composite.ImplicitLabel;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class LabelTest extends AbstractXOManagerTest {
+public class LabelTest extends AbstractNeo4jXOManagerTest {
 
     public LabelTest(XOUnit xoUnit) {
         super(xoUnit);

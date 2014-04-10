@@ -1,0 +1,77 @@
+package com.buschmais.xo.test.trace.impl;
+
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.spi.datastore.Datastore;
+import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
+import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
+import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
+import com.buschmais.xo.spi.interceptor.InterceptorFactory;
+
+import javax.management.*;
+import java.lang.management.ManagementFactory;
+import java.util.Collection;
+
+/**
+ * {@link Datastore} implementation allowing tracing on delegates.
+ */
+public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datastore.DatastoreSession, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> implements Datastore<TraceDatastoreSession, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
+
+    private Datastore<DatastoreSession, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> delegate;
+
+    private InterceptorFactory interceptorFactory;
+
+    private TraceMonitor traceMonitor;
+
+    public TraceDatastore(Datastore<DatastoreSession, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> delegate, InterceptorFactory interceptorFactory, TraceMonitor traceMonitor) {
+        this.delegate = delegate;
+        this.interceptorFactory = interceptorFactory;
+        this.traceMonitor = traceMonitor;
+    }
+
+    @Override
+    public void init(Collection registeredMetadata) {
+        ObjectName objectName = getObjectName();
+        try {
+            getMBeanServer().registerMBean(traceMonitor, objectName);
+        } catch (JMException e) {
+            throw new XOException("Cannot register trace monitor MBean for object name " + objectName);
+        }
+        delegate.init(registeredMetadata);
+    }
+
+    @Override
+    public DatastoreMetadataFactory<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> getMetadataFactory() {
+        return delegate.getMetadataFactory();
+    }
+
+    @Override
+    public TraceDatastoreSession createSession() {
+        DatastoreSession delegateSession = delegate.createSession();
+        return new TraceDatastoreSession(interceptorFactory.addInterceptor(delegateSession, com.buschmais.xo.spi.datastore.DatastoreSession.class), interceptorFactory);
+    }
+
+    @Override
+    public void close() {
+        delegate.close();
+        ObjectName objectName = getObjectName();
+        try {
+            getMBeanServer().unregisterMBean(objectName);
+        } catch (JMException e) {
+            throw new XOException("Cannot unregister trace monitor MBean for object name " + objectName);
+        }
+    }
+
+    private MBeanServer getMBeanServer() {
+        return ManagementFactory.getPlatformMBeanServer();
+    }
+
+    private ObjectName getObjectName() {
+        String name = traceMonitor.getXOUnit().getName();
+        try {
+            return new ObjectName("com.buschmais.xo.trace","xo-unit", name);
+        } catch (MalformedObjectNameException e) {
+            throw new XOException("Cannot create object name for XO unit " + name);
+        }
+
+    }
+}

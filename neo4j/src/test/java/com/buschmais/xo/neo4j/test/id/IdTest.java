@@ -3,11 +3,10 @@ package com.buschmais.xo.neo4j.test.id;
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.id.composite.A;
 import com.buschmais.xo.neo4j.test.id.composite.A2B;
 import com.buschmais.xo.neo4j.test.id.composite.B;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -21,7 +20,7 @@ import static org.junit.Assert.assertThat;
 
 
 @RunWith(Parameterized.class)
-public class IdTest extends AbstractXOManagerTest {
+public class IdTest extends AbstractNeo4jXOManagerTest {
 
     public IdTest(XOUnit xoUnit) {
         super(xoUnit);

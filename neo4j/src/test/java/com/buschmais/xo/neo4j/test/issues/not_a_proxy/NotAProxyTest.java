@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.issues.not_a_proxy;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.issues.not_a_proxy.composite.A;
 import com.buschmais.xo.neo4j.test.issues.not_a_proxy.composite.B;
 import com.buschmais.xo.neo4j.test.issues.not_a_proxy.composite.C;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThat;
  * https://github.com/buschmais/cdo-neo4j/issues/57
  */
 @RunWith(Parameterized.class)
-public class NotAProxyTest extends AbstractXOManagerTest {
+public class NotAProxyTest extends AbstractNeo4jXOManagerTest {
 
     public NotAProxyTest(XOUnit xoUnit) {
         super(xoUnit);

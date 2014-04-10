@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.relation.qualified;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.relation.qualified.composite.A;
 import com.buschmais.xo.neo4j.test.relation.qualified.composite.B;
 import org.junit.Test;
@@ -12,14 +12,13 @@ import org.junit.runners.Parameterized;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class QualifiedRelationTest extends AbstractXOManagerTest {
+public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
 
     public QualifiedRelationTest(XOUnit xoUnit) {
         super(xoUnit);

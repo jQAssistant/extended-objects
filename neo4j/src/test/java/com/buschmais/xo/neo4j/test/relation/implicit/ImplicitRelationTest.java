@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.relation.implicit;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.relation.implicit.composite.A;
 import com.buschmais.xo.neo4j.test.relation.implicit.composite.B;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class ImplicitRelationTest extends AbstractXOManagerTest {
+public class ImplicitRelationTest extends AbstractNeo4jXOManagerTest {
 
     public ImplicitRelationTest(XOUnit xoUnit) {
         super(xoUnit);

@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.relation.typed;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNode;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNodeRelation;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class TreeTest extends AbstractXOManagerTest {
+public class TreeTest extends AbstractNeo4jXOManagerTest {
 
     public TreeTest(XOUnit xoUnit) {
         super(xoUnit);

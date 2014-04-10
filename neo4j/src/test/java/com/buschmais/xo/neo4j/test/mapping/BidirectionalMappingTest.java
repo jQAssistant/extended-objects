@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.mapping;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.mapping.composite.G;
 import com.buschmais.xo.neo4j.test.mapping.composite.H;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class BidirectionalMappingTest extends AbstractXOManagerTest {
+public class BidirectionalMappingTest extends AbstractNeo4jXOManagerTest {
 
     public BidirectionalMappingTest(XOUnit xoUnit) {
         super(xoUnit);

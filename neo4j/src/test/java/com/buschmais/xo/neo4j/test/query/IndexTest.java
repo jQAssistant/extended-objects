@@ -3,7 +3,7 @@ package com.buschmais.xo.neo4j.test.query;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.query.composite.A;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
-public class IndexTest extends AbstractXOManagerTest {
+public class IndexTest extends AbstractNeo4jXOManagerTest {
 
     public IndexTest(XOUnit xoUnit) {
         super(xoUnit);

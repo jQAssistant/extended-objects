@@ -3,7 +3,7 @@ package com.buschmais.xo.neo4j.test.validation;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.annotation.PreUpdate;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.validation.composite.A;
 import com.buschmais.xo.neo4j.test.validation.composite.B;
 import org.junit.Assert;
@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class ValidationTest extends AbstractXOManagerTest {
+public class ValidationTest extends AbstractNeo4jXOManagerTest {
 
     public ValidationTest(XOUnit xoUnit) {
         super(xoUnit);

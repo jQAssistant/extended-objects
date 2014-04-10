@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.query;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.query.composite.A;
 import com.buschmais.xo.neo4j.test.query.composite.InstanceByValue;
 import org.junit.Before;
@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class QueryReturnTypesTest extends AbstractXOManagerTest {
+public class QueryReturnTypesTest extends AbstractNeo4jXOManagerTest {
 
     private A a;
 

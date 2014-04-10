@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.mapping;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.mapping.composite.E;
 import com.buschmais.xo.neo4j.test.mapping.composite.E2F;
 import com.buschmais.xo.neo4j.test.mapping.composite.F;
@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class RelationResultOfTest extends AbstractXOManagerTest {
+public class RelationResultOfTest extends AbstractNeo4jXOManagerTest {
 
     private E e;
     private F f1;

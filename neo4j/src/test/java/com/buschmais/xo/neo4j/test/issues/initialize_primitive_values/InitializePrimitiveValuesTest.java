@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.issues.initialize_primitive_values;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.issues.initialize_primitive_values.composite.A;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertThat;
  * https://github.com/buschmais/cdo-neo4j/issues/61
  */
 @RunWith(Parameterized.class)
-public class InitializePrimitiveValuesTest extends AbstractXOManagerTest {
+public class InitializePrimitiveValuesTest extends AbstractNeo4jXOManagerTest {
 
     public InitializePrimitiveValuesTest(XOUnit xoUnit) {
         super(xoUnit);

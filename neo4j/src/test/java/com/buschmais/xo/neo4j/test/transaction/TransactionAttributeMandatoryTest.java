@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.test.transaction;
 
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.transaction.composite.A;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class TransactionAttributeMandatoryTest extends AbstractXOManagerTest {
+public class TransactionAttributeMandatoryTest extends AbstractNeo4jXOManagerTest {
 
     public TransactionAttributeMandatoryTest(XOUnit xoUnit) {
         super(xoUnit);
@@ -27,7 +27,7 @@ public class TransactionAttributeMandatoryTest extends AbstractXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(Database.MEMORY), Arrays.asList(A.class), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
+        return xoUnits(asList(Neo4jDatabase.MEMORY), Arrays.asList(A.class), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
     }
 
     @Test

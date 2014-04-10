@@ -3,7 +3,7 @@ package com.buschmais.xo.neo4j.test.delegate;
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.delegate.composite.A;
 import com.buschmais.xo.neo4j.test.delegate.composite.A2B;
 import com.buschmais.xo.neo4j.test.delegate.composite.B;
@@ -26,7 +26,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
-public class DelegateTest extends AbstractXOManagerTest {
+public class DelegateTest extends AbstractNeo4jXOManagerTest {
 
     public DelegateTest(XOUnit xoUnit) {
         super(xoUnit);
