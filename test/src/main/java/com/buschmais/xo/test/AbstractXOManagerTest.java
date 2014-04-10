@@ -7,16 +7,22 @@ import org.junit.After;
 import org.junit.Before;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 
 import static com.buschmais.xo.api.Query.Result;
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 
+/**
+ * Abstract base class for parametrized XO tests.
+ */
 public abstract class AbstractXOManagerTest {
 
+    /**
+     * Defines a database under test. Intended to be implemented by enum types.
+     */
     public interface Database {
         URI getUri();
+
         Class<?> getProvider();
     }
 
@@ -24,16 +30,82 @@ public abstract class AbstractXOManagerTest {
     private XOManagerFactory xoManagerFactory;
     private XOManager xoManager = null;
 
+    /**
+     * Return a collection of {@link com.buschmais.xo.api.bootstrap.XOUnit}s initialized with the given parameters.
+     *
+     * @param databases The databases to use.
+     * @param types     The types to register.
+     * @return The collection of {@link com.buschmais.xo.api.bootstrap.XOUnit}s.
+     */
+    protected static Collection<Object[]> xoUnits(List<? extends Database> databases, List<? extends Class<?>> types) {
+        return xoUnits(databases, types, Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.NONE);
+    }
+
+    /**
+     * Return a collection of {@link com.buschmais.xo.api.bootstrap.XOUnit}s initialized with the given parameters.
+     *
+     * @param databases             The databases to use.
+     * @param types                 The types to register.
+     * @param instanceListenerTypes The instance listeners to register.
+     * @param validationMode        The validation mode to use.
+     * @param concurrencyMode       The concurrency mode to use.
+     * @param transactionAttribute  The transaction attribute to use.
+     * @return The collection of {@link com.buschmais.xo.api.bootstrap.XOUnit}s.
+     */
+    protected static Collection<Object[]> xoUnits(List<? extends Database> databases, List<? extends Class<?>> types, List<? extends Class<?>> instanceListenerTypes, ValidationMode validationMode, ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
+        List<Object[]> xoUnits = new ArrayList<>(databases.size());
+        for (Database database : databases) {
+            XOUnit unit = xoUnit(database, types, instanceListenerTypes, validationMode, concurrencyMode, transactionAttribute);
+            xoUnits.add(new Object[]{unit});
+        }
+        return xoUnits;
+    }
+
+    /**
+     * Return a {@link com.buschmais.xo.api.bootstrap.XOUnit} initialized with the given parameters.
+     *
+     * @param types The types to register.
+     * @return The {@link com.buschmais.xo.api.bootstrap.XOUnit}.
+     */
+    protected static XOUnit xoUnit(Database database, List<? extends Class<?>> types) {
+        return xoUnit(database, types, Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.NONE);
+    }
+
+    /**
+     * Return a {@link com.buschmais.xo.api.bootstrap.XOUnit} initialized with the given parameters.
+     *
+     * @param types                 The types to register.
+     * @param instanceListenerTypes The instance listeners to register.
+     * @param validationMode        The validation mode to use.
+     * @param concurrencyMode       The concurrency mode to use.
+     * @param transactionAttribute  The transaction attribute to use.
+     * @return The {@link com.buschmais.xo.api.bootstrap.XOUnit}.
+     */
+    protected static XOUnit xoUnit(Database database, List<? extends Class<?>> types, List<? extends Class<?>> instanceListenerTypes, ValidationMode validationMode, ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
+        return new XOUnit("default", "Default XO unit", database.getUri(), database.getProvider(), new HashSet<>(types), instanceListenerTypes, validationMode, concurrencyMode, transactionAttribute, new Properties());
+    }
+
+    /**
+     * Parametrized constructor.
+     *
+     * @param xoUnit The {@link com.buschmais.xo.api.bootstrap.XOUnit} to use.
+     */
     protected AbstractXOManagerTest(XOUnit xoUnit) {
         this.xoUnit = xoUnit;
     }
 
+    /**
+     * Creates the {@link com.buschmais.xo.api.XOManagerFactory}.
+     */
     @Before
-    public void createXOManagerFactory() throws URISyntaxException {
+    public void createXOManagerFactory() {
         xoManagerFactory = XO.createXOManagerFactory(xoUnit);
         dropDatabase();
     }
 
+    /**
+     * Closes the {@link com.buschmais.xo.api.XOManagerFactory}.
+     */
     @After
     public void closeXOManagerFactory() {
         closeXOmanager();
@@ -42,18 +114,6 @@ public abstract class AbstractXOManagerTest {
         }
     }
 
-    protected static Collection<Object[]> xoUnits(List<? extends Database> databases, List<? extends Class<?>> types) {
-        return xoUnits(databases, types, Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.NONE);
-    }
-
-    protected static Collection<Object[]> xoUnits(List<? extends Database> databases, List<? extends Class<?>> types, List<? extends Class<?>> instanceListenerTypes, ValidationMode validationMode, ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
-        List<Object[]> xoUnits = new ArrayList<>(databases.size());
-        for (Database database : databases) {
-            XOUnit unit = new XOUnit("default", "Default XO unit", database.getUri(), database.getProvider(), new HashSet<>(types), instanceListenerTypes, validationMode, concurrencyMode, transactionAttribute, new Properties());
-            xoUnits.add(new Object[]{unit});
-        }
-        return xoUnits;
-    }
 
     /**
      * Executes a createQuery and returns a {@link TestResult}.
@@ -66,10 +126,10 @@ public abstract class AbstractXOManagerTest {
     }
 
     /**
-     * Executes a createQuery and returns a {@link TestResult}.
+     * Executes a query and returns a {@link TestResult}.
      *
-     * @param query      The createQuery.
-     * @param parameters The createQuery parameters.
+     * @param query      The query.
+     * @param parameters The parameters.
      * @return The {@link TestResult}.
      */
     protected TestResult executeQuery(String query, Map<String, Object> parameters) {
@@ -89,10 +149,20 @@ public abstract class AbstractXOManagerTest {
         return new TestResult(columns);
     }
 
+    /**
+     * Return the {@link com.buschmais.xo.api.XOManagerFactory}.
+     *
+     * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
+     */
     protected XOManagerFactory getXoManagerFactory() {
         return xoManagerFactory;
     }
 
+    /**
+     * Return the current {@link com.buschmais.xo.api.XOManager}.
+     *
+     * @return The current {@link com.buschmais.xo.api.XOManager}.
+     */
     protected XOManager getXoManager() {
         if (xoManager == null) {
             xoManager = getXoManagerFactory().createXOManager();
@@ -100,6 +170,9 @@ public abstract class AbstractXOManagerTest {
         return xoManager;
     }
 
+    /**
+     * Close the current {@link com.buschmais.xo.api.XOManager}.
+     */
     protected void closeXOmanager() {
         if (xoManager != null) {
             if (xoManager.currentTransaction().isActive()) {
@@ -132,6 +205,9 @@ public abstract class AbstractXOManagerTest {
         }
     }
 
+    /**
+     * Drop all data from the database.
+     */
     protected abstract void dropDatabase();
 
 }
