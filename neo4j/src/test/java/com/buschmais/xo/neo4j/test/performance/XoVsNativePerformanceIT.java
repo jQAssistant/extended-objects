@@ -32,7 +32,7 @@ public class XoVsNativePerformanceIT extends AbstractXOManagerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(XoVsNativePerformanceIT.class);
 
     private static final int TREE_DEPTH = 6;
-    private static final int NUMBER_OF_RUNS = 50;
+    private static final int NUMBER_OF_RUNS = 10;
 
     public XoVsNativePerformanceIT(XOUnit xoUnit) {
         super(xoUnit);
@@ -41,7 +41,7 @@ public class XoVsNativePerformanceIT extends AbstractXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(TreeNode.class, TreeNodeRelation.class), Collections.<Class<?>>emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED, TransactionAttribute.MANDATORY);
+        return xoUnits(asList(TreeNode.class, TreeNodeRelation.class), Collections.<Class<?>>emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED, TransactionAttribute.NONE);
     }
 
     private class Measurement {
@@ -85,25 +85,19 @@ public class XoVsNativePerformanceIT extends AbstractXOManagerTest {
         }
     }
 
-    private final List<Measurement> xoMeasurements = new ArrayList<>();
-    private final List<Measurement> nativeMeasurements = new ArrayList<>();
+    private List<Measurement> xoMeasurements = new ArrayList<>();
+    private List<Measurement> nativeMeasurements = new ArrayList<>();
 
     @Test
     public void test() {
         try (XOManager xoManager = getXoManagerFactory().createXOManager()) {
-            for (int i = 0; i < NUMBER_OF_RUNS; i++) {
-                xoMeasurements.add(runXO(xoManager));
-            }
+            nativeMeasurements = runNative(xoManager);
+            xoMeasurements = runXO(xoManager);
+            printResults();
         }
-        try (XOManager xoManager = getXoManagerFactory().createXOManager()) {
-            for (int i = 0; i < NUMBER_OF_RUNS; i++) {
-//               nativeMeasurements.add(runNative(xoManager));
-            }
-        }
-        printResults();
     }
 
-    private Measurement runXO(final XOManager xoManager) {
+    private List<Measurement> runXO(final XOManager xoManager) {
         ApiUnderTest<TreeNode, TreeNodeRelation> xoApi = new ApiUnderTest<TreeNode, TreeNodeRelation>() {
             @Override
             public void begin() {
@@ -126,18 +120,24 @@ public class XoVsNativePerformanceIT extends AbstractXOManagerTest {
             }
 
             @Override
-            public TreeNodeRelation createRelation(TreeNode entity1, TreeNode entity2) {
-                return xoManager.create(entity1, TreeNodeRelation.class, entity2);
+            public TreeNodeRelation createRelation(TreeNode parent, TreeNode child) {
+                return xoManager.create(parent, TreeNodeRelation.class, child);
+            }
+
+            @Override
+            public String toString() {
+                return "XO";
             }
         };
         return run(xoApi);
     }
 
-    private Measurement runNative(final XOManager xoManager) {
+    private List<Measurement> runNative(final XOManager xoManager) {
         final GraphDatabaseService graphDatabaseService = xoManager.getDatastoreSession(Neo4jDatastoreSession.class).getGraphDatabaseService();
         ApiUnderTest<Node, Relationship> nativeApi = new ApiUnderTest<Node, Relationship>() {
 
             private Transaction transaction;
+
             @Override
             public void begin() {
                 transaction = graphDatabaseService.beginTx();
@@ -161,34 +161,45 @@ public class XoVsNativePerformanceIT extends AbstractXOManagerTest {
             }
 
             @Override
-            public Relationship createRelation(Node entity1, Node entity2) {
-                Relationship relationshipTo = entity1.createRelationshipTo(entity2, DynamicRelationshipType.withName(TreeNodeRelation.class.getSimpleName()));
+            public Relationship createRelation(Node parent, Node child) {
+                DynamicRelationshipType relationshipType = DynamicRelationshipType.withName(TreeNodeRelation.class.getSimpleName());
+                if (parent.hasRelationship(relationshipType, Direction.OUTGOING)) {
+                    parent.getSingleRelationship(relationshipType, Direction.OUTGOING).delete();
+                }
+                Relationship relationshipTo = parent.createRelationshipTo(child, relationshipType);
                 return relationshipTo;
             }
+
+            @Override
+            public String toString() {
+                return "Native";
+            }
+
         };
         return run(nativeApi);
     }
 
-    private <Entity, Relation> Measurement run(ApiUnderTest<Entity, Relation> apiUnderTest) {
-        dropDatabase();
+    private <Entity, Relation> List<Measurement> run(ApiUnderTest<Entity, Relation> apiUnderTest) {
+        LOGGER.info("Starting run with API '" + apiUnderTest + "'");
+        List<Measurement> measurements = new ArrayList<>(NUMBER_OF_RUNS);
+        for (int i = 0; i < NUMBER_OF_RUNS; i++) {
+            dropDatabase();
+            apiUnderTest.begin();
+            long start = System.currentTimeMillis();
+            Entity root = apiUnderTest.createEntity();
+            apiUnderTest.setName(root, "1");
 
-        apiUnderTest.begin();
-        long start = System.currentTimeMillis();
-        Entity root = apiUnderTest.createEntity();
-        apiUnderTest.setName(root, "1");
-        apiUnderTest.commit();
+            long counter = 1;
+            counter += addChildren(apiUnderTest, root, 2, "1");
+            apiUnderTest.commit();
+            long stop = System.currentTimeMillis();
 
-
-        long counter = 1;
-        counter += addChildren(apiUnderTest, root, 2, "1");
-        long stop = System.currentTimeMillis();
-
-        Measurement measurement = new Measurement(counter, start, stop);
-
-        System.err.println("counter=" + measurement.getCounter());
-        System.err.println("time=" + measurement.getDuration() + "ms");
-        System.err.println("speed=" + measurement.getSpeed() + " vertizes/s");
-        return measurement;
+            Measurement measurement = new Measurement(counter, start, stop);
+            LOGGER.info("counter=" + measurement.getCounter() + ", time=" + measurement.getDuration() + "ms" + ", speed=" + measurement.getSpeed() + " vertices/s");
+            measurements.add(measurement);
+        }
+        LOGGER.info("Finished run with API " + apiUnderTest);
+        return measurements;
     }
 
     private <Entity, Relation> long addChildren(ApiUnderTest<Entity, Relation> apiUnderTest, Entity parent, int i, String namePrefix) {
@@ -198,12 +209,10 @@ public class XoVsNativePerformanceIT extends AbstractXOManagerTest {
         long counter = 0;
         for (int id = 1; id <= i; id++) {
             String name = namePrefix + id;
-            apiUnderTest.begin();
             Entity child = apiUnderTest.createEntity();
             apiUnderTest.setName(child, name);
-            apiUnderTest.createRelation(child, parent);
+            apiUnderTest.createRelation(parent, child);
             counter++;
-            apiUnderTest.commit();
             counter += addChildren(apiUnderTest, child, i + 1, name);
         }
         return counter;

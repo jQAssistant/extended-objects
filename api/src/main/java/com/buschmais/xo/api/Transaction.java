@@ -23,6 +23,11 @@ public @interface Transaction {
      * Defines the supported transaction attributes .
      */
     enum TransactionAttribute {
+
+        /**
+         * No transaction management will be performed.
+         */
+        NONE,
         /**
          * An existing transaction is mandatory, i.e. the application explicitly controls transactions.
          */

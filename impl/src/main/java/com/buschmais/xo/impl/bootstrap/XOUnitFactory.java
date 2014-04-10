@@ -138,8 +138,10 @@ public class XOUnitFactory {
     }
 
     private Transaction.TransactionAttribute getTransactionAttribute(TransactionAttributeType defaultTransactionAttributeType) {
-        if (defaultTransactionAttributeType == null) return Transaction.TransactionAttribute.MANDATORY;
+        if (defaultTransactionAttributeType == null) return Transaction.TransactionAttribute.NONE;
         switch (defaultTransactionAttributeType) {
+            case NONE:
+                return Transaction.TransactionAttribute.NONE;
             case MANDATORY:
                 return Transaction.TransactionAttribute.MANDATORY;
             case REQUIRES:

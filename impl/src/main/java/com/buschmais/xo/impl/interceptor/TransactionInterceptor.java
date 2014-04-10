@@ -19,6 +19,11 @@ public class TransactionInterceptor implements XOInterceptor {
     }
 
     @Override
+    public boolean isActive() {
+        return !Transaction.TransactionAttribute.NONE.equals(defaultTransactionAttribute);
+    }
+
+    @Override
     public Object invoke(InvocationContext context) throws Throwable {
         Method method = context.getMethod();
         Transaction.TransactionAttribute transactionAttribute;

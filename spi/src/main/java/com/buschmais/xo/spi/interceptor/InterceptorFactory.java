@@ -4,8 +4,8 @@ import com.buschmais.xo.api.XOException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 public class InterceptorFactory {
@@ -13,7 +13,12 @@ public class InterceptorFactory {
     private final XOInterceptor[] chain;
 
     public InterceptorFactory(List<? extends XOInterceptor> chain) {
-        this.chain = chain.toArray(new XOInterceptor[chain.size()]);
+        List<XOInterceptor> effectiveChain = new ArrayList<>(chain.size());
+        for (XOInterceptor xoInterceptor : chain) {
+            if (xoInterceptor.isActive())
+                effectiveChain.add(xoInterceptor);
+        }
+        this.chain = effectiveChain.toArray(new XOInterceptor[effectiveChain.size()]);
     }
 
     public <T> T addInterceptor(T instance) {
@@ -21,6 +26,9 @@ public class InterceptorFactory {
     }
 
     public <T> T addInterceptor(T instance, Class<?>... interfaces) {
+        if (chain.length == 0) {
+            return instance;
+        }
         InterceptorInvocationHandler invocationHandler = new InterceptorInvocationHandler(instance, chain);
         return (T) Proxy.newProxyInstance(instance.getClass().getClassLoader(), interfaces, invocationHandler);
     }

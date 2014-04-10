@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import java.util.Set;
 
-import static com.buschmais.xo.api.Transaction.TransactionAttribute.MANDATORY;
+import static com.buschmais.xo.api.Transaction.TransactionAttribute.NONE;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -28,6 +28,6 @@ public class BootstrapTest {
         Set<? extends Class<?>> types = xoUnit.getTypes();
         assertThat(types.size(), equalTo(1));
         assertThat(types.toArray(), IsArrayContaining.<Object>hasItemInArray(A.class));
-        assertThat(xoUnit.getDefaultTransactionAttribute(), equalTo(MANDATORY));
+        assertThat(xoUnit.getDefaultTransactionAttribute(), equalTo(NONE));
     }
 }

@@ -17,6 +17,11 @@ public class TraceMonitorInterceptor implements XOInterceptor {
     }
 
     @Override
+    public boolean isActive() {
+        return true;
+    }
+
+    @Override
     public Object invoke(InvocationContext invocationContext) throws Throwable {
         traceMonitor.log("Entering '" + invocationContext.getMethod().toString() + "'");
         long start = System.currentTimeMillis();

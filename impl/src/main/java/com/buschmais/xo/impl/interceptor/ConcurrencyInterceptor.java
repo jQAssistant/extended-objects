@@ -18,6 +18,11 @@ public class ConcurrencyInterceptor implements XOInterceptor {
     }
 
     @Override
+    public boolean isActive() {
+        return ConcurrencyMode.MULTITHREADED.equals(concurrencyMode);
+    }
+
+    @Override
     public Object invoke(InvocationContext invocationContext) throws Throwable {
         switch (concurrencyMode) {
             case SINGLETHREADED:

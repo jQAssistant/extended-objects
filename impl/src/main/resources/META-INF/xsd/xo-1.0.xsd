@@ -62,6 +62,7 @@
 
     <xs:simpleType name="TransactionAttributeType">
         <xs:restriction base="xs:token">
+            <xs:enumeration value="NONE"/>
             <xs:enumeration value="MANDATORY"/>
             <xs:enumeration value="REQUIRES"/>
         </xs:restriction>
