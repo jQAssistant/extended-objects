@@ -22,6 +22,9 @@
                 <version>0.1.4</version>
                 <configuration>
                     <backend>html</backend>
+                    <attributes>
+                        <toc>auto</toc>
+                    </attributes>
                 </configuration>
                 <executions>
                     <execution>
