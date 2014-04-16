@@ -8,10 +8,14 @@ import com.buschmais.xo.api.bootstrap.XOUnitBuilder;
 import com.buschmais.xo.neo4j.api.Neo4jXOProvider;
 import com.buschmais.xo.neo4j.test.bootstrap.composite.A;
 import org.junit.Test;
-import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.*;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
 import java.net.URISyntaxException;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.neo4j.graphdb.DynamicLabel.label;
 
 public class GraphDbBootstrapTest {
 
@@ -27,6 +31,15 @@ public class GraphDbBootstrapTest {
         xoManager.currentTransaction().commit();
         xoManager.close();
         xoManagerFactory.close();
+        try (Transaction transaction = graphDatabaseService.beginTx()) {
+            ResourceIterable<Node> nodes = graphDatabaseService.findNodesByLabelAndProperty(label("A"), "name", "Test");
+            ResourceIterator<Node> iterator = nodes.iterator();
+            assertThat(iterator.hasNext(), equalTo(true));
+            Node node = iterator.next();
+            assertThat(node.hasLabel(label("A")), equalTo(true));
+            assertThat(node.getProperty("name"), equalTo((Object) "Test"));
+            transaction.success();
+        }
     }
 
 }
