@@ -15,11 +15,9 @@ public class Neo4jXOProviderTest {
 
     @Test
     public void lookupTests() throws Exception {
-
         assertEquals(FileDatastoreFactory.class, provider.lookupFactory(new URI("file://foo/")).getClass());
-
         assertEquals(MemoryDatastoreFactory.class, provider.lookupFactory(new URI("memory:///")).getClass());
-
+        assertEquals(GraphDbDatastoreFactory.class, provider.lookupFactory(new URI("graphDb:///")).getClass());
         assertEquals(HttpDatastoreFactory.class, provider.lookupFactory(new URI("http://foo")).getClass());
         assertEquals(HttpsDatastoreFactory.class, provider.lookupFactory(new URI("https://foo")).getClass());
     }

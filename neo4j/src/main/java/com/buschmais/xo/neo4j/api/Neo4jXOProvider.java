@@ -20,7 +20,7 @@ public class Neo4jXOProvider implements XODatastoreProvider {
         URI uri = xoUnit.getUri();
         DatastoreFactory datastoreFactory = lookupFactory(uri);
         try {
-            return datastoreFactory.createGraphDatabaseService(uri);
+            return datastoreFactory.createGraphDatabaseService(uri, xoUnit.getProperties());
         } catch (MalformedURLException e) {
             throw new XOException("Cannot create datastore.", e);
         }
@@ -40,7 +40,7 @@ public class Neo4jXOProvider implements XODatastoreProvider {
     }
 
     private String getFactoryClassName(URI uri) {
-        String protocol = WordUtils.capitalize(uri.getScheme().toLowerCase());
+        String protocol = WordUtils.capitalize(uri.getScheme());
         return DatastoreFactory.class.getPackage().getName() + "." + protocol + "DatastoreFactory";
     }
 }

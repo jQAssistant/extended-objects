@@ -109,8 +109,8 @@ public class XOUnitBuilder {
         return this;
     }
 
-    public XOUnitBuilder property(String key, String value) {
-        this.properties.setProperty(key, value);
+    public XOUnitBuilder property(String key, Object value) {
+        this.properties.put(key, value);
         return this;
     }
 

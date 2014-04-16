@@ -19,8 +19,8 @@ public class XO {
      */
     public static XOManagerFactory createXOManagerFactory(String name) {
         ServiceLoader<XOBootstrapService> serviceLoader = ServiceLoader.load(XOBootstrapService.class);
-        for (XOBootstrapService XOBootstrapService : serviceLoader) {
-            XOManagerFactory xoManagerFactory = XOBootstrapService.createXOManagerFactory(name);
+        for (XOBootstrapService xoBootstrapService : serviceLoader) {
+            XOManagerFactory xoManagerFactory = xoBootstrapService.createXOManagerFactory(name);
             if (xoManagerFactory != null) {
                 return xoManagerFactory;
             }
@@ -36,8 +36,8 @@ public class XO {
      */
     public static XOManagerFactory createXOManagerFactory(XOUnit xoUnit) {
         ServiceLoader<XOBootstrapService> serviceLoader = ServiceLoader.load(XOBootstrapService.class);
-        for (XOBootstrapService XOBootstrapService : serviceLoader) {
-            XOManagerFactory xoManagerFactory = XOBootstrapService.createXOManagerFactory(xoUnit);
+        for (XOBootstrapService xoBootstrapService : serviceLoader) {
+            XOManagerFactory xoManagerFactory = xoBootstrapService.createXOManagerFactory(xoUnit);
             if (xoManagerFactory != null) {
                 return xoManagerFactory;
             }
