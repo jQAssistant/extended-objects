@@ -121,4 +121,12 @@ public class RelationResultOfTest extends AbstractNeo4jXOManagerTest {
         xoManager.currentTransaction().commit();
     }
 
+    @Test
+    public void voidResultUsingCypher() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        e2f1.voidResultUsingCypher("E2F1");
+        assertThat(xoManager.createQuery("match ()-[e2f:E2F]->() where e2f.result='true' return e2f", E2F.class).execute().getSingleResult(), equalTo(e2f1));
+        xoManager.currentTransaction().commit();
+    }
 }

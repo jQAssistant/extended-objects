@@ -41,6 +41,10 @@ public interface E2F {
     @Cypher("match ()-[e2f:E2F]->(f:F) where e2f.value={value} return f")
     F getSingleResultUsingCypher(@Parameter("value") String value);
 
+    @ResultOf
+    @Cypher("match ()-[e2f:E2F]->(f:F) where e2f.value={value} set e2f.result='true'")
+    void voidResultUsingCypher(@Parameter("value") String value);
+
     void setValue(String value);
 
     String getValue();
