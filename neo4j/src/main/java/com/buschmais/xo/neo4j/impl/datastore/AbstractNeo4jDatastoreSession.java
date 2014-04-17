@@ -15,7 +15,9 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import org.neo4j.graphdb.*;
 
 import java.lang.reflect.AnnotatedElement;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -27,6 +29,8 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
 
     private final GDS graphDatabaseService;
     private final Neo4jPropertyManager propertyManager;
+
+    private final Map<Long, Set<Label>> labelCache = new HashMap<>();
 
     public AbstractNeo4jDatastoreSession(GDS graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
@@ -45,7 +49,9 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
 
     @Override
     public Node createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators) {
-        return getGraphDatabaseService().createNode(discriminators.toArray(new Label[discriminators.size()]));
+        Node node = getGraphDatabaseService().createNode(discriminators.toArray(new Label[discriminators.size()]));
+        labelCache.put(node.getId(), discriminators);
+        return node;
     }
 
     @Override
@@ -75,6 +81,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         for (Label label : labelsToAdd) {
             entity.addLabel(label);
         }
+        labelCache.put(entity.getId(), targetDiscriminators);
     }
 
     @Override
@@ -95,10 +102,12 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     @Override
     public void deleteEntity(Node entity) {
         entity.delete();
+        labelCache.remove(entity.getId());
     }
 
     @Override
     public void flushEntity(Node node) {
+        labelCache.remove(node.getId());
     }
 
     protected <QL> String getCypher(QL expression) {
@@ -117,9 +126,13 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
 
     @Override
     public Set<Label> getEntityDiscriminators(Node node) {
-        Set<Label> labels = new HashSet<>();
-        for (Label label : node.getLabels()) {
-            labels.add(label);
+        Set<Label> labels = labelCache.get(node.getId());
+        if (labels == null) {
+            labels = new HashSet<>();
+            for (Label label : node.getLabels()) {
+                labels.add(label);
+            }
+            labelCache.put(node.getId(), labels);
         }
         return labels;
     }
