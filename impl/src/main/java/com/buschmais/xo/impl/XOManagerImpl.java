@@ -12,7 +12,6 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
 import javax.validation.ConstraintViolation;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Set;
 
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
@@ -195,13 +194,13 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public Query<CompositeRowObject> createQuery(String query) {
-        XOQueryImpl<CompositeRowObject, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, CompositeRowObject.class, Collections.<Class<?>>emptyList());
+        XOQueryImpl<CompositeRowObject, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query);
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
     public <T> Query<T> createQuery(String query, Class<T> type) {
-        XOQueryImpl<T, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type, Arrays.asList(type));
+        XOQueryImpl<T, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type);
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
@@ -213,7 +212,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <T> Query<T> createQuery(Class<T> query) {
-        XOQueryImpl<T, Class<T>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query, Arrays.asList(query));
+        XOQueryImpl<T, Class<T>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query);
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 

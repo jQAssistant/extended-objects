@@ -24,6 +24,14 @@ public class XOQueryImpl<T, QL, Entity, Relation> implements Query<T> {
         this.returnTypes = returnTypes;
     }
 
+    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QL expression) {
+        this(sessionContext, expression, null, Collections.<Class<?>>emptyList());
+    }
+
+    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QL expression, Class<?> returnType) {
+        this(sessionContext, expression, returnType, Collections.<Class<?>>emptyList());
+    }
+
     @Override
     public Query<T> withParameter(String name, Object value) {
         if (parameters == null) {
@@ -64,7 +72,7 @@ public class XOQueryImpl<T, QL, Entity, Relation> implements Query<T> {
         }
         ResultIterator<Map<String, Object>> iterator = sessionContext.getDatastoreSession().executeQuery(expression, effectiveParameters);
         SortedSet<Class<?>> resultTypes = getResultTypes();
-        QueryResultIterableImpl<Entity, Relation, Map<String, Object>> queryResultIterable = new QueryResultIterableImpl(sessionContext, iterator, returnType, resultTypes);
+        QueryResultIterableImpl<Entity, Relation, Map<String, Object>> queryResultIterable = new QueryResultIterableImpl(sessionContext, iterator, resultTypes);
         return new TransactionalQueryResultIterable(queryResultIterable, sessionContext.getXOTransaction());
     }
 
@@ -75,10 +83,10 @@ public class XOQueryImpl<T, QL, Entity, Relation> implements Query<T> {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        resultTypes.addAll(returnTypes);
-        if (expression instanceof Class<?>) {
-            resultTypes.add((Class<?>) expression);
+        if (returnType != null) {
+            resultTypes.add(returnType);
         }
+        resultTypes.addAll(returnTypes);
         return resultTypes;
     }
 }

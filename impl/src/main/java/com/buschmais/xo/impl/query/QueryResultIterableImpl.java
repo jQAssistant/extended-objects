@@ -21,11 +21,11 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
     private final RowProxyMethodService rowProxyMethodService;
 
     QueryResultIterableImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext,
-                            ResultIterator<Map<String, Object>> iterator, Class<?> returnType, SortedSet<Class<?>> returnTypes) {
+                            ResultIterator<Map<String, Object>> iterator, SortedSet<Class<?>> returnTypes) {
         this.sessionContext = sessionContext;
         this.iterator = iterator;
         this.returnTypes = returnTypes;
-        if (CompositeRowObject.class.equals(returnType) || new AnnotatedType(returnType).getByMetaAnnotation(QueryDefinition.class) != null) {
+        if (returnTypes.isEmpty() || returnTypes.size() > 1 || new AnnotatedType(returnTypes.first()).getByMetaAnnotation(QueryDefinition.class) != null) {
             this.rowProxyMethodService = new RowProxyMethodService(returnTypes);
         } else {
             this.rowProxyMethodService = null;

@@ -10,11 +10,11 @@ public abstract class AbstractAsMethod<DatastoreType> implements ProxyMethod<Dat
         Class<?> targetType = (Class<?>) args[0];
         for (Class<?> type : instance.getClass().getInterfaces()) {
             if (targetType.isAssignableFrom(type)) {
-                return getInstance(datastoreType);
+                return getInstance(instance, datastoreType);
             }
         }
         throw new XOException(instance + " cannot be cast to " + targetType.getName());
     }
 
-    protected abstract Object getInstance(DatastoreType datastoreType);
+    protected abstract Object getInstance(Object instance, DatastoreType datastoreType);
 }

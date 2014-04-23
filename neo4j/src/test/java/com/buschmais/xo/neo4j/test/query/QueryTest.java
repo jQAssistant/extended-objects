@@ -17,7 +17,8 @@ import java.util.Collection;
 import static com.buschmais.xo.api.Query.Result;
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class QueryTest extends AbstractNeo4jXOManagerTest {
@@ -49,7 +50,34 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Test
-    public void cypherStringQuery() {
+    public void typedQuery() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        Result<InstanceByValue> result = xoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
+        A a = result.getSingleResult().getA();
+        assertThat(a.getValue(), equalTo("A1"));
+        xoManager.currentTransaction().commit();
+    }
+
+    @Test
+    public void compositeRow() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        CompositeRowObject result = xoManager.createQuery("match (a:A) where a.value={value} return a, count(a) as count", ResultPart1.class, ResultPart2.class).withParameter("value", "A1").execute().getSingleResult();
+        A a = result.as(ResultPart1.class).getA();
+        assertThat(a.getValue(), equalTo("A1"));
+        Number count = result.as(ResultPart2.class).getCount();
+        assertThat(count.intValue(), equalTo(1));
+        try {
+            xoManager.createQuery(ResultPart1.class, ResultPart2.class).withParameter("value", "A2").execute().getSingleResult();
+            fail("Expecting a " + XOException.class.getName());
+        } catch (XOException e) {
+        }
+        xoManager.currentTransaction().commit();
+    }
+
+    @Test
+    public void compositeRowAsMap() {
         XOManager xoManager = getXoManager();
         xoManager.currentTransaction().begin();
         Result<CompositeRowObject> result = xoManager.createQuery("match (a:A) where a.value={value} return a").withParameter("value", "A1").execute();
@@ -65,46 +93,6 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Test
-    public void cypherStringQuerySimple() {
-        XOManager xoManager = getXoManager();
-
-        xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> result = xoManager.createQuery("MATCH (a:A) RETURN a.value LIMIT 1").execute();
-        assertEquals("A1", result.getSingleResult().as(String.class));
-
-        Result<CompositeRowObject> numberResult = xoManager.createQuery("MATCH (a:A) RETURN 10 LIMIT 1").execute();
-        assertEquals(10, numberResult.getSingleResult().as(Number.class).intValue());
-
-        xoManager.currentTransaction().commit();
-    }
-
-    @Test
-    public void compositeRowTypedQuery() {
-        XOManager xoManager = getXoManager();
-        xoManager.currentTransaction().begin();
-        Result<InstanceByValue> result = xoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
-        A a = result.getSingleResult().getA();
-        assertThat(a.getValue(), equalTo("A1"));
-        result = xoManager.createQuery(InstanceByValue.class).withParameter("value", "A2").execute();
-        try {
-            result.getSingleResult().getA();
-            fail("Expecting a " + XOException.class.getName());
-        } catch (XOException e) {
-        }
-        xoManager.currentTransaction().commit();
-    }
-
-    @Test
-    public void typedQuery() {
-        XOManager xoManager = getXoManager();
-        xoManager.currentTransaction().begin();
-        Result<InstanceByValue> result = xoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
-        A a = result.getSingleResult().getA();
-        assertThat(a.getValue(), equalTo("A1"));
-        xoManager.currentTransaction().commit();
-    }
-
-    @Test
     public void instanceParameter() {
         XOManager xoManager = getXoManager();
         xoManager.currentTransaction().begin();
@@ -113,6 +101,7 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
         assertThat(a, equalTo(a1));
         xoManager.currentTransaction().commit();
     }
+
 
     @Test
     public void optionalMatch() {
@@ -124,4 +113,11 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
         xoManager.currentTransaction().commit();
     }
 
+    public interface ResultPart1 {
+        A getA();
+    }
+
+    public interface ResultPart2 {
+        Number getCount();
+    }
 }

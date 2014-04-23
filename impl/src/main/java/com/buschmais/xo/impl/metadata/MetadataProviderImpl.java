@@ -1,7 +1,6 @@
 package com.buschmais.xo.impl.metadata;
 
 import com.buschmais.xo.api.CompositeObject;
-import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.annotation.ImplementedBy;
 import com.buschmais.xo.api.annotation.ResultOf;
@@ -32,6 +31,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 import static com.buschmais.xo.api.Query.Result;
+import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
 import static com.buschmais.xo.spi.annotation.RelationDefinition.FromDefinition;
 import static com.buschmais.xo.spi.annotation.RelationDefinition.ToDefinition;
 import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
@@ -481,20 +481,20 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         }
         // Determine parameter bindings
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        List<ResultOf.Parameter> parameters = new ArrayList<>();
+        List<Parameter> parameters = new ArrayList<>();
         for (Annotation[] parameterAnnotation : parameterAnnotations) {
-            ResultOf.Parameter parameter = null;
+            Parameter parameter = null;
             for (Annotation annotation : parameterAnnotation) {
-                if (ResultOf.Parameter.class.equals(annotation.annotationType())) {
-                    parameter = (ResultOf.Parameter) annotation;
+                if (Parameter.class.equals(annotation.annotationType())) {
+                    parameter = (Parameter) annotation;
                 }
             }
             if (parameter == null) {
-                throw new XOException("Cannot determine parameter names for '" + method.getName() + "', all parameters must be annotated with '" + ResultOf.Parameter.class.getName() + "'.");
+                throw new XOException("Cannot determine parameter names for '" + method.getName() + "', all parameters must be annotated with '" + Parameter.class.getName() + "'.");
             }
             parameters.add(parameter);
         }
-        boolean singleResult = !(Result.class.equals(methodReturnType) || ResultIterable.class.equals(methodReturnType) || (Iterable.class.equals(methodReturnType)));
+        boolean singleResult = !Iterable.class.isAssignableFrom(methodReturnType);
         return new ResultOfMethodMetadata<>(annotatedMethod, query, returnType, resultOf.usingThisAs(), parameters, singleResult);
     }
 
