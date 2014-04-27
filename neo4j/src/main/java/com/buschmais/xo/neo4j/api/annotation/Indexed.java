@@ -1,11 +1,11 @@
 package com.buschmais.xo.neo4j.api.annotation;
 
-import com.buschmais.xo.spi.annotation.IndexDefinition;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import com.buschmais.xo.spi.annotation.IndexDefinition;
 
 /**
  * Marks a property as indexed.

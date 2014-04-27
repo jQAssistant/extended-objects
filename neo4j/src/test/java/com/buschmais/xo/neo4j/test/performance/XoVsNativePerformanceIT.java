@@ -1,20 +1,6 @@
 package com.buschmais.xo.neo4j.test.performance;
 
-import com.buschmais.xo.api.ConcurrencyMode;
-import com.buschmais.xo.api.ValidationMode;
-import com.buschmais.xo.api.XOManager;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
-import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
-import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNode;
-import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNodeRelation;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.neo4j.graphdb.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.util.Arrays.asList;
 
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
@@ -23,8 +9,29 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static com.buschmais.xo.api.Transaction.TransactionAttribute;
-import static java.util.Arrays.asList;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.DynamicLabel;
+import org.neo4j.graphdb.DynamicRelationshipType;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.buschmais.xo.api.ConcurrencyMode;
+import com.buschmais.xo.api.Transaction.TransactionAttribute;
+import com.buschmais.xo.api.ValidationMode;
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
+import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNode;
+import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNodeRelation;
 
 @RunWith(Parameterized.class)
 public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {

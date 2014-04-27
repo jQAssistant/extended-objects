@@ -1,16 +1,16 @@
 package com.buschmais.xo.neo4j.impl.datastore;
 
-import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.spi.datastore.DatastoreTransaction;
-import org.neo4j.rest.graphdb.RestAPI;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.neo4j.rest.graphdb.RestGraphDatabase;
 import org.neo4j.rest.graphdb.entity.RestEntity;
-import org.neo4j.rest.graphdb.query.RestCypherQueryEngine;
-import org.neo4j.rest.graphdb.util.QueryResult;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import com.buschmais.xo.api.NativeQuery;
+import com.buschmais.xo.api.NativeQueryEngine;
+import com.buschmais.xo.api.ResultIterator;
+import com.buschmais.xo.neo4j.impl.datastore.query.RestCypherQueryEngine;
+import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 
 public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<RestGraphDatabase> {
 
@@ -34,11 +34,16 @@ public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<Res
         }
     }
 
+    private final NativeQueryEngine<?> cypherQueryEngine;
+
     private final DatastoreTransaction transaction;
 
-    public RestNeo4jDatastoreSession(RestGraphDatabase graphDatabaseService) {
+    public RestNeo4jDatastoreSession(final RestGraphDatabase graphDatabaseService) {
         super(graphDatabaseService);
         transaction = new RestNeo4jDatastoreTransaction();
+
+        // TODO: dynamically register native query engines - plugins?
+        cypherQueryEngine = new RestCypherQueryEngine(graphDatabaseService);
     }
 
     @Override
@@ -47,39 +52,20 @@ public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<Res
     }
 
     @Override
-    public <QL> ResultIterator<Map<String, Object>> executeQuery(QL expression, Map<String, Object> parameters) {
-        Map<String, Object> effectiveParameters = translateParameters(parameters);
-        RestAPI restAPI = getGraphDatabaseService().getRestAPI();
-        RestCypherQueryEngine restCypherQueryEngine = new RestCypherQueryEngine(restAPI);
-        QueryResult<Map<String, Object>> queryResult = restCypherQueryEngine.query(getCypher(expression), effectiveParameters);
-
-        final Iterator<Map<String, Object>> iterator = queryResult.iterator();
-        return new ResultIterator<Map<String, Object>>() {
-
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public Map<String, Object> next() {
-                return iterator.next();
-            }
-
-            @Override
-            public void remove() {
-                iterator.remove();
-            }
-
-            @Override
-            public void close() {
-            }
-        };
+    public ResultIterator<Map<String, Object>> executeQuery(final NativeQuery query, final Map<String, Object> parameters) {
+        final Map<String, Object> effectiveParameters = translateParameters(parameters);
+        final NativeQueryEngine engine = getNativeQueryEngine(query);
+        return engine.execute(query, effectiveParameters);
     }
 
-    private Map<String, Object> translateParameters(Map<String, Object> parameters) {
-        Map<String, Object> effectiveParameters = new HashMap<>();
-        for (Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
+    @Override
+    public NativeQueryEngine getNativeQueryEngine(final NativeQuery<?> query) {
+        return cypherQueryEngine;
+    }
+
+    private Map<String, Object> translateParameters(final Map<String, Object> parameters) {
+        final Map<String, Object> effectiveParameters = new HashMap<>();
+        for (final Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
             Object value = parameterEntry.getValue();
             if (value instanceof RestEntity) {
                 value = ((RestEntity) value).getId();

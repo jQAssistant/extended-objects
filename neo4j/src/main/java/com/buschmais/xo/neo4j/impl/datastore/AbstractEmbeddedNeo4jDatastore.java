@@ -1,12 +1,7 @@
 package com.buschmais.xo.neo4j.impl.datastore;
 
-import com.buschmais.xo.neo4j.impl.datastore.metadata.IndexedPropertyMetadata;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
-import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
+import java.util.Collection;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
@@ -16,7 +11,13 @@ import org.neo4j.graphdb.schema.IndexDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.IndexedPropertyMetadata;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
+import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
+import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 
 /**
  * Abstract base implementation for embedded graph stores.

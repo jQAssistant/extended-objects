@@ -1,9 +1,14 @@
 package com.buschmais.xo.neo4j.test.instancelistener.composite;
 
-import com.buschmais.xo.api.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.buschmais.xo.api.annotation.PostCreate;
+import com.buschmais.xo.api.annotation.PostDelete;
+import com.buschmais.xo.api.annotation.PostLoad;
+import com.buschmais.xo.api.annotation.PostUpdate;
+import com.buschmais.xo.api.annotation.PreDelete;
+import com.buschmais.xo.api.annotation.PreUpdate;
 
 public class StaticInstanceListener {
 

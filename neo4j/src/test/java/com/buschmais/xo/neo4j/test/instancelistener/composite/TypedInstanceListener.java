@@ -1,9 +1,9 @@
 package com.buschmais.xo.neo4j.test.instancelistener.composite;
 
-import com.buschmais.xo.api.annotation.PostCreate;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.buschmais.xo.api.annotation.PostCreate;
 
 public class TypedInstanceListener {
 

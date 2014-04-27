@@ -1,5 +1,21 @@
 package com.buschmais.xo.json.impl;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+
+import com.buschmais.xo.api.NativeQuery;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
@@ -9,18 +25,6 @@ import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, JsonNodeMetadata, String, Long, JsonRelation, JsonRelationMetadata, String> {
 
@@ -31,7 +35,7 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
 
     private final File directory;
 
-    public JsonFileStoreSession(File directory) {
+    public JsonFileStoreSession(final File directory) {
         this.directory = directory;
     }
 
@@ -41,20 +45,20 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public boolean isEntity(Object o) {
+    public boolean isEntity(final Object o) {
         return JsonNode.class.isAssignableFrom(o.getClass());
     }
 
     @Override
-    public boolean isRelation(Object o) {
+    public boolean isRelation(final Object o) {
         return JsonRelation.class.isAssignableFrom(o.getClass());
     }
 
     @Override
-    public Set<String> getEntityDiscriminators(ObjectNode jsonNodes) {
-        ArrayNode typesNode = (ArrayNode) jsonNodes.get(TYPES_PROPERTY);
-        Set<String> discriminators = new HashSet<>();
-        for (JsonNode jsonNode : typesNode) {
+    public Set<String> getEntityDiscriminators(final ObjectNode jsonNodes) {
+        final ArrayNode typesNode = (ArrayNode) jsonNodes.get(TYPES_PROPERTY);
+        final Set<String> discriminators = new HashSet<>();
+        for (final JsonNode jsonNode : typesNode) {
             discriminators.add(jsonNode.getTextValue());
         }
 
@@ -62,36 +66,36 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public String getRelationDiscriminator(JsonRelation jsonRelation) {
+    public String getRelationDiscriminator(final JsonRelation jsonRelation) {
         return null;
     }
 
     @Override
-    public UUID getEntityId(ObjectNode jsonNode) {
+    public UUID getEntityId(final ObjectNode jsonNode) {
         return UUID.fromString(jsonNode.get(ID_PROPERTY).asText());
     }
 
     @Override
-    public Long getRelationId(JsonRelation jsonRelation) {
+    public Long getRelationId(final JsonRelation jsonRelation) {
         return null;
     }
 
     @Override
-    public ObjectNode createEntity(TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators) {
-        ObjectNode rootNode = mapper.createObjectNode();
-        ArrayNode typesNode = mapper.createArrayNode();
-        for (String typeName : discriminators) {
+    public ObjectNode createEntity(final TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, final Set<String> discriminators) {
+        final ObjectNode rootNode = mapper.createObjectNode();
+        final ArrayNode typesNode = mapper.createArrayNode();
+        for (final String typeName : discriminators) {
             typesNode.add(typeName);
         }
         rootNode.put(TYPES_PROPERTY, typesNode);
-        UUID uuid = UUID.randomUUID();
+        final UUID uuid = UUID.randomUUID();
         rootNode.put(ID_PROPERTY, uuid.toString());
         return rootNode;
     }
 
     @Override
-    public void deleteEntity(ObjectNode entity) {
-        File file = getFile(entity);
+    public void deleteEntity(final ObjectNode entity) {
+        final File file = getFile(entity);
         if (!file.exists()) {
             throw new XOException("Cannot deleteEntity entity '" + entity + "' as it does not exist.");
         }
@@ -99,31 +103,41 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public ResultIterator<ObjectNode> findEntity(EntityTypeMetadata<JsonNodeMetadata> type, String discriminator, Object value) {
+    public ResultIterator<ObjectNode> findEntity(final EntityTypeMetadata<JsonNodeMetadata> type, final String discriminator, final Object value) {
         return null;
     }
 
     @Override
-    public <QL> ResultIterator<Map<String, Object>> executeQuery(QL query, Map<String, Object> parameters) {
+    public ResultIterator<Map<String,Object>> executeQuery(final NativeQuery query, final java.util.Map<String,Object> parameters) {
+        return null;
+    };
+
+    @Override
+    public <QL> NativeQuery<?> getNativeQuery(final AnnotatedElement expression, final Class<? extends Annotation> language) {
         return null;
     }
 
     @Override
-    public void migrateEntity(ObjectNode jsonNode, TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators, TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> targetTypes, Set<String> targetDiscriminators) {
+    public NativeQuery<?> getNativeQuery(final String expression, final Class<? extends Annotation> language) {
+        return null;
     }
 
     @Override
-    public void flushEntity(ObjectNode objectNode) {
-        File file = getFile(objectNode);
+    public void migrateEntity(final ObjectNode jsonNode, final TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, final Set<String> discriminators, final TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> targetTypes, final Set<String> targetDiscriminators) {
+    }
+
+    @Override
+    public void flushEntity(final ObjectNode objectNode) {
+        final File file = getFile(objectNode);
         try {
             mapper.writeValue(new FileWriter(file), objectNode);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new XOException("Cannot write file " + file.getName());
         }
     }
 
     @Override
-    public void flushRelation(JsonRelation jsonRelation) {
+    public void flushRelation(final JsonRelation jsonRelation) {
     }
 
     @Override
@@ -141,8 +155,8 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
      * @param objectNode The object node.
      * @return The file.
      */
-    private File getFile(ObjectNode objectNode) {
-        String id = getEntityId(objectNode).toString();
+    private File getFile(final ObjectNode objectNode) {
+        final String id = getEntityId(objectNode).toString();
         return new File(directory, id + ".json");
     }
 

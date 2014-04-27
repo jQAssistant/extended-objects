@@ -1,7 +1,8 @@
 package com.buschmais.xo.neo4j.test.implementedby.composite;
 
-import com.buschmais.xo.api.proxy.ProxyMethod;
 import org.neo4j.graphdb.Relationship;
+
+import com.buschmais.xo.api.proxy.ProxyMethod;
 
 public class RelationIncrementValueMethod implements ProxyMethod<Relationship> {
 

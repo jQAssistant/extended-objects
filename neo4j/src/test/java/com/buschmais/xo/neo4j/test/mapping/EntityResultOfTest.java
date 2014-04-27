@@ -1,23 +1,24 @@
 package com.buschmais.xo.neo4j.test.mapping;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.junit.Assert.assertThat;
+
+import java.net.URISyntaxException;
+import java.util.Collection;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import com.buschmais.xo.api.Query.Result;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.mapping.composite.E;
 import com.buschmais.xo.neo4j.test.mapping.composite.E2F;
 import com.buschmais.xo.neo4j.test.mapping.composite.F;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
-import java.net.URISyntaxException;
-import java.util.Collection;
-
-import static com.buschmais.xo.api.Query.Result;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 public class EntityResultOfTest extends AbstractNeo4jXOManagerTest {

@@ -1,13 +1,13 @@
 package com.buschmais.xo.neo4j.test.mapping.composite;
 
+import java.util.List;
+import java.util.Set;
+
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Property;
 import com.buschmais.xo.neo4j.api.annotation.Relation;
 import com.buschmais.xo.neo4j.test.inheritance.composite.Version;
-
-import java.util.List;
-import java.util.Set;
 
 @Label("A")
 public interface A extends Version {

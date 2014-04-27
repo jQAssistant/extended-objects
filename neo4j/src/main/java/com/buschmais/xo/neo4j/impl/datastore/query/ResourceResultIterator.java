@@ -1,16 +1,17 @@
-package com.buschmais.xo.neo4j.impl.datastore;
+package com.buschmais.xo.neo4j.impl.datastore.query;
+
+import org.neo4j.graphdb.ResourceIterator;
 
 import com.buschmais.xo.api.ResultIterator;
-import org.neo4j.graphdb.ResourceIterator;
 
 /**
  * A {@link ResultIterator} implement wrapping a {@link ResultIterator} provided by the Neo4j APIs.
  */
-final class ResourceResultIterator<T> implements ResultIterator<T> {
+public final class ResourceResultIterator<T> implements ResultIterator<T> {
 
     private final ResourceIterator<T> iterator;
 
-    ResourceResultIterator(ResourceIterator<T> iterator) {
+    public ResourceResultIterator(final ResourceIterator<T> iterator) {
         this.iterator = iterator;
     }
 

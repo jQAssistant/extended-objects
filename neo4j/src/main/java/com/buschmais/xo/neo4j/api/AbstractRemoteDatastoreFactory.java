@@ -1,10 +1,10 @@
 package com.buschmais.xo.neo4j.api;
 
-import com.buschmais.xo.neo4j.impl.datastore.RestNeo4jDatastore;
-
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Properties;
+
+import com.buschmais.xo.neo4j.impl.datastore.RestNeo4jDatastore;
 
 abstract class AbstractRemoteDatastoreFactory implements DatastoreFactory<RestNeo4jDatastore> {
 

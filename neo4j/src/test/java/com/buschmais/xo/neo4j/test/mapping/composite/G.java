@@ -1,11 +1,10 @@
 package com.buschmais.xo.neo4j.test.mapping.composite;
 
-import com.buschmais.xo.neo4j.api.annotation.Label;
-import com.buschmais.xo.neo4j.api.annotation.Relation;
-
 import java.util.List;
 
-import static com.buschmais.xo.neo4j.api.annotation.Relation.Outgoing;
+import com.buschmais.xo.neo4j.api.annotation.Label;
+import com.buschmais.xo.neo4j.api.annotation.Relation;
+import com.buschmais.xo.neo4j.api.annotation.Relation.Outgoing;
 
 @Label("G")
 public interface G {

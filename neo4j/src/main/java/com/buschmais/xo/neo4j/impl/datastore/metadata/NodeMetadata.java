@@ -1,8 +1,9 @@
 package com.buschmais.xo.neo4j.impl.datastore.metadata;
 
+import org.neo4j.graphdb.Label;
+
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
-import org.neo4j.graphdb.Label;
 
 public class NodeMetadata implements DatastoreEntityMetadata<Label> {
 

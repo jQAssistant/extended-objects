@@ -165,6 +165,10 @@ public interface XOManager extends AutoCloseable {
      */
     <T> Query<T> createQuery(Class<T> query);
 
+    Query<CompositeRowObject> createQuery(NativeQuery<?> query);
+
+    <T> Query<T> createQuery(NativeQuery<?> query, Class<T> type);
+
     /**
      * Creates a typed {@link Query}.
      *
@@ -177,6 +181,7 @@ public interface XOManager extends AutoCloseable {
     /**
      * Close the {@link com.buschmais.xo.api.XOManager}.
      */
+    @Override
     @Transaction(NOT_SUPPORTED)
     void close();
 
