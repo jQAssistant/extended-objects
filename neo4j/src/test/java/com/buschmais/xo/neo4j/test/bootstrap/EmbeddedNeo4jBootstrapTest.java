@@ -1,10 +1,11 @@
 package com.buschmais.xo.neo4j.test.bootstrap;
 
+import org.junit.Test;
+
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.neo4j.test.bootstrap.composite.A;
-import org.junit.Test;
 
 public class EmbeddedNeo4jBootstrapTest {
 

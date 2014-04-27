@@ -1,12 +1,11 @@
 package com.buschmais.xo.neo4j.test.demo.composite;
 
-import com.buschmais.xo.api.annotation.ResultOf;
-import com.buschmais.xo.neo4j.api.annotation.Cypher;
-import com.buschmais.xo.neo4j.api.annotation.Label;
-
 import java.util.List;
 
-import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
+import com.buschmais.xo.api.annotation.ResultOf;
+import com.buschmais.xo.api.annotation.ResultOf.Parameter;
+import com.buschmais.xo.neo4j.api.annotation.Cypher;
+import com.buschmais.xo.neo4j.api.annotation.Label;
 
 @Label("Group")
 public interface Group {

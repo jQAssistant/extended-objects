@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.impl.datastore;
+package com.buschmais.xo.neo4j.impl.datastore.query;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -9,6 +9,7 @@ import org.neo4j.rest.graphdb.util.QueryResult;
 
 import com.buschmais.xo.api.NativeQueryEngine;
 import com.buschmais.xo.api.ResultIterator;
+import com.buschmais.xo.neo4j.api.query.CypherQuery;
 
 public class RestCypherQueryEngine implements NativeQueryEngine<CypherQuery> {
 

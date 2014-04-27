@@ -1,6 +1,7 @@
 package com.buschmais.xo.api;
 
 import java.io.Closeable;
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
 
@@ -27,6 +28,8 @@ public interface Query<T> {
      * @return The query.
      */
     Query<T> withParameters(Map<String, Object> parameters);
+
+    Query<T> using(Class<? extends Annotation> language);
 
     /**
      * Execute the query.

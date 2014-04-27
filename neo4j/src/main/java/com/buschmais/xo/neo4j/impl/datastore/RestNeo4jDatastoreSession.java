@@ -9,6 +9,7 @@ import org.neo4j.rest.graphdb.entity.RestEntity;
 import com.buschmais.xo.api.NativeQuery;
 import com.buschmais.xo.api.NativeQueryEngine;
 import com.buschmais.xo.api.ResultIterator;
+import com.buschmais.xo.neo4j.impl.datastore.query.RestCypherQueryEngine;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 
 public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<RestGraphDatabase> {
@@ -33,8 +34,7 @@ public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<Res
         }
     }
 
-    private final NativeQueryEngine<CypherQuery> cypherQueryEngine;
-    private final NativeQueryEngine<LuceneQuery> luceneQueryEngine;
+    private final NativeQueryEngine<?> cypherQueryEngine;
 
     private final DatastoreTransaction transaction;
 
@@ -44,7 +44,6 @@ public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<Res
 
         // TODO: dynamically register native query engines - plugins?
         cypherQueryEngine = new RestCypherQueryEngine(graphDatabaseService);
-        luceneQueryEngine = new RestLuceneQueryEngine(graphDatabaseService);
     }
 
     @Override
@@ -53,15 +52,15 @@ public class RestNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<Res
     }
 
     @Override
-    public <QL> ResultIterator<Map<String, Object>> executeQuery(final QL expression, final Map<String, Object> parameters) {
+    public ResultIterator<Map<String, Object>> executeQuery(final NativeQuery query, final Map<String, Object> parameters) {
         final Map<String, Object> effectiveParameters = translateParameters(parameters);
-        final NativeQuery<?> query = getNativeQuery(expression);
-        // TODO: dynamically select query engine (map lookup?)
-        if (query instanceof CypherQuery) {
-            return cypherQueryEngine.execute((CypherQuery) query, translateParameters(parameters));
-        } else {
-            return luceneQueryEngine.execute((LuceneQuery) query, translateParameters(parameters));
-        }
+        final NativeQueryEngine engine = getNativeQueryEngine(query);
+        return engine.execute(query, effectiveParameters);
+    }
+
+    @Override
+    public NativeQueryEngine getNativeQueryEngine(final NativeQuery<?> query) {
+        return cypherQueryEngine;
     }
 
     private Map<String, Object> translateParameters(final Map<String, Object> parameters) {

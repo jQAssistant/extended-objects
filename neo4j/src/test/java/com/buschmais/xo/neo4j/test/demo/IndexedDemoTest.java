@@ -1,18 +1,19 @@
 package com.buschmais.xo.neo4j.test.demo;
 
-import com.buschmais.xo.api.XOManager;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
-import com.buschmais.xo.neo4j.test.demo.composite.Group;
-import com.buschmais.xo.neo4j.test.demo.composite.Person;
+import java.net.URISyntaxException;
+import java.util.Collection;
+
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.net.URISyntaxException;
-import java.util.Collection;
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
+import com.buschmais.xo.neo4j.test.demo.composite.Group;
+import com.buschmais.xo.neo4j.test.demo.composite.Person;
 
 @RunWith(Parameterized.class)
 public class IndexedDemoTest extends AbstractNeo4jXOManagerTest {

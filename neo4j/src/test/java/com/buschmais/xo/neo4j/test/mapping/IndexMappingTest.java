@@ -1,19 +1,20 @@
 package com.buschmais.xo.neo4j.test.mapping;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+import java.net.URISyntaxException;
+import java.util.Collection;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.mapping.composite.A;
 import com.buschmais.xo.neo4j.test.mapping.composite.D;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
-import java.net.URISyntaxException;
-import java.util.Collection;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 public class IndexMappingTest extends AbstractNeo4jXOManagerTest {

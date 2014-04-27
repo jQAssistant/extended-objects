@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.impl.datastore;
+package com.buschmais.xo.neo4j.api.query;
 
 import com.buschmais.xo.api.NativeQuery;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;

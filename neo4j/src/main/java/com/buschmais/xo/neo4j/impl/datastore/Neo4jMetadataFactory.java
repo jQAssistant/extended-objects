@@ -1,10 +1,20 @@
 package com.buschmais.xo.neo4j.impl.datastore;
 
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.neo4j.graphdb.DynamicLabel;
+import org.neo4j.graphdb.DynamicRelationshipType;
+
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Property;
 import com.buschmais.xo.neo4j.api.annotation.Relation;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.*;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.IndexedPropertyMetadata;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.Neo4jRelationshipType;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
@@ -12,11 +22,6 @@ import com.buschmais.xo.spi.reflection.AnnotatedElement;
 import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 import com.buschmais.xo.spi.reflection.AnnotatedType;
 import com.buschmais.xo.spi.reflection.PropertyMethod;
-import org.apache.commons.lang.StringUtils;
-import org.neo4j.graphdb.DynamicLabel;
-import org.neo4j.graphdb.DynamicRelationshipType;
-
-import java.util.Map;
 
 /**
  * {@link com.buschmais.xo.spi.datastore.DatastoreMetadataFactory} implementation for Neo4j datastores.

@@ -1,12 +1,13 @@
 package com.buschmais.xo.neo4j.api;
 
-import com.buschmais.xo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Properties;
+
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+
+import com.buschmais.xo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
 
 public class FileDatastoreFactory implements DatastoreFactory<EmbeddedNeo4jDatastore> {
 

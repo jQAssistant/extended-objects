@@ -1,13 +1,14 @@
 package com.buschmais.xo.neo4j.api;
 
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
-import com.buschmais.xo.neo4j.impl.datastore.RestNeo4jDatastore;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
+import com.buschmais.xo.neo4j.impl.datastore.RestNeo4jDatastore;
 
 public class Neo4jXOProviderTest {
 

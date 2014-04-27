@@ -1,28 +1,35 @@
 package com.buschmais.xo.neo4j.impl.datastore;
 
-import com.buschmais.xo.api.NativeQuery;
-import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
-import com.buschmais.xo.neo4j.api.annotation.Cypher;
-import com.buschmais.xo.neo4j.api.annotation.Lucene;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.Neo4jRelationshipType;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
-import com.buschmais.xo.spi.annotation.QueryDefinition;
-import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.xo.spi.datastore.TypeMetadataSet;
-import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-
-import org.neo4j.graphdb.*;
-
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.ResourceIterable;
+import org.neo4j.graphdb.ResourceIterator;
+
+import com.buschmais.xo.api.NativeQuery;
+import com.buschmais.xo.api.NativeQueryEngine;
+import com.buschmais.xo.api.ResultIterator;
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
+import com.buschmais.xo.neo4j.api.annotation.Cypher;
+import com.buschmais.xo.neo4j.api.query.CypherQuery;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.Neo4jRelationshipType;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
+import com.buschmais.xo.neo4j.impl.datastore.query.ResourceResultIterator;
+import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
+import com.buschmais.xo.spi.datastore.TypeMetadataSet;
+import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
+import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
 /**
  * Abstract base implementation of a Neo4j database session based on the
@@ -118,40 +125,25 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         labelCache.remove(node.getId());
     }
 
-    // protected <QL> String getCypher(final QL expression) {
-    // if (expression instanceof String) {
-    // return (String) expression;
-    // } else if (expression instanceof AnnotatedElement) {
-    // final AnnotatedElement typeExpression = (AnnotatedElement) expression;
-    // final Cypher cypher = typeExpression.getAnnotation(Cypher.class);
-    // if (cypher == null) {
-    // throw new XOException(typeExpression + " must be annotated with " +
-    // Cypher.class.getName());
-    // }
-    // return cypher.value();
-    // }
-    // throw new XOException("Unsupported query expression " + expression);
-    // }
-
-    protected <QL> NativeQuery<?> getNativeQuery(final QL expression) {
-        if (expression instanceof String) {
-            // default query: Cypher
-            return new CypherQuery((String) expression);
-        } else if (expression instanceof AnnotatedElement) {
-            final AnnotatedElement typeExpression = (AnnotatedElement) expression;
-            final Cypher cypher = typeExpression.getAnnotation(Cypher.class);
-            if (cypher != null) {
-                return new CypherQuery(cypher.value());
-            }
-            final Lucene lucene = typeExpression.getAnnotation(Lucene.class);
-            if (lucene != null) {
-                return new LuceneQuery(lucene.value(), lucene.type());
-            }
-            throw new XOException(typeExpression + " must be annotated with one of supported native queries (" + Cypher.class.getName() + ", "
-                    + Lucene.class.getName() + ")");
-        }
-        throw new XOException("Unsupported query expression " + expression);
+    @Override
+    public NativeQuery<?> getNativeQuery(final String expression, final Class<? extends Annotation> language) {
+        return new CypherQuery(expression);
     }
+
+    @Override
+    public <QL> NativeQuery<?> getNativeQuery(final AnnotatedElement expression, final Class<? extends Annotation> language) {
+        final Cypher cypher = expression.getAnnotation(Cypher.class);
+        if (cypher != null) {
+            return new CypherQuery(cypher.value());
+        }
+//        final Lucene lucene = expression.getAnnotation(Lucene.class);
+//        if (lucene != null) {
+//            return new LuceneQuery(lucene.value(), lucene.type());
+//        }
+        throw new XOException(expression + " must be annotated with one of supported native queries (" + Cypher.class.getName() + ")");
+    }
+
+    abstract NativeQueryEngine<?> getNativeQueryEngine(NativeQuery<?> query);
 
     @Override
     public Set<Label> getEntityDiscriminators(final Node node) {

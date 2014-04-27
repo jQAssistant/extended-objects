@@ -1,8 +1,11 @@
 package com.buschmais.xo.spi.datastore;
 
+import com.buschmais.xo.api.NativeQuery;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,6 +67,10 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      */
     EntityId getEntityId(Entity entity);
 
+    <QL> NativeQuery<?> getNativeQuery(AnnotatedElement expression, Class<? extends Annotation> language);
+
+    NativeQuery<?> getNativeQuery(String expression, Class<? extends Annotation> language);
+
     /**
      * Return the id of a relation.
      *
@@ -106,7 +113,9 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * @param <QL>       The query language type.
      * @return A {@link ResultIterator} instance returning each row as a map of colum names and their values.
      */
-    <QL> ResultIterator<Map<String, Object>> executeQuery(QL query, Map<String, Object> parameters);
+//    <QL> ResultIterator<Map<String, Object>> executeQuery(QL query, Map<String, Object> parameters);
+
+    ResultIterator<Map<String, Object>> executeQuery(NativeQuery query, Map<String, Object> parameters);
 
     /**
      * Migrate an entity of a given type and discriminators to the given target types and target discriminators.

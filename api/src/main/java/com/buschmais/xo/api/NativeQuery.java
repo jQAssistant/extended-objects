@@ -1,6 +1,8 @@
 package com.buschmais.xo.api;
 
-public interface NativeQuery<T> {
+import java.lang.annotation.Annotation;
+
+public interface NativeQuery<Class extends Annotation> {
 
     String getExpression();
 

@@ -1,13 +1,14 @@
-package com.buschmais.xo.neo4j.impl.datastore;
+package com.buschmais.xo.neo4j.impl.datastore.query;
 
 import java.util.Map;
 
-import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
+import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import com.buschmais.xo.api.NativeQueryEngine;
 import com.buschmais.xo.api.ResultIterator;
+import com.buschmais.xo.neo4j.api.query.CypherQuery;
 
 public class EmbeddedCypherQueryEngine implements NativeQueryEngine<CypherQuery> {
 

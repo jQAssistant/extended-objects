@@ -1,9 +1,10 @@
 package com.buschmais.xo.neo4j.impl.datastore;
 
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
+import java.util.Collection;
+
 import org.neo4j.rest.graphdb.RestGraphDatabase;
 
-import java.util.Collection;
+import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 
 public class RestNeo4jDatastore extends AbstractNeo4jDatastore<RestNeo4jDatastoreSession> {
 

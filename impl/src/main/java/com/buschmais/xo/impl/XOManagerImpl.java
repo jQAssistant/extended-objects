@@ -11,6 +11,7 @@ import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetada
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
 import javax.validation.ConstraintViolation;
+
 import java.util.Arrays;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
      *
      * @param sessionContext The associated {@link SessionContext}.
      */
-    public XOManagerImpl(SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext) {
+    public XOManagerImpl(final SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext) {
         this.sessionContext = sessionContext;
     }
 
@@ -55,8 +56,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <T> ResultIterable<T> find(final Class<T> type, final Object value) {
-        EntityTypeMetadata<EntityMetadata> entityTypeMetadata = sessionContext.getMetadataProvider().getEntityMetadata(type);
-        EntityDiscriminator entityDiscriminator = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
+        final EntityTypeMetadata<EntityMetadata> entityTypeMetadata = sessionContext.getMetadataProvider().getEntityMetadata(type);
+        final EntityDiscriminator entityDiscriminator = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
         if (entityDiscriminator == null) {
             throw new XOException("Type " + type.getName() + " has no discriminator (i.e. cannot be identified in datastore).");
         }
@@ -73,8 +74,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
                     @Override
                     public T next() {
-                        Entity entity = iterator.next();
-                        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+                        final Entity entity = iterator.next();
+                        final AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
                         return entityInstanceManager.readInstance(entity);
                     }
 
@@ -93,59 +94,60 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
-    public CompositeObject create(Class type, Class<?>... types) {
-        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = getEffectiveTypes(type, types);
-        Set<EntityDiscriminator> entityDiscriminators = sessionContext.getMetadataProvider().getEntityDiscriminators(effectiveTypes);
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
-        Entity entity = datastoreSession.createEntity(effectiveTypes, entityDiscriminators);
-        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        CompositeObject instance = entityInstanceManager.createInstance(entity);
+    public CompositeObject create(final Class type, final Class<?>... types) {
+        final TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = getEffectiveTypes(type, types);
+        final Set<EntityDiscriminator> entityDiscriminators = sessionContext.getMetadataProvider().getEntityDiscriminators(effectiveTypes);
+        final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
+        final Entity entity = datastoreSession.createEntity(effectiveTypes, entityDiscriminators);
+        final AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+        final CompositeObject instance = entityInstanceManager.createInstance(entity);
         sessionContext.getInstanceListenerService().postCreate(instance);
         return instance;
     }
 
-    public <T> T create(Class<T> type) {
+    @Override
+    public <T> T create(final Class<T> type) {
         return create(type, new Class<?>[0]).as(type);
     }
 
     @Override
-    public <S, R, T> R create(S from, Class<R> relationType, T to) {
-        MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
-        AbstractRelationPropertyMethodMetadata<?> fromProperty = metadataProvider.getPropertyMetadata(from.getClass(), relationType, FROM);
-        AbstractRelationPropertyMethodMetadata<?> toProperty = metadataProvider.getPropertyMetadata(to.getClass(), relationType, TO);
-        Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(from);
-        R instance = sessionContext.getEntityPropertyManager().createRelationReference(entity, fromProperty, to, toProperty);
+    public <S, R, T> R create(final S from, final Class<R> relationType, final T to) {
+        final MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
+        final AbstractRelationPropertyMethodMetadata<?> fromProperty = metadataProvider.getPropertyMetadata(from.getClass(), relationType, FROM);
+        final AbstractRelationPropertyMethodMetadata<?> toProperty = metadataProvider.getPropertyMetadata(to.getClass(), relationType, TO);
+        final Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(from);
+        final R instance = sessionContext.getEntityPropertyManager().createRelationReference(entity, fromProperty, to, toProperty);
         sessionContext.getInstanceListenerService().postCreate(instance);
         return instance;
     }
 
     @Override
-    public <T, Id> Id getId(T instance) {
-        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        AbstractInstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
+    public <T, Id> Id getId(final T instance) {
+        final AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+        final AbstractInstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
         if (entityInstanceManager.isInstance(instance)) {
-            Entity entity = entityInstanceManager.getDatastoreType(instance);
+            final Entity entity = entityInstanceManager.getDatastoreType(instance);
             return (Id) sessionContext.getDatastoreSession().getEntityId(entity);
         } else if (relationInstanceManager.isInstance(instance)) {
-            Relation relation = relationInstanceManager.getDatastoreType(instance);
+            final Relation relation = relationInstanceManager.getDatastoreType(instance);
             return (Id) sessionContext.getDatastoreSession().getRelationId(relation);
         }
         throw new XOException(instance + " is not a managed XO instance.");
     }
 
     @Override
-    public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
-        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        Entity entity = entityInstanceManager.getDatastoreType(instance);
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
-        Set<EntityDiscriminator> entityDiscriminators = datastoreSession.getEntityDiscriminators(entity);
-        MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
-        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = metadataProvider.getTypes(entityDiscriminators);
-        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
-        Set<EntityDiscriminator> targetEntityDiscriminators = metadataProvider.getEntityDiscriminators(effectiveTargetTypes);
+    public <T, M> CompositeObject migrate(final T instance, final MigrationStrategy<T, M> migrationStrategy, final Class<M> targetType, final Class<?>... targetTypes) {
+        final AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+        final Entity entity = entityInstanceManager.getDatastoreType(instance);
+        final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
+        final Set<EntityDiscriminator> entityDiscriminators = datastoreSession.getEntityDiscriminators(entity);
+        final MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
+        final TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = metadataProvider.getTypes(entityDiscriminators);
+        final TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
+        final Set<EntityDiscriminator> targetEntityDiscriminators = metadataProvider.getEntityDiscriminators(effectiveTargetTypes);
         datastoreSession.migrateEntity(entity, types, entityDiscriminators, effectiveTargetTypes, targetEntityDiscriminators);
         entityInstanceManager.removeInstance(instance);
-        CompositeObject migratedInstance = entityInstanceManager.updateInstance(entity);
+        final CompositeObject migratedInstance = entityInstanceManager.updateInstance(entity);
         if (migrationStrategy != null) {
             migrationStrategy.migrate(instance, migratedInstance.as(targetType));
         }
@@ -154,34 +156,34 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
-    public <T, M> CompositeObject migrate(T instance, Class<M> targetType, Class<?>... targetTypes) {
+    public <T, M> CompositeObject migrate(final T instance, final Class<M> targetType, final Class<?>... targetTypes) {
         return migrate(instance, null, targetType, targetTypes);
     }
 
     @Override
-    public <T, M> M migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType) {
+    public <T, M> M migrate(final T instance, final MigrationStrategy<T, M> migrationStrategy, final Class<M> targetType) {
         return migrate(instance, migrationStrategy, targetType, new Class<?>[0]).as(targetType);
     }
 
     @Override
-    public <T, M> M migrate(T instance, Class<M> targetType) {
+    public <T, M> M migrate(final T instance, final Class<M> targetType) {
         return migrate(instance, null, targetType);
     }
 
     @Override
-    public <T> void delete(T instance) {
-        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        AbstractInstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
+    public <T> void delete(final T instance) {
+        final AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+        final AbstractInstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
+        final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
         if (entityInstanceManager.isInstance(instance)) {
-            Entity entity = entityInstanceManager.getDatastoreType(instance);
+            final Entity entity = entityInstanceManager.getDatastoreType(instance);
             sessionContext.getInstanceListenerService().preDelete(instance);
             datastoreSession.deleteEntity(entity);
             entityInstanceManager.removeInstance(instance);
             entityInstanceManager.closeInstance(instance);
             sessionContext.getInstanceListenerService().postDelete(instance);
         } else if (relationInstanceManager.isInstance(instance)) {
-            Relation relation = relationInstanceManager.getDatastoreType(instance);
+            final Relation relation = relationInstanceManager.getDatastoreType(instance);
             sessionContext.getInstanceListenerService().preDelete(instance);
             datastoreSession.getDatastorePropertyManager().deleteRelation(relation);
             relationInstanceManager.removeInstance(instance);
@@ -193,32 +195,44 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
-    public Query<CompositeRowObject> createQuery(String query) {
-        XOQueryImpl<CompositeRowObject, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query);
+    public Query<CompositeRowObject> createQuery(final String query) {
+        final XOQueryImpl<CompositeRowObject, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query);
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
-    public <T> Query<T> createQuery(String query, Class<T> type) {
-        XOQueryImpl<T, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type);
+    public <T> Query<T> createQuery(final String query, final Class<T> type) {
+        final XOQueryImpl<T, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type);
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
-    public Query<CompositeRowObject> createQuery(String query, Class<?> type, Class<?>... types) {
-        XOQueryImpl<CompositeRowObject, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type, Arrays.asList(types));
+    public Query<CompositeRowObject> createQuery(final String query, final Class<?> type, final Class<?>... types) {
+        final XOQueryImpl<CompositeRowObject, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type, Arrays.asList(types));
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
-    public <T> Query<T> createQuery(Class<T> query) {
-        XOQueryImpl<T, Class<T>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query);
+    public <T> Query<T> createQuery(final Class<T> query) {
+        final XOQueryImpl<T, Class<T>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query);
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
-    public <Q> Query<CompositeRowObject> createQuery(Class<Q> query, Class<?>... types) {
-        XOQueryImpl<CompositeRowObject, Class<Q>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query, Arrays.asList(types));
+    public Query<CompositeRowObject> createQuery(final NativeQuery<?> query) {
+        final XOQueryImpl<CompositeRowObject, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query);
+        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
+    }
+
+    @Override
+    public <T> Query<T> createQuery(final NativeQuery<?> query, final Class<T> type) {
+        final XOQueryImpl<T, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type);
+        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
+    }
+
+    @Override
+    public <Q> Query<CompositeRowObject> createQuery(final Class<Q> query, final Class<?>... types) {
+        final XOQueryImpl<CompositeRowObject, Class<Q>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query, Arrays.asList(types));
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
@@ -230,8 +244,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
-    public <DS> DS getDatastoreSession(Class<DS> sessionType) {
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
+    public <DS> DS getDatastoreSession(final Class<DS> sessionType) {
+        final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
         return sessionType.cast(datastoreSession);
     }
 
@@ -241,15 +255,15 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
-    public <I> void registerInstanceListener(I instanceListener) {
+    public <I> void registerInstanceListener(final I instanceListener) {
         sessionContext.getInstanceListenerService().registerInstanceListener(instanceListener);
     }
 
-    private TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getEffectiveTypes(Class<?> type, Class<?>... types) {
-        MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
-        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = new TypeMetadataSet<>();
+    private TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getEffectiveTypes(final Class<?> type, final Class<?>... types) {
+        final MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
+        final TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = new TypeMetadataSet<>();
         effectiveTypes.add(metadataProvider.getEntityMetadata(type));
-        for (Class<?> otherType : types) {
+        for (final Class<?> otherType : types) {
             effectiveTypes.add(metadataProvider.getEntityMetadata(otherType));
         }
         return effectiveTypes;

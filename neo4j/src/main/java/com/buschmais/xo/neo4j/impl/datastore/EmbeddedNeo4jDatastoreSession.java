@@ -3,7 +3,6 @@ package com.buschmais.xo.neo4j.impl.datastore;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -13,8 +12,7 @@ import com.buschmais.xo.api.NativeQuery;
 import com.buschmais.xo.api.NativeQueryEngine;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.api.annotation.Cypher;
-import com.buschmais.xo.neo4j.api.annotation.Lucene;
+import com.buschmais.xo.neo4j.impl.datastore.query.EmbeddedCypherQueryEngine;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 
 public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<GraphDatabaseService> {
@@ -55,19 +53,15 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
     }
 
     private final DatastoreTransaction datastoreTransaction;
-    // private final ExecutionEngine executionEngine;
 
-    private final NativeQueryEngine<CypherQuery> cypherQueryEngine;
-    private final NativeQueryEngine<LuceneQuery> luceneQueryEngine;
+    private final NativeQueryEngine<?> cypherQueryEngine;
 
     public EmbeddedNeo4jDatastoreSession(final GraphDatabaseService graphDatabaseService) {
         super(graphDatabaseService);
         datastoreTransaction = new EmbeddedNeo4jDatastoreTransaction();
-        // executionEngine = new ExecutionEngine(graphDatabaseService);
 
         // TODO: dynamically register native query engines - plugins?
         cypherQueryEngine = new EmbeddedCypherQueryEngine(graphDatabaseService);
-        luceneQueryEngine = new EmbeddedLuceneQueryEngine(graphDatabaseService);
     }
 
     @Override
@@ -76,20 +70,15 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
     }
 
     @Override
-    public <QL> ResultIterator<Map<String, Object>> executeQuery(final QL expression, final Map<String, Object> parameters) {
-        final NativeQuery<?> query = getNativeQuery(expression);
+    public ResultIterator<Map<String, Object>> executeQuery(final NativeQuery query, final Map<String, Object> parameters) {
         final Map<String, Object> effectiveParameters = translateParameters(parameters);
-        // TODO: dynamically select query engine (map lookup?)
-        if (query instanceof CypherQuery) {
-            return cypherQueryEngine.execute((CypherQuery)query, effectiveParameters);
-        } else {
-            return luceneQueryEngine.execute((LuceneQuery)query, effectiveParameters);
-        }
+        final NativeQueryEngine engine = getNativeQueryEngine(query);
+        return engine.execute(query, effectiveParameters);
+    }
 
-        // final ExecutionResult executionResult =
-        // executionEngine.execute(getCypher(expression),
-        // translateParameters(parameters));
-        // return new ResourceResultIterator(executionResult.iterator());
+    @Override
+    public NativeQueryEngine getNativeQueryEngine(final NativeQuery<?> query) {
+        return cypherQueryEngine;
     }
 
     private Map<String, Object> translateParameters(final Map<String, Object> parameters) {

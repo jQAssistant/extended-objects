@@ -1,12 +1,13 @@
 package com.buschmais.xo.neo4j.test.delegate;
 
-import com.buschmais.xo.api.CompositeObject;
-import com.buschmais.xo.api.XOManager;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
-import com.buschmais.xo.neo4j.test.delegate.composite.A;
-import com.buschmais.xo.neo4j.test.delegate.composite.A2B;
-import com.buschmais.xo.neo4j.test.delegate.composite.B;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,15 +16,15 @@ import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 
-import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import static com.buschmais.xo.api.Query.Result;
-import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import com.buschmais.xo.api.CompositeObject;
+import com.buschmais.xo.api.Query.Result;
+import com.buschmais.xo.api.Query.Result.CompositeRowObject;
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
+import com.buschmais.xo.neo4j.test.delegate.composite.A;
+import com.buschmais.xo.neo4j.test.delegate.composite.A2B;
+import com.buschmais.xo.neo4j.test.delegate.composite.B;
 
 @RunWith(Parameterized.class)
 public class DelegateTest extends AbstractNeo4jXOManagerTest {

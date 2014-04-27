@@ -1,25 +1,30 @@
 package com.buschmais.xo.neo4j.test.instancelistener;
 
-import com.buschmais.xo.api.ConcurrencyMode;
-import com.buschmais.xo.api.Transaction;
-import com.buschmais.xo.api.ValidationMode;
-import com.buschmais.xo.api.XOManager;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
-import com.buschmais.xo.neo4j.test.instancelistener.composite.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.junit.Assert.assertThat;
+
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.junit.Assert.assertThat;
+import com.buschmais.xo.api.ConcurrencyMode;
+import com.buschmais.xo.api.Transaction;
+import com.buschmais.xo.api.ValidationMode;
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
+import com.buschmais.xo.neo4j.test.instancelistener.composite.A;
+import com.buschmais.xo.neo4j.test.instancelistener.composite.A2B;
+import com.buschmais.xo.neo4j.test.instancelistener.composite.B;
+import com.buschmais.xo.neo4j.test.instancelistener.composite.StaticInstanceListener;
+import com.buschmais.xo.neo4j.test.instancelistener.composite.TypedInstanceListener;
 
 @RunWith(Parameterized.class)
 public class InstanceListenerTest extends AbstractNeo4jXOManagerTest {

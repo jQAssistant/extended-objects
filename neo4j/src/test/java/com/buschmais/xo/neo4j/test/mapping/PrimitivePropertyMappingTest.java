@@ -1,19 +1,20 @@
 package com.buschmais.xo.neo4j.test.mapping;
 
-import com.buschmais.xo.api.XOManager;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
-import com.buschmais.xo.neo4j.test.mapping.composite.A;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.junit.Assert.assertThat;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
+import com.buschmais.xo.neo4j.test.mapping.composite.A;
 
 @RunWith(Parameterized.class)
 public class PrimitivePropertyMappingTest extends AbstractNeo4jXOManagerTest {

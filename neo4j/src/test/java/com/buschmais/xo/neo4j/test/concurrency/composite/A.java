@@ -1,11 +1,12 @@
 package com.buschmais.xo.neo4j.test.concurrency.composite;
 
+import java.util.concurrent.TimeUnit;
+
+import org.neo4j.graphdb.Node;
+
 import com.buschmais.xo.api.annotation.ImplementedBy;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.neo4j.api.annotation.Label;
-import org.neo4j.graphdb.Node;
-
-import java.util.concurrent.TimeUnit;
 
 @Label("A")
 public interface A {

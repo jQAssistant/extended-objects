@@ -1,16 +1,16 @@
 package com.buschmais.xo.neo4j.test.transaction.composite;
 
+import java.util.List;
+
+import org.neo4j.graphdb.Node;
+
 import com.buschmais.xo.api.annotation.ImplementedBy;
 import com.buschmais.xo.api.annotation.ResultOf;
+import com.buschmais.xo.api.annotation.ResultOf.Parameter;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
-import org.neo4j.graphdb.Node;
-
-import java.util.List;
-
-import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
 
 @Label("A")
 public interface A {
