@@ -194,6 +194,11 @@ public class TempleOfDoom {
 }
 ----
 
+= Available Datastore implementations
+- Neo4j
+- Titan
+- Generic Tinkerpop
+
 = Neo4j Datastore
 == Introduction
 

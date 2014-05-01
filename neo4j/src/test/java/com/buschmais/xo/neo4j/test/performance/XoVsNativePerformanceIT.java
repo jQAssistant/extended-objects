@@ -31,7 +31,7 @@ public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XoVsNativePerformanceIT.class);
 
-    private static final int TREE_DEPTH = 6;
+    private static final int TREE_DEPTH = 7;
     private static final int NUMBER_OF_RUNS = 10;
 
     public XoVsNativePerformanceIT(XOUnit xoUnit) {

@@ -43,7 +43,7 @@ public interface XOManager extends AutoCloseable {
      * @param types Additional interfaces the property type shall implement.
      * @return The {@link CompositeObject} instance.
      */
-    CompositeObject create(Class type, Class<?>... types);
+    CompositeObject create(Class<?> type, Class<?>... types);
 
     /**
      * Create a new property instance.

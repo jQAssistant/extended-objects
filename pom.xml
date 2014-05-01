@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -47,9 +48,81 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jqassistant.version>1.0.0-M2</jqassistant.version>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>QA</id>
+            <properties>
+                <jqassistant.version>1.0.0-M2</jqassistant.version>
+                <org.neo4j_version>2.0.1</org.neo4j_version>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.buschmais.jqassistant.maven</groupId>
+                        <artifactId>jqassistant-maven-plugin</artifactId>
+                        <version>${jqassistant.version}</version>
+                        <executions>
+                            <execution>
+                                <id>scan</id>
+                                <goals>
+                                    <goal>scan</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>analyze</id>
+                                <goals>
+                                    <goal>analyze</goal>
+                                </goals>
+                                <configuration>
+                                    <failOnConstraintViolations>false</failOnConstraintViolations>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.buschmais.jqassistant.plugin</groupId>
+                                <artifactId>jqassistant.plugin.java</artifactId>
+                                <version>${jqassistant.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.buschmais.jqassistant.plugin</groupId>
+                                <artifactId>jqassistant.plugin.junit4</artifactId>
+                                <version>${jqassistant.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.buschmais.jqassistant.plugin</groupId>
+                                <artifactId>jqassistant.plugin.osgi</artifactId>
+                                <version>${jqassistant.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.neo4j</groupId>
+                                <artifactId>server-api</artifactId>
+                                <version>${org.neo4j_version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.neo4j</groupId>
+                                <artifactId>neo4j-kernel</artifactId>
+                                <version>${org.neo4j_version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.neo4j</groupId>
+                                <artifactId>neo4j-lucene-index</artifactId>
+                                <version>${org.neo4j_version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.neo4j</groupId>
+                                <artifactId>neo4j</artifactId>
+                                <version>${org.neo4j_version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <build>
         <pluginManagement>
@@ -196,45 +269,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.buschmais.jqassistant.maven</groupId>
-                <artifactId>jqassistant-maven-plugin</artifactId>
-                <version>${jqassistant.version}</version>
-                <executions>
-                    <execution>
-                        <id>scan</id>
-                        <goals>
-                            <goal>scan</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>analyze</id>
-                        <goals>
-                            <goal>analyze</goal>
-                        </goals>
-                        <configuration>
-                            <failOnConstraintViolations>false</failOnConstraintViolations>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.buschmais.jqassistant.plugin</groupId>
-                        <artifactId>jqassistant.plugin.java</artifactId>
-                        <version>${jqassistant.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.buschmais.jqassistant.plugin</groupId>
-                        <artifactId>jqassistant.plugin.junit4</artifactId>
-                        <version>${jqassistant.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.buschmais.jqassistant.plugin</groupId>
-                        <artifactId>jqassistant.plugin.osgi</artifactId>
-                        <version>${jqassistant.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
