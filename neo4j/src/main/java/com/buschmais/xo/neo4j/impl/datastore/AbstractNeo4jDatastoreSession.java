@@ -21,9 +21,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Abstract base implementation of a Neo4j database session based on the {@link org.neo4j.graphdb.GraphDatabaseService} API.
- *
- * @param <GDS> The type of {@link org.neo4j.graphdb.GraphDatabaseService}.
+ * Abstract base implementation of a Neo4j database session based on the
+ * {@link org.neo4j.graphdb.GraphDatabaseService} API.
+ * 
+ * @param <GDS>
+ *            The type of {@link org.neo4j.graphdb.GraphDatabaseService}.
  */
 public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements Neo4jDatastoreSession<GDS> {
 
@@ -64,13 +66,35 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
             throw new XOException("Type " + entityTypeMetadata.getAnnotatedType().getAnnotatedElement().getName() + " has no indexed property.");
         }
         PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
-        ResourceIterable<Node> nodesByLabelAndProperty = getGraphDatabaseService().findNodesByLabelAndProperty(discriminator, propertyMethodMetadata.getDatastoreMetadata().getName(), value);
-        ResourceIterator<Node> iterator = nodesByLabelAndProperty.iterator();
-        return new ResourceResultIterator(iterator);
+        ResourceIterable<Node> nodesByLabelAndProperty = getGraphDatabaseService().findNodesByLabelAndProperty(discriminator,
+                propertyMethodMetadata.getDatastoreMetadata().getName(), value);
+        final ResourceIterator<Node> iterator = nodesByLabelAndProperty.iterator();
+        return new ResultIterator<Node>() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public Node next() {
+                return iterator.next();
+            }
+
+            @Override
+            public void remove() {
+                throw new XOException("Remove operation is not supported for find results.");
+            }
+
+            @Override
+            public void close() {
+                iterator.close();
+            }
+        };
     }
 
     @Override
-    public void migrateEntity(Node entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> targetTypes, Set<Label> targetDiscriminators) {
+    public void migrateEntity(Node entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators,
+            TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> targetTypes, Set<Label> targetDiscriminators) {
         Set<Label> labelsToRemove = new HashSet<>(discriminators);
         labelsToRemove.removeAll(targetDiscriminators);
         for (Label label : labelsToRemove) {

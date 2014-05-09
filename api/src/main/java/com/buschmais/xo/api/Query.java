@@ -2,6 +2,7 @@ package com.buschmais.xo.api;
 
 import java.io.Closeable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,7 +53,7 @@ public interface Query<T> {
              *
              * @return The column names.
              */
-            public Collection<String> getColumns();
+            public List<String> getColumns();
 
             /**
              * Return the value of column in row.

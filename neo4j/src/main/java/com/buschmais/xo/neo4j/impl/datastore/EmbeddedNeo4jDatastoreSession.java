@@ -8,9 +8,12 @@ import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Transaction;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<GraphDatabaseService> {
@@ -53,7 +56,6 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
     private final DatastoreTransaction datastoreTransaction;
     private final ExecutionEngine executionEngine;
 
-
     public EmbeddedNeo4jDatastoreSession(GraphDatabaseService graphDatabaseService) {
         super(graphDatabaseService);
         datastoreTransaction = new EmbeddedNeo4jDatastoreTransaction();
@@ -68,7 +70,35 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
     @Override
     public <QL> ResultIterator<Map<String, Object>> executeQuery(QL expression, Map<String, Object> parameters) {
         ExecutionResult executionResult = executionEngine.execute(getCypher(expression), translateParameters(parameters));
-        return new ResourceResultIterator(executionResult.iterator());
+        final ResourceIterator<Map<String, Object>> resourceIterator = executionResult.iterator();
+        final List<String> columns = executionResult.columns();
+        return new ResultIterator<Map<String, Object>>() {
+
+            @Override
+            public boolean hasNext() {
+                return resourceIterator.hasNext();
+            }
+
+            @Override
+            public Map<String, Object> next() {
+                Map<String, Object> next = resourceIterator.next();
+                Map<String, Object> result = new LinkedHashMap<>(next.size());
+                for (String column : columns) {
+                    result.put(column, next.get(column));
+                }
+                return result;
+            }
+
+            @Override
+            public void remove() {
+                throw new XOException("Remove operation is not supported for query results.");
+            }
+
+            @Override
+            public void close() {
+                resourceIterator.close();
+            }
+        };
     }
 
     private Map<String, Object> translateParameters(Map<String, Object> parameters) {
