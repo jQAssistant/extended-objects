@@ -354,8 +354,17 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         if (Collection.class.isAssignableFrom(propertyType)) {
             Type genericType = propertyMethod.getGenericType();
             ParameterizedType type = (ParameterizedType) genericType;
-            Class<?> typeArgument = (Class<?>) type.getActualTypeArguments()[0];
-            AnnotatedType annotatedTypeArgument = new AnnotatedType(typeArgument);
+            Class<?> elementType;
+            Type typeArgument = type.getActualTypeArguments()[0];
+            if (typeArgument instanceof Class) {
+                elementType = (Class<?>) typeArgument;
+            } else if (typeArgument instanceof ParameterizedType) {
+                ParameterizedType parameterizedTypeArgument = (ParameterizedType) typeArgument;
+                elementType = (Class<?>) parameterizedTypeArgument.getRawType();
+            } else {
+                throw new XOException("Cannot determine argument type of collection property " + propertyMethod.getAnnotatedElement().toGenericString());
+            }
+            AnnotatedType annotatedTypeArgument = new AnnotatedType(elementType);
             if (isEntityType(annotatedTypeArgument)) {
                 Direction relationDirection = getRelationDirection(propertyMethod, Direction.FROM);
                 com.buschmais.xo.spi.reflection.AnnotatedElement<?> relationElement = getRelationDefinitionElement(propertyMethod);
@@ -363,13 +372,13 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 methodMetadata = new EntityCollectionPropertyMethodMetadata<>(propertyMethod, relationshipType, relationDirection,
                         metadataFactory.createCollectionPropertyMetadata(propertyMethod));
             } else if (isRelationType(annotatedTypeArgument)) {
-                TypeMetadata relationTypeMetadata = getOrCreateTypeMetadata(typeArgument);
+                TypeMetadata relationTypeMetadata = getOrCreateTypeMetadata(elementType);
                 RelationTypeMetadata<RelationMetadata> relationMetadata = (RelationTypeMetadata) relationTypeMetadata;
                 Direction relationDirection = getRelationDirection(annotatedType, propertyMethod, relationTypeMetadata, relationMetadata);
                 methodMetadata = new RelationCollectionPropertyMethodMetadata<>(propertyMethod, relationMetadata, relationDirection,
                         metadataFactory.createCollectionPropertyMetadata(propertyMethod));
             } else {
-                throw new XOException("Unsupported type argument '" + typeArgument.getName() + "' for collection property: " + propertyType.getName());
+                throw new XOException("Unsupported type argument '" + elementType.getName() + "' for collection property: " + propertyType.getName());
             }
         } else if (annotatedMethods.containsKey(propertyType)) {
             AnnotatedType referencedType = new AnnotatedType(propertyType);
