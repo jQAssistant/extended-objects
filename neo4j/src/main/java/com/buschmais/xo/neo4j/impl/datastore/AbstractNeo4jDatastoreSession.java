@@ -136,20 +136,6 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         labelCache.remove(node.getId());
     }
 
-    protected <QL> String getCypher(QL expression) {
-        if (expression instanceof String) {
-            return (String) expression;
-        } else if (expression instanceof AnnotatedElement) {
-            AnnotatedElement typeExpression = (AnnotatedElement) expression;
-            Cypher cypher = typeExpression.getAnnotation(Cypher.class);
-            if (cypher == null) {
-                throw new XOException(typeExpression + " must be annotated with " + Cypher.class.getName());
-            }
-            return cypher.value();
-        }
-        throw new XOException("Unsupported query expression " + expression);
-    }
-
     @Override
     public Set<Label> getEntityDiscriminators(Node node) {
         Set<Label> labels = labelCache.get(node.getId());
