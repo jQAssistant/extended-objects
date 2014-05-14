@@ -20,26 +20,37 @@ import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.
 
 /**
  * Generic implementation of a {@link com.buschmais.xo.api.XOManager}.
- *
- * @param <EntityId>              The type of entity ids as provided by the datastore.
- * @param <Entity>                The type entities as provided by the datastore.
- * @param <EntityMetadata>        The type of entity metadata as provided by the datastore.
- * @param <EntityDiscriminator>   The type of discriminators as provided by the datastore.
- * @param <RelationId>            The type of relation ids as provided by the datastore.
- * @param <Relation>              The type of relations as provided by the datastore.
- * @param <RelationMetadata>      The type of relation metadata as provided by the datastore.
- * @param <RelationDiscriminator> The type of relation discriminators as provided by the datastore.
+ * 
+ * @param <EntityId>
+ *            The type of entity ids as provided by the datastore.
+ * @param <Entity>
+ *            The type entities as provided by the datastore.
+ * @param <EntityMetadata>
+ *            The type of entity metadata as provided by the datastore.
+ * @param <EntityDiscriminator>
+ *            The type of discriminators as provided by the datastore.
+ * @param <RelationId>
+ *            The type of relation ids as provided by the datastore.
+ * @param <Relation>
+ *            The type of relations as provided by the datastore.
+ * @param <RelationMetadata>
+ *            The type of relation metadata as provided by the datastore.
+ * @param <RelationDiscriminator>
+ *            The type of relation discriminators as provided by the datastore.
  */
-public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> implements XOManager {
+public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator>
+        implements XOManager {
 
     private final SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext;
 
     /**
      * Constructor.
-     *
-     * @param sessionContext The associated {@link SessionContext}.
+     * 
+     * @param sessionContext
+     *            The associated {@link SessionContext}.
      */
-    public XOManagerImpl(SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext) {
+    public XOManagerImpl(
+            SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext) {
         this.sessionContext = sessionContext;
     }
 
@@ -96,7 +107,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     public CompositeObject create(Class<?> type, Class<?>... types) {
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = getEffectiveTypes(type, types);
         Set<EntityDiscriminator> entityDiscriminators = sessionContext.getMetadataProvider().getEntityDiscriminators(effectiveTypes);
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext
+                .getDatastoreSession();
         Entity entity = datastoreSession.createEntity(effectiveTypes, entityDiscriminators);
         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         CompositeObject instance = entityInstanceManager.createInstance(entity);
@@ -137,7 +149,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         Entity entity = entityInstanceManager.getDatastoreType(instance);
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext
+                .getDatastoreSession();
         Set<EntityDiscriminator> entityDiscriminators = datastoreSession.getEntityDiscriminators(entity);
         MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = metadataProvider.getTypes(entityDiscriminators);
@@ -172,7 +185,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     public <T> void delete(T instance) {
         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         AbstractInstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext
+                .getDatastoreSession();
         if (entityInstanceManager.isInstance(instance)) {
             Entity entity = entityInstanceManager.getDatastoreType(instance);
             sessionContext.getInstanceListenerService().preDelete(instance);
@@ -194,31 +208,31 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public Query<CompositeRowObject> createQuery(String query) {
-        XOQueryImpl<CompositeRowObject, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query);
+        XOQueryImpl<CompositeRowObject, ?, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query);
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
     public <T> Query<T> createQuery(String query, Class<T> type) {
-        XOQueryImpl<T, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type);
+        XOQueryImpl<T, ?, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type);
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
     public Query<CompositeRowObject> createQuery(String query, Class<?> type, Class<?>... types) {
-        XOQueryImpl<CompositeRowObject, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type, Arrays.asList(types));
+        XOQueryImpl<CompositeRowObject, ?, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type, Arrays.asList(types));
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
     public <T> Query<T> createQuery(Class<T> query) {
-        XOQueryImpl<T, Class<T>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query);
+        XOQueryImpl<T, ?, Class<T>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query);
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
     @Override
     public <Q> Query<CompositeRowObject> createQuery(Class<Q> query, Class<?>... types) {
-        XOQueryImpl<CompositeRowObject, Class<Q>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query, Arrays.asList(types));
+        XOQueryImpl<CompositeRowObject, ?, Class<Q>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query, Arrays.asList(types));
         return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
     }
 
@@ -231,7 +245,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <DS> DS getDatastoreSession(Class<DS> sessionType) {
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext
+                .getDatastoreSession();
         return sessionType.cast(datastoreSession);
     }
 

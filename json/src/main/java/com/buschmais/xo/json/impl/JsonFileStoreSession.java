@@ -5,6 +5,7 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
+import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
@@ -17,6 +18,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -104,7 +106,12 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public <QL> ResultIterator<Map<String, Object>> executeQuery(QL query, Map<String, Object> parameters) {
+    public Class<? extends Annotation> getDefaultQueryLanguage() {
+        return null;
+    }
+
+    @Override
+    public <QL extends Annotation> DatastoreQuery<QL> createQuery(Class<QL> queryLanguage) {
         return null;
     }
 

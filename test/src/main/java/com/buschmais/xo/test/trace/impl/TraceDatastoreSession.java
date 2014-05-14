@@ -1,12 +1,18 @@
 package com.buschmais.xo.test.trace.impl;
 
+import java.lang.annotation.Annotation;
+import java.util.Set;
+
 import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.spi.datastore.*;
+import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
+import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
+import com.buschmais.xo.spi.datastore.DatastoreQuery;
+import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
+import com.buschmais.xo.spi.datastore.DatastoreSession;
+import com.buschmais.xo.spi.datastore.DatastoreTransaction;
+import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * {@link DatastoreSession} implementation allowing tracing on delegates.
@@ -67,8 +73,13 @@ public class TraceDatastoreSession<EntityId, Entity, EntityMetadata extends Data
     }
 
     @Override
-    public <QL> ResultIterator<Map<String, Object>> executeQuery(QL query, Map<String, Object> parameters) {
-        return delegate.executeQuery(query, parameters);
+    public Class<? extends Annotation> getDefaultQueryLanguage() {
+        return delegate.getDefaultQueryLanguage();
+    }
+
+    @Override
+    public <QL extends Annotation> DatastoreQuery<QL> createQuery(Class<QL> queryLanguage) {
+        return delegate.createQuery(queryLanguage);
     }
 
     public void migrateEntity(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> entityDiscriminators, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<EntityDiscriminator> targetDiscriminators) {
