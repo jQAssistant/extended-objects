@@ -3,6 +3,7 @@ package com.buschmais.xo.spi.datastore;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Set;
 
@@ -99,16 +100,6 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
     ResultIterator<Entity> findEntity(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator discriminator, Object value);
 
     /**
-     * Execute a query.
-     *
-     * @param query      The query.
-     * @param parameters The parameters of the query.
-     * @param <QL>       The query language type.
-     * @return A {@link ResultIterator} instance returning each row as a map of colum names and their values.
-     */
-    <QL> ResultIterator<Map<String, Object>> executeQuery(QL query, Map<String, Object> parameters);
-
-    /**
      * Migrate an entity of a given type and discriminators to the given target types and target discriminators.
      *
      * @param entity               The entity to migrate.
@@ -144,4 +135,8 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * Close the session.
      */
     void close();
+
+    Class<? extends Annotation> getDefaultQueryLanguage();
+
+    <QL extends Annotation> DatastoreQuery<QL> createQuery(Class<QL> queryLanguage);
 }
