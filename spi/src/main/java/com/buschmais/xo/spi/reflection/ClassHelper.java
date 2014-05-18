@@ -16,7 +16,7 @@ public final class ClassHelper {
         try {
             type = (Class<T>) Class.forName(name);
         } catch (ClassNotFoundException e) {
-            throw new XOException("Cannot find class with name '" + name + "'");
+            throw new XOException("Cannot find class with name '" + name + "'", e);
         }
         return type;
     }
@@ -33,9 +33,9 @@ public final class ClassHelper {
         try {
             return type.newInstance();
         } catch (InstantiationException e) {
-            throw new XOException("Cannot create instance of type '" + type.getName() + "'");
+            throw new XOException("Cannot create instance of type '" + type.getName() + "'", e);
         } catch (IllegalAccessException e) {
-            throw new XOException("Access denied to type '" + type.getName() + "'");
+            throw new XOException("Access denied to type '" + type.getName() + "'", e);
         }
     }
 }

@@ -37,6 +37,9 @@ public class XOUnitBundleListener implements BundleActivator, BundleListener {
             case BundleEvent.STOPPED:
                 undeployXOUnits(event.getBundle());
                 break;
+            default:
+                // intentionally left blank
+                break;
         }
     }
 
@@ -60,17 +63,17 @@ public class XOUnitBundleListener implements BundleActivator, BundleListener {
                         LOGGER.error("Error while loading XOUnit", ioe);
                     }
                 }
-                for (XOUnit XOUnit : xoUnits) {
+                for (XOUnit xoUnit : xoUnits) {
                     if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Found XOUnit '{}'", XOUnit.getName());
+                        LOGGER.debug("Found XOUnit '{}'", xoUnit.getName());
                     }
-                    XOManagerFactory xoManagerFactory = new XOManagerFactoryImpl(XOUnit);
+                    XOManagerFactory xoManagerFactory = new XOManagerFactoryImpl(xoUnit);
                     Dictionary<String, Object> p = new Hashtable<>();
-                    p.put("name", XOUnit.getName());
+                    p.put("name", xoUnit.getName());
                     bundle.getBundleContext().registerService(XOManagerFactory.class, xoManagerFactory, p);
                     xoManagerFactories.add(xoManagerFactory);
                     if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Registered service for XOUnit '{}'", XOUnit.getName());
+                        LOGGER.debug("Registered service for XOUnit '{}'", xoUnit.getName());
                     }
                 }
             }

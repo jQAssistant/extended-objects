@@ -125,7 +125,7 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
         try {
             mapper.writeValue(new FileWriter(file), objectNode);
         } catch (IOException e) {
-            throw new XOException("Cannot write file " + file.getName());
+            throw new XOException("Cannot write file " + file.getName(), e);
         }
     }
 

@@ -67,7 +67,7 @@ public class XOUnitFactory {
                     throw new XOException("Invalid xo.xml descriptor detected: " + validationHandler.getValidationMessages());
                 }
             } catch (JAXBException e) {
-                throw new XOException("Cannot create JAXB unmarshaller for reading xo.xml descriptors.");
+                throw new XOException("Cannot create JAXB unmarshaller for reading xo.xml descriptors.", e);
             }
         }
     }
