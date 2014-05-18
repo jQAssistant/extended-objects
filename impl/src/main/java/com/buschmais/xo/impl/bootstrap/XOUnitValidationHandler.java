@@ -26,7 +26,7 @@ public class XOUnitValidationHandler implements ValidationEventHandler {
     }
 
     public boolean isValid() {
-        return this.errorMessages.size() == 0;
+        return this.errorMessages.isEmpty();
     }
 
     public String getValidationMessages() {

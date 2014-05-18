@@ -8,7 +8,10 @@ import java.util.ServiceLoader;
 /**
  * Provides methods for bootstrapping XO.
  */
-public class XO {
+public final class XO {
+
+    private XO() {
+    }
 
     /**
      * Create a {@link com.buschmais.xo.api.XOManagerFactory} for the XO unit identified by name.

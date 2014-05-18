@@ -26,7 +26,7 @@ public class AbstractProxyMethodService<E, M extends ProxyMethod<?>> implements 
         try {
             method = type.getDeclaredMethod(name, argumentTypes);
         } catch (NoSuchMethodException e) {
-            throw new XOException("Cannot resolve method '" + name + "' (" + Arrays.asList(argumentTypes) + ")");
+            throw new XOException("Cannot resolve method '" + name + "' (" + Arrays.asList(argumentTypes) + ")", e);
         }
         addProxyMethod(proxyMethod, method);
     }

@@ -34,7 +34,7 @@ public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datast
         try {
             getMBeanServer().registerMBean(traceMonitor, objectName);
         } catch (JMException e) {
-            throw new XOException("Cannot register trace monitor MBean for object name " + objectName);
+            throw new XOException("Cannot register trace monitor MBean for object name " + objectName, e);
         }
         delegate.init(registeredMetadata);
     }
@@ -57,7 +57,7 @@ public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datast
         try {
             getMBeanServer().unregisterMBean(objectName);
         } catch (JMException e) {
-            throw new XOException("Cannot unregister trace monitor MBean for object name " + objectName);
+            throw new XOException("Cannot unregister trace monitor MBean for object name " + objectName, e);
         }
     }
 
@@ -70,7 +70,7 @@ public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datast
         try {
             return new ObjectName("com.buschmais.xo.trace","xo-unit", name);
         } catch (MalformedObjectNameException e) {
-            throw new XOException("Cannot create object name for XO unit " + name);
+            throw new XOException("Cannot create object name for XO unit " + name, e);
         }
 
     }
