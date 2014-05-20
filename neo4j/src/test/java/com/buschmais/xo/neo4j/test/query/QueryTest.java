@@ -1,30 +1,29 @@
 package com.buschmais.xo.neo4j.test.query;
 
-import static com.buschmais.xo.api.Query.Result;
-import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeThat;
-
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import org.hamcrest.Matchers;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.query.composite.A;
 import com.buschmais.xo.neo4j.test.query.composite.InstanceByValue;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import static com.buschmais.xo.api.Query.Result;
+import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
+import static com.buschmais.xo.neo4j.test.query.CustomQueryLanguagePlugin.CustomQueryLanguage;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeThat;
 
 @RunWith(Parameterized.class)
 public class QueryTest extends AbstractNeo4jXOManagerTest {
@@ -120,6 +119,16 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
         Result<CompositeRowObject> row = getXoManager().createQuery("OPTIONAL MATCH (a:A) WHERE a.name = 'X' return a").execute();
         A a = row.getSingleResult().get("a", A.class);
         assertThat(a, equalTo(null));
+        xoManager.currentTransaction().commit();
+    }
+
+    @Test
+    public void customQueryLanguage() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        Result<CompositeRowObject> row = getXoManager().createQuery("A:value=A1").using(CustomQueryLanguage.class).execute();
+        A a = row.getSingleResult().get("A", A.class);
+        assertThat(a, equalTo(a1));
         xoManager.currentTransaction().commit();
     }
 

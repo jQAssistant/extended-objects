@@ -5,12 +5,14 @@ import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.impl.AbstractInstanceManager;
 import com.buschmais.xo.impl.SessionContext;
+import com.buschmais.xo.impl.plugin.QueryLanguagePluginRepository;
 import com.buschmais.xo.impl.transaction.TransactionalQueryResultIterable;
 import com.buschmais.xo.spi.annotation.QueryDefinition;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
+import com.buschmais.xo.spi.plugin.QueryLanguagePlugin;
 import com.buschmais.xo.spi.reflection.AbstractAnnotatedElement;
 
 import java.lang.annotation.Annotation;
@@ -22,24 +24,26 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     private Class<? extends Annotation> queryLanguage = null;
     private final QE expression;
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final QueryLanguagePluginRepository queryLanguagePluginManager;
     private final Class<?> returnType;
     private final Collection<? extends Class<?>> returnTypes;
     private Map<String, Object> parameters = null;
 
     public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QE expression, Class<?> returnType,
-            Collection<? extends Class<?>> returnTypes) {
+                       Collection<? extends Class<?>> returnTypes) {
         this.sessionContext = sessionContext;
+        this.queryLanguagePluginManager = sessionContext.getPluginRepositoryManager().getPluginManager(QueryLanguagePlugin.class);
         this.expression = expression;
         this.returnType = returnType;
         this.returnTypes = returnTypes;
     }
 
     public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QE expression) {
-        this(sessionContext, expression, null, Collections.<Class<?>> emptyList());
+        this(sessionContext, expression, null, Collections.<Class<?>>emptyList());
     }
 
     public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QE expression, Class<?> returnType) {
-        this(sessionContext, expression, returnType, Collections.<Class<?>> emptyList());
+        this(sessionContext, expression, returnType, Collections.<Class<?>>emptyList());
     }
 
     @Override
@@ -91,19 +95,19 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         if (queryLanguage == null) {
             queryLanguage = datastoreSession.getDefaultQueryLanguage();
         }
-
-        DatastoreQuery<QL> query = (DatastoreQuery<QL>) sessionContext.getDatastoreSession().createQuery(queryLanguage);
+        DatastoreQuery<QL> query;
+        QueryLanguagePlugin<QL> queryLanguagePlugin = (QueryLanguagePlugin<QL>) queryLanguagePluginManager.get(queryLanguage);
+        if (queryLanguagePlugin != null) {
+            query = queryLanguagePlugin.createQuery(sessionContext.getDatastoreSession());
+        } else {
+            query = (DatastoreQuery<QL>) sessionContext.getDatastoreSession().createQuery(queryLanguage);
+        }
         ResultIterator<Map<String, Object>> iterator;
         if (expression instanceof String) {
             iterator = query.execute((String) expression, effectiveParameters);
         } else if (expression instanceof AnnotatedElement) {
-            final AnnotatedElement typeExpression = (AnnotatedElement) expression;
-            AbstractAnnotatedElement<AnnotatedElement> element = new AbstractAnnotatedElement<AnnotatedElement>(typeExpression) {
-                @Override
-                public String getName() {
-                    return toString();
-                }
-            };
+            AnnotatedElement typeExpression = (AnnotatedElement) expression;
+            AnnotatedQueryElement element = new AnnotatedQueryElement(typeExpression);
             QL queryAnnotation = element.getByMetaAnnotation(QueryDefinition.class);
             if (queryAnnotation == null) {
                 throw new XOException("Cannot find query annotation on element " + expression.toString());
@@ -129,5 +133,25 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         }
         resultTypes.addAll(returnTypes);
         return resultTypes;
+    }
+
+    /**
+     * An annotated element.
+     */
+    private static class AnnotatedQueryElement extends AbstractAnnotatedElement<AnnotatedElement> {
+
+        /**
+         * Constructor.
+         *
+         * @param typeExpression The expression.
+         */
+        public AnnotatedQueryElement(AnnotatedElement typeExpression) {
+            super(typeExpression);
+        }
+
+        @Override
+        public String getName() {
+            return toString();
+        }
     }
 }

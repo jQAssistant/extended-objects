@@ -8,13 +8,14 @@ import com.buschmais.xo.impl.cache.CacheSynchronizationService;
 import com.buschmais.xo.impl.cache.TransactionalCache;
 import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
 import com.buschmais.xo.impl.interceptor.ConcurrencyInterceptor;
-import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 import com.buschmais.xo.impl.interceptor.TransactionInterceptor;
-import com.buschmais.xo.spi.interceptor.XOInterceptor;
+import com.buschmais.xo.impl.plugin.PluginRepositoryManager;
 import com.buschmais.xo.impl.validation.InstanceValidationService;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
+import com.buschmais.xo.spi.interceptor.InterceptorFactory;
+import com.buschmais.xo.spi.interceptor.XOInterceptor;
 
 import javax.validation.ValidatorFactory;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import static com.buschmais.xo.api.Transaction.TransactionAttribute;
 public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> {
 
     private final MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider;
+    private final PluginRepositoryManager pluginRepositoryManager;
     private final AbstractInstanceManager<EntityId, Entity> entityInstanceManager;
     private final AbstractInstanceManager<RelationId, Relation> relationInstanceManager;
     private final InstanceListenerService instanceListenerService;
@@ -51,8 +53,9 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
     private final ProxyFactory proxyFactory;
     private final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession;
 
-    public SessionContext(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, ValidatorFactory validatorFactory, List<? extends Class<?>> instanceListenerTypes, TransactionAttribute defaultTransactionAttribute, ValidationMode validationMode, ConcurrencyMode concurrencyMode, ClassLoader classLoader) {
+    public SessionContext(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, PluginRepositoryManager pluginRepositoryManager, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession, ValidatorFactory validatorFactory, List<? extends Class<?>> instanceListenerTypes, TransactionAttribute defaultTransactionAttribute, ValidationMode validationMode, ConcurrencyMode concurrencyMode, ClassLoader classLoader) {
         this.metadataProvider = metadataProvider;
+        this.pluginRepositoryManager = pluginRepositoryManager;
         this.datastoreSession = datastoreSession;
         this.entityCache = new TransactionalCache<>();
         this.relationCache = new TransactionalCache<>();
@@ -75,6 +78,10 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
 
     public MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> getMetadataProvider() {
         return metadataProvider;
+    }
+
+    public PluginRepositoryManager getPluginRepositoryManager() {
+        return pluginRepositoryManager;
     }
 
     public AbstractInstanceManager<EntityId, Entity> getEntityInstanceManager() {
@@ -128,4 +135,5 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
     public DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> getDatastoreSession() {
         return datastoreSession;
     }
+
 }

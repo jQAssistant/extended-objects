@@ -3,12 +3,14 @@ package com.buschmais.xo.impl;
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.metadata.MetadataProviderImpl;
-import com.buschmais.xo.spi.reflection.ClassHelper;
+import com.buschmais.xo.impl.plugin.PluginRepositoryManager;
+import com.buschmais.xo.impl.plugin.QueryLanguagePluginRepository;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
+import com.buschmais.xo.spi.reflection.ClassHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
     private final MetadataProvider metadataProvider;
     private final ClassLoader classLoader;
     private final Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore;
+    private final PluginRepositoryManager pluginRepositoryManager;
     private final ValidatorFactory validatorFactory;
     private final ValidationMode validationMode;
     private final ConcurrencyMode concurrencyMode;
@@ -40,6 +43,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
         }
         XODatastoreProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> XODatastoreProvider = XODatastoreProvider.class.cast(ClassHelper.newInstance(providerType));
         this.datastore = XODatastoreProvider.createDatastore(xoUnit);
+        this.pluginRepositoryManager = new PluginRepositoryManager(new QueryLanguagePluginRepository(datastore));
         this.validationMode = xoUnit.getValidationMode();
         this.concurrencyMode = xoUnit.getConcurrencyMode();
         this.defaultTransactionAttribute = xoUnit.getDefaultTransactionAttribute();
@@ -75,7 +79,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
     @Override
     public XOManager createXOManager() {
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = datastore.createSession();
-        SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext = new SessionContext<>(metadataProvider, datastoreSession, validatorFactory, xoUnit.getInstanceListeners(), defaultTransactionAttribute, validationMode, concurrencyMode, classLoader);
+        SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext = new SessionContext<>(metadataProvider, pluginRepositoryManager, datastoreSession, validatorFactory, xoUnit.getInstanceListeners(), defaultTransactionAttribute, validationMode, concurrencyMode, classLoader);
         XOManagerImpl<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> xoManager = new XOManagerImpl<>(sessionContext);
         return sessionContext.getInterceptorFactory().addInterceptor(xoManager);
     }
@@ -88,5 +92,14 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
     @Override
     public XOUnit getXOUnit() {
         return xoUnit;
+    }
+
+    /**
+     * Return the instance of the plugin manager repository.
+     *
+     * @return The plugin manager repository.
+     */
+    public PluginRepositoryManager getPluginRepositoryManager() {
+        return pluginRepositoryManager;
     }
 }
