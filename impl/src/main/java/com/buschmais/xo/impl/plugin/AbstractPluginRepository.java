@@ -25,14 +25,6 @@ public abstract class AbstractPluginRepository<Key, Plugin> implements PluginRep
     }
 
     @Override
-    public void init() {
-        Class<Plugin> pluginType = (Class<Plugin>) getPluginType();
-        for (Plugin plugin : ServiceLoader.load(pluginType)) {
-            register(plugin);
-        }
-    }
-
-    @Override
     public Key register(Plugin plugin) {
         Key key = getKey(plugin);
         LOGGER.debug("Registering plugin for " + key);
