@@ -8,7 +8,6 @@ import com.buschmais.xo.neo4j.impl.datastore.metadata.Neo4jRelationshipType;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
@@ -16,7 +15,6 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import org.neo4j.graphdb.*;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -25,7 +23,7 @@ import java.util.Set;
 /**
  * Abstract base implementation of a Neo4j database session based on the
  * {@link org.neo4j.graphdb.GraphDatabaseService} API.
- * 
+ *
  * @param <GDS>
  *            The type of {@link org.neo4j.graphdb.GraphDatabaseService}.
  */

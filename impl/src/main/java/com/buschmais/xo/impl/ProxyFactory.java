@@ -6,10 +6,7 @@ import com.buschmais.xo.impl.proxy.entity.InstanceInvocationHandler;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 
 /**
  * The factory provides methods for creating dynamic proxies and unwrapping the them.

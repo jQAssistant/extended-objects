@@ -2,7 +2,6 @@ package com.buschmais.xo.api;
 
 import java.io.Closeable;
 import java.lang.annotation.Annotation;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 

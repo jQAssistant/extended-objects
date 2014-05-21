@@ -4,7 +4,6 @@ import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
 import java.lang.annotation.Annotation;
-import java.util.Map;
 import java.util.Set;
 
 /**

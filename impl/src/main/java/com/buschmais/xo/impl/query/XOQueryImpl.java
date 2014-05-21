@@ -67,7 +67,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     @Override
     public Query<T> withParameters(Map<String, Object> parameters) {
         if (this.parameters != null) {
-            throw new XOException(("Parameters have already been assigned: " + parameters));
+            throw new XOException("Parameters have already been assigned: " + parameters);
         }
         this.parameters = parameters;
         return sessionContext.getInterceptorFactory().addInterceptor(this);

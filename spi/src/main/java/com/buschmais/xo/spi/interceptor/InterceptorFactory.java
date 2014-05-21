@@ -15,8 +15,9 @@ public class InterceptorFactory {
     public InterceptorFactory(List<? extends XOInterceptor> chain) {
         List<XOInterceptor> effectiveChain = new ArrayList<>(chain.size());
         for (XOInterceptor xoInterceptor : chain) {
-            if (xoInterceptor.isActive())
+            if (xoInterceptor.isActive()) {
                 effectiveChain.add(xoInterceptor);
+            }
         }
         this.chain = effectiveChain.toArray(new XOInterceptor[effectiveChain.size()]);
     }

@@ -2,7 +2,6 @@ package com.buschmais.xo.spi.interceptor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.List;
 
 public class InterceptorInvocationHandler implements InvocationHandler {
 
