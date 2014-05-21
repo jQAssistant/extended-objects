@@ -16,6 +16,6 @@ public class GetIdMethod<Relation> implements ProxyMethod<Relation> {
 
     @Override
     public Object invoke(Relation relation, Object instance, Object[] args) throws Exception {
-        return sessionContext.getDatastoreSession().getRelationId(relation);
+        return sessionContext.getDatastoreSession().getDatastoreRelationManager().getRelationId(relation);
     }
 }

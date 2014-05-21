@@ -1,10 +1,6 @@
 package com.buschmais.xo.spi.datastore;
 
-import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-
 import java.lang.annotation.Annotation;
-import java.util.Set;
 
 /**
  * Defines the interface of a datastore session, e.g. a connection to the datastore.
@@ -24,118 +20,30 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      */
     DatastoreTransaction getDatastoreTransaction();
 
-    /**
-     * Determine if the given object is an entity.
-     *
-     * @param o The object.
-     * @return <code>true</code> if the object is an entity, <code>false</code> otherwise.
-     */
-    boolean isEntity(Object o);
+    DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, ?> getDatastoreEntityManager();
+
+    DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, ?> getDatastoreRelationManager();
 
     /**
-     * Determine if the given object is a relation.
+     * Return the default query language supported by this datastore.
      *
-     * @param o The object.
-     * @return <code>true</code> if the object is a relation, <code>false</code> otherwise.
+     * @return The default query language.
      */
-    boolean isRelation(Object o);
+    Class<? extends Annotation> getDefaultQueryLanguage();
 
     /**
-     * Return the type discriminators of an entity.
+     * Create a query for the given query language.
      *
-     * @param entity The entity.
-     * @return The set of all type discriminators associated with the entity.
+     * @param queryLanguage The query language.
+     * @param <QL>          The query language type.
+     * @return The query.
      */
-    Set<EntityDiscriminator> getEntityDiscriminators(Entity entity);
-
-    /**
-     * Return the discriminiator for the given relation.
-     *
-     * @param relation The relation.
-     * @return The discriminator.
-     */
-    RelationDiscriminator getRelationDiscriminator(Relation relation);
-
-    /**
-     * Return the id of an entity.
-     *
-     * @param entity The entity.
-     * @return The id of the entity.
-     */
-    EntityId getEntityId(Entity entity);
-
-    /**
-     * Return the id of a relation.
-     *
-     * @param relation The relation.
-     * @return The id of the relation.
-     */
-    RelationId getRelationId(Relation relation);
-
-    /**
-     * Create a new entity for the given types using a set of discriminators representing these types.
-     *
-     * @param types          The types.
-     * @param discriminators The set of discriminators.
-     * @return The created entity.
-     */
-    Entity createEntity(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators);
-
-    /**
-     * Delete an entity.
-     *
-     * @param entity The entity to deleteEntity.
-     */
-    void deleteEntity(Entity entity);
-
-    /**
-     * Find entities using a single primitive value (e.g. from an index if supported by the datastore).
-     *
-     * @param type          The type of the instances.
-     * @param discriminator The discriminator to find the entities.
-     * @param value         The primitive value (e.g. indexed value).
-     * @return An iterator returning matching entities.
-     */
-    ResultIterator<Entity> findEntity(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator discriminator, Object value);
-
-    /**
-     * Migrate an entity of a given type and discriminators to the given target types and target discriminators.
-     *
-     * @param entity               The entity to migrate.
-     * @param types                The entity types before migration.
-     * @param discriminators       The discriminators of the entity before migration.
-     * @param targetTypes          The entity types after migration.
-     * @param targetDiscriminators The discriminators of the entity after migration.
-     */
-    void migrateEntity(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<EntityDiscriminator> targetDiscriminators);
-
-    /**
-     * Flush the given entity to the datastore.
-     *
-     * @param entity The entity to flushEntity.
-     */
-    void flushEntity(Entity entity);
-
-    /**
-     * Flush the given relation to the datastore.
-     *
-     * @param relation The relation to flushEntity.
-     */
-    void flushRelation(Relation relation);
-
-    /**
-     * Return the {@link DatastorePropertyManager} associated with this datastore session.
-     *
-     * @return The {@link DatastorePropertyManager}.
-     */
-    DatastorePropertyManager<Entity, Relation, ?, RelationMetadata> getDatastorePropertyManager();
+    <QL extends Annotation> DatastoreQuery<QL> createQuery(Class<QL> queryLanguage);
 
     /**
      * Close the session.
      */
     void close();
 
-    Class<? extends Annotation> getDefaultQueryLanguage();
-
-    <QL extends Annotation> DatastoreQuery<QL> createQuery(Class<QL> queryLanguage);
 }
+

@@ -19,17 +19,17 @@ public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extend
 
     @Override
     public boolean isDatastoreType(Object o) {
-        return sessionContext.getDatastoreSession().isEntity(o);
+        return sessionContext.getDatastoreSession().getDatastoreEntityManager().isEntity(o);
     }
 
     @Override
     public EntityId getDatastoreId(Entity entity) {
-        return sessionContext.getDatastoreSession().getEntityId(entity);
+        return sessionContext.getDatastoreSession().getDatastoreEntityManager().getEntityId(entity);
     }
 
     @Override
     protected TypeMetadataSet<?> getTypes(Entity entity) {
-        Set<EntityDiscriminator> discriminators = sessionContext.getDatastoreSession().getEntityDiscriminators(entity);
+        Set<EntityDiscriminator> discriminators = sessionContext.getDatastoreSession().getDatastoreEntityManager().getEntityDiscriminators(entity);
         TypeMetadataSet<?> types = sessionContext.getMetadataProvider().getTypes(discriminators);
         return types;
     }

@@ -71,9 +71,9 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
                     return null;
                 }
                 Object decodedValue;
-                if (sessionContext.getDatastoreSession().isEntity(value)) {
+                if (sessionContext.getDatastoreSession().getDatastoreEntityManager().isEntity(value)) {
                     return sessionContext.getEntityInstanceManager().readInstance((Entity) value);
-                } else if (sessionContext.getDatastoreSession().isRelation(value)) {
+                } else if (sessionContext.getDatastoreSession().getDatastoreRelationManager().isRelation(value)) {
                     return sessionContext.getRelationInstanceManager().readInstance((Relation) value);
                 } else if (value instanceof List<?>) {
                     decodedValue = decodeIterable((Iterable<?>) value, new ArrayList<>());

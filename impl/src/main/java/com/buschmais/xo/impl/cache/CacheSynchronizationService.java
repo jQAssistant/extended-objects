@@ -28,14 +28,14 @@ public class CacheSynchronizationService<Entity, Relation> {
             Relation relation = sessionContext.getRelationInstanceManager().getDatastoreType(instance);
             instanceListenerService.preUpdate(instance);
             validateInstance(instance);
-            datastoreSession.flushRelation(relation);
+            datastoreSession.getDatastoreRelationManager().flushRelation(relation);
             instanceListenerService.postUpdate(instance);
         }
         for (Object instance : sessionContext.getEntityCache().writtenInstances()) {
             Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(instance);
             instanceListenerService.preUpdate(instance);
             validateInstance(instance);
-            datastoreSession.flushEntity(entity);
+            datastoreSession.getDatastoreEntityManager().flushEntity(entity);
             instanceListenerService.postUpdate(instance);
         }
     }

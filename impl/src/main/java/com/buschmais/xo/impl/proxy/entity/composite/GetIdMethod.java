@@ -16,6 +16,6 @@ public class GetIdMethod<Entity> implements ProxyMethod<Entity> {
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) throws Exception {
-        return sessionContext.getDatastoreSession().getEntityId(entity);
+        return sessionContext.getDatastoreSession().getDatastoreEntityManager().getEntityId(entity);
     }
 }

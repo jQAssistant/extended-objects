@@ -13,6 +13,6 @@ public class HashCodeMethod<Entity> implements ProxyMethod<Entity> {
 
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
-        return sessionContext.getDatastoreSession().getEntityId(entity).hashCode();
+        return sessionContext.getDatastoreSession().getDatastoreEntityManager().getEntityId(entity).hashCode();
     }
 }

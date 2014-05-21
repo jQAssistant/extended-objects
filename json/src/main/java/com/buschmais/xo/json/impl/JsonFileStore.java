@@ -9,7 +9,7 @@ import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 import java.io.File;
 import java.util.Collection;
 
-public class JsonFileStore implements Datastore<JsonFileStoreSession, JsonNodeMetadata, String, JsonRelationMetadata, String> {
+public class JsonFileStore implements Datastore<JsonDatastoreSession, JsonNodeMetadata, String, JsonRelationMetadata, String> {
 
     private final File directory;
 
@@ -24,8 +24,8 @@ public class JsonFileStore implements Datastore<JsonFileStoreSession, JsonNodeMe
     }
 
     @Override
-    public JsonFileStoreSession createSession() {
-        return new JsonFileStoreSession(directory);
+    public JsonDatastoreSession createSession() {
+        return new JsonDatastoreSession(directory);
     }
 
     @Override

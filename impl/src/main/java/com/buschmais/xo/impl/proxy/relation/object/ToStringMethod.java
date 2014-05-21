@@ -13,6 +13,6 @@ public class ToStringMethod<Relation> extends AbstractToStringMethod<Relation> {
 
     @Override
     protected String getId(Relation datastoreType) {
-        return sessionContext.getDatastoreSession().getRelationId(datastoreType).toString();
+        return sessionContext.getDatastoreSession().getDatastoreRelationManager().getRelationId(datastoreType).toString();
     }
 }

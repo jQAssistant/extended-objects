@@ -22,24 +22,24 @@ public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Re
 
     @Override
     public boolean isDatastoreType(Object o) {
-        return sessionContext.getDatastoreSession().isRelation(o);
+        return sessionContext.getDatastoreSession().getDatastoreRelationManager().isRelation(o);
     }
 
     @Override
     public RelationId getDatastoreId(Relation relation) {
-        return sessionContext.getDatastoreSession().getRelationId(relation);
+        return sessionContext.getDatastoreSession().getDatastoreRelationManager().getRelationId(relation);
     }
 
     @Override
     protected TypeMetadataSet<?> getTypes(Relation relation) {
         DatastoreSession<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
-        Entity source = datastoreSession.getDatastorePropertyManager().getFrom(relation);
-        Entity target = datastoreSession.getDatastorePropertyManager().getTo(relation);
-        RelationDiscriminator discriminator = datastoreSession.getRelationDiscriminator(relation);
+        Entity source = datastoreSession.getDatastoreRelationManager().getFrom(relation);
+        Entity target = datastoreSession.getDatastoreRelationManager().getTo(relation);
+        RelationDiscriminator discriminator = datastoreSession.getDatastoreRelationManager().getRelationDiscriminator(relation);
         if (discriminator == null) {
             throw new XOException("Cannot determine type discriminators for relation '" + relation + "'");
         }
-        return sessionContext.getMetadataProvider().getRelationTypes(datastoreSession.getEntityDiscriminators(source), discriminator, datastoreSession.getEntityDiscriminators(target));
+        return sessionContext.getMetadataProvider().getRelationTypes(datastoreSession.getDatastoreEntityManager().getEntityDiscriminators(source), discriminator, datastoreSession.getDatastoreEntityManager().getEntityDiscriminators(target));
     }
 
     @Override

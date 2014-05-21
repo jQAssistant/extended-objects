@@ -1,6 +1,7 @@
 package com.buschmais.xo.impl;
 
-import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
+import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
+import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 
@@ -20,8 +21,7 @@ public abstract class AbstractPropertyManager<DatastoreType, Entity, Relation> {
     /**
      * Constructor.
      *
-     * @param sessionContext
-     *            The {@link com.buschmais.xo.impl.SessionContext}.
+     * @param sessionContext The {@link com.buschmais.xo.impl.SessionContext}.
      */
     public AbstractPropertyManager(
             SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext) {
@@ -35,32 +35,30 @@ public abstract class AbstractPropertyManager<DatastoreType, Entity, Relation> {
     /**
      * Get the target node of a single relationship.
      *
-     * @param source
-     *            The source entity.
+     * @param source The source entity.
      * @return The target node or <code>null</code>.
      */
     protected Relation getSingleRelation(Entity source,
-            RelationTypeMetadata metadata,
-            RelationTypeMetadata.Direction direction) {
-        DatastorePropertyManager<Entity, Relation, ?, ?> datastorePropertyManager = sessionContext
-                .getDatastoreSession().getDatastorePropertyManager();
-        if (datastorePropertyManager.hasSingleRelation(source, metadata,
+                                         RelationTypeMetadata metadata,
+                                         RelationTypeMetadata.Direction direction) {
+        DatastoreRelationManager<Entity, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> relationManager = sessionContext.getDatastoreSession().getDatastoreRelationManager();
+        if (relationManager.hasSingleRelation(source, metadata,
                 direction)) {
-            return datastorePropertyManager.getSingleRelation(source, metadata,
+            return relationManager.getSingleRelation(source, metadata,
                     direction);
         }
         return null;
     }
 
     public abstract void setProperty(DatastoreType datastoreType,
-            PrimitivePropertyMethodMetadata metadata, Object value);
+                                     PrimitivePropertyMethodMetadata metadata, Object value);
 
     public abstract Object getProperty(DatastoreType datastoreType,
-            PrimitivePropertyMethodMetadata metadata);
+                                       PrimitivePropertyMethodMetadata metadata);
 
     public abstract boolean hasProperty(DatastoreType datastoreType,
-            PrimitivePropertyMethodMetadata metadata);
+                                        PrimitivePropertyMethodMetadata metadata);
 
     public abstract void removeProperty(DatastoreType datastoreType,
-            PrimitivePropertyMethodMetadata metadata);
+                                        PrimitivePropertyMethodMetadata metadata);
 }

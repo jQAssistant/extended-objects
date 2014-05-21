@@ -3,12 +3,10 @@ package com.buschmais.xo.json.impl;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
-import com.buschmais.xo.json.impl.metadata.JsonRelationMetadata;
-import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.xo.spi.datastore.DatastoreQuery;
-import com.buschmais.xo.spi.datastore.DatastoreSession;
-import com.buschmais.xo.spi.datastore.DatastoreTransaction;
+import com.buschmais.xo.json.impl.metadata.JsonPrimitivePropertyMetadata;
+import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
+import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -18,12 +16,14 @@ import org.codehaus.jackson.node.ObjectNode;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, JsonNodeMetadata, String, Long, JsonRelation, JsonRelationMetadata, String> {
+/**
+ * Created by dimahler on 5/21/2014.
+ */
+public class JsonDatastoreEntityManager implements DatastoreEntityManager<UUID, ObjectNode, JsonNodeMetadata, String, JsonPrimitivePropertyMetadata> {
 
     private static final String ID_PROPERTY = "id";
     private static final String TYPES_PROPERTY = "types";
@@ -32,23 +32,13 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
 
     private final File directory;
 
-    public JsonFileStoreSession(File directory) {
+    public JsonDatastoreEntityManager(File directory) {
         this.directory = directory;
-    }
-
-    @Override
-    public DatastoreTransaction getDatastoreTransaction() {
-        return new JsonFileStoreTransaction();
     }
 
     @Override
     public boolean isEntity(Object o) {
         return JsonNode.class.isAssignableFrom(o.getClass());
-    }
-
-    @Override
-    public boolean isRelation(Object o) {
-        return JsonRelation.class.isAssignableFrom(o.getClass());
     }
 
     @Override
@@ -63,18 +53,8 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public String getRelationDiscriminator(JsonRelation jsonRelation) {
-        return null;
-    }
-
-    @Override
     public UUID getEntityId(ObjectNode jsonNode) {
         return UUID.fromString(jsonNode.get(ID_PROPERTY).asText());
-    }
-
-    @Override
-    public Long getRelationId(JsonRelation jsonRelation) {
-        return null;
     }
 
     @Override
@@ -105,16 +85,6 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public Class<? extends Annotation> getDefaultQueryLanguage() {
-        return null;
-    }
-
-    @Override
-    public <QL extends Annotation> DatastoreQuery<QL> createQuery(Class<QL> queryLanguage) {
-        return null;
-    }
-
-    @Override
     public void migrateEntity(ObjectNode jsonNode, TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators, TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> targetTypes, Set<String> targetDiscriminators) {
     }
 
@@ -129,16 +99,29 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public void flushRelation(JsonRelation jsonRelation) {
+    public void setProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {
+        Class<?> type = metadata.getAnnotatedMethod().getType();
+        if (String.class.equals(type)) {
+            objectNode.put(metadata.getAnnotatedMethod().getName(), (String) value);
+        } else {
+            throw new XOException("Unsupported type " + type + " for property " + metadata.getAnnotatedMethod().getName());
+        }
     }
 
     @Override
-    public DatastorePropertyManager getDatastorePropertyManager() {
-        return new JsonFileStorePropertyManager();
+    public boolean hasProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+        return objectNode.has(metadata.getAnnotatedMethod().getName());
     }
 
     @Override
-    public void close() {
+    public void removeProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+        objectNode.remove(metadata.getAnnotatedMethod().getName());
+    }
+
+
+    @Override
+    public Object getProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+        return objectNode.get(metadata.getAnnotatedMethod().getName());
     }
 
     /**
@@ -151,5 +134,4 @@ public class JsonFileStoreSession implements DatastoreSession<UUID, ObjectNode, 
         String id = getEntityId(objectNode).toString();
         return new File(directory, id + ".json");
     }
-
 }

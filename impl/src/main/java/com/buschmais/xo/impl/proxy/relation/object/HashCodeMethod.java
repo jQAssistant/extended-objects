@@ -13,6 +13,6 @@ public class HashCodeMethod<Relation> implements ProxyMethod<Relation> {
 
     @Override
     public Object invoke(Relation relation, Object instance, Object[] args) {
-        return sessionContext.getDatastoreSession().getRelationId(relation).hashCode();
+        return sessionContext.getDatastoreSession().getDatastoreRelationManager().getRelationId(relation).hashCode();
     }
 }

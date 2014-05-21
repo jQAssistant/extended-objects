@@ -2,8 +2,8 @@ package com.buschmais.xo.json.api;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.json.impl.JsonDatastoreSession;
 import com.buschmais.xo.json.impl.JsonFileStore;
-import com.buschmais.xo.json.impl.JsonFileStoreSession;
 import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
@@ -15,7 +15,7 @@ import java.net.URI;
 public class JsonFileStoreProvider implements XODatastoreProvider {
 
     @Override
-    public Datastore<JsonFileStoreSession, JsonNodeMetadata, String, JsonRelationMetadata, String> createDatastore(XOUnit xoUnit) {
+    public Datastore<JsonDatastoreSession, JsonNodeMetadata, String, JsonRelationMetadata, String> createDatastore(XOUnit xoUnit) {
         URI uri = xoUnit.getUri();
         if (!"file".equals(uri.getScheme())) {
             throw new XOException("Only file URIs are supported by this store.");
