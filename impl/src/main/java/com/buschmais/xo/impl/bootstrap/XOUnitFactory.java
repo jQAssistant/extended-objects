@@ -82,7 +82,7 @@ public class XOUnitFactory {
             try {
                 uri = new URI(urlName);
             } catch (URISyntaxException e) {
-                throw new XOException("Cannot convert '" + urlName + "' to url.");
+                throw new XOException("Cannot convert '" + urlName + "' to url.", e);
             }
             String providerName = xoUnitType.getProvider();
             Class<? extends XODatastoreProvider> provider = ClassHelper.getType(providerName);
@@ -114,7 +114,9 @@ public class XOUnitFactory {
     }
 
     private ConcurrencyMode getConcurrencyMode(ConcurrencyModeType concurrencyModeType) {
-        if (concurrencyModeType == null) return ConcurrencyMode.SINGLETHREADED;
+        if (concurrencyModeType == null) {
+            return ConcurrencyMode.SINGLETHREADED;
+        }
         switch (concurrencyModeType) {
             case SINGLETHREADED:
                 return ConcurrencyMode.SINGLETHREADED;
@@ -126,7 +128,9 @@ public class XOUnitFactory {
     }
 
     private ValidationMode getValidationMode(ValidationModeType validationModeType) {
-        if (validationModeType == null) return ValidationMode.AUTO;
+        if (validationModeType == null) {
+            return ValidationMode.AUTO;
+        }
         switch (validationModeType) {
             case NONE:
                 return ValidationMode.NONE;
@@ -138,7 +142,9 @@ public class XOUnitFactory {
     }
 
     private Transaction.TransactionAttribute getTransactionAttribute(TransactionAttributeType defaultTransactionAttributeType) {
-        if (defaultTransactionAttributeType == null) return Transaction.TransactionAttribute.NONE;
+        if (defaultTransactionAttributeType == null) {
+            return Transaction.TransactionAttribute.NONE;
+        }
         switch (defaultTransactionAttributeType) {
             case NONE:
                 return Transaction.TransactionAttribute.NONE;

@@ -124,12 +124,22 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             RelationPropertyKey that = (RelationPropertyKey) o;
-            if (direction != that.direction) return false;
-            if (!entityType.equals(that.entityType)) return false;
-            if (!relationTypeMetadata.equals(that.relationTypeMetadata)) return false;
+            if (direction != that.direction) {
+                return false;
+            }
+            if (!entityType.equals(that.entityType)) {
+                return false;
+            }
+            if (!relationTypeMetadata.equals(that.relationTypeMetadata)) {
+                return false;
+            }
             return true;
         }
 

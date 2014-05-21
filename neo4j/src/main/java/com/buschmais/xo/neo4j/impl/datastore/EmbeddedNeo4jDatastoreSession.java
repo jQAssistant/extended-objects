@@ -3,7 +3,6 @@ package com.buschmais.xo.neo4j.impl.datastore;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
-import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import org.neo4j.cypher.javacompat.ExecutionEngine;

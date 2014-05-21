@@ -2,7 +2,6 @@ package com.buschmais.xo.spi.interceptor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 
 public class InvocationContext {
 

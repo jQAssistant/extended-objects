@@ -43,7 +43,10 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
         }
         XODatastoreProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> XODatastoreProvider = XODatastoreProvider.class.cast(ClassHelper.newInstance(providerType));
         this.datastore = XODatastoreProvider.createDatastore(xoUnit);
-        this.pluginRepositoryManager = new PluginRepositoryManager(new QueryLanguagePluginRepository(datastore));
+
+        QueryLanguagePluginRepository qlPluginRepository = new QueryLanguagePluginRepository(datastore);
+        this.pluginRepositoryManager = new PluginRepositoryManager(qlPluginRepository);
+
         this.validationMode = xoUnit.getValidationMode();
         this.concurrencyMode = xoUnit.getConcurrencyMode();
         this.defaultTransactionAttribute = xoUnit.getDefaultTransactionAttribute();

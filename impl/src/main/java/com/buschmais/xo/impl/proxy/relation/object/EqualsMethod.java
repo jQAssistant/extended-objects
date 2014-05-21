@@ -23,7 +23,7 @@ public class EqualsMethod<Relation> implements ProxyMethod<Relation> {
         if (instanceManager.isInstance(other)) {
             Relation otherRelation = instanceManager.getDatastoreType(other);
             DatastoreSession<?, ?, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?> datastoreSession = sessionContext.getDatastoreSession();
-            return (datastoreSession.getRelationId(otherRelation).equals(datastoreSession.getRelationId(relation)));
+            return datastoreSession.getRelationId(otherRelation).equals(datastoreSession.getRelationId(relation));
         }
         return Boolean.FALSE;
     }

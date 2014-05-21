@@ -47,10 +47,16 @@ public abstract class AbstractAnnotatedElement<AE extends java.lang.reflect.Anno
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         AbstractAnnotatedElement that = (AbstractAnnotatedElement) o;
-        if (!annotated.equals(that.annotated)) return false;
+        if (!annotated.equals(that.annotated)) {
+            return false;
+        }
         return true;
     }
 
