@@ -22,19 +22,19 @@ public class TraceDatastoreSession<EntityId, Entity, EntityMetadata extends Data
     @Override
     public DatastoreTransaction getDatastoreTransaction() {
         DatastoreTransaction delegateDatastoreTransaction = delegate.getDatastoreTransaction();
-        return new TraceDatastoreTransaction(interceptorFactory.addInterceptor(delegateDatastoreTransaction, DatastoreTransaction.class));
+        return new TraceTransaction(interceptorFactory.addInterceptor(delegateDatastoreTransaction, DatastoreTransaction.class));
     }
 
     @Override
     public DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, ?> getDatastoreEntityManager() {
         DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, ?> delegate = this.delegate.getDatastoreEntityManager();
-        return new TraceDatastoreEntityManager<>(interceptorFactory.addInterceptor(delegate, DatastoreEntityManager.class));
+        return new TraceEntityManager<>(interceptorFactory.addInterceptor(delegate, DatastoreEntityManager.class));
     }
 
     @Override
     public DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, ?> getDatastoreRelationManager() {
         DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, ?> delegate = this.delegate.getDatastoreRelationManager();
-        return new TraceDatastoreRelationManager<>(interceptorFactory.addInterceptor(delegate, DatastoreRelationManager.class));
+        return new TraceRelationManager<>(interceptorFactory.addInterceptor(delegate, DatastoreRelationManager.class));
     }
 
     @Override

@@ -12,12 +12,12 @@ import java.util.UUID;
 public class JsonDatastoreSession implements DatastoreSession<UUID, ObjectNode, JsonNodeMetadata, String, Long, JsonRelation, JsonRelationMetadata, String> {
 
 
-    private final JsonDatastoreEntityManager entityManager;
-    private final JsonDatastoreRelationManager relationManager;
+    private final JsonEntityManager entityManager;
+    private final JsonRelationManager relationManager;
 
     public JsonDatastoreSession(File directory) {
-        this.entityManager = new JsonDatastoreEntityManager(directory);
-        this.relationManager = new JsonDatastoreRelationManager();
+        this.entityManager = new JsonEntityManager(directory);
+        this.relationManager = new JsonRelationManager();
     }
 
     @Override

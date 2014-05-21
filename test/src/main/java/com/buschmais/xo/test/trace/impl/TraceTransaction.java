@@ -5,11 +5,11 @@ import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 /**
  * {@link DatastoreTransaction} implementation allowing tracing on delegates.
  */
-class TraceDatastoreTransaction implements DatastoreTransaction {
+class TraceTransaction implements DatastoreTransaction {
 
     private DatastoreTransaction delegate;
 
-    public TraceDatastoreTransaction(DatastoreTransaction delegate) {
+    public TraceTransaction(DatastoreTransaction delegate) {
         this.delegate = delegate;
     }
 

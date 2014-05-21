@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * {@link com.buschmais.xo.spi.datastore.DatastoreMetadataFactory} implementation for Neo4j datastores.
  */
-public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label, RelationshipMetadata, Neo4jRelationshipType> {
+public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label, RelationshipMetadata, RelationshipType> {
 
     @Override
     public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
@@ -89,7 +89,7 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
         if (name == null) {
             name = StringUtils.capitalize(annotatedElement.getName());
         }
-        Neo4jRelationshipType relationshipType = new Neo4jRelationshipType(DynamicRelationshipType.withName(name));
+        RelationshipType relationshipType = new RelationshipType(DynamicRelationshipType.withName(name));
         return new RelationshipMetadata(relationshipType);
     }
 }

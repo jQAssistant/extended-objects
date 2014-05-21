@@ -6,13 +6,23 @@ import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 
 /**
- * Created by dimahler on 5/21/2014.
+ * Implementation of a
+ * {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager} which
+ * delegates to another implementation.
  */
-public class TraceDatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PrimitivePropertyMetadata> implements DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PrimitivePropertyMetadata> {
+public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PrimitivePropertyMetadata>
+        implements DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PrimitivePropertyMetadata> {
 
     private DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PrimitivePropertyMetadata> delegate;
 
-    public TraceDatastoreRelationManager(DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PrimitivePropertyMetadata> delegate) {
+    /**
+     * Constructor.
+     * 
+     * @param delegate
+     *            The delegate.
+     */
+    public TraceRelationManager(
+            DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PrimitivePropertyMetadata> delegate) {
         this.delegate = delegate;
     }
 

@@ -10,7 +10,7 @@ import org.codehaus.jackson.node.ObjectNode;
 /**
  * Created by dimahler on 5/21/2014.
  */
-public class JsonDatastoreRelationManager implements DatastoreRelationManager<ObjectNode, Long, JsonRelation, JsonRelationMetadata, String, JsonPrimitivePropertyMetadata> {
+public class JsonRelationManager implements DatastoreRelationManager<ObjectNode, Long, JsonRelation, JsonRelationMetadata, String, JsonPrimitivePropertyMetadata> {
 
     @Override
     public boolean isRelation(Object o) {

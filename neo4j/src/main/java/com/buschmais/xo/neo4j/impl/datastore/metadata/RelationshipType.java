@@ -1,12 +1,10 @@
 package com.buschmais.xo.neo4j.impl.datastore.metadata;
 
-import org.neo4j.graphdb.RelationshipType;
+public class RelationshipType implements org.neo4j.graphdb.RelationshipType {
 
-public class Neo4jRelationshipType implements RelationshipType {
+    private final org.neo4j.graphdb.RelationshipType delegate;
 
-    private final RelationshipType delegate;
-
-    public Neo4jRelationshipType(RelationshipType delegate) {
+    public RelationshipType(org.neo4j.graphdb.RelationshipType delegate) {
         this.delegate = delegate;
     }
 
@@ -23,7 +21,7 @@ public class Neo4jRelationshipType implements RelationshipType {
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof RelationshipType) {
-            return delegate.name().equals(((RelationshipType) obj).name());
+            return delegate.name().equals(((RelationshipType) obj).delegate.name());
         }
         return false;
     }

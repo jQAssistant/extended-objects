@@ -3,7 +3,7 @@ package com.buschmais.xo.neo4j.test.query;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
-import com.buschmais.xo.neo4j.impl.datastore.Neo4jDatastore;
+import com.buschmais.xo.neo4j.api.Neo4jDatastore;
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreSession;

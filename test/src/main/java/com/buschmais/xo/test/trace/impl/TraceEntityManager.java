@@ -10,13 +10,15 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import java.util.Set;
 
 /**
- * Created by dimahler on 5/21/2014.
+ * Implementation of a
+ * {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager} which
+ * delegates to another implementation.
  */
-public class TraceDatastoreEntityManager<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, PrimitivePropertyMeta> implements DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PrimitivePropertyMeta> {
+public class TraceEntityManager<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, PrimitivePropertyMeta> implements DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PrimitivePropertyMeta> {
 
     private DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PrimitivePropertyMeta> delegate;
 
-    public TraceDatastoreEntityManager(DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PrimitivePropertyMeta> delegate) {
+    public TraceEntityManager(DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PrimitivePropertyMeta> delegate) {
         this.delegate = delegate;
     }
 

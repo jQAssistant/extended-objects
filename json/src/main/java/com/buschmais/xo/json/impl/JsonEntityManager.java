@@ -23,7 +23,7 @@ import java.util.UUID;
 /**
  * Created by dimahler on 5/21/2014.
  */
-public class JsonDatastoreEntityManager implements DatastoreEntityManager<UUID, ObjectNode, JsonNodeMetadata, String, JsonPrimitivePropertyMetadata> {
+public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNode, JsonNodeMetadata, String, JsonPrimitivePropertyMetadata> {
 
     private static final String ID_PROPERTY = "id";
     private static final String TYPES_PROPERTY = "types";
@@ -32,7 +32,7 @@ public class JsonDatastoreEntityManager implements DatastoreEntityManager<UUID, 
 
     private final File directory;
 
-    public JsonDatastoreEntityManager(File directory) {
+    public JsonEntityManager(File directory) {
         this.directory = directory;
     }
 

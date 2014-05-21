@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.impl.datastore;
 
 import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.Neo4jRelationshipType;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipType;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
@@ -23,13 +23,13 @@ import java.lang.annotation.Annotation;
 public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements Neo4jDatastoreSession<GDS> {
 
     private final GDS graphDatabaseService;
-    private final Neo4jDatastoreEntityManager entityManager;
-    private final Neo4jDatastoreRelationManager relationManager;
+    private final Neo4jEntityManager entityManager;
+    private final Neo4jRelationManager relationManager;
 
     public AbstractNeo4jDatastoreSession(GDS graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
-        this.entityManager = new Neo4jDatastoreEntityManager(graphDatabaseService);
-        this.relationManager = new Neo4jDatastoreRelationManager();
+        this.entityManager = new Neo4jEntityManager(graphDatabaseService);
+        this.relationManager = new Neo4jRelationManager();
     }
 
     @Override
@@ -38,7 +38,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public DatastoreRelationManager<Node, Long, Relationship, RelationshipMetadata, Neo4jRelationshipType, ?> getDatastoreRelationManager() {
+    public DatastoreRelationManager<Node, Long, Relationship, RelationshipMetadata, RelationshipType, ?> getDatastoreRelationManager() {
         return relationManager;
     }
 

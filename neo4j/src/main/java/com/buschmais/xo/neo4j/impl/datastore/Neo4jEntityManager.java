@@ -17,15 +17,15 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by dimahler on 5/21/2014.
+ * Implementation of a {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager} for Neo4j.
  */
-public class Neo4jDatastoreEntityManager implements DatastoreEntityManager<Long, Node, NodeMetadata, Label, PropertyMetadata> {
+public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> implements DatastoreEntityManager<Long, Node, NodeMetadata, Label, PropertyMetadata> {
 
     private final GraphDatabaseService graphDatabaseService;
 
     private final Map<Long, Set<Label>> labelCache = new HashMap<>();
 
-    public Neo4jDatastoreEntityManager(GraphDatabaseService graphDatabaseService) {
+    public Neo4jEntityManager(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
     }
 
@@ -123,23 +123,5 @@ public class Neo4jDatastoreEntityManager implements DatastoreEntityManager<Long,
         labelCache.remove(node.getId());
     }
 
-    @Override
-    public void setProperty(Node entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata, Object value) {
-        entity.setProperty(metadata.getDatastoreMetadata().getName(), value);
-    }
 
-    @Override
-    public boolean hasProperty(Node entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
-        return entity.hasProperty(metadata.getDatastoreMetadata().getName());
-    }
-
-    @Override
-    public void removeProperty(Node entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
-        entity.removeProperty(metadata.getDatastoreMetadata().getName());
-    }
-
-    @Override
-    public Object getProperty(Node entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
-        return entity.getProperty(metadata.getDatastoreMetadata().getName());
-    }
 }

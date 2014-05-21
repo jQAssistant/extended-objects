@@ -2,16 +2,16 @@ package com.buschmais.xo.neo4j.impl.datastore.metadata;
 
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 
-public class RelationshipMetadata implements DatastoreRelationMetadata<Neo4jRelationshipType> {
+public class RelationshipMetadata implements DatastoreRelationMetadata<RelationshipType> {
 
-    private final Neo4jRelationshipType relationshipType;
+    private final RelationshipType relationshipType;
 
-    public RelationshipMetadata(Neo4jRelationshipType relationshipType) {
+    public RelationshipMetadata(RelationshipType relationshipType) {
         this.relationshipType = relationshipType;
     }
 
     @Override
-    public Neo4jRelationshipType getDiscriminator() {
+    public RelationshipType getDiscriminator() {
         return relationshipType;
     }
 }
