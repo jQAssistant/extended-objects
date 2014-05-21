@@ -3,7 +3,7 @@ package com.buschmais.xo.neo4j.test.query;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
-import com.buschmais.xo.neo4j.impl.datastore.AbstractNeo4jDatastore;
+import com.buschmais.xo.neo4j.impl.datastore.Neo4jDatastore;
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
@@ -26,12 +26,15 @@ public class CustomQueryLanguagePlugin implements QueryLanguagePlugin<CustomQuer
 
     private static final Pattern QUERY_PATTERN = Pattern.compile("(.*):(.*)=(.*)");
 
-    private AbstractNeo4jDatastore<?> datastore;
+    private Neo4jDatastore<?> datastore;
 
     @Override
     public Class<CustomQueryLanguage> init(Datastore<?, ?, ?, ?, ?> datastore) {
-        this.datastore = (AbstractNeo4jDatastore<?>) datastore;
-        return CustomQueryLanguage.class;
+        if (datastore instanceof Neo4jDatastore) {
+            this.datastore = (Neo4jDatastore<?>) datastore;
+            return CustomQueryLanguage.class;
+        }
+        throw new XOException("Datastore not supported");
     }
 
     @Override
@@ -44,7 +47,8 @@ public class CustomQueryLanguagePlugin implements QueryLanguagePlugin<CustomQuer
                     final String label = matcher.group(1);
                     String key = matcher.group(2);
                     String value = matcher.group(3);
-                    final ResourceIterator<Node> iterator = ((Neo4jDatastoreSession<?>) session).getGraphDatabaseService().findNodesByLabelAndProperty(DynamicLabel.label(label), key, value).iterator();
+                    final ResourceIterator<Node> iterator = ((Neo4jDatastoreSession<?>) session).getGraphDatabaseService()
+                            .findNodesByLabelAndProperty(DynamicLabel.label(label), key, value).iterator();
                     return new ResultIterator<Map<String, Object>>() {
                         @Override
                         public void close() {

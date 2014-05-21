@@ -8,7 +8,7 @@ import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import org.neo4j.graphdb.Label;
 
-public abstract class AbstractNeo4jDatastore<DS extends Neo4jDatastoreSession> implements Datastore<DS, NodeMetadata, Label, RelationshipMetadata, Neo4jRelationshipType> {
+public abstract class AbstractNeo4jDatastore<DS extends Neo4jDatastoreSession> implements Neo4jDatastore<DS> {
 
     private final Neo4jMetadataFactory metadataFactory = new Neo4jMetadataFactory();
 
