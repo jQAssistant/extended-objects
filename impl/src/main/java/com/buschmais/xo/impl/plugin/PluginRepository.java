@@ -6,6 +6,11 @@ package com.buschmais.xo.impl.plugin;
 public interface PluginRepository<Key, Plugin> {
 
     /**
+     * Initializes the plugin repository.
+     */
+    void init();
+
+    /**
      * Return the type of plugins managed by this repository.
      *
      * @return The type of plugins.

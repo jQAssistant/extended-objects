@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class PluginRepositoryManager {
 
-    private Map<Class<?>, PluginRepository<?, ?>> pluginManagers = new HashMap<>();
+    private Map<Class<?>, PluginRepository<?, ?>> pluginRepositories = new HashMap<>();
 
     /**
      * Constructor.
@@ -18,7 +18,8 @@ public class PluginRepositoryManager {
      */
     public PluginRepositoryManager(PluginRepository<?, ?>... pluginRepositories) {
         for (PluginRepository<?, ?> pluginRepository : pluginRepositories) {
-            this.pluginManagers.put(pluginRepository.getPluginType(), pluginRepository);
+            this.pluginRepositories.put(pluginRepository.getPluginType(), pluginRepository);
+            pluginRepository.init();
         }
     }
 
@@ -30,7 +31,7 @@ public class PluginRepositoryManager {
      * @return The {@link com.buschmais.xo.impl.plugin.PluginRepository}.
      */
     public <P extends PluginRepository<?, ?>> P getPluginManager(Class<?> pluginType) {
-        return (P) pluginManagers.get(pluginType);
+        return (P) pluginRepositories.get(pluginType);
     }
 
 }

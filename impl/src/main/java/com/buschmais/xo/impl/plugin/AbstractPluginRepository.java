@@ -22,6 +22,10 @@ public abstract class AbstractPluginRepository<Key, Plugin> implements PluginRep
      */
     public AbstractPluginRepository() {
         this.plugins = new ConcurrentHashMap<>();
+    }
+
+    @Override
+    public void init() {
         Class<Plugin> pluginType = (Class<Plugin>) getPluginType();
         for (Plugin plugin : ServiceLoader.load(pluginType)) {
             register(plugin);
