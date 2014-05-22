@@ -23,13 +23,13 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
 
     private Class<? extends Annotation> queryLanguage = null;
     private final QE expression;
-    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
     private final QueryLanguagePluginRepository queryLanguagePluginManager;
     private final Class<?> returnType;
     private final Collection<? extends Class<?>> returnTypes;
     private Map<String, Object> parameters = null;
 
-    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QE expression, Class<?> returnType,
+    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression, Class<?> returnType,
                        Collection<? extends Class<?>> returnTypes) {
         this.sessionContext = sessionContext;
         this.queryLanguagePluginManager = sessionContext.getPluginRepositoryManager().getPluginManager(QueryLanguagePlugin.class);
@@ -38,11 +38,11 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         this.returnTypes = returnTypes;
     }
 
-    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QE expression) {
+    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression) {
         this(sessionContext, expression, null, Collections.<Class<?>>emptyList());
     }
 
-    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, QE expression, Class<?> returnType) {
+    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression, Class<?> returnType) {
         this(sessionContext, expression, returnType, Collections.<Class<?>>emptyList());
     }
 
@@ -90,7 +90,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
                 effectiveParameters.put(name, value);
             }
         }
-        DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?> datastoreSession = sessionContext
+        DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> datastoreSession = sessionContext
                 .getDatastoreSession();
         if (queryLanguage == null) {
             queryLanguage = datastoreSession.getDefaultQueryLanguage();

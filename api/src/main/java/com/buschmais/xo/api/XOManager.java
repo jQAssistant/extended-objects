@@ -12,6 +12,15 @@ import static com.buschmais.xo.api.Transaction.TransactionAttribute.NOT_SUPPORTE
 public interface XOManager extends AutoCloseable {
 
     /**
+     * An example to be used for {@link #find(Class, com.buschmais.xo.api.XOManager.Example)}.
+     *
+     * @param <T> The type to be prepared.
+     */
+    public interface Example<T> {
+        void prepare(T example);
+    }
+
+    /**
      * Return the {@link XOTransaction} associated with the manager.
      *
      * @return The {@link XOTransaction}.
@@ -27,7 +36,7 @@ public interface XOManager extends AutoCloseable {
     Set<ConstraintViolation<Object>> validate();
 
     /**
-     * Find all property instances according to the given type and value (e.g. from an index).
+     * Find all instances according to the given type and value from an indexed property.
      *
      * @param <T>   The property type.
      * @param type  The interface of the property type.
@@ -35,6 +44,16 @@ public interface XOManager extends AutoCloseable {
      * @return An {@Iterable} returning the property instance.
      */
     <T> ResultIterable<T> find(Class<T> type, Object value);
+
+    /**
+     * Find all instances according to the given type and and {@link com.buschmais.xo.api.XOManager.Example}.
+     *
+     * @param <T>     The property type.
+     * @param type    The interface of the property type.
+     * @param example The {@link com.buschmais.xo.api.XOManager.Example}.
+     * @return An {@Iterable} returning the property instance.
+     */
+    <T> ResultIterable<T> find(Class<T> type, Example<T> example);
 
     /**
      * Create a new {@CompositeObject} instance.

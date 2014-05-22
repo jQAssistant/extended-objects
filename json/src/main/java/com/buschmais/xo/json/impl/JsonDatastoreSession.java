@@ -1,6 +1,7 @@
 package com.buschmais.xo.json.impl;
 
 import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
+import com.buschmais.xo.json.impl.metadata.JsonPropertyMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.xo.spi.datastore.*;
 import org.codehaus.jackson.node.ObjectNode;
@@ -9,7 +10,7 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.util.UUID;
 
-public class JsonDatastoreSession implements DatastoreSession<UUID, ObjectNode, JsonNodeMetadata, String, Long, JsonRelation, JsonRelationMetadata, String> {
+public class JsonDatastoreSession implements DatastoreSession<UUID, ObjectNode, JsonNodeMetadata, String, Long, JsonRelation, JsonRelationMetadata, String, JsonPropertyMetadata> {
 
 
     private final JsonEntityManager entityManager;
@@ -26,12 +27,12 @@ public class JsonDatastoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public DatastoreEntityManager<UUID, ObjectNode, JsonNodeMetadata, String, ?> getDatastoreEntityManager() {
+    public DatastoreEntityManager<UUID, ObjectNode, JsonNodeMetadata, String, JsonPropertyMetadata> getDatastoreEntityManager() {
         return entityManager;
     }
 
     @Override
-    public DatastoreRelationManager<ObjectNode, Long, JsonRelation, JsonRelationMetadata, String, ?> getDatastoreRelationManager() {
+    public DatastoreRelationManager<ObjectNode, Long, JsonRelation, JsonRelationMetadata, String, JsonPropertyMetadata> getDatastoreRelationManager() {
         return relationManager;
     }
 

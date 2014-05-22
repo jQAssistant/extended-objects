@@ -15,12 +15,12 @@ import java.util.*;
 
 class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterable<T> implements Query.Result<T> {
 
-    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
     private final ResultIterator<Map<String, Object>> iterator;
     private final SortedSet<Class<?>> returnTypes;
     private final RowProxyMethodService rowProxyMethodService;
 
-    QueryResultIterableImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext,
+    QueryResultIterableImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext,
                             ResultIterator<Map<String, Object>> iterator, SortedSet<Class<?>> returnTypes) {
         this.sessionContext = sessionContext;
         this.iterator = iterator;

@@ -1,8 +1,8 @@
 package com.buschmais.xo.impl;
 
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
-import com.buschmais.xo.impl.proxy.entity.InstanceInvocationHandler;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -48,12 +48,12 @@ public class ProxyFactory {
     }
 
     /**
-     * Extracts the {@link com.buschmais.xo.impl.proxy.entity.InstanceInvocationHandler} from a proxy instance.
+     * Extracts the {@link com.buschmais.xo.impl.proxy.InstanceInvocationHandler} from a proxy instance.
      *
      * @param instance        The proxy instance.
-     * @param <DatastoreType> The expected datastore type of the {@link com.buschmais.xo.impl.proxy.entity.InstanceInvocationHandler}
+     * @param <DatastoreType> The expected datastore type of the {@link com.buschmais.xo.impl.proxy.InstanceInvocationHandler}
      * @param <Instance>      The instance type.
-     * @return The {@link com.buschmais.xo.impl.proxy.entity.InstanceInvocationHandler}.
+     * @return The {@link com.buschmais.xo.impl.proxy.InstanceInvocationHandler}.
      */
     public <DatastoreType, Instance> InstanceInvocationHandler<DatastoreType> getInvocationHandler(Instance instance) {
         Instance effectiveInstance;

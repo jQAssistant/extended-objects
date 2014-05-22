@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AbstractProxyMethodService<E, M extends ProxyMethod<?>> implements ProxyMethodService<E, M> {
+public class AbstractProxyMethodService<E> implements ProxyMethodService<E> {
 
     private final Map<Method, ProxyMethod<E>> proxyMethods = new HashMap<>();
 

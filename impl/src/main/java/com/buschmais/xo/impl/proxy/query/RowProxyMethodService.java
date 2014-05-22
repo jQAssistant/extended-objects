@@ -21,7 +21,7 @@ import java.util.SortedSet;
 
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 
-public class RowProxyMethodService extends AbstractProxyMethodService<Map<String, Object>, RowProxyMethod> {
+public class RowProxyMethodService extends AbstractProxyMethodService<Map<String, Object>> {
 
     public RowProxyMethodService(SortedSet<Class<?>> types) {
         BeanMethodProvider beanMethodProvider = BeanMethodProvider.newInstance();

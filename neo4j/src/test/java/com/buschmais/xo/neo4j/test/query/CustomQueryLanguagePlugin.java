@@ -2,8 +2,8 @@ package com.buschmais.xo.neo4j.test.query;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
 import com.buschmais.xo.neo4j.api.Neo4jDatastore;
+import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
@@ -26,19 +26,16 @@ public class CustomQueryLanguagePlugin implements QueryLanguagePlugin<CustomQuer
 
     private static final Pattern QUERY_PATTERN = Pattern.compile("(.*):(.*)=(.*)");
 
-    private Neo4jDatastore<?> datastore;
-
     @Override
     public Class<CustomQueryLanguage> init(Datastore<?, ?, ?, ?, ?> datastore) {
         if (datastore instanceof Neo4jDatastore) {
-            this.datastore = (Neo4jDatastore<?>) datastore;
             return CustomQueryLanguage.class;
         }
         throw new XOException("Datastore not supported");
     }
 
     @Override
-    public DatastoreQuery<CustomQueryLanguage> createQuery(final DatastoreSession<?, ?, ?, ?, ?, ?, ?, ?> session) {
+    public DatastoreQuery<CustomQueryLanguage> createQuery(final DatastoreSession<?, ?, ?, ?, ?, ?, ?, ?, ?> session) {
         return new DatastoreQuery<CustomQueryLanguage>() {
             @Override
             public ResultIterator<Map<String, Object>> execute(String query, Map<String, Object> parameters) {

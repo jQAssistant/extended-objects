@@ -15,10 +15,10 @@ import java.util.List;
 
 public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> implements ProxyMethod<DatastoreType> {
 
-    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
     private final ResultOfMethodMetadata<?> resultOfMethodMetadata;
 
-    public AbstractResultOfMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, ResultOfMethodMetadata<?> resultOfMethodMetadata) {
+    public AbstractResultOfMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, ResultOfMethodMetadata<?> resultOfMethodMetadata) {
         this.sessionContext = sessionContext;
         this.resultOfMethodMetadata = resultOfMethodMetadata;
     }
@@ -45,5 +45,5 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
         return result;
     }
 
-    protected abstract AbstractInstanceManager<?, DatastoreType> getInstanceManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext);
+    protected abstract AbstractInstanceManager<?, DatastoreType> getInstanceManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext);
 }

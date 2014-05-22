@@ -26,9 +26,9 @@ import com.buschmais.xo.spi.reflection.SetPropertyMethod;
 
 import java.lang.reflect.Method;
 
-public class RelationProxyMethodService<Entity, Relation, M extends ProxyMethod<?>> extends AbstractProxyMethodService<Relation, M> {
+public class RelationProxyMethodService<Entity, Relation> extends AbstractProxyMethodService<Relation> {
 
-    public RelationProxyMethodService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext) {
+    public RelationProxyMethodService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata()) {
             for (MethodMetadata methodMetadata : typeMetadata.getProperties()) {
                 AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();

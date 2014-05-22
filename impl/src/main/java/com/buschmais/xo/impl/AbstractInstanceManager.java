@@ -3,8 +3,8 @@ package com.buschmais.xo.impl;
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.impl.cache.TransactionalCache;
 import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
+import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.impl.proxy.ProxyMethodService;
-import com.buschmais.xo.impl.proxy.entity.InstanceInvocationHandler;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 
 /**
@@ -170,5 +170,5 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      *
      * @return The {@link com.buschmais.xo.impl.proxy.ProxyMethodService}.
      */
-    protected abstract ProxyMethodService<DatastoreType, ?> getProxyMethodService();
+    protected abstract ProxyMethodService<DatastoreType> getProxyMethodService();
 }

@@ -65,19 +65,24 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
         labelCache.remove(entity.getId());
     }
 
-
     @Override
-    public ResultIterator<Node> findEntity(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, Label discriminator, Object value) {
-        IndexedPropertyMethodMetadata<?> indexedProperty = entityTypeMetadata.getDatastoreMetadata().getIndexedProperty();
-        if (indexedProperty == null) {
-            indexedProperty = entityTypeMetadata.getIndexedProperty();
+    public ResultIterator<Node> findEntity(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, Label discriminator, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
+        if (values.size() > 1) {
+            throw new XOException("Only one property value is supported for find operation");
         }
-        if (indexedProperty == null) {
-            throw new XOException("Type " + entityTypeMetadata.getAnnotatedType().getAnnotatedElement().getName() + " has no indexed property.");
+        Map.Entry<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entry = values.entrySet().iterator().next();
+        PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata = entry.getKey();
+        if (propertyMethodMetadata == null) {
+            IndexedPropertyMethodMetadata<?> indexedProperty = entityTypeMetadata.getDatastoreMetadata().getIndexedProperty();
+            if (indexedProperty == null) {
+                throw new XOException("Type " + entityTypeMetadata.getAnnotatedType().getAnnotatedElement().getName() + " has no indexed property.");
+            }
+            propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
         }
-        PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
+        PropertyMetadata propertyMetadata = propertyMethodMetadata.getDatastoreMetadata();
+        Object value = entry.getValue();
         ResourceIterable<Node> nodesByLabelAndProperty = graphDatabaseService.findNodesByLabelAndProperty(discriminator,
-                propertyMethodMetadata.getDatastoreMetadata().getName(), value);
+                propertyMetadata.getName(), value);
         final ResourceIterator<Node> iterator = nodesByLabelAndProperty.iterator();
         return new ResultIterator<Node>() {
             @Override

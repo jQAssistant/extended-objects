@@ -9,10 +9,10 @@ import com.buschmais.xo.spi.datastore.DatastoreSession;
 
 public class EqualsMethod<Relation> implements ProxyMethod<Relation> {
 
-    private final SessionContext<?, ?, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, ?, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
 
 
-    public EqualsMethod(SessionContext<?, ?, ?, ?, ?, Relation, ?, ?> sessionContext) {
+    public EqualsMethod(SessionContext<?, ?, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         this.sessionContext = sessionContext;
     }
 
@@ -22,7 +22,7 @@ public class EqualsMethod<Relation> implements ProxyMethod<Relation> {
         AbstractInstanceManager<?, Relation> instanceManager = sessionContext.getRelationInstanceManager();
         if (instanceManager.isInstance(other)) {
             Relation otherRelation = instanceManager.getDatastoreType(other);
-            DatastoreSession<?, ?, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?> datastoreSession = sessionContext.getDatastoreSession();
+            DatastoreSession<?, ?, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> datastoreSession = sessionContext.getDatastoreSession();
             return datastoreSession.getDatastoreRelationManager().getRelationId(otherRelation).equals(datastoreSession.getDatastoreRelationManager().getRelationId(relation));
         }
         return Boolean.FALSE;

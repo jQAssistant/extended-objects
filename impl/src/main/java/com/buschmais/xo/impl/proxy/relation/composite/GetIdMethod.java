@@ -8,9 +8,9 @@ import com.buschmais.xo.impl.SessionContext;
  */
 public class GetIdMethod<Relation> implements ProxyMethod<Relation> {
 
-    private final SessionContext<?, ?, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, ?, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
 
-    public GetIdMethod(SessionContext<?, ?, ?, ?, ?, Relation, ?, ?> sessionContext) {
+    public GetIdMethod(SessionContext<?, ?, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         this.sessionContext = sessionContext;
     }
 

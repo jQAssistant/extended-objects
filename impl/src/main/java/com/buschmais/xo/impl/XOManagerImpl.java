@@ -1,6 +1,8 @@
 package com.buschmais.xo.impl;
 
 import com.buschmais.xo.api.*;
+import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
+import com.buschmais.xo.impl.proxy.example.ExampleProxyMethodService;
 import com.buschmais.xo.impl.query.XOQueryImpl;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterable;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
@@ -8,10 +10,14 @@ import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
+import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
+import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
 import javax.validation.ConstraintViolation;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
@@ -20,37 +26,29 @@ import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.
 
 /**
  * Generic implementation of a {@link com.buschmais.xo.api.XOManager}.
- * 
- * @param <EntityId>
- *            The type of entity ids as provided by the datastore.
- * @param <Entity>
- *            The type entities as provided by the datastore.
- * @param <EntityMetadata>
- *            The type of entity metadata as provided by the datastore.
- * @param <EntityDiscriminator>
- *            The type of discriminators as provided by the datastore.
- * @param <RelationId>
- *            The type of relation ids as provided by the datastore.
- * @param <Relation>
- *            The type of relations as provided by the datastore.
- * @param <RelationMetadata>
- *            The type of relation metadata as provided by the datastore.
- * @param <RelationDiscriminator>
- *            The type of relation discriminators as provided by the datastore.
+ *
+ * @param <EntityId>              The type of entity ids as provided by the datastore.
+ * @param <Entity>                The type entities as provided by the datastore.
+ * @param <EntityMetadata>        The type of entity metadata as provided by the datastore.
+ * @param <EntityDiscriminator>   The type of discriminators as provided by the datastore.
+ * @param <RelationId>            The type of relation ids as provided by the datastore.
+ * @param <Relation>              The type of relations as provided by the datastore.
+ * @param <RelationMetadata>      The type of relation metadata as provided by the datastore.
+ * @param <RelationDiscriminator> The type of relation discriminators as provided by the datastore.
+ * @param <PropertyMetadata>      The type of property metadata as provided by the datastore.
  */
-public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator>
+public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata>
         implements XOManager {
 
-    private final SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext;
+    private final SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext;
 
     /**
      * Constructor.
-     * 
-     * @param sessionContext
-     *            The associated {@link SessionContext}.
+     *
+     * @param sessionContext The associated {@link SessionContext}.
      */
     public XOManagerImpl(
-            SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> sessionContext) {
+            SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext) {
         this.sessionContext = sessionContext;
     }
 
@@ -67,11 +65,53 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     @Override
     public <T> ResultIterable<T> find(final Class<T> type, final Object value) {
         EntityTypeMetadata<EntityMetadata> entityTypeMetadata = sessionContext.getMetadataProvider().getEntityMetadata(type);
+        IndexedPropertyMethodMetadata indexedProperty = entityTypeMetadata.getIndexedProperty();
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = new HashMap<>();
+        if (indexedProperty != null) {
+            exampleEntity.put(indexedProperty.getPropertyMethodMetadata(), value);
+        } else {
+            exampleEntity.put(null, value);
+        }
+        return find(type, exampleEntity);
+    }
+
+    @Override
+    public <T> ResultIterable<T> find(Class<T> type, Example<T> example) {
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = createExample(type, example);
+        return find(type, exampleEntity);
+    }
+
+    /**
+     * Setup an example entity.
+     *
+     * @param type    The type.
+     * @param example The provided example.
+     * @param <T>     The type.
+     * @return The example.
+     */
+    private <T> Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> createExample(Class<T> type, Example<T> example) {
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = new HashMap<>();
+        InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(exampleEntity, new ExampleProxyMethodService(type, sessionContext));
+        T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, new Class<?>[]{type}, CompositeObject.class);
+        example.prepare(instance);
+        return exampleEntity;
+    }
+
+    /**
+     * Find entities according to the given example entity.
+     *
+     * @param type   The entity type.
+     * @param entity The example entity.
+     * @param <T>    The entity type.
+     * @return A {@link com.buschmais.xo.api.ResultIterable}.
+     */
+    private <T> ResultIterable<T> find(Class<T> type, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entity) {
+        EntityTypeMetadata<EntityMetadata> entityTypeMetadata = sessionContext.getMetadataProvider().getEntityMetadata(type);
         EntityDiscriminator entityDiscriminator = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
         if (entityDiscriminator == null) {
             throw new XOException("Type " + type.getName() + " has no discriminator (i.e. cannot be identified in datastore).");
         }
-        final ResultIterator<Entity> iterator = sessionContext.getDatastoreSession().getDatastoreEntityManager().findEntity(entityTypeMetadata, entityDiscriminator, value);
+        final ResultIterator<Entity> iterator = sessionContext.getDatastoreSession().getDatastoreEntityManager().findEntity(entityTypeMetadata, entityDiscriminator, entity);
         return new TransactionalResultIterable<>(new AbstractResultIterable<T>() {
             @Override
             public ResultIterator<T> iterator() {
@@ -107,7 +147,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     public CompositeObject create(Class<?> type, Class<?>... types) {
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = getEffectiveTypes(type, types);
         Set<EntityDiscriminator> entityDiscriminators = sessionContext.getMetadataProvider().getEntityDiscriminators(effectiveTypes);
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = sessionContext
                 .getDatastoreSession();
         Entity entity = datastoreSession.getDatastoreEntityManager().createEntity(effectiveTypes, entityDiscriminators);
         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
@@ -149,7 +189,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         Entity entity = entityInstanceManager.getDatastoreType(instance);
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = sessionContext
                 .getDatastoreSession();
         Set<EntityDiscriminator> entityDiscriminators = datastoreSession.getDatastoreEntityManager().getEntityDiscriminators(entity);
         MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
@@ -185,7 +225,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     public <T> void delete(T instance) {
         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         AbstractInstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = sessionContext
                 .getDatastoreSession();
         if (entityInstanceManager.isInstance(instance)) {
             Entity entity = entityInstanceManager.getDatastoreType(instance);
@@ -245,7 +285,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <DS> DS getDatastoreSession(Class<DS> sessionType) {
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> datastoreSession = sessionContext
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = sessionContext
                 .getDatastoreSession();
         return sessionType.cast(datastoreSession);
     }

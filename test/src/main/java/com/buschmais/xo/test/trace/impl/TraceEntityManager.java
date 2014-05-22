@@ -7,6 +7,7 @@ import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -14,11 +15,11 @@ import java.util.Set;
  * {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager} which
  * delegates to another implementation.
  */
-public class TraceEntityManager<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, PrimitivePropertyMeta> implements DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PrimitivePropertyMeta> {
+public class TraceEntityManager<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, PropertyMetadata> implements DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> {
 
-    private DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PrimitivePropertyMeta> delegate;
+    private DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> delegate;
 
-    public TraceEntityManager(DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PrimitivePropertyMeta> delegate) {
+    public TraceEntityManager(DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> delegate) {
         this.delegate = delegate;
     }
 
@@ -43,8 +44,9 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
         delegate.deleteEntity(entity);
     }
 
-    public ResultIterator<Entity> findEntity(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator entityDiscriminator, Object value) {
-        return delegate.findEntity(type, entityDiscriminator, value);
+    @Override
+    public ResultIterator<Entity> findEntity(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator entityDiscriminator, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
+        return delegate.findEntity(type, entityDiscriminator, values);
     }
 
     public void migrateEntity(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> entityDiscriminators, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<EntityDiscriminator> targetDiscriminators) {
@@ -55,19 +57,19 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
         delegate.flushEntity(entity);
     }
 
-    public void setProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMeta> metadata, Object value) {
+    public void setProperty(Entity entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata, Object value) {
         delegate.setProperty(entity, metadata, value);
     }
 
-    public boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMeta> metadata) {
+    public boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
         return delegate.hasProperty(entity, metadata);
     }
 
-    public void removeProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMeta> metadata) {
+    public void removeProperty(Entity entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
         delegate.removeProperty(entity, metadata);
     }
 
-    public Object getProperty(Entity entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMeta> metadata) {
+    public Object getProperty(Entity entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
         return delegate.getProperty(entity, metadata);
     }
 }

@@ -16,7 +16,7 @@ import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
  */
 public abstract class AbstractPropertyManager<DatastoreType, Entity, Relation> {
 
-    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
 
     /**
      * Constructor.
@@ -24,11 +24,11 @@ public abstract class AbstractPropertyManager<DatastoreType, Entity, Relation> {
      * @param sessionContext The {@link com.buschmais.xo.impl.SessionContext}.
      */
     public AbstractPropertyManager(
-            SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext) {
+            SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         this.sessionContext = sessionContext;
     }
 
-    protected SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> getSessionContext() {
+    protected SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> getSessionContext() {
         return sessionContext;
     }
 

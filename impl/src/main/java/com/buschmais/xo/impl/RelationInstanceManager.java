@@ -11,10 +11,10 @@ import com.buschmais.xo.spi.datastore.TypeMetadataSet;
  */
 public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> extends AbstractInstanceManager<RelationId, Relation> {
 
-    private final SessionContext<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> sessionContext;
-    private final ProxyMethodService<Relation, ?> proxyMethodService;
+    private final SessionContext<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator, ?> sessionContext;
+    private final ProxyMethodService<Relation> proxyMethodService;
 
-    public RelationInstanceManager(SessionContext<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> sessionContext) {
+    public RelationInstanceManager(SessionContext<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator, ?> sessionContext) {
         super(sessionContext.getRelationCache(), sessionContext.getInstanceListenerService(), sessionContext.getProxyFactory());
         this.sessionContext = sessionContext;
         this.proxyMethodService = new RelationProxyMethodService<>(sessionContext);
@@ -32,7 +32,7 @@ public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Re
 
     @Override
     protected TypeMetadataSet<?> getTypes(Relation relation) {
-        DatastoreSession<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator> datastoreSession = sessionContext.getDatastoreSession();
+        DatastoreSession<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator, ?> datastoreSession = sessionContext.getDatastoreSession();
         Entity source = datastoreSession.getDatastoreRelationManager().getFrom(relation);
         Entity target = datastoreSession.getDatastoreRelationManager().getTo(relation);
         RelationDiscriminator discriminator = datastoreSession.getDatastoreRelationManager().getRelationDiscriminator(relation);
@@ -43,7 +43,7 @@ public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Re
     }
 
     @Override
-    protected ProxyMethodService<Relation, ?> getProxyMethodService() {
+    protected ProxyMethodService<Relation> getProxyMethodService() {
         return proxyMethodService;
     }
 }

@@ -5,9 +5,9 @@ import com.buschmais.xo.impl.proxy.common.composite.AbstractAsMethod;
 
 public class AsMethod<Relation> extends AbstractAsMethod<Relation> {
 
-    private final SessionContext<?, ?, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, ?, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
 
-    public AsMethod(SessionContext<?, ?, ?, ?, ?, Relation, ?, ?> sessionContext) {
+    public AsMethod(SessionContext<?, ?, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         this.sessionContext = sessionContext;
     }
 

@@ -10,19 +10,18 @@ import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
  * {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager} which
  * delegates to another implementation.
  */
-public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PrimitivePropertyMetadata>
-        implements DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PrimitivePropertyMetadata> {
+public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata>
+        implements DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> {
 
-    private DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PrimitivePropertyMetadata> delegate;
+    private DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> delegate;
 
     /**
      * Constructor.
-     * 
-     * @param delegate
-     *            The delegate.
+     *
+     * @param delegate The delegate.
      */
     public TraceRelationManager(
-            DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PrimitivePropertyMetadata> delegate) {
+            DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> delegate) {
         this.delegate = delegate;
     }
 
@@ -82,22 +81,22 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
     }
 
     @Override
-    public void setProperty(Relation entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata, Object value) {
+    public void setProperty(Relation entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata, Object value) {
         delegate.setProperty(entity, metadata, value);
     }
 
     @Override
-    public boolean hasProperty(Relation entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
+    public boolean hasProperty(Relation entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
         return delegate.hasProperty(entity, metadata);
     }
 
     @Override
-    public void removeProperty(Relation entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
+    public void removeProperty(Relation entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
         delegate.removeProperty(entity, metadata);
     }
 
     @Override
-    public Object getProperty(Relation entity, PrimitivePropertyMethodMetadata<PrimitivePropertyMetadata> metadata) {
+    public Object getProperty(Relation entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
         return delegate.getProperty(entity, metadata);
     }
 }

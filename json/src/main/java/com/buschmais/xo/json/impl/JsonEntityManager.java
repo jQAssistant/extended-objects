@@ -3,7 +3,7 @@ package com.buschmais.xo.json.impl;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
-import com.buschmais.xo.json.impl.metadata.JsonPrimitivePropertyMetadata;
+import com.buschmais.xo.json.impl.metadata.JsonPropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
@@ -17,13 +17,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Created by dimahler on 5/21/2014.
- */
-public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNode, JsonNodeMetadata, String, JsonPrimitivePropertyMetadata> {
+public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNode, JsonNodeMetadata, String, JsonPropertyMetadata> {
 
     private static final String ID_PROPERTY = "id";
     private static final String TYPES_PROPERTY = "types";
@@ -80,7 +78,7 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     }
 
     @Override
-    public ResultIterator<ObjectNode> findEntity(EntityTypeMetadata<JsonNodeMetadata> type, String discriminator, Object value) {
+    public ResultIterator<ObjectNode> findEntity(EntityTypeMetadata<JsonNodeMetadata> type, String s, Map<PrimitivePropertyMethodMetadata<JsonPropertyMetadata>, Object> values) {
         return null;
     }
 
@@ -99,7 +97,7 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     }
 
     @Override
-    public void setProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {
+    public void setProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPropertyMetadata> metadata, Object value) {
         Class<?> type = metadata.getAnnotatedMethod().getType();
         if (String.class.equals(type)) {
             objectNode.put(metadata.getAnnotatedMethod().getName(), (String) value);
@@ -109,18 +107,18 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     }
 
     @Override
-    public boolean hasProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+    public boolean hasProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPropertyMetadata> metadata) {
         return objectNode.has(metadata.getAnnotatedMethod().getName());
     }
 
     @Override
-    public void removeProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+    public void removeProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPropertyMetadata> metadata) {
         objectNode.remove(metadata.getAnnotatedMethod().getName());
     }
 
 
     @Override
-    public Object getProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+    public Object getProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPropertyMetadata> metadata) {
         return objectNode.get(metadata.getAnnotatedMethod().getName());
     }
 

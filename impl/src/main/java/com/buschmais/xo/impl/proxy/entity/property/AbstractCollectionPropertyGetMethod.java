@@ -24,7 +24,7 @@ import java.util.Set;
  */
 public abstract class AbstractCollectionPropertyGetMethod<DatastoreType, Entity, Relation, PropertyManager extends AbstractPropertyManager<DatastoreType, ?, ?>, M extends AbstractRelationPropertyMethodMetadata<?>> extends AbstractPropertyMethod<DatastoreType, PropertyManager, M> {
 
-    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
 
     /**
      * Constructor.
@@ -33,7 +33,7 @@ public abstract class AbstractCollectionPropertyGetMethod<DatastoreType, Entity,
      * @param propertyManager The property manager.
      * @param metadata        The metadata.
      */
-    public AbstractCollectionPropertyGetMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, PropertyManager propertyManager, M metadata) {
+    public AbstractCollectionPropertyGetMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, PropertyManager propertyManager, M metadata) {
         super(propertyManager, metadata);
         this.sessionContext = sessionContext;
     }
@@ -62,6 +62,6 @@ public abstract class AbstractCollectionPropertyGetMethod<DatastoreType, Entity,
      * @param sessionContext The session context.
      * @return The collection proxy.
      */
-    protected abstract AbstractCollectionProxy<?, ?, ?, ?> createCollectionProxy(DatastoreType datastoreType, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext);
+    protected abstract AbstractCollectionProxy<?, ?, ?, ?> createCollectionProxy(DatastoreType datastoreType, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext);
 
 }

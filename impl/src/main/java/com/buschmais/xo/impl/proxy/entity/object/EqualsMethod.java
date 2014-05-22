@@ -9,9 +9,9 @@ import com.buschmais.xo.spi.datastore.DatastoreSession;
 
 public class EqualsMethod<Entity> implements ProxyMethod<Entity> {
 
-    private final SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext;
+    private final SessionContext<?, Entity, ?, ?, ?, ?, ?, ?, ?> sessionContext;
 
-    public EqualsMethod(SessionContext<?, Entity, ?, ?, ?, ?, ?, ?> sessionContext) {
+    public EqualsMethod(SessionContext<?, Entity, ?, ?, ?, ?, ?, ?, ?> sessionContext) {
         this.sessionContext = sessionContext;
     }
 
@@ -21,7 +21,7 @@ public class EqualsMethod<Entity> implements ProxyMethod<Entity> {
         AbstractInstanceManager<?, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         if (entityInstanceManager.isInstance(other)) {
             Entity otherEntity = entityInstanceManager.getDatastoreType(other);
-            DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, ?, ? extends DatastoreRelationMetadata<?>, ?> datastoreSession = sessionContext.getDatastoreSession();
+            DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, ?, ? extends DatastoreRelationMetadata<?>, ?, ?> datastoreSession = sessionContext.getDatastoreSession();
             return datastoreSession.getDatastoreEntityManager().getEntityId(otherEntity).equals(datastoreSession.getDatastoreEntityManager().getEntityId(entity));
         }
         return Boolean.FALSE;

@@ -8,13 +8,13 @@ import java.util.Iterator;
 
 public class RelationCollectionProxy<Instance, Entity, Relation> extends AbstractCollectionProxy<Instance, Entity, Relation, RelationCollectionPropertyMethodMetadata<?>> implements Collection<Instance> {
 
-    public RelationCollectionProxy(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, Entity entity, RelationCollectionPropertyMethodMetadata<?> metadata) {
+    public RelationCollectionProxy(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, Entity entity, RelationCollectionPropertyMethodMetadata<?> metadata) {
         super(sessionContext, entity, metadata);
     }
 
     @Override
     public Iterator<Instance> iterator() {
-        final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
+        final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext = getSessionContext();
         final Iterator<Relation> iterator = sessionContext.getEntityPropertyManager().getRelationCollection(getEntity(), getMetadata());
         return sessionContext.getInterceptorFactory().addInterceptor(new Iterator<Instance>() {
 

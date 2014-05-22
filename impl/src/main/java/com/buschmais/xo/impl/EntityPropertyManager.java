@@ -20,13 +20,13 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
      *
      * @param sessionContext The {@link SessionContext}.
      */
-    public EntityPropertyManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext) {
+    public EntityPropertyManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         super(sessionContext);
     }
 
     @Override
     public void setProperty(Entity entity, PrimitivePropertyMethodMetadata metadata, Object value) {
-        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
+        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext = getSessionContext();
         sessionContext.getDatastoreSession().getDatastoreEntityManager().setProperty(entity, metadata, value);
         sessionContext.getEntityInstanceManager().updateInstance(entity);
     }
@@ -43,7 +43,7 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
 
     @Override
     public void removeProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
-        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
+        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext = getSessionContext();
         sessionContext.getDatastoreSession().getDatastoreEntityManager().removeProperty(entity, metadata);
         sessionContext.getEntityInstanceManager().updateInstance(entity);
     }
@@ -56,7 +56,7 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     }
 
     public <T> T createRelationReference(Entity sourceEntity, AbstractRelationPropertyMethodMetadata<?> fromProperty, Object target, AbstractRelationPropertyMethodMetadata<?> toProperty) {
-        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
+        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext = getSessionContext();
         AbstractInstanceManager<?, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         if (target != null) {
             Entity targetEntity = entityInstanceManager.getDatastoreType(target);
@@ -132,7 +132,7 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     }
 
     private void removeRelation(Entity source, Relation relation, AbstractRelationPropertyMethodMetadata<?> metadata) {
-        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext = getSessionContext();
+        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext = getSessionContext();
         AbstractInstanceManager<?, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         entityInstanceManager.updateInstance(source);
         entityInstanceManager.updateInstance(getReferencedEntity(relation, metadata.getDirection()));

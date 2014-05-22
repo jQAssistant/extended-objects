@@ -1,16 +1,13 @@
 package com.buschmais.xo.json.impl;
 
-import com.buschmais.xo.json.impl.metadata.JsonPrimitivePropertyMetadata;
+import com.buschmais.xo.json.impl.metadata.JsonPropertyMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 import org.codehaus.jackson.node.ObjectNode;
 
-/**
- * Created by dimahler on 5/21/2014.
- */
-public class JsonRelationManager implements DatastoreRelationManager<ObjectNode, Long, JsonRelation, JsonRelationMetadata, String, JsonPrimitivePropertyMetadata> {
+public class JsonRelationManager implements DatastoreRelationManager<ObjectNode, Long, JsonRelation, JsonRelationMetadata, String, JsonPropertyMetadata> {
 
     @Override
     public boolean isRelation(Object o) {
@@ -68,20 +65,20 @@ public class JsonRelationManager implements DatastoreRelationManager<ObjectNode,
     }
 
     @Override
-    public void setProperty(JsonRelation entity, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata, Object value) {
+    public void setProperty(JsonRelation entity, PrimitivePropertyMethodMetadata<JsonPropertyMetadata> metadata, Object value) {
     }
 
     @Override
-    public boolean hasProperty(JsonRelation jsonRelation, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+    public boolean hasProperty(JsonRelation jsonRelation, PrimitivePropertyMethodMetadata<JsonPropertyMetadata> metadata) {
         return false;
     }
 
     @Override
-    public void removeProperty(JsonRelation jsonRelation, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+    public void removeProperty(JsonRelation jsonRelation, PrimitivePropertyMethodMetadata<JsonPropertyMetadata> metadata) {
     }
 
     @Override
-    public Object getProperty(JsonRelation jsonRelation, PrimitivePropertyMethodMetadata<JsonPrimitivePropertyMetadata> metadata) {
+    public Object getProperty(JsonRelation jsonRelation, PrimitivePropertyMethodMetadata<JsonPropertyMetadata> metadata) {
         return null;
     }
 }

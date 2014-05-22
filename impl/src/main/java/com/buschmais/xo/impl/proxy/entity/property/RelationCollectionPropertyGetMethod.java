@@ -20,12 +20,12 @@ public class RelationCollectionPropertyGetMethod<Entity, Relation> extends Abstr
      * @param sessionContext The session context.
      * @param metadata       The metadata.
      */
-    public RelationCollectionPropertyGetMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, RelationCollectionPropertyMethodMetadata<?> metadata) {
+    public RelationCollectionPropertyGetMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, RelationCollectionPropertyMethodMetadata<?> metadata) {
         super(sessionContext, sessionContext.getEntityPropertyManager(), metadata);
     }
 
     @Override
-    protected AbstractCollectionProxy<?, ?, ?, ?> createCollectionProxy(Entity entity, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext) {
+    protected AbstractCollectionProxy<?, ?, ?, ?> createCollectionProxy(Entity entity, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         return new RelationCollectionProxy<>(sessionContext, entity, getMetadata());
     }
 

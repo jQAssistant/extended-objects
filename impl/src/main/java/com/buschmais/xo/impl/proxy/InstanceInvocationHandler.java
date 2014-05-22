@@ -1,7 +1,6 @@
-package com.buschmais.xo.impl.proxy.entity;
+package com.buschmais.xo.impl.proxy;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.impl.proxy.ProxyMethodService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -9,9 +8,9 @@ import java.lang.reflect.Method;
 public class InstanceInvocationHandler<DatastoreType> implements InvocationHandler {
 
     private DatastoreType datastoreType;
-    private final ProxyMethodService<DatastoreType, ?> proxyMethodService;
+    private final ProxyMethodService<DatastoreType> proxyMethodService;
 
-    public InstanceInvocationHandler(DatastoreType datastoreType, ProxyMethodService<DatastoreType, ?> proxyMethodService) {
+    public InstanceInvocationHandler(DatastoreType datastoreType, ProxyMethodService<DatastoreType> proxyMethodService) {
         this.datastoreType = datastoreType;
         this.proxyMethodService = proxyMethodService;
     }

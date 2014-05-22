@@ -8,13 +8,13 @@ import java.lang.annotation.Annotation;
 /**
  * {@link DatastoreSession} implementation allowing tracing on delegates.
  */
-public class TraceDatastoreSession<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> implements DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> {
+public class TraceDatastoreSession<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata> implements DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> {
 
-    private DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> delegate;
+    private DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> delegate;
 
     private InterceptorFactory interceptorFactory;
 
-    public TraceDatastoreSession(DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator> delegate, InterceptorFactory interceptorFactory) {
+    public TraceDatastoreSession(DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> delegate, InterceptorFactory interceptorFactory) {
         this.delegate = delegate;
         this.interceptorFactory = interceptorFactory;
     }
@@ -26,14 +26,14 @@ public class TraceDatastoreSession<EntityId, Entity, EntityMetadata extends Data
     }
 
     @Override
-    public DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, ?> getDatastoreEntityManager() {
-        DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, ?> delegate = this.delegate.getDatastoreEntityManager();
+    public DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> getDatastoreEntityManager() {
+        DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> delegate = this.delegate.getDatastoreEntityManager();
         return new TraceEntityManager<>(interceptorFactory.addInterceptor(delegate, DatastoreEntityManager.class));
     }
 
     @Override
-    public DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, ?> getDatastoreRelationManager() {
-        DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, ?> delegate = this.delegate.getDatastoreRelationManager();
+    public DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> getDatastoreRelationManager() {
+        DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> delegate = this.delegate.getDatastoreRelationManager();
         return new TraceRelationManager<>(interceptorFactory.addInterceptor(delegate, DatastoreRelationManager.class));
     }
 

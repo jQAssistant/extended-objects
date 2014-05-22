@@ -13,16 +13,16 @@ import java.util.Set;
 
 public class CacheSynchronizationService<Entity, Relation> {
 
-    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext;
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
     private ValidationMode validationMode;
 
-    public CacheSynchronizationService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?> sessionContext, ValidationMode validationMode) {
+    public CacheSynchronizationService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, ValidationMode validationMode) {
         this.sessionContext = sessionContext;
         this.validationMode = validationMode;
     }
 
     public void flush() {
-        DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?> datastoreSession = sessionContext.getDatastoreSession();
+        DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> datastoreSession = sessionContext.getDatastoreSession();
         InstanceListenerService instanceListenerService = sessionContext.getInstanceListenerService();
         for (Object instance : sessionContext.getRelationCache().writtenInstances()) {
             Relation relation = sessionContext.getRelationInstanceManager().getDatastoreType(instance);

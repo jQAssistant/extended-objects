@@ -8,10 +8,10 @@ import java.util.Set;
 
 public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extends AbstractInstanceManager<EntityId, Entity> {
 
-    private final SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?> sessionContext;
-    private final ProxyMethodService<Entity, ?> proxyMethodService;
+    private final SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?, ?> sessionContext;
+    private final ProxyMethodService<Entity> proxyMethodService;
 
-    public EntityInstanceManager(SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?> sessionContext) {
+    public EntityInstanceManager(SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?, ?> sessionContext) {
         super(sessionContext.getEntityCache(), sessionContext.getInstanceListenerService(), sessionContext.getProxyFactory());
         this.sessionContext = sessionContext;
         this.proxyMethodService = new EntityProxyMethodService<>(sessionContext);
@@ -35,7 +35,7 @@ public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extend
     }
 
     @Override
-    protected ProxyMethodService<Entity, ?> getProxyMethodService() {
+    protected ProxyMethodService<Entity> getProxyMethodService() {
         return proxyMethodService;
     }
 }

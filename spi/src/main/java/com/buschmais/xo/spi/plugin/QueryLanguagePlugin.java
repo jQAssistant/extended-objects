@@ -25,6 +25,6 @@ public interface QueryLanguagePlugin<QL extends Annotation> {
      * @param session The session.
      * @return The query.
      */
-    DatastoreQuery<QL> createQuery(DatastoreSession<?, ?, ?, ?, ?, ?, ?, ?> session);
+    DatastoreQuery<QL> createQuery(DatastoreSession<?, ?, ?, ?, ?, ?, ?, ?, ?> session);
 
 }
