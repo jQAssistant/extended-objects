@@ -79,7 +79,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     public <T> ResultIterable<T> find(final Class<T> type, final Object value) {
         EntityTypeMetadata<EntityMetadata> entityTypeMetadata = sessionContext.getMetadataProvider().getEntityMetadata(type);
         IndexedPropertyMethodMetadata indexedProperty = entityTypeMetadata.getIndexedProperty();
-        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = new HashMap<>();
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = new HashMap<>(1);
         if (indexedProperty != null) {
             exampleEntity.put(indexedProperty.getPropertyMethodMetadata(), value);
         } else {
