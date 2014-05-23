@@ -40,6 +40,7 @@
         <dependency>
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.api</artifactId>
+            <classifier>${language.classifier}</classifier>
         </dependency>
     </dependencies>
 

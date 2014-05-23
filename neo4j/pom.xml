@@ -136,14 +136,17 @@
         <dependency>
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.api</artifactId>
+            <classifier>${language.classifier}</classifier>
         </dependency>
         <dependency>
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.spi</artifactId>
+            <classifier>${language.classifier}</classifier>
         </dependency>
         <dependency>
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.impl</artifactId>
+            <classifier>${language.classifier}</classifier>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
@@ -171,6 +174,7 @@
         <dependency>
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.test</artifactId>
+            <classifier>${language.classifier}</classifier>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

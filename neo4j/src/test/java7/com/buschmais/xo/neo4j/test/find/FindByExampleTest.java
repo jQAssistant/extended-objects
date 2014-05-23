@@ -13,7 +13,7 @@ import org.junit.runners.Parameterized;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-import static com.buschmais.xo.api.XOManager.Example;
+import com.buschmais.xo.api.Example;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 

@@ -12,15 +12,6 @@ import static com.buschmais.xo.api.Transaction.TransactionAttribute.NOT_SUPPORTE
 public interface XOManager extends AutoCloseable {
 
     /**
-     * An example to be used for {@link #find(com.buschmais.xo.api.XOManager.Example, Class)}.
-     *
-     * @param <T> The type to be prepared.
-     */
-    public interface Example<T> {
-        void prepare(T example);
-    }
-
-    /**
      * Return the {@link XOTransaction} associated with the manager.
      *
      * @return The {@link XOTransaction}.
@@ -41,32 +32,32 @@ public interface XOManager extends AutoCloseable {
      * @param <T>   The property type.
      * @param type  The interface of the property type.
      * @param value The value.
-     * @return An {@Iterable} returning the property instance.
+     * @return An {@link Iterable} returning the property instance.
      */
     <T> ResultIterable<T> find(Class<T> type, Object value);
 
     /**
-     * Find all instances according to the given type and and {@link com.buschmais.xo.api.XOManager.Example}.
+     * Find all instances according to the given type and and {@link Example}.
      *
      * @param <T>     The property type.
      * @param type    The interface of the property type.
-     * @param example The {@link com.buschmais.xo.api.XOManager.Example}.
-     * @return An {@Iterable} returning the property instance.
+     * @param example The {@link Example}.
+     * @return An {@link Iterable} returning the property instance.
      */
     <T> ResultIterable<T> find(Example<T> example, Class<T> type);
 
     /**
-     * Find all instances according to the given type and and {@link com.buschmais.xo.api.XOManager.Example}.
+     * Find all instances according to the given type and and {@link Example}.
      *
      * @param type    The interface of the property type.
-     * @param example The {@link com.buschmais.xo.api.XOManager.Example}.
-     * @return An {@Iterable} returning the property instance.
+     * @param example The {@link Example}.
+     * @return An {@link Iterable} returning the property instance.
      */
     ResultIterable<CompositeObject> find(Example<CompositeObject> example, Class<?> type, Class<?>... types);
 
 
     /**
-     * Create a new {@CompositeObject} instance.
+     * Create a new {@link CompositeObject} instance.
      *
      * @param type  The interface the property type shall implement.
      * @param types Additional interfaces the property type shall implement.

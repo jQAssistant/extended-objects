@@ -12,14 +12,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Defines a relationship.
- * <p/>
- * Can be used on the following java elements
+ * Can be used on the following java elements:
  * <ul>
  * <li>get methods references or collections of other composite objects (optional).</li>
  * <li>relation qualifier types (mandatory).</li>
  * <li>relation types (mandatory)</li>
  * </ul
- * </p>
  */
 @RelationDefinition
 @Retention(RUNTIME)
