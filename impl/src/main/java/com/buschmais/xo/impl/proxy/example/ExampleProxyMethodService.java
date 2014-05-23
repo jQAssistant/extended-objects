@@ -1,8 +1,10 @@
 package com.buschmais.xo.impl.proxy.example;
 
+import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.AbstractProxyMethodService;
+import com.buschmais.xo.impl.proxy.example.composite.AsMethod;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.metadata.method.MethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
@@ -30,5 +32,6 @@ public class ExampleProxyMethodService<Entity> extends AbstractProxyMethodServic
                 }
             }
         }
+        addMethod(new AsMethod(), CompositeObject.class, "as", Class.class);
     }
 }

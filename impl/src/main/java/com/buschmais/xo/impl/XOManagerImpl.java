@@ -12,11 +12,14 @@ import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.spi.metadata.type.DatastoreTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
 import javax.validation.ConstraintViolation;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,16 +29,25 @@ import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.
 
 /**
  * Generic implementation of a {@link com.buschmais.xo.api.XOManager}.
- *
- * @param <EntityId>              The type of entity ids as provided by the datastore.
- * @param <Entity>                The type entities as provided by the datastore.
- * @param <EntityMetadata>        The type of entity metadata as provided by the datastore.
- * @param <EntityDiscriminator>   The type of discriminators as provided by the datastore.
- * @param <RelationId>            The type of relation ids as provided by the datastore.
- * @param <Relation>              The type of relations as provided by the datastore.
- * @param <RelationMetadata>      The type of relation metadata as provided by the datastore.
- * @param <RelationDiscriminator> The type of relation discriminators as provided by the datastore.
- * @param <PropertyMetadata>      The type of property metadata as provided by the datastore.
+ * 
+ * @param <EntityId>
+ *            The type of entity ids as provided by the datastore.
+ * @param <Entity>
+ *            The type entities as provided by the datastore.
+ * @param <EntityMetadata>
+ *            The type of entity metadata as provided by the datastore.
+ * @param <EntityDiscriminator>
+ *            The type of discriminators as provided by the datastore.
+ * @param <RelationId>
+ *            The type of relation ids as provided by the datastore.
+ * @param <Relation>
+ *            The type of relations as provided by the datastore.
+ * @param <RelationMetadata>
+ *            The type of relation metadata as provided by the datastore.
+ * @param <RelationDiscriminator>
+ *            The type of relation discriminators as provided by the datastore.
+ * @param <PropertyMetadata>
+ *            The type of property metadata as provided by the datastore.
  */
 public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata>
         implements XOManager {
@@ -44,8 +56,9 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     /**
      * Constructor.
-     *
-     * @param sessionContext The associated {@link SessionContext}.
+     * 
+     * @param sessionContext
+     *            The associated {@link SessionContext}.
      */
     public XOManagerImpl(
             SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext) {
@@ -76,42 +89,59 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
-    public <T> ResultIterable<T> find(Class<T> type, Example<T> example) {
-        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = createExample(type, example);
+    public <T> ResultIterable<T> find(Example<T> example, Class<T> type) {
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type);
         return find(type, exampleEntity);
+    }
+
+    @Override
+    public ResultIterable<CompositeObject> find(Example<CompositeObject> example, Class<?> type, Class<?>... types) {
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type, types);
+        return this.find(type, exampleEntity);
     }
 
     /**
      * Setup an example entity.
-     *
-     * @param type    The type.
-     * @param example The provided example.
-     * @param <T>     The type.
+     * 
+     * @param type
+     *            The type.
+     * @param example
+     *            The provided example.
+     * @param <T>
+     *            The type.
      * @return The example.
      */
-    private <T> Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> createExample(Class<T> type, Example<T> example) {
+    private <T> Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> prepareExample(Example<T> example, Class<?> type, Class<?>... types) {
         Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = new HashMap<>();
         InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(exampleEntity, new ExampleProxyMethodService(type, sessionContext));
-        T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, new Class<?>[]{type}, CompositeObject.class);
+        List<Class<?>> effectiveTypes = new ArrayList<>();
+        effectiveTypes.add(type);
+        effectiveTypes.addAll(Arrays.asList(types));
+        T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, effectiveTypes.toArray(new Class<?>[effectiveTypes.size()]),
+                CompositeObject.class);
         example.prepare(instance);
         return exampleEntity;
     }
 
     /**
      * Find entities according to the given example entity.
-     *
-     * @param type   The entity type.
-     * @param entity The example entity.
-     * @param <T>    The entity type.
+     * 
+     * @param type
+     *            The entity type.
+     * @param entity
+     *            The example entity.
+     * @param <T>
+     *            The entity type.
      * @return A {@link com.buschmais.xo.api.ResultIterable}.
      */
-    private <T> ResultIterable<T> find(Class<T> type, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entity) {
+    private <T> ResultIterable<T> find(Class<?> type, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entity) {
         EntityTypeMetadata<EntityMetadata> entityTypeMetadata = sessionContext.getMetadataProvider().getEntityMetadata(type);
         EntityDiscriminator entityDiscriminator = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
         if (entityDiscriminator == null) {
             throw new XOException("Type " + type.getName() + " has no discriminator (i.e. cannot be identified in datastore).");
         }
-        final ResultIterator<Entity> iterator = sessionContext.getDatastoreSession().getDatastoreEntityManager().findEntity(entityTypeMetadata, entityDiscriminator, entity);
+        final ResultIterator<Entity> iterator = sessionContext.getDatastoreSession().getDatastoreEntityManager()
+                .findEntity(entityTypeMetadata, entityDiscriminator, entity);
         return new TransactionalResultIterable<>(new AbstractResultIterable<T>() {
             @Override
             public ResultIterator<T> iterator() {

@@ -1,9 +1,11 @@
 package com.buschmais.xo.neo4j.test.find;
 
+import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.find.composite.A;
+import com.buschmais.xo.neo4j.test.find.composite.B;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -24,7 +26,7 @@ public class FindByExampleTest extends AbstractNeo4jXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(A.class);
+        return xoUnits(A.class, B.class);
     }
 
     @Test
@@ -35,12 +37,28 @@ public class FindByExampleTest extends AbstractNeo4jXOManagerTest {
         a.setValue("A1");
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(xoManager.find(A.class, new Example<A>() {
+        assertThat(xoManager.find(new Example<A>() {
             @Override
             public void prepare(A example) {
                 example.setValue("A1");
             }
-        }).getSingleResult(), equalTo(a));
+        }, A.class).getSingleResult(), equalTo(a));
+    }
+
+    @Test
+    public void findCompositeByExample() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        CompositeObject compositeObject = xoManager.create(A.class, B.class);
+        compositeObject.as(A.class).setValue("A1");
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
+        assertThat(xoManager.find(new Example<CompositeObject>() {
+            @Override
+            public void prepare(CompositeObject example) {
+                example.as(A.class).setValue("A1");
+            }
+        }, A.class, B.class).getSingleResult(), equalTo(compositeObject));
     }
 
 }
