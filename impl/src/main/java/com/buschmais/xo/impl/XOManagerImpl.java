@@ -12,7 +12,6 @@ import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.DatastoreTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
 import javax.validation.ConstraintViolation;
@@ -85,19 +84,19 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         } else {
             exampleEntity.put(null, value);
         }
-        return find(type, exampleEntity);
+        return findByExample(type, exampleEntity);
     }
 
     @Override
     public <T> ResultIterable<T> find(Example<T> example, Class<T> type) {
         Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type);
-        return find(type, exampleEntity);
+        return findByExample(type, exampleEntity);
     }
 
     @Override
     public ResultIterable<CompositeObject> find(Example<CompositeObject> example, Class<?> type, Class<?>... types) {
         Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type, types);
-        return this.find(type, exampleEntity);
+        return findByExample(type, exampleEntity);
     }
 
     /**
@@ -134,7 +133,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
      *            The entity type.
      * @return A {@link com.buschmais.xo.api.ResultIterable}.
      */
-    private <T> ResultIterable<T> find(Class<?> type, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entity) {
+    private <T> ResultIterable<T> findByExample(Class<?> type, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entity) {
         EntityTypeMetadata<EntityMetadata> entityTypeMetadata = sessionContext.getMetadataProvider().getEntityMetadata(type);
         EntityDiscriminator entityDiscriminator = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
         if (entityDiscriminator == null) {

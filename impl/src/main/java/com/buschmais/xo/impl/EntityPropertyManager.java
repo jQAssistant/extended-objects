@@ -10,7 +10,6 @@ import java.util.Iterator;
 
 /**
  * Contains methods for reading and creating relationships specified by the given metadata.
- * <p/>
  * <p>For each provided method the direction of the relationships is handled transparently for the caller.</p>
  */
 public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyManager<Entity, Entity, Relation> {
@@ -69,8 +68,9 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     }
 
     public Object getEntityReference(Entity entity, EntityReferencePropertyMethodMetadata metadata) {
-        Relation singleRelation = getSingleRelation(entity, metadata.getRelationshipMetadata(), metadata.getDirection());
-        if (singleRelation != null) {
+        DatastoreRelationManager<Entity, ?, Relation, ?, ?, ?> relationManager = getSessionContext().getDatastoreSession().getDatastoreRelationManager();
+        if (relationManager.hasSingleRelation(entity, metadata.getRelationshipMetadata(), metadata.getDirection())) {
+            Relation singleRelation = (Relation) relationManager.getSingleRelation(entity, metadata.getRelationshipMetadata(), metadata.getDirection());
             Entity target = getReferencedEntity(singleRelation, metadata.getDirection());
             return getSessionContext().getEntityInstanceManager().readInstance(target);
         }
@@ -99,8 +99,9 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     }
 
     public Object getRelationReference(Entity entity, RelationReferencePropertyMethodMetadata<?> metadata) {
-        Relation singleRelation = getSingleRelation(entity, metadata.getRelationshipMetadata(), metadata.getDirection());
-        if (singleRelation != null) {
+        DatastoreRelationManager<Entity, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> relationManager = getSessionContext().getDatastoreSession().getDatastoreRelationManager();
+        if (relationManager.hasSingleRelation(entity, metadata.getRelationshipMetadata(), metadata.getDirection())) {
+            Relation singleRelation = (Relation) relationManager.getSingleRelation(entity, metadata.getRelationshipMetadata(), metadata.getDirection());
             return getSessionContext().getRelationInstanceManager().readInstance(singleRelation);
         }
         return null;
@@ -175,13 +176,13 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     private Relation createSingleReference(Entity sourceEntity, AbstractRelationPropertyMethodMetadata<?> metadata, Entity targetEntity) {
         DatastoreRelationManager<Entity, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> relationManager = getSessionContext().getDatastoreSession().getDatastoreRelationManager();
         if (relationManager.hasSingleRelation(sourceEntity, metadata.getRelationshipMetadata(), metadata.getDirection())) {
-            Relation relation = relationManager.getSingleRelation(sourceEntity, metadata.getRelationshipMetadata(), metadata.getDirection());
+            Relation relation = (Relation) relationManager.getSingleRelation(sourceEntity, metadata.getRelationshipMetadata(), metadata.getDirection());
             removeRelation(sourceEntity, relation, metadata);
         }
-        return targetEntity != null ? relationManager.createRelation(sourceEntity, metadata.getRelationshipMetadata(), metadata.getDirection(), targetEntity) : null;
+        return targetEntity != null ? (Relation) relationManager.createRelation(sourceEntity, metadata.getRelationshipMetadata(), metadata.getDirection(), targetEntity) : null;
     }
 
     private Relation createReference(Entity sourceEntity, RelationTypeMetadata metadata, RelationTypeMetadata.Direction direction, Entity targetEntity) {
-        return getSessionContext().getDatastoreSession().getDatastoreRelationManager().createRelation(sourceEntity, metadata, direction, targetEntity);
+        return (Relation) getSessionContext().getDatastoreSession().getDatastoreRelationManager().createRelation(sourceEntity, metadata, direction, targetEntity);
     }
 }

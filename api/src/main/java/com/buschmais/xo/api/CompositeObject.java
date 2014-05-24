@@ -6,7 +6,10 @@ package com.buschmais.xo.api;
 public interface CompositeObject {
 
     /**
-     * Return the id of the object
+     * Return the id of the object.
+     *
+     * @param <I> The id type.
+     * @return The id of the object.
      */
     <I> I getId();
 

@@ -12,7 +12,7 @@
 
     <properties>
         <org.osgi_version>4.3.1</org.osgi_version>
-        <paxexam.version>3.4.0</paxexam.version>
+        <paxexam.version>3.5.0</paxexam.version>
     </properties>
 
     <build>
@@ -70,10 +70,12 @@
         <dependency>
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.api</artifactId>
+            <classifier>${language.classifier}</classifier>
         </dependency>
         <dependency>
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.spi</artifactId>
+            <classifier>${language.classifier}</classifier>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>

@@ -8,7 +8,6 @@ import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 
 /**
  * Contains methods for reading and creating relationships specified by the given metadata.
- * <p/>
  * <p>For each provided method the direction of the relationships is handled transparently for the caller.</p>
  */
 public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyManager<Relation, Entity, Relation> {

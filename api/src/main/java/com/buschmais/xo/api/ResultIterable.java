@@ -1,9 +1,9 @@
 package com.buschmais.xo.api;
 
 /**
- * An {@Iterable} which allows retrieving a single result.
+ * An {@link Iterable} which allows retrieving a single result.
  *
- * @param <T> The type returned by the {@Iterable}.
+ * @param <T> The type returned by the {@link Iterable}.
  */
 public interface ResultIterable<T> extends Iterable<T> {
 
