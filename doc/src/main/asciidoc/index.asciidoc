@@ -195,9 +195,11 @@ public class TempleOfDoom {
 ----
 
 = Available Datastore implementations
+
 - Neo4j
 - Titan
-- Generic Tinkerpop
+- Tinkerpop Blueprints
+- OrientDb
 
 = Neo4j Datastore
 == Introduction
@@ -319,7 +321,19 @@ pom.xml
 </project>
 ----
 
-== API Overview
+= Titan Datastore
+
+https://github.com/PureSolTechnologies/extended-objects-titan
+
+= TinkerPop Blueprints Datastore
+
+https://github.com/BluWings/xo-tinkerpop-blueprints
+
+= OrientDb Datastore
+
+https://github.com/BluWings/xo-orientdb
+
+= API Overview
 
 eXtended Objects provides an API which re-uses concepts of other frameworks and standards like JPA or JDO:
 
