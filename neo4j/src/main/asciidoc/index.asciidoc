@@ -1,0 +1,224 @@
+= eXtended Objects - Neo4j Datastore
+Dirk Mahler <dirk.mahler@buschmais.com>
+
+This document describes the Neo4j datastore for http://github.com/buschmais/extended-objects[eXtended Objects].
+
+:numbered!:
+[abstract]
+== Introduction
+
+As a graph database Neo4j provides very powerful capabilities to store and query highly interconnected data structures
+consisting of nodes and relationships between them. With release 2.0 the concept of labels has been introduced. One or
+more labels can be added to a single node:
+
+[source]
+----
+create
+  (a:Person:Actor)
+set
+  a.name="Harrison Ford"
+----
+
+Using labels it is possible to write comprehensive queries using Cypher:
+
+[source]
+----
+match
+  (a:Person)
+where
+  a.name="Harrison Ford"
+return
+  a.name;
+----
+
+If a node has a label it can be assumed that it represents some type of data which requires the presence of specific
+properties and relationships (e.g. property "name" for persons, "ACTED_IN" relations to movies). This implies that a
+Neo4j label can be represented as a Java interface and vice versa.
+
+Person.java
+[source,java]
+----
+@Label("Person") // The value "Person" can be omitted, in this case the class name is used
+public interface Person {
+  String getName();
+  void setName();
+}
+----
+
+
+Actor.java
+[source,java]
+----
+@Label("Actor")
+public interface Actor extends Person {
+  @ActedIn
+  @Outgoing
+  List<Movie> getActedIn();
+}
+----
+
+
+Director.java
+[source,java]
+----
+@Label("Director")
+public interface Director extends Person {
+
+  @Directed
+  @Outgoing
+  List<Movie> getDirected();
+}
+----
+
+
+Movie.java
+[source,java]
+----
+@Label("Movie")
+public interface Movie {
+  String getTitle();
+  void setTitle();
+
+  @Directed
+  @Incoming
+  Director getDirectedBy();
+  void setDirectedBy(Director directedBy);
+
+  @ActedIn
+  @Incoming
+  List<Actors> getActors();
+}
+----
+
+
+ActedIn.java
+[source,java]
+----
+/**
+* Qualifier to be used for bi-directional relations.
+*/
+@Relation("ACTED_IN")
+@Retention(RUNTIME)
+public @interface ActedIn {
+}
+----
+
+
+
+Directed.java
+[source,java]
+----
+/**
+* Qualifier to be used for bi-directional relations.
+*/
+@Relation("DIRECTED")
+@Retention(RUNTIME)
+public @interface Directed {
+}
+----
+
+== Maven Dependencies
+The Neo4j datastore for eXtended Objects is available from Maven Central and can be specified as dependency in pom.xml files:
+
+pom.xml
+[source,xml]
+----
+<project ...>
+    ...
+
+    <properties>
+        <com.buschmais.xo_version>0.3.0</com.buschmais.xo_version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.buschmais.xo</groupId>
+            <artifactId>xo.neo4j</artifactId>
+            <version>${com.buschmais.xo_version}</version>
+        </dependency>
+    </dependencies>
+
+    ...
+</project>
+----
+
+== Bootstrapping
+
+For a XOManagerFactory to be constructed a so called XO unit must be defined. There are two ways:
+
+- Using a descriptor META-INF/xo.xml
+- By using an instance of the class "com.buschmais.xo.XOUnit"
+
+=== XML Descriptor
+
+An XO descriptor is a XML file located as classpath resource under "/META-INF/xo.xml" and defines one or more XO units.
+Each must be uniquely identified by a name. This is similar to the persistence unit approach defined by the Java Persistence
+API (JPA). The following snippet shows a minimum setup:
+
+META-INF/xo.xml
+[source,xml]
+----
+<v1:xo version="1.0" xmlns:v1="http://buschmais.com/xo/schema/v1.0">
+    <xo-unit name="movies">
+        <url>file://target/movies</url>
+        <provider>com.buschmais.xo.neo4j.api.Neo4jXOProvider</provider>
+        <types>
+            <type>com.buschmais.xo.example.movies.composite.Movie</type>
+            <type>com.buschmais.xo.example.movies.composite.Person</type>
+            <type>com.buschmais.xo.example.movies.composite.Actor</type>
+            <type>com.buschmais.xo.example.movies.composite.Directory</type>
+        </types>
+    </xo-unit>
+</v1:xo>
+----
+
+url::
+  The URL to pass to the Neo4j datastore. The following protocols are currently supported
+  - file: embedded local database using the specified directory as location for the Neo4j database
+  - http: remote database over REST
+  - memory: non-persistent in-memory database
+provider::
+  - The class name of the datastore provider, for Neo4j com.buschmais.xo.neo4j.api.Neo4jXOProvider
+types::
+  - A list of all persistent interface types representing labels or relations
+
+An XOManagerFactory instance can now be obtained as demonstrated in the following snippet:
+
+Main.java
+[source,java]
+----
+public class Main {
+
+  public static void main(String[] args) {
+    XOManagerFactory xmf = XO.createXOManagerFactory("movies");
+    ...
+    xmf.close();
+  }
+
+}
+----
+
+=== XOUnit And XOUnitBuilder
+
+It is also possible to create a XOManagerFactory using an instance of the class com.buschmais.xo.api.XOUnit:
+
+Main.java
+[source,java]
+----
+public class Main {
+
+  public static void main(String[] args) {
+    XOUnit xoUnit = XOUnitBuilder.create(
+      "file://target/movies", // datastore url
+       Neo4jXOProvider.class, // datastore provider
+       Movie.class, Person.class, Actor.class, Directory.class // persistent interface types
+    ).create();
+    XOManagerFactory xmf = XO.createXOManagerFactory(xoUnit);
+    ...
+    xmf.close();
+  }
+
+}
+----
+
+Note: The class XOUnitBuilder provides a fluent interface for the parameters which may be specified for an XO unit.
