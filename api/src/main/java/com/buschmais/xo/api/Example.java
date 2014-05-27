@@ -5,6 +5,7 @@ package com.buschmais.xo.api;
  *
  * @param <T> The type to be prepared.
  */
+@FunctionalInterface
 public interface Example<T> {
     void prepare(T example);
 }
