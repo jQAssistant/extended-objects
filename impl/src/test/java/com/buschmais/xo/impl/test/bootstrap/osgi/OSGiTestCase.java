@@ -1,4 +1,4 @@
-package com.buschmais.xo.impl.bootstrap.osgi;
+package com.buschmais.xo.impl.test.bootstrap.osgi;
 
 import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.cleanCaches;

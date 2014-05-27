@@ -37,12 +37,10 @@
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.neo4j</artifactId>
             <version>${project.version}</version>
-            <classifier>${language.classifier}</classifier>
         </dependency>
         <dependency>
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.api</artifactId>
-            <classifier>${language.classifier}</classifier>
         </dependency>
         <dependency>
             <groupId>com.google.inject.extensions</groupId>

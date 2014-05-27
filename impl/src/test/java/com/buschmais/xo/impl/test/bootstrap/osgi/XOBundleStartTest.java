@@ -1,4 +1,4 @@
-package com.buschmais.xo.impl.bootstrap.osgi;
+package com.buschmais.xo.impl.test.bootstrap.osgi;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;

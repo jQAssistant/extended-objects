@@ -49,45 +49,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
-        <language.classifier/>
-        <language.level/>
-        <language.source.folder/>
     </properties>
 
     <profiles>
-        <profile>
-            <id>java7</id>
-            <activation>
-                <jdk>1.7</jdk>
-            </activation>
-            <properties>
-                <language.classifier/>
-                <language.source.folder>java7</language.source.folder>
-                <language.level>1.7</language.level>
-            </properties>
-        </profile>
-        <profile>
-            <id>java8</id>
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-            <properties>
-                <language.classifier>java8</language.classifier>
-                <language.source.folder>java8</language.source.folder>
-                <language.level>1.8</language.level>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <configuration>
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>QA</id>
             <properties>
@@ -209,30 +173,6 @@
                 <version>1.8</version>
                 <executions>
                     <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/main/${language.source.folder}</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>add-test-source</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/test/${language.source.folder}</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>set-osgi-version</id>
                         <phase>validate</phase>
                         <goals>
@@ -268,9 +208,6 @@
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <classifier>sources-${language.classifier}</classifier>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -308,9 +245,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <classifier>${language.classifier}</classifier>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -375,26 +309,22 @@
             <dependency>
                 <groupId>com.buschmais.xo</groupId>
                 <artifactId>xo.spi</artifactId>
-                <classifier>${language.classifier}</classifier>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.buschmais.xo</groupId>
                 <artifactId>xo.api</artifactId>
-                <classifier>${language.classifier}</classifier>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.buschmais.xo</groupId>
                 <artifactId>xo.impl</artifactId>
-                <classifier>${language.classifier}</classifier>
                 <version>${project.version}</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>com.buschmais.xo</groupId>
                 <artifactId>xo.test</artifactId>
-                <classifier>${language.classifier}</classifier>
                 <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>
