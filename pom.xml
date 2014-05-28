@@ -169,6 +169,60 @@
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>2.14.1</version>
                 </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                	<groupId>org.eclipse.m2e</groupId>
+                	<artifactId>lifecycle-mapping</artifactId>
+                	<version>1.0.0</version>
+                	<configuration>
+                		<lifecycleMappingMetadata>
+                			<pluginExecutions>
+                				<pluginExecution>
+                					<pluginExecutionFilter>
+                						<groupId>
+                							org.asciidoctor
+                						</groupId>
+                						<artifactId>
+                							asciidoctor-maven-plugin
+                						</artifactId>
+                						<versionRange>
+                							[0.1.4,)
+                						</versionRange>
+                						<goals>
+                							<goal>
+                								process-asciidoc
+                							</goal>
+                						</goals>
+                					</pluginExecutionFilter>
+                					<action>
+                						<ignore></ignore>
+                					</action>
+                				</pluginExecution>
+                				<pluginExecution>
+                					<pluginExecutionFilter>
+                						<groupId>
+                							org.apache.servicemix.tooling
+                						</groupId>
+                						<artifactId>
+                							depends-maven-plugin
+                						</artifactId>
+                						<versionRange>
+                							[1.2,)
+                						</versionRange>
+                						<goals>
+                							<goal>
+                								generate-depends-file
+                							</goal>
+                						</goals>
+                					</pluginExecutionFilter>
+                					<action>
+                						<ignore></ignore>
+                					</action>
+                				</pluginExecution>
+                			</pluginExecutions>
+                		</lifecycleMappingMetadata>
+                	</configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
 
