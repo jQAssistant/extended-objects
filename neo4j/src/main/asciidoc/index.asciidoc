@@ -174,13 +174,13 @@ META-INF/xo.xml
 
 url::
   The URL to pass to the Neo4j datastore. The following protocols are currently supported
-  - file: embedded local database using the specified directory as location for the Neo4j database
-  - http: remote database over REST
-  - memory: non-persistent in-memory database
+  - "file:///C:/neo4j/movies": embedded local database using the specified directory as location for the Neo4j database
+  - "http://localhost:7474/db/data": remote database over REST
+  - "memory:///": non-persistent in-memory database
 provider::
-  - The class name of the datastore provider, for Neo4j com.buschmais.xo.neo4j.api.Neo4jXOProvider
+  The class name of the datastore provider, for Neo4j com.buschmais.xo.neo4j.api.Neo4jXOProvider
 types::
-  - A list of all persistent interface types representing labels or relations
+  A list of all persistent interface types representing labels or relations
 
 An XOManagerFactory instance can now be obtained as demonstrated in the following snippet:
 
@@ -227,9 +227,9 @@ Note: The class XOUnitBuilder provides a fluent interface for the parameters whi
 
 The Neo4j database provides the following native datastore concepts:
 
-::Node
+Node::
   An entity, e.g. a Person, Movie, etc. A node might have labels and properties.
-::Relationship
+Relationship::
   A directed relation between two nodes, might have properties. The lifecycle of relation depends on the lifecycle of the
   nodes it connects.
 
@@ -291,6 +291,7 @@ public interface Actor extends Person {
 In this case a node created using the type Actor would be labeled with both 'Person' and 'Actor'. This way of combining types is referred to
 as 'static composition'.
 
+[[TemplateTypes]]
 ==== Template Types
 
 There might be situations where the same properties or relations shall be re-used between various labels. In this case template types can be
@@ -318,6 +319,200 @@ public interface Person extends Named {
 
 === Relations
 ==== Unidirectional Relations
-==== Bidirectional Qualified Relations
-==== Typed Relations
+A node can directly reference other nodes using relation properties. A property of a labeled type or template type is treated as such if it
+references another labeled type or a collection thereof.
 
+Movie.java
+[source,java]
+----
+@Label
+public interface Movie {
+  String getTitle();
+  void setTitle();
+}
+----
+
+Actor.java
+[source,java]
+----
+@Label
+public interface Actor extends Person {
+
+  List<Movie> getActedIn();
+
+}
+----
+
+If no further mapping information is provided an outgoing unidirectional relation using the fully capitalized name of
+the property is assumed. The name may be specified using the @Relation annotation with the desired value. Furthermore
+using one of the annotations @Outgoing or @Incoming the direction of the relation can be specified.
+
+Actor.java
+[source,java]
+----
+@Label
+public interface Actor extends Person {
+
+  @Relation("ACTED_IN")
+  @Outgoing
+  List<Movie> getActedIn();
+
+}
+----
+
+Note on multi-valued relations (i.e. collections):
+
+* Only the following types are supported: 'java.util.Collection', 'java.util.List' or 'java.util.Set'.
+* It is recommend to only specify the getter method of the property, as add or remove operations can be performed using the corresponding
+collection methods
+* The provided 'java.util.Set' implementation ensures uniqueness of the relation to the referenced node, if this is not necessary
+'java.util.List' should be prefered for faster add-operations.
+
+==== Bidirectional Qualified Relations
+
+Relations in many case shall be accessible from both directions. One possible way is to use two independent
+unidirectional relations which map to the same relation type; one of them annotated with @Outgoing, the other with
+@Incoming. There are some problems with this approach:
+
+- it is not explicitly visible that the two relation properties are mapped to the same type
+- renaming of the type or of one the properties might break the mapping
+
+The recommended way is to use an annotation which qualifies the relation and holds the mapping information at a single
+point:
+
+ActedIn.java
+[source,java]
+----
+@Relation
+@Retention(RUNTIME)
+public @interface ActedIn {
+}
+----
+
+
+Actor.java
+[source,java]
+----
+@Label
+public interface Actor extends Person {
+
+  @ActedIn
+  @Outgoing
+  List<Movie> getActedIn();
+
+}
+----
+
+
+Movie.java
+[source,java]
+----
+@Label
+public interface Movie {
+
+  String getTitle();
+  void setTitle();
+
+  @ActedIn
+  @Incoming
+  List<Actors> getActors();
+
+}
+----
+
+
+==== Typed Relations With Properties
+
+If a relation between two nodes shall have properties a dedicated type must be declared. It must contain two properties
+returning the types of referenced types which are annotated with @Incoming and @Outgoing:
+
+Directed.java
+[source,java]
+----
+@Relation
+public interface Directed {
+
+  @Outgoing
+  Person getPerson();
+
+  @Incoming
+  Movie getMovie();
+
+  Calendar getFrom();
+  void setFrom(Calendar from);
+
+  Calendar getUntil();
+  void setUntil(Calender until);
+
+}
+----
+
+Actor.java
+[source,java]
+----
+@Label
+public interface Person {
+
+  List<Directed> getDirected();
+
+}
+----
+
+
+Movie.java
+[source,java]
+----
+@Label
+public interface Movie {
+
+  String getTitle();
+  void setTitle();
+
+  List<Directed> getDirected();
+
+}
+----
+
+Note: If the typed relation references the same labeled type at both ends then the according properties of the latter
+must also be annotated with @Outgoing and @Incoming:
+
+Directed.java
+[source,java]
+----
+@Relation
+public interface References {
+
+  @Outgoing
+  Movie getReferencing();
+
+  @Incoming
+  Movie getReferenced();
+
+  int getMinute();
+  void setMinute(int minute);
+
+  int getSecond()
+  void setSecond(int second);
+}
+----
+
+Movie.java
+[source,java]
+----
+@Label
+public interface Movie {
+
+  @Outgoing
+  List<References> getReferenced();
+
+  @Incoming
+  List<References> getReferencedBy();
+
+}
+----
+
+Typed relations may also be constructed using <<TemplateTypes>>, i.e. types which define commonly used Properties.
+
+
+==== Dynamic Properties
+ TBD

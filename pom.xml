@@ -362,6 +362,7 @@
                     <backend>html</backend>
                     <attributes>
                         <toc>auto</toc>
+                        <toclevels>3</toclevels>
                     </attributes>
                 </configuration>
                 <executions>
