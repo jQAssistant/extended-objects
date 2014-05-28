@@ -104,7 +104,6 @@ public @interface ActedIn {
 ----
 
 
-
 Directed.java
 [source,java]
 ----
@@ -116,6 +115,7 @@ Directed.java
 public @interface Directed {
 }
 ----
+
 
 == Maven Dependencies
 The Neo4j datastore for eXtended Objects is available from Maven Central and can be specified as dependency in pom.xml files:
@@ -200,7 +200,7 @@ public class Main {
 
 === XOUnit And XOUnitBuilder
 
-It is also possible to create a XOManagerFactory using an instance of the class com.buschmais.xo.api.XOUnit:
+It is also possible to create a XOManagerFactory using an instance of the class 'com.buschmais.xo.api.XOUnit':
 
 Main.java
 [source,java]
@@ -222,3 +222,102 @@ public class Main {
 ----
 
 Note: The class XOUnitBuilder provides a fluent interface for the parameters which may be specified for an XO unit.
+
+== Mapping Persistent Types
+
+The Neo4j database provides the following native datastore concepts:
+
+::Node
+  An entity, e.g. a Person, Movie, etc. A node might have labels and properties.
+::Relationship
+  A directed relation between two nodes, might have properties. The lifecycle of relation depends on the lifecycle of the
+  nodes it connects.
+
+The eXtended Objects datastore for Neo4j allows mapping of all these concepts to Java interfaces.
+
+=== Nodes
+==== Labeled Types
+
+Neo4j allows adding one or more labels to a node. These labels are used by eXtended Objects to identify the corresponding Java
+type(s) a node is representing. Thus for each label that shall be used by the application a corresponding interface type must be created
+which is annotated with @Label.
+
+Person.java
+[source,java]
+----
+@Label
+public interface Person {
+
+String getName();
+void String setName();
+
+}
+----
+
+The name of the label defaults to the name of the interface, in this case 'Person'. A specific value can be enforced by adding a
+value to the @Label annotation.
+
+It can also be seen that a label usually enforces the presence of specific properties (or relations) on a node. The name of a
+property - starting with a lower case letter - is used to store its value in the database, this can be overwritten using @Property. The
+following example demonstrates explicit mappings for a label and a property:
+
+Person.java
+[source,java]
+----
+@Label("MyPerson")
+public interface Person {
+
+  @Property("myName")
+  String getName();
+  void String setName();
+
+}
+----
+
+The mapping of relations will be covered later.
+
+==== Inheritance Of Labels
+
+A labeled type can extend from one or more labeled types.
+
+Actor.java
+[source,java]
+----
+@Label
+public interface Actor extends Person {
+}
+----
+
+In this case a node created using the type Actor would be labeled with both 'Person' and 'Actor'. This way of combining types is referred to
+as 'static composition'.
+
+==== Template Types
+
+There might be situations where the same properties or relations shall be re-used between various labels. In this case template types can be
+used, these are just interfaces specifying properties and relations which shall be shared. The following example demonstrates how the
+property name of the labeled type Person is extracted to a template type:
+
+Named.java
+[source,java]
+----
+public interface Named {
+
+  String getName();
+  void setName(String name);
+
+}
+----
+
+Person.java
+[source,java]
+----
+@Label
+public interface Person extends Named {
+}
+----
+
+=== Relations
+==== Unidirectional Relations
+==== Bidirectional Qualified Relations
+==== Typed Relations
+
