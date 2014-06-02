@@ -14,6 +14,7 @@ import com.buschmais.xo.impl.validation.InstanceValidationService;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
+import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 import com.buschmais.xo.spi.interceptor.XOInterceptor;
 
@@ -60,7 +61,8 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.datastoreSession = datastoreSession;
         this.entityCache = new TransactionalCache<>();
         this.relationCache = new TransactionalCache<>();
-        this.xoTransaction = new XOTransactionImpl(datastoreSession.getDatastoreTransaction());
+        DatastoreTransaction datastoreTransaction = datastoreSession.getDatastoreTransaction();
+        this.xoTransaction = datastoreTransaction != null ? new XOTransactionImpl(datastoreTransaction) : null;
         List<XOInterceptor> interceptorChain = new ArrayList<>();
         interceptorChain.add(new ConcurrencyInterceptor(concurrencyMode));
         interceptorChain.add(new TransactionInterceptor(xoTransaction, defaultTransactionAttribute));
@@ -73,8 +75,10 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.entityInstanceManager = new EntityInstanceManager<>(this);
         this.instanceValidationService = new InstanceValidationService(validatorFactory, relationCache, entityCache);
         this.cacheSynchronizationService = new CacheSynchronizationService<>(this, validationMode);
-        // Register default synchronizations.
-        xoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(cacheSynchronizationService, entityCache, relationCache));
+        if (xoTransaction!=null) {
+            // Register default synchronizations.
+            xoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(cacheSynchronizationService, entityCache, relationCache));
+        }
     }
 
     public MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> getMetadataProvider() {

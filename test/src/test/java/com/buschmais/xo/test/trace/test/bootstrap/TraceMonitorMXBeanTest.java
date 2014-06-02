@@ -43,10 +43,8 @@ public class TraceMonitorMXBeanTest {
         XOManagerFactory xoManagerFactory = XO.createXOManagerFactory(xoUnit);
         assertThat(mbeanServer.getMBeanInfo(objectName), notNullValue());
         XOManager xoManager = xoManagerFactory.createXOManager();
-        xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setName("Test");
-        xoManager.currentTransaction().commit();
         xoManager.close();
 
         CompositeData[] statistics = (CompositeData[]) mbeanServer.getAttribute(objectName, "MethodStatistics");

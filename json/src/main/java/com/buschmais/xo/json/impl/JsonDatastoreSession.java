@@ -23,7 +23,7 @@ public class JsonDatastoreSession implements DatastoreSession<UUID, ObjectNode, 
 
     @Override
     public DatastoreTransaction getDatastoreTransaction() {
-        return new JsonFileStoreTransaction();
+        return null;
     }
 
     @Override

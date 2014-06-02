@@ -10,13 +10,12 @@ public class JsonFileStoreBootstrapTest {
 
     @Test
     public void bootstrap() {
-        XOManagerFactory XOManagerFactory = XO.createXOManagerFactory("JsonFileStore");
-        XOManager xoManager = XOManagerFactory.createXOManager();
-        xoManager.currentTransaction().begin();
+        XOManagerFactory xoManagerFactory = XO.createXOManagerFactory("JsonFileStore");
+        XOManager xoManager = xoManagerFactory.createXOManager();
         A a = xoManager.create(A.class);
         a.setName("Test");
-        xoManager.currentTransaction().commit();
-        XOManagerFactory.close();
+        xoManager.flush();
+        xoManagerFactory.close();
     }
 
 }
