@@ -2,13 +2,13 @@
 
 ## Overview
 
-eXtended Objects is...
+* A lightweight persistence framework for Java
+* Designed for a variety of different datastores
+* Which allows the definition of entities and relations as interfaces.
 
-* ...a lightweight persistence framework for Java
-* ...designed for a variety of different datastores
-* ...which allows the definition of entities and relations as interfaces.
-
-Please refer to the [documentation](https://github.com/buschmais/xo/blob/master/doc/src/main/asciidoc/index.asciidoc) for general concepts.
+Please refer to the
+* [core documentation](https://github.com/buschmais/xo/blob/master/doc/src/main/asciidoc/index.asciidoc) for an introduction and general concepts.
+* datastore implementations for getting started.
 
 ## Datastores
 
