@@ -125,7 +125,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         }
         final ResultIterator<Entity> iterator = sessionContext.getDatastoreSession().getDatastoreEntityManager()
                 .findEntity(entityTypeMetadata, entityDiscriminator, entity);
-        return new TransactionalResultIterable<>(new AbstractResultIterable<T>() {
+        AbstractResultIterable<T> resultIterable = new AbstractResultIterable<T>() {
             @Override
             public ResultIterator<T> iterator() {
                 return new ResultIterator<T>() {
@@ -153,7 +153,9 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
                     }
                 };
             }
-        }, sessionContext.getXOTransaction());
+        };
+        XOTransaction xoTransaction = sessionContext.getXOTransaction();
+        return xoTransaction != null ? new TransactionalResultIterable<>(resultIterable, xoTransaction) : resultIterable;
     }
 
     @Override
