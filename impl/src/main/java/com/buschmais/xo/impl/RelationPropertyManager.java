@@ -1,5 +1,6 @@
 package com.buschmais.xo.impl;
 
+import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.metadata.method.EntityReferencePropertyMethodMetadata;
@@ -22,27 +23,13 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
     }
 
     @Override
-    public void setProperty(Relation relation, PrimitivePropertyMethodMetadata metadata, Object value) {
-        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext = getSessionContext();
-        sessionContext.getDatastoreSession().getDatastoreRelationManager().setProperty(relation, metadata, value);
-        sessionContext.getRelationInstanceManager().updateInstance(relation);
+    protected DatastorePropertyManager<Relation, ?> getPropertyManager() {
+        return getSessionContext().getDatastoreSession().getDatastoreRelationManager();
     }
 
     @Override
-    public Object getProperty(Relation relation, PrimitivePropertyMethodMetadata metadata) {
-        return getSessionContext().getDatastoreSession().getDatastoreRelationManager().getProperty(relation, metadata);
-    }
-
-    @Override
-    public boolean hasProperty(Relation relation, PrimitivePropertyMethodMetadata metadata) {
-        return getSessionContext().getDatastoreSession().getDatastoreRelationManager().hasProperty(relation, metadata);
-    }
-
-    @Override
-    public void removeProperty(Relation relation, PrimitivePropertyMethodMetadata metadata) {
-        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext = getSessionContext();
-        sessionContext.getDatastoreSession().getDatastoreRelationManager().removeProperty(relation, metadata);
-        sessionContext.getRelationInstanceManager().updateInstance(relation);
+    protected AbstractInstanceManager<?, Relation> getInstanceManager() {
+        return getSessionContext().getRelationInstanceManager();
     }
 
     public Entity getEntityReference(Relation relation, EntityReferencePropertyMethodMetadata metadata) {

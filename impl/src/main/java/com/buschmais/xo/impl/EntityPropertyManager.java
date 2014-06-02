@@ -1,6 +1,7 @@
 package com.buschmais.xo.impl;
 
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.metadata.method.*;
@@ -24,27 +25,13 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
     }
 
     @Override
-    public void setProperty(Entity entity, PrimitivePropertyMethodMetadata metadata, Object value) {
-        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext = getSessionContext();
-        sessionContext.getDatastoreSession().getDatastoreEntityManager().setProperty(entity, metadata, value);
-        sessionContext.getEntityInstanceManager().updateInstance(entity);
+    protected DatastorePropertyManager<Entity, ?> getPropertyManager() {
+        return getSessionContext().getDatastoreSession().getDatastoreEntityManager();
     }
 
     @Override
-    public Object getProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
-        return getSessionContext().getDatastoreSession().getDatastoreEntityManager().getProperty(entity, metadata);
-    }
-
-    @Override
-    public boolean hasProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
-        return getSessionContext().getDatastoreSession().getDatastoreEntityManager().hasProperty(entity, metadata);
-    }
-
-    @Override
-    public void removeProperty(Entity entity, PrimitivePropertyMethodMetadata metadata) {
-        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext = getSessionContext();
-        sessionContext.getDatastoreSession().getDatastoreEntityManager().removeProperty(entity, metadata);
-        sessionContext.getEntityInstanceManager().updateInstance(entity);
+    protected AbstractInstanceManager<?, Entity> getInstanceManager() {
+        return getSessionContext().getEntityInstanceManager();
     }
 
     public <T> T createEntityReference(Entity sourceEntity, AbstractRelationPropertyMethodMetadata<?> metadata, Object target) {

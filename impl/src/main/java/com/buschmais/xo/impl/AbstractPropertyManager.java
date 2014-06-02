@@ -1,11 +1,7 @@
 package com.buschmais.xo.impl;
 
-import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
-import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
+import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
-
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
 
 /**
  * Contains methods for reading and creating relationships specified by the
@@ -24,8 +20,7 @@ public abstract class AbstractPropertyManager<DatastoreType, Entity, Relation> {
      *
      * @param sessionContext The {@link com.buschmais.xo.impl.SessionContext}.
      */
-    public AbstractPropertyManager(
-            SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
+    public AbstractPropertyManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         this.sessionContext = sessionContext;
     }
 
@@ -33,11 +28,26 @@ public abstract class AbstractPropertyManager<DatastoreType, Entity, Relation> {
         return sessionContext;
     }
 
-    public abstract void setProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata, Object value);
+    public void setProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata, Object value) {
+        getPropertyManager().setProperty(datastoreType, metadata, value);
+        getInstanceManager().updateInstance(datastoreType);
+    }
 
-    public abstract Object getProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata);
+    public Object getProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata) {
+        return getPropertyManager().getProperty(datastoreType, metadata);
+    }
 
-    public abstract boolean hasProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata);
+    public boolean hasProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata) {
+        return getPropertyManager().hasProperty(datastoreType, metadata);
+    }
 
-    public abstract void removeProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata);
+    public void removeProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata) {
+        getPropertyManager().removeProperty(datastoreType, metadata);
+        getInstanceManager().updateInstance(datastoreType);
+    }
+
+    protected abstract DatastorePropertyManager<DatastoreType, ?> getPropertyManager();
+
+    protected abstract AbstractInstanceManager<?, DatastoreType> getInstanceManager();
+
 }
