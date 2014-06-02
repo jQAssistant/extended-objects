@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.test.find.composite;
+package com.buschmais.xo.neo4j.test.example.composite;
 
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;

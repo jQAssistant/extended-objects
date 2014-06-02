@@ -60,10 +60,21 @@ public interface XOManager extends AutoCloseable {
      * Create a new {@link CompositeObject} instance.
      *
      * @param type  The interface the property type shall implement.
-     * @param types Additional interfaces the property type shall implement.
+     * @param types Additional interfaces the entity type shall implement.
      * @return The {@link CompositeObject} instance.
      */
     CompositeObject create(Class<?> type, Class<?>... types);
+
+
+    /**
+     * Create a new {@link CompositeObject} instance using an example.
+     *
+     * @param example The example instance.
+     * @param type    The interface the property type shall implement.
+     * @param types   Additional interfaces the entity type shall implement.
+     * @return The {@link CompositeObject} instance.
+     */
+    CompositeObject create(Example<CompositeObject> example, Class<?> type, Class<?>... types);
 
     /**
      * Create a new property instance.
@@ -73,6 +84,16 @@ public interface XOManager extends AutoCloseable {
      * @return The property instance.
      */
     <T> T create(Class<T> type);
+
+    /**
+     * Create a new property instance using an example.
+     *
+     * @param example The example instance.
+     * @param <T>     The expected return type. Note that it must be assignable to at least one of the interfaces specified for the types.
+     * @param type    The interface the property type shall implement.
+     * @return The property instance.
+     */
+    <T> T create(Example<T> example, Class<T> type);
 
     /**
      * Creates an instance of a typed relationType between a source and a target instance.

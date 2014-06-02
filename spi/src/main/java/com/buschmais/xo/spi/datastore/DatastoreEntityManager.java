@@ -41,9 +41,10 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      *
      * @param types          The types.
      * @param discriminators The set of discriminators.
+     * @param exampleEntity  The example entity.
      * @return The created entity.
      */
-    Entity createEntity(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators);
+    Entity createEntity(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity);
 
     /**
      * Delete an entity.

@@ -36,8 +36,9 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
         return delegate.getEntityId(entity);
     }
 
-    public Entity createEntity(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> entityDiscriminators) {
-        return delegate.createEntity(types, entityDiscriminators);
+    @Override
+    public Entity createEntity(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> entityDiscriminators, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
+        return delegate.createEntity(types, entityDiscriminators, exampleEntity);
     }
 
     public void deleteEntity(Entity entity) {

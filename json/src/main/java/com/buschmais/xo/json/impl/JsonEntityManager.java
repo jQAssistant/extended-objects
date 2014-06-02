@@ -56,7 +56,7 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     }
 
     @Override
-    public ObjectNode createEntity(TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators) {
+    public ObjectNode createEntity(TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators,Map<PrimitivePropertyMethodMetadata<JsonPropertyMetadata>, Object> exampleEntity) {
         ObjectNode rootNode = mapper.createObjectNode();
         ArrayNode typesNode = mapper.createArrayNode();
         for (String typeName : discriminators) {
@@ -65,6 +65,9 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
         rootNode.put(TYPES_PROPERTY, typesNode);
         UUID uuid = UUID.randomUUID();
         rootNode.put(ID_PROPERTY, uuid.toString());
+        for (Map.Entry<PrimitivePropertyMethodMetadata<JsonPropertyMetadata>, Object> entry : exampleEntity.entrySet()) {
+            setProperty(rootNode, entry.getKey(), entry.getValue());
+        }
         return rootNode;
     }
 
