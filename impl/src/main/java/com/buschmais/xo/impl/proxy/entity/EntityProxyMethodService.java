@@ -1,5 +1,7 @@
 package com.buschmais.xo.impl.proxy.entity;
 
+import java.lang.reflect.Method;
+
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.proxy.ProxyMethod;
@@ -21,8 +23,6 @@ import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 import com.buschmais.xo.spi.reflection.GetPropertyMethod;
 import com.buschmais.xo.spi.reflection.PropertyMethod;
 import com.buschmais.xo.spi.reflection.SetPropertyMethod;
-
-import java.lang.reflect.Method;
 
 public class EntityProxyMethodService<Entity, Relation> extends AbstractProxyMethodService<Entity> {
 
@@ -57,26 +57,38 @@ public class EntityProxyMethodService<Entity, Relation> extends AbstractProxyMet
                         } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new PrimitivePropertySetMethod(propertyManager, (PrimitivePropertyMethodMetadata) methodMetadata), method);
                         }
+                    } else if (methodMetadata instanceof TransientPropertyMethodMetadata) {
+                        if (propertyMethod instanceof GetPropertyMethod) {
+                            addProxyMethod(new TransientPropertyGetMethod(propertyManager, (TransientPropertyMethodMetadata) methodMetadata), method);
+                        } else if (propertyMethod instanceof SetPropertyMethod) {
+                            addProxyMethod(new TransientPropertySetMethod(propertyManager, (TransientPropertyMethodMetadata) methodMetadata), method);
+                        }
                     } else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new EntityReferencePropertyGetMethod(propertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new EntityReferencePropertyGetMethod(propertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata),
+                                    method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new EntityReferencePropertySetMethod(propertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new EntityReferencePropertySetMethod(propertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata),
+                                    method);
                         }
                     } else if (methodMetadata instanceof RelationReferencePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new RelationReferencePropertyGetMethod(propertyManager, (RelationReferencePropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new RelationReferencePropertyGetMethod(propertyManager, (RelationReferencePropertyMethodMetadata) methodMetadata),
+                                    method);
                         }
                     } else if (methodMetadata instanceof EntityCollectionPropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            EntityCollectionPropertyGetMethod<Entity, ?> proxyMethod = new EntityCollectionPropertyGetMethod<>(sessionContext, (EntityCollectionPropertyMethodMetadata<?>) methodMetadata);
+                            EntityCollectionPropertyGetMethod<Entity, ?> proxyMethod = new EntityCollectionPropertyGetMethod<>(sessionContext,
+                                    (EntityCollectionPropertyMethodMetadata<?>) methodMetadata);
                             addProxyMethod(proxyMethod, method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new EntityCollectionPropertySetMethod(propertyManager, (EntityCollectionPropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new EntityCollectionPropertySetMethod(propertyManager, (EntityCollectionPropertyMethodMetadata) methodMetadata),
+                                    method);
                         }
                     } else if (methodMetadata instanceof RelationCollectionPropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            RelationCollectionPropertyGetMethod<Entity, ?> proxyMethod = new RelationCollectionPropertyGetMethod<>(sessionContext, (RelationCollectionPropertyMethodMetadata<?>) methodMetadata);
+                            RelationCollectionPropertyGetMethod<Entity, ?> proxyMethod = new RelationCollectionPropertyGetMethod<>(sessionContext,
+                                    (RelationCollectionPropertyMethodMetadata<?>) methodMetadata);
                             addProxyMethod(proxyMethod, method);
                         }
                     }

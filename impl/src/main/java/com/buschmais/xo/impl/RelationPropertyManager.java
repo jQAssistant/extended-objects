@@ -7,10 +7,6 @@ import com.buschmais.xo.spi.metadata.method.EntityReferencePropertyMethodMetadat
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 
-/**
- * Contains methods for reading and creating relationships specified by the given metadata.
- * <p>For each provided method the direction of the relationships is handled transparently for the caller.</p>
- */
 public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyManager<Relation> {
 
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
@@ -21,11 +17,19 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
      * @param sessionContext The {@link SessionContext}.
      */
     public RelationPropertyManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
-        super(sessionContext.getRelationInstanceManager(), sessionContext.getDatastoreSession().getDatastoreRelationManager());
         this.sessionContext = sessionContext;
     }
 
 
+    @Override
+    protected DatastorePropertyManager<Relation, ?> getDatastorePropertyManager() {
+        return sessionContext.getDatastoreSession().getDatastoreRelationManager();
+    }
+
+    @Override
+    protected AbstractInstanceManager<?, Relation> getInstanceManager() {
+        return sessionContext.getRelationInstanceManager();
+    }
     public Entity getEntityReference(Relation relation, EntityReferencePropertyMethodMetadata metadata) {
         return sessionContext.getEntityInstanceManager().readInstance(getReferencedEntity(relation, metadata.getDirection()));
     }
@@ -41,4 +45,5 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
                 throw direction.createNotSupportedException();
         }
     }
+
 }

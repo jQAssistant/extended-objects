@@ -13,9 +13,7 @@ import com.buschmais.xo.impl.proxy.relation.composite.GetIdMethod;
 import com.buschmais.xo.impl.proxy.relation.object.EqualsMethod;
 import com.buschmais.xo.impl.proxy.relation.object.HashCodeMethod;
 import com.buschmais.xo.impl.proxy.relation.object.ToStringMethod;
-import com.buschmais.xo.impl.proxy.relation.property.EntityReferencePropertyGetMethod;
-import com.buschmais.xo.impl.proxy.relation.property.PrimitivePropertyGetMethod;
-import com.buschmais.xo.impl.proxy.relation.property.PrimitivePropertySetMethod;
+import com.buschmais.xo.impl.proxy.relation.property.*;
 import com.buschmais.xo.impl.proxy.relation.resultof.ResultOfMethod;
 import com.buschmais.xo.spi.metadata.method.*;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
@@ -59,9 +57,18 @@ public class RelationProxyMethodService<Entity, Relation> extends AbstractProxyM
                         } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new PrimitivePropertySetMethod(relationPropertyManager, (PrimitivePropertyMethodMetadata) methodMetadata), method);
                         }
-                    } else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata) {
+                    } else if (methodMetadata instanceof TransientPropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new EntityReferencePropertyGetMethod(relationPropertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new TransientPropertyGetMethod(relationPropertyManager, (TransientPropertyMethodMetadata) methodMetadata), method);
+                        } else if (propertyMethod instanceof SetPropertyMethod) {
+                            addProxyMethod(new TransientPropertySetMethod(relationPropertyManager, (TransientPropertyMethodMetadata) methodMetadata), method);
+                        }
+                    }
+                    else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata) {
+                        if (propertyMethod instanceof GetPropertyMethod) {
+                            addProxyMethod(
+                                    new EntityReferencePropertyGetMethod(relationPropertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata),
+                                    method);
                         }
                     }
                 }

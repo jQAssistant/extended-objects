@@ -3,6 +3,7 @@ package com.buschmais.xo.impl;
 import java.util.Iterator;
 
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.metadata.method.*;
@@ -19,8 +20,17 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
      *            The {@link SessionContext}.
      */
     public EntityPropertyManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
-        super(sessionContext.getEntityInstanceManager(), sessionContext.getDatastoreSession().getDatastoreEntityManager());
         this.sessionContext = sessionContext;
+    }
+
+    @Override
+    protected DatastorePropertyManager<Entity, ?> getDatastorePropertyManager() {
+        return sessionContext.getDatastoreSession().getDatastoreEntityManager();
+    }
+
+    @Override
+    protected AbstractInstanceManager<?, Entity> getInstanceManager() {
+        return sessionContext.getEntityInstanceManager();
     }
 
     public <T> T createEntityReference(Entity sourceEntity, AbstractRelationPropertyMethodMetadata<?> metadata, Object target) {
@@ -170,4 +180,5 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
         return (Relation) sessionContext.getDatastoreSession().getDatastoreRelationManager()
                 .createRelation(sourceEntity, metadata, direction, targetEntity);
     }
+
 }

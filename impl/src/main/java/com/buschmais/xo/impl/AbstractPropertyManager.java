@@ -2,47 +2,56 @@ package com.buschmais.xo.impl;
 
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.spi.metadata.method.TransientPropertyMethodMetadata;
 
-/**
- * Contains methods for reading and creating relationships specified by the
- * given metadata.
- * <p>
- * For each provided method the direction of the relationships is handled
- * transparently for the caller.
- * </p>
- */
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 public abstract class AbstractPropertyManager<DatastoreType> {
 
-    private final DatastorePropertyManager<DatastoreType, ?> datastorePropertyManager;
-
-    private final AbstractInstanceManager<?, DatastoreType> instanceManager;
-
-    /**
-     * Constructor.
-     * @param instanceManager
-     * @param datastorePropertyManager
-     */
-    public AbstractPropertyManager(AbstractInstanceManager<?, DatastoreType> instanceManager, DatastorePropertyManager<DatastoreType, ?> datastorePropertyManager) {
-        this.instanceManager = instanceManager;
-        this.datastorePropertyManager = datastorePropertyManager;
-    }
+    private Map<DatastoreType, Map<String, Object>> transientInstances = null;
 
     public void setProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata, Object value) {
-        datastorePropertyManager.setProperty(datastoreType, metadata, value);
-        instanceManager.updateInstance(datastoreType);
+        getDatastorePropertyManager().setProperty(datastoreType, metadata, value);
+        getInstanceManager().updateInstance(datastoreType);
     }
 
     public Object getProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata) {
-        return datastorePropertyManager.getProperty(datastoreType, metadata);
+        return getDatastorePropertyManager().getProperty(datastoreType, metadata);
     }
 
     public boolean hasProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata) {
-        return datastorePropertyManager.hasProperty(datastoreType, metadata);
+        return getDatastorePropertyManager().hasProperty(datastoreType, metadata);
     }
 
     public void removeProperty(DatastoreType datastoreType, PrimitivePropertyMethodMetadata metadata) {
-        datastorePropertyManager.removeProperty(datastoreType, metadata);
-        instanceManager.updateInstance(datastoreType);
+        getDatastorePropertyManager().removeProperty(datastoreType, metadata);
+        getInstanceManager().updateInstance(datastoreType);
+    }
+
+    public void setTransientProperty(DatastoreType datastoreType, TransientPropertyMethodMetadata metadata, Object value) {
+        getTransientProperties(datastoreType).put(metadata.getAnnotatedMethod().getName(), value);
+    }
+
+    public Object getTransientProperty(DatastoreType datastoreType, TransientPropertyMethodMetadata metadata) {
+        return getTransientProperties(datastoreType).get(metadata.getAnnotatedMethod().getName());
+    }
+
+    protected abstract DatastorePropertyManager<DatastoreType, ?> getDatastorePropertyManager();
+
+    protected abstract AbstractInstanceManager<?, DatastoreType> getInstanceManager();
+
+    private Map<String, Object> getTransientProperties(DatastoreType datastoreType) {
+        if (this.transientInstances == null) {
+            this.transientInstances = new IdentityHashMap<>();
+        }
+        Map<String, Object> transientProperties = this.transientInstances.get(datastoreType);
+        if (transientProperties == null) {
+            transientProperties = new HashMap<>();
+            this.transientInstances.put(datastoreType, transientProperties);
+        }
+        return transientProperties;
     }
 
 }
