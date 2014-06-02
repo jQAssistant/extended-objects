@@ -11,7 +11,9 @@ import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
  * Contains methods for reading and creating relationships specified by the given metadata.
  * <p>For each provided method the direction of the relationships is handled transparently for the caller.</p>
  */
-public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyManager<Relation, Entity, Relation> {
+public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyManager<Relation> {
+
+    private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
 
     /**
      * Constructor.
@@ -19,25 +21,17 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
      * @param sessionContext The {@link SessionContext}.
      */
     public RelationPropertyManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
-        super(sessionContext);
+        super(sessionContext.getRelationInstanceManager(), sessionContext.getDatastoreSession().getDatastoreRelationManager());
+        this.sessionContext = sessionContext;
     }
 
-    @Override
-    protected DatastorePropertyManager<Relation, ?> getPropertyManager() {
-        return getSessionContext().getDatastoreSession().getDatastoreRelationManager();
-    }
-
-    @Override
-    protected AbstractInstanceManager<?, Relation> getInstanceManager() {
-        return getSessionContext().getRelationInstanceManager();
-    }
 
     public Entity getEntityReference(Relation relation, EntityReferencePropertyMethodMetadata metadata) {
-        return getSessionContext().getEntityInstanceManager().readInstance(getReferencedEntity(relation, metadata.getDirection()));
+        return sessionContext.getEntityInstanceManager().readInstance(getReferencedEntity(relation, metadata.getDirection()));
     }
 
     private Entity getReferencedEntity(Relation relation, RelationTypeMetadata.Direction direction) {
-        DatastoreRelationManager<Entity, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> relationManager = getSessionContext().getDatastoreSession().getDatastoreRelationManager();
+        DatastoreRelationManager<Entity, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> relationManager = sessionContext.getDatastoreSession().getDatastoreRelationManager();
         switch (direction) {
             case TO:
                 return relationManager.getTo(relation);

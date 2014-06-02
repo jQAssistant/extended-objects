@@ -11,7 +11,7 @@
     <name>eXtended Objects - Implementation</name>
 
     <properties>
-        <org.osgi_version>4.3.1</org.osgi_version>
+        <org.osgi_version>5.0.0</org.osgi_version>
         <paxexam.version>3.5.0</paxexam.version>
     </properties>
 
@@ -124,13 +124,13 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.framework</artifactId>
-            <version>4.0.0</version>
+            <version>4.4.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.configadmin</artifactId>
-            <version>1.4.0</version>
+            <version>1.8.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

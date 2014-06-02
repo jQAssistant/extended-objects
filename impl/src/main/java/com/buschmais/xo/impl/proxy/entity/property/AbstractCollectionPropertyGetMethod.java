@@ -22,7 +22,7 @@ import java.util.Set;
  * @param <PropertyManager> The property manager.
  * @param <M>               The method metadata.
  */
-public abstract class AbstractCollectionPropertyGetMethod<DatastoreType, Entity, Relation, PropertyManager extends AbstractPropertyManager<DatastoreType, ?, ?>, M extends AbstractRelationPropertyMethodMetadata<?>> extends AbstractPropertyMethod<DatastoreType, PropertyManager, M> {
+public abstract class AbstractCollectionPropertyGetMethod<DatastoreType, Entity, Relation, PropertyManager extends AbstractPropertyManager<DatastoreType>, M extends AbstractRelationPropertyMethodMetadata<?>> extends AbstractPropertyMethod<DatastoreType, PropertyManager, M> {
 
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
 
