@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.test.example;
+package com.buschmais.xo.neo4j.test.transientproperty;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
