@@ -48,6 +48,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java8.build.outputDirectory>${project.build.directory}/classes-java8</java8.build.outputDirectory>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
     </properties>
 
@@ -330,7 +331,7 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <classesDirectory>${project.build.directory}/classes-java8</classesDirectory>
+                            <classesDirectory>${java8.build.outputDirectory}</classesDirectory>
                             <classifier>java8</classifier>
                         </configuration>
                     </execution>
@@ -406,7 +407,7 @@
                         </goals>
                         <phase>process-classes</phase>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/classes-java8</outputDirectory>
+                            <outputDirectory>${java8.build.outputDirectory}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.build.outputDirectory}</directory>
