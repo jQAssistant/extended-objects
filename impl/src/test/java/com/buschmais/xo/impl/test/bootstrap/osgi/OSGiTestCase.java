@@ -37,7 +37,7 @@ public class OSGiTestCase implements ConfigurationFactory {
                 mavenBundle("javax.validation", "validation-api", "1.1.0.Final"), //
                 mavenBundle("commons-lang", "commons-lang", "2.6"), //
                 mavenBundle("org.osgi", "org.osgi.compendium", "4.3.1"), //
-                mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.4.0").start(true), //
+                mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.6.0").start(true), //
                 mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"), //
                 mavenBundle("org.slf4j", "slf4j-api", "1.7.2"), //
                 mavenBundle("ch.qos.logback", "logback-core", "1.0.6"), //
