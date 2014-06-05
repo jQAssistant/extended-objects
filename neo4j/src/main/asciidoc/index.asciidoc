@@ -45,78 +45,6 @@ public interface Person {
 }
 ----
 
-
-Actor.java
-[source,java]
-----
-@Label("Actor")
-public interface Actor extends Person {
-  @ActedIn
-  @Outgoing
-  List<Movie> getActedIn();
-}
-----
-
-
-Director.java
-[source,java]
-----
-@Label("Director")
-public interface Director extends Person {
-
-  @Directed
-  @Outgoing
-  List<Movie> getDirected();
-}
-----
-
-
-Movie.java
-[source,java]
-----
-@Label("Movie")
-public interface Movie {
-  String getTitle();
-  void setTitle();
-
-  @Directed
-  @Incoming
-  Director getDirectedBy();
-  void setDirectedBy(Director directedBy);
-
-  @ActedIn
-  @Incoming
-  List<Actors> getActors();
-}
-----
-
-
-ActedIn.java
-[source,java]
-----
-/**
-* Qualifier to be used for bi-directional relations.
-*/
-@Relation("ACTED_IN")
-@Retention(RUNTIME)
-public @interface ActedIn {
-}
-----
-
-
-Directed.java
-[source,java]
-----
-/**
-* Qualifier to be used for bi-directional relations.
-*/
-@Relation("DIRECTED")
-@Retention(RUNTIME)
-public @interface Directed {
-}
-----
-
-
 == Maven Dependencies
 The Neo4j datastore for eXtended Objects is available from Maven Central and can be specified as dependency in pom.xml files:
 
@@ -327,8 +255,10 @@ Movie.java
 ----
 @Label
 public interface Movie {
+
   String getTitle();
   void setTitle();
+
 }
 ----
 
@@ -433,7 +363,7 @@ Directed.java
 public interface Directed {
 
   @Outgoing
-  Person getPerson();
+  Director getDirector();
 
   @Incoming
   Movie getMovie();
@@ -447,11 +377,11 @@ public interface Directed {
 }
 ----
 
-Actor.java
+Director.java
 [source,java]
 ----
 @Label
-public interface Person {
+public interface Director extends Person {
 
   List<Directed> getDirected();
 
@@ -470,6 +400,7 @@ public interface Movie {
 
   List<Directed> getDirected();
 
+  ...
 }
 ----
 
@@ -508,11 +439,35 @@ public interface Movie {
   @Incoming
   List<References> getReferencedBy();
 
+  ...
 }
 ----
 
 Typed relations may also be constructed using <<TemplateTypes>>, i.e. types which define commonly used Properties.
 
-
 ==== Dynamic Properties
- TBD
+
+Labeled types or relation types may also define methods which execute a query on invocation and return the result:
+
+Movie.java
+[source,java]
+----
+@Label
+public interface Movie {
+
+  @ResultOf
+  @Cypher("match (m:Movie) where m.title={title} return m");
+  Result<Movie> getMoviesByTitle(@Parameter("title") String title);
+
+  @ResultOf
+  @Cypher("match (a:Actor)-[:ACTEDIN]->(m:Movie) where id(m)={this} return count(a)");
+  Long getActorCount();
+
+  ...
+}
+----
+
+
+==== Transient Properties
+
+==== User defined methods
