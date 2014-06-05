@@ -30,6 +30,7 @@ An example from a well known domain shall be used to explain the difference betw
 Person.java
 [source,java]
 ----
+@DatastoreEntity // A datastore specific annotation marking this interface as an entity
 public interface Person {
   String getName();
   void setName();
@@ -39,6 +40,7 @@ public interface Person {
 Actor.java
 [source,java]
 ----
+@DatastoreEntity
 public interface Actor extends Person {
   List<Movie> getActedIn();
 }
@@ -47,6 +49,7 @@ public interface Actor extends Person {
 Director.java
 [source,java]
 ----
+@DatastoreEntity
 public interface Director extends Person {
   List<Movie> getDirected();
 }
@@ -55,6 +58,7 @@ public interface Director extends Person {
 Movie.java
 [source,java]
 ----
+@DatastoreEntity
 public interface Movie {
   String getTitle();
   void setTitle();
@@ -117,6 +121,7 @@ works in both roles: actor and director? A new type extending from both would be
 DirectingActor.java
 [source,java]
 ----
+@DatastoreEntity
 public interface DirectingActor extends Director, Actor {
 }
 ----
@@ -194,23 +199,6 @@ public class TempleOfDoom {
 }
 ----
 
-= Available Datastore Implementations
-
-== Neo4j
-https://github.com/buschmais/extended-objects (currently inluded in core distribution)
-
-== Titan Datastore
-
-https://github.com/PureSolTechnologies/extended-objects-titan
-
-== TinkerPop Blueprints Datastore
-
-https://github.com/BluWings/xo-tinkerpop-blueprints
-
-== OrientDb Datastore
-
-https://github.com/BluWings/xo-orientdb
-
 = API Overview
 
 eXtended Objects provides an API which re-uses concepts of other frameworks and standards like JPA or JDO:
@@ -230,4 +218,20 @@ XOTransaction::
 Query::
   A user defined query which may be executed against the datastore.
 
+= Available Datastore Implementations
+
+== Neo4j
+https://github.com/buschmais/extended-objects (part of the core distribution)
+
+== Titan Datastore
+
+https://github.com/PureSolTechnologies/extended-objects-titan
+
+== TinkerPop Blueprints Datastore
+
+https://github.com/BluWings/xo-tinkerpop-blueprints
+
+== OrientDb Datastore
+
+https://github.com/BluWings/xo-orientdb
 
