@@ -34,7 +34,6 @@ import com.buschmais.xo.api.bootstrap.XOUnitParameter;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-@Ignore("Fix for execution with Java 8")
 public class XOBundleStartTest extends OSGiTestCase {
 
     @Inject
