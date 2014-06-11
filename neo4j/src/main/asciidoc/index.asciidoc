@@ -460,13 +460,12 @@ public interface Movie {
   Result<Movie> getMoviesByTitle(@Parameter("title") String title);
 
   @ResultOf
-  @Cypher("match (a:Actor)-[:ACTEDIN]->(m:Movie) where id(m)={this} return count(a)");
+  @Cypher("match (a:Actor)-[:ACTED_IN]->(m:Movie) where id(m)={this} return count(a)");
   Long getActorCount();
 
   ...
 }
 ----
-
 
 ==== Transient Properties
 

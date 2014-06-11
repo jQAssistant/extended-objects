@@ -4,14 +4,16 @@ import com.buschmais.xo.api.XOTransaction;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class XOTransactionImpl implements XOTransaction {
 
     private final DatastoreTransaction datastoreTransaction;
 
-    private final List<Synchronization> defaultSynchronizations = new ArrayList<>();
-    private final List<Synchronization> synchronizations = new ArrayList<>();
+    private final Set<Synchronization> defaultSynchronizations = new LinkedHashSet<>();
+    private final Set<Synchronization> synchronizations = new LinkedHashSet<>();
 
     public XOTransactionImpl(DatastoreTransaction datastoreTransaction) {
         this.datastoreTransaction = datastoreTransaction;
