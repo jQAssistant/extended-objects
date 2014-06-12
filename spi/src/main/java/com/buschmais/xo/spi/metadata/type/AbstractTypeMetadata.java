@@ -45,8 +45,6 @@ public abstract class AbstractTypeMetadata implements TypeMetadata {
 
     @Override
     public String toString() {
-        return "AbstractTypeMetadata{" +
-                "type=" + annotatedType +
-                '}';
+        return "Type metadata {'" + annotatedType.getName() + "'}";
     }
 }

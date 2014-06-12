@@ -29,9 +29,17 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      */
     public EntityTypeMetadataResolver(Map<Class<?>, TypeMetadata> metadataByType) {
         LOGGER.debug("Type metadata = '{}'", metadataByType);
+        Map<Set<Discriminator>, Set<EntityTypeMetadata<EntityMetadata>>> entityMetadataByDiscriminators = new HashMap<>();
         for (TypeMetadata typeMetadata : metadataByType.values()) {
             if (typeMetadata instanceof EntityTypeMetadata) {
-                Set<Discriminator> discriminators = getAggregatedDiscriminators((EntityTypeMetadata<EntityMetadata>) typeMetadata);
+                EntityTypeMetadata<EntityMetadata> entityTypeMetadata = (EntityTypeMetadata<EntityMetadata>) typeMetadata;
+                Set<Discriminator> discriminators = getAggregatedDiscriminators(entityTypeMetadata);
+                Set<EntityTypeMetadata<EntityMetadata>> typeMetadataOfDiscriminators = entityMetadataByDiscriminators.get(discriminators);
+                if (typeMetadataOfDiscriminators == null) {
+                    typeMetadataOfDiscriminators = new HashSet<>();
+                    entityMetadataByDiscriminators.put(discriminators, typeMetadataOfDiscriminators);
+                }
+                typeMetadataOfDiscriminators.add(entityTypeMetadata);
                 LOGGER.debug("Aggregated discriminators of '{}' = '{}'", typeMetadata, discriminators);
             }
         }
@@ -49,6 +57,11 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
             }
         }
         LOGGER.debug("Type metadata by discriminators: '{}'", typeMetadataByDiscriminator);
+        for (Map.Entry<Set<Discriminator>, Set<EntityTypeMetadata<EntityMetadata>>> entry : entityMetadataByDiscriminators.entrySet()) {
+            if (entry.getValue().size() > 1) {
+                LOGGER.info("{} use the same set of discriminators {}.", entry.getValue(), entry.getKey());
+            }
+        }
     }
 
     /**
