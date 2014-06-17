@@ -7,7 +7,7 @@ import com.buschmais.xo.api.XOTransaction;
 import com.buschmais.xo.impl.AbstractInstanceManager;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.plugin.QueryLanguagePluginRepository;
-import com.buschmais.xo.impl.transaction.TransactionalQueryResultIterable;
+import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
 import com.buschmais.xo.spi.annotation.QueryDefinition;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
@@ -31,7 +31,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     private Map<String, Object> parameters = null;
 
     public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression, Class<?> returnType,
-            Collection<? extends Class<?>> returnTypes) {
+                       Collection<? extends Class<?>> returnTypes) {
         this.sessionContext = sessionContext;
         this.queryLanguagePluginManager = sessionContext.getPluginRepositoryManager().getPluginManager(QueryLanguagePlugin.class);
         this.expression = expression;
@@ -40,11 +40,11 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     }
 
     public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression) {
-        this(sessionContext, expression, null, Collections.<Class<?>> emptyList());
+        this(sessionContext, expression, null, Collections.<Class<?>>emptyList());
     }
 
     public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression, Class<?> returnType) {
-        this(sessionContext, expression, returnType, Collections.<Class<?>> emptyList());
+        this(sessionContext, expression, returnType, Collections.<Class<?>>emptyList());
     }
 
     @Override
@@ -118,9 +118,8 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
             throw new XOException("Expression type is not supported: " + expression);
         }
         SortedSet<Class<?>> resultTypes = getResultTypes();
-        QueryResultIterableImpl<Entity, Relation, T> queryResultIterable = new QueryResultIterableImpl(sessionContext, iterator, resultTypes);
         XOTransaction xoTransaction = sessionContext.getXOTransaction();
-        return xoTransaction != null ? new TransactionalQueryResultIterable(queryResultIterable, xoTransaction) : queryResultIterable;
+        return new QueryResultIterableImpl(sessionContext, xoTransaction != null ? new TransactionalResultIterator<>(iterator, xoTransaction) : iterator, resultTypes);
     }
 
     private SortedSet<Class<?>> getResultTypes() {
@@ -144,9 +143,8 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
 
         /**
          * Constructor.
-         * 
-         * @param typeExpression
-         *            The expression.
+         *
+         * @param typeExpression The expression.
          */
         public AnnotatedQueryElement(AnnotatedElement typeExpression) {
             super(typeExpression);

@@ -4,7 +4,7 @@ import com.buschmais.xo.api.*;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.impl.proxy.example.ExampleProxyMethodService;
 import com.buschmais.xo.impl.query.XOQueryImpl;
-import com.buschmais.xo.impl.transaction.TransactionalResultIterable;
+import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
@@ -123,39 +123,40 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         if (entityDiscriminator == null) {
             throw new XOException("Type " + type.getName() + " has no discriminator (i.e. cannot be identified in datastore).");
         }
-        final ResultIterator<Entity> iterator = sessionContext.getDatastoreSession().getDatastoreEntityManager()
+        ResultIterator<Entity> iterator = sessionContext.getDatastoreSession().getDatastoreEntityManager()
                 .findEntity(entityTypeMetadata, entityDiscriminator, entity);
-        AbstractResultIterable<T> resultIterable = new AbstractResultIterable<T>() {
+        ResultIterator<T> resultIterator = new ResultIterator<T>() {
+
             @Override
-            public ResultIterator<T> iterator() {
-                return new ResultIterator<T>() {
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
 
-                    @Override
-                    public boolean hasNext() {
-                        return iterator.hasNext();
-                    }
+            @Override
+            public T next() {
+                Entity entity = iterator.next();
+                AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+                return entityInstanceManager.readInstance(entity);
+            }
 
-                    @Override
-                    public T next() {
-                        Entity entity = iterator.next();
-                        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-                        return entityInstanceManager.readInstance(entity);
-                    }
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Cannot remove instance.");
+            }
 
-                    @Override
-                    public void remove() {
-                        throw new UnsupportedOperationException("Cannot remove instance.");
-                    }
-
-                    @Override
-                    public void close() {
-                        iterator.close();
-                    }
-                };
+            @Override
+            public void close() {
+                iterator.close();
             }
         };
         XOTransaction xoTransaction = sessionContext.getXOTransaction();
-        return xoTransaction != null ? new TransactionalResultIterable<>(resultIterable, xoTransaction) : resultIterable;
+        final ResultIterator<T> transactionalIterator = xoTransaction != null ? new TransactionalResultIterator<>(resultIterator, xoTransaction) : resultIterator;
+        return sessionContext.getInterceptorFactory().addInterceptor(new AbstractResultIterable<T>() {
+            @Override
+            public ResultIterator<T> iterator() {
+                return transactionalIterator;
+            }
+        }, ResultIterable.class);
     }
 
     @Override

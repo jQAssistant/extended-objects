@@ -123,7 +123,7 @@ public class EntityResultOfTest extends AbstractNeo4jXOManagerTest {
         XOManager xoManager = getXoManager();
         xoManager.currentTransaction().begin();
         e.voidResultUsingCypher("F1");
-        assertThat(xoManager.createQuery("match (e:Result) return e", E.class).execute().getSingleResult(), equalTo(e));
+        assertThat(xoManager.createQuery("match (e:E) return e", E.class).execute().getSingleResult(), equalTo(e));
         xoManager.currentTransaction().commit();
     }
 }

@@ -22,13 +22,14 @@ public class TransactionalResultIterator<E> implements ResultIterator<E>, XOTran
 
     @Override
     public void close() {
+        unregisterSynchronization();
         delegateIterator.close();
     }
 
     @Override
     public boolean hasNext() {
         boolean hasNext = delegateIterator.hasNext();
-        if (!hasNext && xoTransaction != null) {
+        if (!hasNext) {
             unregisterSynchronization();
         }
         return hasNext;
@@ -75,7 +76,6 @@ public class TransactionalResultIterator<E> implements ResultIterator<E>, XOTran
 
     @Override
     public void afterCompletion(boolean committed) {
-        unregisterSynchronization();
     }
 
     private void unregisterSynchronization() {
