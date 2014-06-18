@@ -39,7 +39,7 @@ public class ImplicitRelationTest extends AbstractNeo4jXOManagerTest {
         xoManager.currentTransaction().begin();
         assertThat(a.getOneToOne(), equalTo(b1));
         assertThat(b1.getOneToOne(), equalTo(a));
-        assertThat(executeQuery("MATCH (a:A)-[:ImplicitOneToOne]->(b:B) RETURN b").getColumn("b"), hasItem(b1));
+        assertThat(executeQuery("MATCH (a:A)-[:IMPLICIT_ONE_TO_ONE]->(b:B) RETURN b").getColumn("b"), hasItem(b1));
         B b2 = xoManager.create(B.class);
         a.setOneToOne(b2);
         xoManager.currentTransaction().commit();
@@ -47,7 +47,7 @@ public class ImplicitRelationTest extends AbstractNeo4jXOManagerTest {
         assertThat(a.getOneToOne(), equalTo(b2));
         assertThat(b2.getOneToOne(), equalTo(a));
         assertThat(b1.getOneToOne(), equalTo(null));
-        assertThat(executeQuery("MATCH (a:A)-[:ImplicitOneToOne]->(b:B) RETURN b").getColumn("b"), hasItem(b2));
+        assertThat(executeQuery("MATCH (a:A)-[:IMPLICIT_ONE_TO_ONE]->(b:B) RETURN b").getColumn("b"), hasItem(b2));
         a.setOneToOne(null);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();

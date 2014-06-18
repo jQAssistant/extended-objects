@@ -12,6 +12,7 @@ import com.buschmais.xo.spi.reflection.AnnotatedElement;
 import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 import com.buschmais.xo.spi.reflection.AnnotatedType;
 import com.buschmais.xo.spi.reflection.PropertyMethod;
+import com.google.common.base.CaseFormat;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
@@ -87,7 +88,7 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
             }
         }
         if (name == null) {
-            name = StringUtils.capitalize(annotatedElement.getName());
+            name = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, annotatedElement.getName());
         }
         RelationshipType relationshipType = new RelationshipType(DynamicRelationshipType.withName(name));
         return new RelationshipMetadata(relationshipType);
