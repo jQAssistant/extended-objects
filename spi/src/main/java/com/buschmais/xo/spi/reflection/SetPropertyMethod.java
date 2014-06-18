@@ -24,7 +24,7 @@ public class SetPropertyMethod extends AbstractPropertyMethod {
     public SetPropertyMethod(Method setter, GetPropertyMethod getter, String name, Class<?> type, Type genericType) {
         super(setter, name, type, genericType);
         if (getter == null) {
-            throw new XOException("No getter defined for property '" + name + "' of type '" + type.getName() + "'");
+            throw new XOException("No getter defined for property '" + name + "' of type '" + type.getName() + "' in type '" + setter.getDeclaringClass().getName() + "'.");
         }
         this.getter = getter;
     }

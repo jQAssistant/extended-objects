@@ -38,10 +38,18 @@ public class ByExampleTest extends AbstractNeo4jXOManagerTest {
             @Override
             public void prepare(A example) {
                 example.setValue("A1");
+                example.setName("Name of A1");
             }
         }, A.class);
+        assertThat(a1.getValue(), equalTo("A1"));
+        assertThat(a1.getName(), equalTo("Name of A1"));
         // java 8: lambda expression
-        xoManager.create(example -> example.setValue("a2"), A.class);
+        A a2 = xoManager.create(example -> {
+            example.setValue("A2");
+            example.setName("Name of A2");
+        }, A.class);
+        assertThat(a2.getValue(), equalTo("A2"));
+        assertThat(a2.getName(), equalTo("Name of A2"));
         xoManager.currentTransaction().commit();
 
         xoManager.currentTransaction().begin();
