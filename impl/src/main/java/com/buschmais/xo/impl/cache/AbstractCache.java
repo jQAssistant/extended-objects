@@ -1,7 +1,6 @@
 package com.buschmais.xo.impl.cache;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * Abstract cache implementation.
@@ -11,14 +10,14 @@ import java.util.Map;
  */
 public abstract class AbstractCache<Key, Value> implements Cache<Key, Value> {
 
-    private final Map<Key, Value> cache;
+    private final com.google.common.cache.Cache<Key, Value> cache;
 
     /**
      * Constructor.
      *
      * @param cache The map to use as cache.
      */
-    protected AbstractCache(Map<Key, Value> cache) {
+    protected AbstractCache(com.google.common.cache.Cache<Key, Value> cache) {
         this.cache = cache;
     }
 
@@ -29,21 +28,21 @@ public abstract class AbstractCache<Key, Value> implements Cache<Key, Value> {
 
     @Override
     public Value get(Key key) {
-        return cache.get(key);
+        return cache.getIfPresent(key);
     }
 
     @Override
     public void remove(Key key) {
-        cache.remove(key);
+        cache.invalidate(key);
     }
 
     @Override
     public void clear() {
-        cache.clear();
+        cache.invalidateAll();
     }
 
     @Override
     public Collection<Value> values() {
-        return cache.values();
+        return cache.asMap().values();
     }
 }

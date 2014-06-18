@@ -1,11 +1,11 @@
 package com.buschmais.xo.impl.cache;
 
-import java.util.WeakHashMap;
+import com.google.common.cache.CacheBuilder;
 
 public class WeakReferenceCache<Id> extends AbstractCache<Id, Object> {
 
     protected WeakReferenceCache() {
-        super(new WeakHashMap<Id, Object>());
+        super(CacheBuilder.newBuilder().weakValues().build());
     }
 
     @Override

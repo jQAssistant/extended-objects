@@ -9,10 +9,10 @@ import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-import org.apache.commons.collections.map.LRUMap;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.neo4j.graphdb.*;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -24,10 +24,11 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
 
     private final GraphDatabaseService graphDatabaseService;
 
-    private final Map<Long, Set<Label>> labelCache = new LRUMap();
+    private final Cache<Long, Set<Label>> labelCache;
 
     public Neo4jEntityManager(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
+        this.labelCache = CacheBuilder.newBuilder().maximumSize(256).build();
     }
 
     @Override
@@ -37,7 +38,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
 
     @Override
     public Set<Label> getEntityDiscriminators(Node node) {
-        Set<Label> labels = labelCache.get(node.getId());
+        Set<Label> labels = labelCache.getIfPresent(node.getId());
         if (labels == null) {
             labels = new HashSet<>();
             for (Label label : node.getLabels()) {
@@ -66,7 +67,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
     @Override
     public void deleteEntity(Node entity) {
         entity.delete();
-        labelCache.remove(entity.getId());
+        labelCache.invalidate(entity.getId());
     }
 
     @Override
@@ -129,7 +130,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
 
     @Override
     public void flushEntity(Node node) {
-        labelCache.remove(node.getId());
+        labelCache.invalidate(node.getId());
     }
 
 

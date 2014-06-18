@@ -169,7 +169,11 @@
             <artifactId>commons-lang</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+        <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
@@ -201,6 +205,7 @@
             <artifactId>neo4j-server</artifactId>
             <classifier>static-web</classifier>
         </dependency>
+
     </dependencies>
 
 </project>

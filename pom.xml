@@ -481,7 +481,12 @@
                 <version>2.4</version>
             </dependency>
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>17.0</version>
+            </dependency>
+            <dependency>
+            <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>5.0.1.Final</version>
                 <scope>test</scope>

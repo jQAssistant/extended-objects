@@ -1,11 +1,11 @@
 package com.buschmais.xo.impl.cache;
 
-import java.util.HashMap;
+import com.google.common.cache.CacheBuilder;
 
 public class ReferenceCache<Id> extends AbstractCache<Id, Object> {
 
     protected ReferenceCache() {
-        super(new HashMap<Id, Object>());
+        super(CacheBuilder.newBuilder().build());
     }
 
     @Override

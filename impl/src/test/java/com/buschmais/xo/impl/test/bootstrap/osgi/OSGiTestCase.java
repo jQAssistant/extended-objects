@@ -1,27 +1,16 @@
 package com.buschmais.xo.impl.test.bootstrap.osgi;
 
-import static org.ops4j.pax.exam.CoreOptions.bundle;
-import static org.ops4j.pax.exam.CoreOptions.cleanCaches;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-
-import java.io.File;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-
-import org.ops4j.pax.exam.ConfigurationFactory;
-import org.ops4j.pax.exam.CoreOptions;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.OptionUtils;
-import org.ops4j.pax.exam.ProbeBuilder;
-import org.ops4j.pax.exam.TestProbeBuilder;
+import org.ops4j.pax.exam.*;
 import org.ops4j.pax.exam.util.PathUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
+
+import javax.inject.Inject;
+import java.util.concurrent.TimeUnit;
+
+import static org.ops4j.pax.exam.CoreOptions.*;
 
 public class OSGiTestCase implements ConfigurationFactory {
 
@@ -42,6 +31,7 @@ public class OSGiTestCase implements ConfigurationFactory {
                 mavenBundle("org.slf4j", "slf4j-api", "1.7.2"), //
                 mavenBundle("ch.qos.logback", "logback-core", "1.0.6"), //
                 mavenBundle("ch.qos.logback", "logback-classic", "1.0.6"), //
+                mavenBundle("com.google.guava", "guava", "17.0"), //
                 bundle("reference:file:target/classes"));
         return OptionUtils.combine(xoBundles, CoreOptions.junitBundles());
     }

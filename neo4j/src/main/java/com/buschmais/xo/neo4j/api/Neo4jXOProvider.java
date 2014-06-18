@@ -15,6 +15,7 @@ public class Neo4jXOProvider implements XODatastoreProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(Neo4jXOProvider.class);
 
+
     @Override
     public Datastore<?, ?, ?, ?, ?> createDatastore(XOUnit xoUnit) {
         URI uri = xoUnit.getUri();
@@ -24,7 +25,6 @@ public class Neo4jXOProvider implements XODatastoreProvider {
         } catch (MalformedURLException e) {
             throw new XOException("Cannot create datastore.", e);
         }
-
     }
 
     @SuppressWarnings("unchecked")
