@@ -35,12 +35,14 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
 
         @Override
         public void commit() {
+            ensureTransaction();
             transaction.success();
             closeTransaction();
         }
 
         @Override
         public void rollback() {
+            ensureTransaction();
             transaction.failure();
             closeTransaction();
         }
@@ -48,6 +50,12 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
         @Override
         public boolean isActive() {
             return transaction != null;
+        }
+
+        private void ensureTransaction() {
+            if (transaction == null) {
+                throw new XOException("There is no existing transaction.");
+            }
         }
 
         private void closeTransaction() {

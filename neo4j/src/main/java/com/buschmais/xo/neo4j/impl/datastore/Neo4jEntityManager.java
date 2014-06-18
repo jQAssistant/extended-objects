@@ -9,6 +9,7 @@ import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
+import org.apache.commons.collections.map.LRUMap;
 import org.neo4j.graphdb.*;
 
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
 
     private final GraphDatabaseService graphDatabaseService;
 
-    private final Map<Long, Set<Label>> labelCache = new HashMap<>();
+    private final Map<Long, Set<Label>> labelCache = new LRUMap();
 
     public Neo4jEntityManager(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
