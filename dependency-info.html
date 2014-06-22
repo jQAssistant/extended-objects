@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>About</title>
+    <title>Dependency Information</title>
     <style type="text/css" media="all">
       @import url("./css/maven-base.css");
       @import url("./css/maven-theme.css");
@@ -75,8 +75,8 @@
                           <a href="project-info.html" title="Project Information">Project Information</a>
                     <ul>
                       <li class="none">
-            <strong>About</strong>
-          </li>
+                          <a href="index.html" title="About">About</a>
+            </li>
                       <li class="none">
                           <a href="plugin-management.html" title="Plugin Management">Plugin Management</a>
             </li>
@@ -84,8 +84,8 @@
                           <a href="distribution-management.html" title="Distribution Management">Distribution Management</a>
             </li>
                       <li class="none">
-                          <a href="dependency-info.html" title="Dependency Information">Dependency Information</a>
-            </li>
+            <strong>Dependency Information</strong>
+          </li>
                       <li class="none">
                           <a href="dependency-convergence.html" title="Dependency Convergence">Dependency Convergence</a>
             </li>
@@ -134,7 +134,16 @@
     </div>
     <div id="bodyColumn">
       <div id="contentBox">
-        <div class="section"><h2>About eXtended Objects<a name="About_eXtended_Objects"></a></h2><a name="About_eXtended_Objects"></a><p>eXtended Objects</p><div class="section"><h3>Project Modules<a name="Project_Modules"></a></h3><a name="Project_Modules"></a><p>This project has declared the following modules:</p><table border="0" class="bodyTable"><tr class="a"><th>Name</th><th>Description</th></tr><tr class="b"><td><a href="xo.spi/index.html">eXtended Objects - SPI</a></td><td>eXtended Objects</td></tr><tr class="a"><td><a href="xo.api/index.html">eXtended Objects - API</a></td><td>eXtended Objects</td></tr><tr class="b"><td><a href="xo.impl/index.html">eXtended Objects - Implementation</a></td><td>eXtended Objects</td></tr><tr class="a"><td><a href="xo.test/index.html">eXtended Objects - Common Test Artifacts</a></td><td>eXtended Objects</td></tr><tr class="b"><td><a href="xo.neo4j/index.html">eXtended Objects - Neo4j Binding</a></td><td>eXtended Objects</td></tr><tr class="a"><td><a href="xo.json/index.html">eXtended Objects - JSON File Store Binding</a></td><td>eXtended Objects</td></tr><tr class="b"><td><a href="xo.doc/index.html">eXtended Objects - Documentation</a></td><td>eXtended Objects</td></tr><tr class="a"><td><a href="xo.inject/index.html">eXtended Objects - Guice Injection</a></td><td>eXtended Objects</td></tr></table></div></div>
+        <div class="section"><h2>Dependency Information<a name="Dependency_Information"></a></h2><a name="Dependency_Information"></a><div class="section"><h3>Apache Maven<a name="Apache_Maven"></a></h3><a name="Apache_Maven"></a><div class="source"><pre>&lt;dependency&gt;
+  &lt;groupId&gt;com.buschmais.xo&lt;/groupId&gt;
+  &lt;artifactId&gt;xo.parent&lt;/artifactId&gt;
+  &lt;version&gt;0.4.0-SNAPSHOT&lt;/version&gt;
+  &lt;type&gt;pom&lt;/type&gt;
+&lt;/dependency&gt;</pre></div></div><div class="section"><h3>Apache Buildr<a name="Apache_Buildr"></a></h3><a name="Apache_Buildr"></a><div class="source"><pre>'com.buschmais.xo:xo.parent:pom:0.4.0-SNAPSHOT'</pre></div></div><div class="section"><h3>Apache Ant<a name="Apache_Ant"></a></h3><a name="Apache_Ant"></a><div class="source"><pre>&lt;dependency org=&quot;com.buschmais.xo&quot; name=&quot;xo.parent&quot; rev=&quot;0.4.0-SNAPSHOT&quot;&gt;
+  &lt;artifact name=&quot;xo.parent&quot; type=&quot;pom&quot; /&gt;
+&lt;/dependency&gt;</pre></div></div><div class="section"><h3>Groovy Grape<a name="Groovy_Grape"></a></h3><a name="Groovy_Grape"></a><div class="source"><pre>@Grapes(
+@Grab(group='com.buschmais.xo', module='xo.parent', version='0.4.0-SNAPSHOT')
+)</pre></div></div><div class="section"><h3>Grails<a name="Grails"></a></h3><a name="Grails"></a><div class="source"><pre>compile 'com.buschmais.xo:xo.parent:0.4.0-SNAPSHOT'</pre></div></div><div class="section"><h3>Leiningen<a name="Leiningen"></a></h3><a name="Leiningen"></a><div class="source"><pre>[com.buschmais.xo/xo.parent &quot;0.4.0-SNAPSHOT&quot;]</pre></div></div><div class="section"><h3>SBT<a name="SBT"></a></h3><a name="SBT"></a><div class="source"><pre>libraryDependencies += &quot;com.buschmais.xo&quot; %% &quot;xo.parent&quot; % &quot;0.4.0-SNAPSHOT&quot;</pre></div></div></div>
       </div>
     </div>
     <div class="clear">
