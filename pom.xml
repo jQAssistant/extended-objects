@@ -371,7 +371,6 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <tagNameFormat>@{version}</tagNameFormat>
-                    <arguments>-DskipTests</arguments>
                 </configuration>
             </plugin>
             <plugin>
