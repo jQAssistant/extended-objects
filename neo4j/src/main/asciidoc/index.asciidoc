@@ -35,8 +35,8 @@ If a node has a label it can be assumed that it represents some type of data whi
 properties and relationships (e.g. property "name" for persons, "ACTED_IN" relations to movies). This implies that a
 Neo4j label can be represented as a Java interface and vice versa.
 
-Person.java
 [source,java]
+.Person.java
 ----
 @Label("Person") // The value "Person" can be omitted, in this case the class name is used
 public interface Person {
@@ -48,8 +48,8 @@ public interface Person {
 == Maven Dependencies
 The Neo4j datastore for eXtended Objects is available from Maven Central and can be specified as dependency in pom.xml files:
 
-pom.xml
 [source,xml]
+.pom.xml
 ----
 <project ...>
     ...
@@ -83,8 +83,8 @@ An XO descriptor is a XML file located as classpath resource under "/META-INF/xo
 Each must be uniquely identified by a name. This is similar to the persistence unit approach defined by the Java Persistence
 API (JPA). The following snippet shows a minimum setup:
 
-META-INF/xo.xml
 [source,xml]
+.META-INF/xo.xml
 ----
 <v1:xo version="1.0" xmlns:v1="http://buschmais.com/xo/schema/v1.0">
     <xo-unit name="movies">
@@ -112,8 +112,8 @@ types::
 
 An XOManagerFactory instance can now be obtained as demonstrated in the following snippet:
 
-Main.java
 [source,java]
+.Main.java
 ----
 public class Main {
 
@@ -130,8 +130,8 @@ public class Main {
 
 It is also possible to create a XOManagerFactory using an instance of the class 'com.buschmais.xo.api.XOUnit':
 
-Main.java
 [source,java]
+.Main.java
 ----
 public class Main {
 
@@ -170,8 +170,8 @@ Neo4j allows adding one or more labels to a node. These labels are used by eXten
 type(s) a node is representing. Thus for each label that shall be used by the application a corresponding interface type must be created
 which is annotated with @Label.
 
-Person.java
 [source,java]
+.Person.java
 ----
 @Label
 public interface Person {
@@ -189,8 +189,8 @@ It can also be seen that a label usually enforces the presence of specific prope
 property - starting with a lower case letter - is used to store its value in the database, this can be overwritten using @Property. The
 following example demonstrates explicit mappings for a label and a property:
 
-Person.java
 [source,java]
+.Person.java
 ----
 @Label("MyPerson")
 public interface Person {
@@ -208,8 +208,8 @@ The mapping of relations will be covered later.
 
 A labeled type can extend from one or more labeled types.
 
-Actor.java
 [source,java]
+.Actor.java
 ----
 @Label
 public interface Actor extends Person {
@@ -226,8 +226,8 @@ There might be situations where the same properties or relations shall be re-use
 used, these are just interfaces specifying properties and relations which shall be shared. The following example demonstrates how the
 property name of the labeled type Person is extracted to a template type:
 
-Named.java
 [source,java]
+.Named.java
 ----
 public interface Named {
 
@@ -237,8 +237,8 @@ public interface Named {
 }
 ----
 
-Person.java
 [source,java]
+.Person.java
 ----
 @Label
 public interface Person extends Named {
@@ -250,8 +250,8 @@ public interface Person extends Named {
 A node can directly reference other nodes using relation properties. A property of a labeled type or template type is treated as such if it
 references another labeled type or a collection thereof.
 
-Movie.java
 [source,java]
+.Movie.java
 ----
 @Label
 public interface Movie {
@@ -262,8 +262,8 @@ public interface Movie {
 }
 ----
 
-Actor.java
 [source,java]
+.Actor.java
 ----
 @Label
 public interface Actor extends Person {
@@ -277,8 +277,8 @@ If no further mapping information is provided an outgoing unidirectional relatio
 the property is assumed. The name may be specified using the @Relation annotation with the desired value. Furthermore
 using one of the annotations @Outgoing or @Incoming the direction of the relation can be specified.
 
-Actor.java
 [source,java]
+.Actor.java
 ----
 @Label
 public interface Actor extends Person {
@@ -310,8 +310,8 @@ unidirectional relations which map to the same relation type; one of them annota
 The recommended way is to use an annotation which qualifies the relation and holds the mapping information at a single
 point:
 
-ActedIn.java
 [source,java]
+.ActedIn.java
 ----
 @Relation
 @Retention(RUNTIME)
@@ -320,8 +320,8 @@ public @interface ActedIn {
 ----
 
 
-Actor.java
 [source,java]
+.Actor.java
 ----
 @Label
 public interface Actor extends Person {
@@ -334,8 +334,8 @@ public interface Actor extends Person {
 ----
 
 
-Movie.java
 [source,java]
+.Movie.java
 ----
 @Label
 public interface Movie {
@@ -356,8 +356,8 @@ public interface Movie {
 If a relation between two nodes shall have properties a dedicated type must be declared. It must contain two properties
 returning the types of referenced types which are annotated with @Incoming and @Outgoing:
 
-Directed.java
 [source,java]
+.Directed.java
 ----
 @Relation
 public interface Directed {
@@ -377,8 +377,8 @@ public interface Directed {
 }
 ----
 
-Director.java
 [source,java]
+.Director.java
 ----
 @Label
 public interface Director extends Person {
@@ -389,8 +389,8 @@ public interface Director extends Person {
 ----
 
 
-Movie.java
 [source,java]
+.Movie.java
 ----
 @Label
 public interface Movie {
@@ -407,8 +407,8 @@ public interface Movie {
 Note: If the typed relation references the same labeled type at both ends then the according properties of the latter
 must also be annotated with @Outgoing and @Incoming:
 
-Directed.java
 [source,java]
+.Directed.java
 ----
 @Relation
 public interface References {
@@ -427,8 +427,8 @@ public interface References {
 }
 ----
 
-Movie.java
 [source,java]
+.Movie.java
 ----
 @Label
 public interface Movie {
@@ -449,8 +449,8 @@ Typed relations may also be constructed using <<TemplateTypes>>, i.e. types whic
 
 Labeled types or relation types may also define methods which execute a query on invocation and return the result:
 
-Movie.java
 [source,java]
+.Movie.java
 ----
 @Label
 public interface Movie {
@@ -469,4 +469,51 @@ public interface Movie {
 
 ==== Transient Properties
 
+Properties of entities or relations can be declared as transient, i.e. they may be used at runtime but will not be stored in the database:
+
+[source,java]
+.Person.java
+----
+@Label
+public interface Person {
+
+  @Transient
+  String getName();
+  void setName();
+
+}
+----
+
 ==== User defined methods
+
+It can be useful to provide a custom implementation of a method which has direct access to the underlying datatypes. This can be achieved using '@ImplementedBy'.
+
+[source,java]
+.Person.java
+----
+@Label
+public interface Person {
+
+  @ImplementedBy(SetNameMethod.class)
+  String setName(String firstName, String lastName);
+
+}
+----
+
+[source,java]
+.SetNameMethod.java
+----
+
+public class SetNameMethod implements ProxyMethod<Node> {
+
+ @Override
+    public Object invoke(Node node, Object instance, Object[] args) {
+      String firstName = (String) args[0];
+      String lastName = (String) args[1];
+      String fullName = firstName + " " + lastName;
+      node.setProperty("name", fullName);
+      return fullName;
+    }
+
+}
+----

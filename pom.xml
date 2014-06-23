@@ -190,44 +190,28 @@
                             <pluginExecutions>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
-                                        <groupId>
-                                            org.asciidoctor
-                                        </groupId>
-                                        <artifactId>
-                                            asciidoctor-maven-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [0.1.4,)
-                                        </versionRange>
+                                        <groupId>org.asciidoctor</groupId>
+                                        <artifactId>asciidoctor-maven-plugin</artifactId>
+                                        <versionRange>[0.1.4,)</versionRange>
                                         <goals>
-                                            <goal>
-                                                process-asciidoc
-                                            </goal>
+                                            <goal>process-asciidoc</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
-                                        <groupId>
-                                            org.apache.servicemix.tooling
-                                        </groupId>
-                                        <artifactId>
-                                            depends-maven-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [1.2,)
-                                        </versionRange>
+                                        <groupId>org.apache.servicemix.tooling</groupId>
+                                        <artifactId>depends-maven-plugin</artifactId>
+                                        <versionRange>[1.2,)</versionRange>
                                         <goals>
-                                            <goal>
-                                                generate-depends-file
-                                            </goal>
+                                            <goal>generate-depends-file</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -488,6 +472,24 @@
             </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                    <excludePackageNames>*.schema.*</excludePackageNames>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <dependencyManagement>
         <dependencies>

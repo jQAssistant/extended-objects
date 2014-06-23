@@ -25,10 +25,10 @@ graph database Neo4j.
 = Core Concepts
 == Static vs. Dynamic Composition
 
-An example from a well known domain shall be used to explain the difference between both concepts of composition:
+A simple example shall be used to explain the difference between both concepts of composition:
 
-Person.java
 [source,java]
+.Person.java
 ----
 @DatastoreEntity // A datastore specific annotation marking this interface as an entity
 public interface Person {
@@ -37,8 +37,8 @@ public interface Person {
 }
 ----
 
-Actor.java
 [source,java]
+.Actor.java
 ----
 @DatastoreEntity
 public interface Actor extends Person {
@@ -46,8 +46,8 @@ public interface Actor extends Person {
 }
 ----
 
-Director.java
 [source,java]
+.Director.java
 ----
 @DatastoreEntity
 public interface Director extends Person {
@@ -55,8 +55,8 @@ public interface Director extends Person {
 }
 ----
 
-Movie.java
 [source,java]
+.Movie.java
 ----
 @DatastoreEntity
 public interface Movie {
@@ -72,8 +72,8 @@ public interface Movie {
 
 Using the XO API the following use case can be implemented:
 
-RaidersOfTheLostArk.java
 [source,java]
+.RaidersOfTheLostArk.java
 ----
 public class RaidersOfTheLostArk {
 
@@ -118,8 +118,8 @@ public class RaidersOfTheLostArk {
 The types Actor and Director use static composition by extending from the type Person. But what happens if a person
 works in both roles: actor and director? A new type extending from both would be required if static composition was used:
 
-DirectingActor.java
 [source,java]
+.DirectingActor.java
 ----
 @DatastoreEntity
 public interface DirectingActor extends Director, Actor {
@@ -129,8 +129,8 @@ public interface DirectingActor extends Director, Actor {
 The situation gets even more complex if other roles (like screenwriter, editor, etc.) are added to the domain model.
 Each combination of roles must be represented by such a type. Dynamic composition helps getting around this problem:
 
-TempleOfDoom.java
 [source,java]
+.TempleOfDoom.java
 ----
 public class TempleOfDoom {
 
@@ -169,8 +169,8 @@ above example the fact that the director also acted in the movie might have been
 has been created using the type Director. XO offers a way to perform a migration at runtime and allows adding (or
 removing) roles (i.e. types):
 
-TempleOfDoom.java
 [source,java]
+.TempleOfDoom.java
 ----
 public class TempleOfDoom {
 
