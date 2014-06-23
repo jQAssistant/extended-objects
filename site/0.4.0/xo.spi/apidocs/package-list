@@ -1,0 +1,8 @@
+com.buschmais.xo.spi.annotation
+com.buschmais.xo.spi.bootstrap
+com.buschmais.xo.spi.datastore
+com.buschmais.xo.spi.interceptor
+com.buschmais.xo.spi.metadata.method
+com.buschmais.xo.spi.metadata.type
+com.buschmais.xo.spi.plugin
+com.buschmais.xo.spi.reflection
