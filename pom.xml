@@ -13,7 +13,7 @@
 
     <name>eXtended Objects</name>
 
-    <url>https://github.com/buschmais/xo-neo4j</url>
+    <url>https://github.com/buschmais/extended-objects</url>
     <description>eXtended Objects</description>
 
     <organization>
@@ -29,14 +29,22 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git://github.com/buschmais/xo.git</connection>
-        <developerConnection>scm:git:git@github.com:buschmais/xo.git</developerConnection>
-        <url>https://github.com/buschmais/xo</url>
+        <connection>scm:git:git://github.com/buschmais/extended-objects.git</connection>
+        <developerConnection>scm:git:git@github.com:buschmais/extended-objects.git</developerConnection>
+        <url>https://github.com/buschmais/extended-objects</url>
     </scm>
 
     <ciManagement>
-        <url>https://travis-ci.org/buschmais/xo</url>
+        <url>https://travis-ci.org/buschmais/extended-objects</url>
     </ciManagement>
+
+    <distributionManagement>
+        <site>
+            <id>github-pages-site</id>
+            <name>Deployment through GitHub's site deployment plugin</name>
+            <url>site/${project.version}</url>
+        </site>
+    </distributionManagement>
 
     <developers>
         <developer>
@@ -50,6 +58,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java8.build.outputDirectory>${project.build.directory}/classes-java8</java8.build.outputDirectory>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
+        <github.global.server>github</github.global.server>
+        <org_asciidoctor.version>0.1.4</org_asciidoctor.version>
     </properties>
 
     <profiles>
@@ -172,61 +182,80 @@
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
-                	<groupId>org.eclipse.m2e</groupId>
-                	<artifactId>lifecycle-mapping</artifactId>
-                	<version>1.0.0</version>
-                	<configuration>
-                		<lifecycleMappingMetadata>
-                			<pluginExecutions>
-                				<pluginExecution>
-                					<pluginExecutionFilter>
-                						<groupId>
-                							org.asciidoctor
-                						</groupId>
-                						<artifactId>
-                							asciidoctor-maven-plugin
-                						</artifactId>
-                						<versionRange>
-                							[0.1.4,)
-                						</versionRange>
-                						<goals>
-                							<goal>
-                								process-asciidoc
-                							</goal>
-                						</goals>
-                					</pluginExecutionFilter>
-                					<action>
-                						<ignore></ignore>
-                					</action>
-                				</pluginExecution>
-                				<pluginExecution>
-                					<pluginExecutionFilter>
-                						<groupId>
-                							org.apache.servicemix.tooling
-                						</groupId>
-                						<artifactId>
-                							depends-maven-plugin
-                						</artifactId>
-                						<versionRange>
-                							[1.2,)
-                						</versionRange>
-                						<goals>
-                							<goal>
-                								generate-depends-file
-                							</goal>
-                						</goals>
-                					</pluginExecutionFilter>
-                					<action>
-                						<ignore></ignore>
-                					</action>
-                				</pluginExecution>
-                			</pluginExecutions>
-                		</lifecycleMappingMetadata>
-                	</configuration>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.asciidoctor
+                                        </groupId>
+                                        <artifactId>
+                                            asciidoctor-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [0.1.4,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>
+                                                process-asciidoc
+                                            </goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.apache.servicemix.tooling
+                                        </groupId>
+                                        <artifactId>
+                                            depends-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.2,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>
+                                                generate-depends-file
+                                            </goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.3</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.doxia</groupId>
+                            <artifactId>doxia-module-markdown</artifactId>
+                            <version>1.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.asciidoctor</groupId>
+                            <artifactId>asciidoctor-maven-plugin</artifactId>
+                            <version>${org_asciidoctor.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <skipDeploy>true</skipDeploy>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
-
 
         <plugins>
             <plugin>
@@ -420,9 +449,9 @@
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>0.1.4</version>
+                <version>${org_asciidoctor.version}</version>
                 <configuration>
-                    <backend>html</backend>
+                    <backend>html5</backend>
                     <attributes>
                         <toc>auto</toc>
                         <toclevels>3</toclevels>
@@ -435,6 +464,25 @@
                         <goals>
                             <goal>process-asciidoc</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.8</version>
+                <configuration>
+                    <message>Creating site for ${project.artifactId}, ${project.version}</message>
+                    <path>${project.distributionManagement.site.url}</path>
+                    <merge>true</merge>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>github-site</id>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>site-deploy</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -481,7 +529,7 @@
                 <version>17.0</version>
             </dependency>
             <dependency>
-            <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>5.0.1.Final</version>
                 <scope>test</scope>
