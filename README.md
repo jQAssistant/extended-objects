@@ -10,12 +10,12 @@ eXtended Objects - Lightweight and flexible datastore mapping of Java domain obj
 * Which allows the definition of entities and relations as interfaces.
 
 Please refer to the
-* [core documentation](doc/0.4.0/doc/index.html) for an introduction and general concepts.
+* [core documentation](https://buschmais.github.io/extended-objects/doc/0.4.0/doc/index.html) for an introduction and general concepts.
 * datastore implementations for getting started.
 
 ## Datastores
 
-* [Neo4j](doc/0.4.0/neo4j/index.html)
+* [Neo4j](https://buschmais.github.io/extended-objects/doc/0.4.0/neo4j/index.html)
 * [Titan](https://github.com/PureSolTechnologies/extended-objects-titan)
 * [TinkerPop Blueprints](https://github.com/BluWings/xo-tinkerpop-blueprints)
 * [OrientDb](https://github.com/BluWings/xo-orientdb)
