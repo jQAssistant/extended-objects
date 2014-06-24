@@ -119,7 +119,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         }
         SortedSet<Class<?>> resultTypes = getResultTypes();
         XOTransaction xoTransaction = sessionContext.getXOTransaction();
-        return new QueryResultIterableImpl(sessionContext, xoTransaction != null ? new TransactionalResultIterator<>(iterator, xoTransaction) : iterator, resultTypes);
+        return sessionContext.getInterceptorFactory().addInterceptor(new QueryResultIterableImpl(sessionContext, xoTransaction != null ? new TransactionalResultIterator<>(iterator, xoTransaction) : iterator, resultTypes));
     }
 
     private SortedSet<Class<?>> getResultTypes() {

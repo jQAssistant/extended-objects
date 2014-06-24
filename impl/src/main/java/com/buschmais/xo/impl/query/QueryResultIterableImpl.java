@@ -34,7 +34,7 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
 
     @Override
     public ResultIterator<T> iterator() {
-        return new ResultIterator<T>() {
+        return sessionContext.getInterceptorFactory().addInterceptor(new ResultIterator<T>() {
 
             @Override
             public boolean hasNext() {
@@ -98,7 +98,7 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
             public void close() {
                 iterator.close();
             }
-        };
+        });
     }
 
     @Override
