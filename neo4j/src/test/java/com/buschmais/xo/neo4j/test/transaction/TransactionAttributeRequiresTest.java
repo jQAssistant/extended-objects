@@ -40,7 +40,10 @@ public class TransactionAttributeRequiresTest extends AbstractNeo4jXOManagerTest
         A a = createA(xoManager);
         assertThat(a.getValue(), equalTo("value1"));
         assertThat(xoManager.find(A.class, "value1").getSingleResult(), equalTo(a));
-        assertThat(xoManager.createQuery(A.ByValue.class).withParameter("value", "value1").execute().getSingleResult().getA(), equalTo(a));
+        closeXOmanager();
+        xoManager = getXoManager();
+        a = xoManager.createQuery(A.ByValue.class).withParameter("value", "value1").execute().getSingleResult().getA();
+        assertThat(a.getValue(), equalTo("value1"));
         assertThat(a.getByValue("value1").getA(), equalTo(a));
         a.setValue("value2");
         assertThat(a.getValue(), equalTo("value2"));
