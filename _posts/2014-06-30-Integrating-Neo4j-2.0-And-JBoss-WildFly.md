@@ -8,7 +8,7 @@ Last week there was a discussion about how Neo4j could be integrated into a Java
 1. Mapping of Java classes to tables
 2. Injection of an EntityManager as a (pseudo-)transactional resource into beans (e.g. session beans)
 
-Where the first problem is already being addressed by eXtended Objects it would be good to know how the second one could be solved for implementing the feature requests [#72](https://github.com/buschmais/extended-objects/issues/72) and [#92](https://github.com/buschmais/extended-objects/issues/92).
+Where the first problem is already being addressed by eXtended Objects (probably better than JPA does...) it would be good to know how the second one could be solved for implementing the feature requests [#72](https://github.com/buschmais/extended-objects/issues/72) and [#92](https://github.com/buschmais/extended-objects/issues/92).
 
 There's good news about that: it's quite easy getting the transaction stuff working if you use the [Neo4j JDBC driver](https://github.com/neo4j-contrib/neo4j-jdbc). Let's demonstrate a setup which has been tested with JBoss AS 7.1.1.Final and JBoss WildFly 8.1.0.Final.
 
