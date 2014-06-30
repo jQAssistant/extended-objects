@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Integrating Neo4j 2.0 And JBoss WildFly"
+title:  "Integrating Neo4j 2.x And JBoss WildFly"
 ---
 
 Last week there was a discussion about how Neo4j could be integrated into a Java EE environment. Looking at JPA there are two main problems to be solved:
