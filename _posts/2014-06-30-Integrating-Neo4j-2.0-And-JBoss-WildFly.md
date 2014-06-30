@@ -53,6 +53,7 @@ public class SessionBean {
 			throw new EJBException("Cannot execute cypher statement.", e);
 		} 
 	}
+}
 ```
 
 
