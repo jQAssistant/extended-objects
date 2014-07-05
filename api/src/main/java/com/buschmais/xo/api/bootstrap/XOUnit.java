@@ -3,8 +3,21 @@ package com.buschmais.xo.api.bootstrap;
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.ValidationMode;
 
+import com.google.common.base.Objects;
+
 import java.net.URI;
 import java.util.*;
+
+import static com.buschmais.xo.api.bootstrap.XOUnitParameter.CONCURRENCY_MODE;
+import static com.buschmais.xo.api.bootstrap.XOUnitParameter.DESCRIPTION;
+import static com.buschmais.xo.api.bootstrap.XOUnitParameter.INSTANCE_LISTENERS;
+import static com.buschmais.xo.api.bootstrap.XOUnitParameter.NAME;
+import static com.buschmais.xo.api.bootstrap.XOUnitParameter.PROPERTIES;
+import static com.buschmais.xo.api.bootstrap.XOUnitParameter.PROVIDER;
+import static com.buschmais.xo.api.bootstrap.XOUnitParameter.TRANSACTION_ATTRIBUTE;
+import static com.buschmais.xo.api.bootstrap.XOUnitParameter.TYPES;
+import static com.buschmais.xo.api.bootstrap.XOUnitParameter.URL;
+import static com.buschmais.xo.api.bootstrap.XOUnitParameter.VALIDATION_MODE;
 
 import static com.buschmais.xo.api.Transaction.TransactionAttribute;
 
@@ -118,4 +131,21 @@ public class XOUnit {
     public List<? extends Class<?>> getInstanceListeners() {
         return instanceListeners;
     }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this.getClass()). //
+                add(NAME.getKey(), getName()). //
+                add(DESCRIPTION.getKey(), getDescription()). //
+                add(URL.getKey(), getUri()). //
+                add(PROVIDER.getKey(), getProvider()). //
+                add(TYPES.getKey(), getTypes()). //
+                add(INSTANCE_LISTENERS.getKey(), getInstanceListeners()). //
+                add(VALIDATION_MODE.getKey(), getValidationMode()). //
+                add(CONCURRENCY_MODE.getKey(), getConcurrencyMode()). //
+                add(TRANSACTION_ATTRIBUTE.getKey(), getDefaultTransactionAttribute()). //
+                add(PROPERTIES.getKey(), getProperties()). //
+                toString();
+    }
+
 }

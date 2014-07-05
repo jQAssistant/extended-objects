@@ -114,6 +114,13 @@ public class XOUnitBuilder {
         return this;
     }
 
+    public XOUnitBuilder properties(Properties properties) {
+        if (properties != null) {
+            this.properties.putAll(properties);
+        }
+        return this;
+    }
+
     public XOUnit create() {
         return new XOUnit(name, description, uri, provider, types, instanceListenerTypes, validationMode, concurrencyMode, transactionAttribute, properties);
     }
