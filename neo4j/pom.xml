@@ -29,6 +29,9 @@
                 <configuration>
                     <instructions>
                         <DynamicImport-Package>*</DynamicImport-Package>
+                        <Export-Package>
+                        com.buschmais.xo.neo4j.api.*;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}"
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

@@ -56,9 +56,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java8.build.outputDirectory>${project.build.directory}/classes-java8</java8.build.outputDirectory>
-        <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
         <github.global.server>github</github.global.server>
         <org_asciidoctor.version>0.1.4</org_asciidoctor.version>
+
+        <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+        <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
     </properties>
 
     <profiles>
@@ -296,10 +298,8 @@
                                     <Bundle-Name>${project.name} (Source)</Bundle-Name>
                                     <Bundle-SymbolicName>${bundle.name}.source</Bundle-SymbolicName>
                                     <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                                    <Bundle-Version>${parsedVersion.osgiVersion}</Bundle-Version>
-                                    <Eclipse-SourceBundle>
-                                        ${bundle.name};version="${parsedVersion.osgiVersion}";roots:="."
-                                    </Eclipse-SourceBundle>
+                                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}</Bundle-Version>
+                                    <Eclipse-SourceBundle>${bundle.name};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}";roots:="."</Eclipse-SourceBundle>
                                 </manifestEntries>
                             </archive>
                         </configuration>
@@ -377,6 +377,7 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>2.4.0</version>
+                <extensions>true</extensions>
                 <executions>
                     <execution>
                         <id>bundle-manifest</id>
@@ -386,7 +387,10 @@
                         </goals>
                         <configuration>
                             <instructions>
+                                <Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
                                 <Bundle-Name>${project.name}</Bundle-Name>
+                                <_snapshot>${maven.build.timestamp}</_snapshot>
+                                <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
                             </instructions>
                         </configuration>
                     </execution>
