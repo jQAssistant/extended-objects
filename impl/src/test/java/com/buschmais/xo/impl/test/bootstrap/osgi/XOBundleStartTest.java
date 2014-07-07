@@ -2,8 +2,8 @@ package com.buschmais.xo.impl.test.bootstrap.osgi;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.fail;
 
@@ -50,6 +50,7 @@ public class XOBundleStartTest extends OSGiTestCase {
     @Test
     public void checkXOUnitConfiguration() throws IOException {
         assertThat(configAdmin, is(notNullValue()));
+
         final Configuration config = configAdmin.createFactoryConfiguration("com.buschmais.xo.factory", null);
         assertThat(config, is(notNullValue()));
         assertThat(config.getFactoryPid(), is("com.buschmais.xo.factory"));
@@ -61,13 +62,13 @@ public class XOBundleStartTest extends OSGiTestCase {
         types.add("com.buschmais.xo.impl.test.bootstrap.composite.A");
         properties.put(XOUnitParameter.TYPES.getKey(), types);
         properties.put(XOUnitParameter.PROVIDER.getKey(), "com.buschmais.xo.impl.test.bootstrap.provider.TestXOProvider");
-
         config.update(properties);
 
         delay();
 
         try {
             final ServiceReference[] services = ctx.getServiceReferences(XOManagerFactory.class.getName(), "(name=cmUnit)");
+            assertThat(services, notNullValue());
             assertThat(services.length, is(1));
             for (final ServiceReference ref : services) {
                 final Object service = ctx.getService(ref);
@@ -76,6 +77,7 @@ public class XOBundleStartTest extends OSGiTestCase {
         } catch (final InvalidSyntaxException e) {
             fail(e.toString());
         }
+
     }
 
     @Test

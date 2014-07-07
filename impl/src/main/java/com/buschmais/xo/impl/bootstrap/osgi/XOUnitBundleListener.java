@@ -4,7 +4,9 @@ import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.XOManagerFactoryImpl;
 import com.buschmais.xo.impl.bootstrap.XOUnitFactory;
+
 import org.osgi.framework.*;
+import org.osgi.service.cm.ManagedServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,14 +20,29 @@ public class XOUnitBundleListener implements BundleActivator, BundleListener {
 
     private final Map<Long, List<XOManagerFactory>> registeredXOManagerFactories = new HashMap<>();
 
+    private ServiceRegistration<ManagedServiceFactory> serviceFactoryRegistration;
+
+    private XOManagerFactoryServiceFactory serviceFactory;
+
     @Override
     public void start(BundleContext context) throws Exception {
         context.addBundleListener(this);
+        Dictionary<String,String> props = new Hashtable<String,String>();
+        props.put(Constants.SERVICE_PID, XOManagerFactory.FACTORY_PID);
+        serviceFactory = new XOManagerFactoryServiceFactory(context);
+        serviceFactoryRegistration = context.registerService(ManagedServiceFactory.class, serviceFactory, props);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("ConfigAdmin listener registered");
+        }
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
         context.removeBundleListener(this);
+        serviceFactory.stop();
+        if (serviceFactoryRegistration != null) {
+            serviceFactoryRegistration.unregister();
+        }
     }
 
     @Override

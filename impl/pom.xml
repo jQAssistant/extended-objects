@@ -36,7 +36,6 @@
                     <instructions>
                         <Bundle-Activator>com.buschmais.xo.impl.bootstrap.osgi.XOUnitBundleListener</Bundle-Activator>
                         <DynamicImport-Package>*</DynamicImport-Package>
-                        <Service-Component>OSGI-INF/service-factory.xml</Service-Component>
                     </instructions>
                 </configuration>
             </plugin>
