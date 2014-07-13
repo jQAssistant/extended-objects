@@ -9,6 +9,7 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Property
         super(propertyManager, metadata);
     }
 
+    @Override
     public Object invoke(DatastoreType datastoreType, Object instance, Object[] args) {
         PrimitivePropertyMethodMetadata<?> metadata = getMetadata();
         PropertyManager propertyManager = getPropertyManager();
@@ -34,7 +35,7 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Property
         } else if (int.class.equals(type)) {
             return 0;
         } else if (long.class.equals(type)) {
-            return 0l;
+            return 0L;
         } else if (float.class.equals(type)) {
             return 0f;
         } else if (double.class.equals(type)) {

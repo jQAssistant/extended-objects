@@ -19,7 +19,7 @@ public class DependencyResolver<T> {
 
     public List<T> resolve() {
         blockedBy = new HashMap<>();
-        LinkedHashSet<T> queue = new LinkedHashSet<>();
+        Set<T> queue = new LinkedHashSet<>();
         Set<T> allElements = new HashSet<>();
         queue.addAll(elements);
         while (!queue.isEmpty()) {

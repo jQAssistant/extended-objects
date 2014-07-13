@@ -8,6 +8,9 @@ public final class Neo4jPropertyHelper {
 
     private static final Pattern NEO4J_PROPERTY_PATTERN = Pattern.compile("neo4j\\.(.*)");
 
+    private Neo4jPropertyHelper() {
+    }
+
     public static Properties getNeo4jProperties(Properties properties) {
         Properties neo4jProperties = new Properties();
         for (String propertyName : properties.stringPropertyNames()) {

@@ -127,8 +127,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      */
     public <Instance> DatastoreType getDatastoreType(Instance instance) {
         InstanceInvocationHandler<DatastoreType> invocationHandler = proxyFactory.getInvocationHandler(instance);
-        DatastoreType datastoreType = invocationHandler.getDatastoreType();
-        return datastoreType;
+        return invocationHandler.getDatastoreType();
     }
 
     /**
