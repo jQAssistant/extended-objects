@@ -39,7 +39,7 @@ import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
 
 /**
  * Implementation of the {@link MetadataProvider}.
- * 
+ *
  * @param <EntityMetadata>
  *            The type of datastore specific entity metadata.
  * @param <EntityDiscriminator>
@@ -62,7 +62,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     /**
      * Constructor.
-     * 
+     *
      * @param types
      *            All classes as provided by the XO unit.
      * @param datastore
@@ -150,7 +150,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      * <p>
      * The metadata will be created if it does not exist yet.
      * </p>
-     * 
+     *
      * @param type
      *            The type.
      * @return The {@link TypeMetadata}.
@@ -168,7 +168,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     /**
      * Create the {@link TypeMetadata} for the given {@link AnnotatedType}.
-     * 
+     *
      * @param annotatedType
      *            The {@link AnnotatedType}.
      * @return The corresponding metadata.
@@ -192,7 +192,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     /**
      * Determines if an {@link AnnotatedType} represents an entity type.
-     * 
+     *
      * @param annotatedType
      *            The {@link AnnotatedType}.
      * @return <code>true</code> if the annotated type represents an entity
@@ -204,7 +204,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     /**
      * Determines if an {@link AnnotatedType} represents a relation type.
-     * 
+     *
      * @param annotatedType
      *            The {@link AnnotatedType}.
      * @return <code>true</code> if the annotated type represents relation type.
@@ -216,7 +216,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Determines if an {@link AnnotatedType} represents a specific type
      * identified by a meta annotation.
-     * 
+     *
      * @param annotatedType
      *            The {@link AnnotatedType}.
      * @param definitionType
@@ -239,7 +239,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Create a {@link EntityTypeMetadata} instance for the given
      * {@link AnnotatedType}.
-     * 
+     *
      * @param annotatedType
      *            The {@link AnnotatedType}.
      * @param superTypes
@@ -259,7 +259,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Get or create a {@link RelationTypeMetadata} instance for the given
      * {@link AnnotatedType}.
-     * 
+     *
      * @param annotatedType
      *            The {@link AnnotatedType}.
      * @param superTypes
@@ -317,7 +317,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Returns a list of {@link TypeMetadata} representing the super types of
      * the given annotated type.
-     * 
+     *
      * @param annotatedType
      *            The {@link AnnotatedType}.
      * @return The list of {@link TypeMetadata} representing the super types.
@@ -332,7 +332,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     /**
      * Determine the indexed property from a list of method metadata.
-     * 
+     *
      * @param methodMetadataOfType
      *            The list of method metadata.
      * @return The {@link IndexedPropertyMethodMetadata}.
@@ -356,7 +356,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Return the collection of method metadata from the given collection of
      * annotateed methods.
-     * 
+     *
      * @param annotatedMethods
      *            The collection of annotated methods.
      * @return The collection of method metadata.
@@ -379,8 +379,9 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 Transient transientAnnotation = propertyMethod.getAnnotationOfProperty(Transient.class);
                 if (transientAnnotation != null) {
                     methodMetadata = new TransientPropertyMethodMetadata(propertyMethod);
-                } else
+                } else {
                     methodMetadata = createPropertyMethodMetadata(annotatedType, propertyMethod);
+                }
             } else {
                 methodMetadata = new UnsupportedOperationMethodMetadata((UserMethod) annotatedMethod);
             }
@@ -391,7 +392,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     /**
      * Create the {@link MethodMetadata} for a property method.
-     * 
+     *
      * @param annotatedType
      *            The annotated type containing the property.
      * @param propertyMethod
@@ -495,7 +496,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Determines the {@link AnnotatedElement} which is annotated with
      * {@link RelationDefinition}.
-     * 
+     *
      * @param propertyMethod
      *            The property method to start with.
      * @return The annotated element.
@@ -516,7 +517,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     /**
      * Creates the method metadata for methods annotated with {@link ResultOf}.
-     * 
+     *
      * @param annotatedMethod
      *            The annotated method-
      * @param resultOf
@@ -569,7 +570,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     /**
      * Return the {@link TypeMetadata} instance representing the given type.
-     * 
+     *
      * @param type
      *            The type.
      * @param metadataType

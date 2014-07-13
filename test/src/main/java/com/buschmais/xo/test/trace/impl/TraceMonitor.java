@@ -100,7 +100,7 @@ public class TraceMonitor implements TraceMonitorMXBean {
 
     @Override
     public synchronized List<MethodStatistics> getMethodStatistics() {
-        ArrayList<MethodStatistics> methodStatisticses = new ArrayList<>(statistics.values());
+        List<MethodStatistics> methodStatisticses = new ArrayList<>(statistics.values());
         Collections.sort(methodStatisticses, new Comparator<MethodStatistics>() {
             @Override
             public int compare(MethodStatistics o1, MethodStatistics o2) {

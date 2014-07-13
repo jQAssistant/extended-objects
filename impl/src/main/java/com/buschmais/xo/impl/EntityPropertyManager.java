@@ -15,7 +15,7 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
 
     /**
      * Constructor.
-     * 
+     *
      * @param sessionContext
      *            The {@link SessionContext}.
      */
@@ -47,8 +47,7 @@ public class EntityPropertyManager<Entity, Relation> extends AbstractPropertyMan
             Entity targetEntity = entityInstanceManager.getDatastoreType(target);
             Relation relation = createRelation(sourceEntity, fromProperty, targetEntity, toProperty);
             entityInstanceManager.updateInstance(targetEntity);
-            T instance = sessionContext.getRelationInstanceManager().createInstance(relation);
-            return instance;
+            return sessionContext.getRelationInstanceManager().createInstance(relation);
         }
         return null;
     }

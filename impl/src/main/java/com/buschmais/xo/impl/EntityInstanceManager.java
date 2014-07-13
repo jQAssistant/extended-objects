@@ -30,8 +30,7 @@ public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extend
     @Override
     protected TypeMetadataSet<?> getTypes(Entity entity) {
         Set<EntityDiscriminator> discriminators = sessionContext.getDatastoreSession().getDatastoreEntityManager().getEntityDiscriminators(entity);
-        TypeMetadataSet<?> types = sessionContext.getMetadataProvider().getTypes(discriminators);
-        return types;
+        return sessionContext.getMetadataProvider().getTypes(discriminators);
     }
 
     @Override
