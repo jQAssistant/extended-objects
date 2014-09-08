@@ -57,7 +57,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java8.build.outputDirectory>${project.build.directory}/classes-java8</java8.build.outputDirectory>
         <github.global.server>github</github.global.server>
-        <org_asciidoctor.version>0.1.4</org_asciidoctor.version>
+        <org_asciidoctor.version>1.5.0</org_asciidoctor.version>
 
         <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
@@ -220,7 +220,28 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
+                    <groupId>org.asciidoctor</groupId>
+                    <artifactId>asciidoctor-maven-plugin</artifactId>
+                    <version>${org_asciidoctor.version}</version>
+                    <configuration>
+                        <backend>html5</backend>
+                        <attributes>
+                            <toc>auto</toc>
+                            <toclevels>3</toclevels>
+                        </attributes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>output-html</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>process-asciidoc</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.3</version>
                     <dependencies>
@@ -430,27 +451,6 @@
                                 </resource>
                             </resources>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.asciidoctor</groupId>
-                <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>${org_asciidoctor.version}</version>
-                <configuration>
-                    <backend>html5</backend>
-                    <attributes>
-                        <toc>auto</toc>
-                        <toclevels>3</toclevels>
-                    </attributes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>output-html</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>process-asciidoc</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
