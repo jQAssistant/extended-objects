@@ -50,7 +50,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     @Override
     public Query<T> using(Class<? extends Annotation> queryLanguage) {
         this.queryLanguage = queryLanguage;
-        return sessionContext.getInterceptorFactory().addInterceptor(this);
+        return sessionContext.getInterceptorFactory().addInterceptor(this, Query.class);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         if (oldValue != null) {
             throw new XOException("Parameter '" + name + "' has already been assigned to value '" + value + "'.");
         }
-        return sessionContext.getInterceptorFactory().addInterceptor(this);
+        return sessionContext.getInterceptorFactory().addInterceptor(this, Query.class);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
             throw new XOException("Parameters have already been assigned: " + parameters);
         }
         this.parameters = parameters;
-        return sessionContext.getInterceptorFactory().addInterceptor(this);
+        return sessionContext.getInterceptorFactory().addInterceptor(this, Query.class);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         }
         SortedSet<Class<?>> resultTypes = getResultTypes();
         XOTransaction xoTransaction = sessionContext.getXOTransaction();
-        return sessionContext.getInterceptorFactory().addInterceptor(new QueryResultIterableImpl(sessionContext, xoTransaction != null ? new TransactionalResultIterator<>(iterator, xoTransaction) : iterator, resultTypes));
+        return sessionContext.getInterceptorFactory().addInterceptor(new QueryResultIterableImpl(sessionContext, xoTransaction != null ? new TransactionalResultIterator<>(iterator, xoTransaction) : iterator, resultTypes), Result.class);
     }
 
     private SortedSet<Class<?>> getResultTypes() {

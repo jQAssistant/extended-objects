@@ -13,12 +13,7 @@ public final class TypeMetadataSet<TypeMetadata extends DatastoreTypeMetadata<?>
      * Constructor.
      */
     public TypeMetadataSet() {
-        super(new Comparator<TypeMetadata>() {
-            @Override
-            public int compare(TypeMetadata o1, TypeMetadata o2) {
-                return o1.getAnnotatedType().getAnnotatedElement().getName().compareTo(o2.getAnnotatedType().getAnnotatedElement().getName());
-            }
-        });
+        super((o1, o2) -> o1.getAnnotatedType().getAnnotatedElement().getName().compareTo(o2.getAnnotatedType().getAnnotatedElement().getName()));
     }
 
     public Class<?>[] toClasses() {

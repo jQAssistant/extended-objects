@@ -81,7 +81,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = datastore.createSession();
         SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext = new SessionContext<>(metadataProvider, pluginRepositoryManager, datastoreSession, validatorFactory, xoUnit.getInstanceListeners(), defaultTransactionAttribute, validationMode, concurrencyMode, classLoader);
         XOManagerImpl<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> xoManager = new XOManagerImpl<>(sessionContext);
-        return sessionContext.getInterceptorFactory().addInterceptor(xoManager);
+        return sessionContext.getInterceptorFactory().addInterceptor(xoManager, XOManager.class);
     }
 
     @Override

@@ -289,31 +289,31 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     @Override
     public Query<CompositeRowObject> createQuery(String query) {
         XOQueryImpl<CompositeRowObject, ?, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query);
-        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
+        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery, Query.class);
     }
 
     @Override
     public <T> Query<T> createQuery(String query, Class<T> type) {
         XOQueryImpl<T, ?, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type);
-        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
+        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery, Query.class);
     }
 
     @Override
     public Query<CompositeRowObject> createQuery(String query, Class<?> type, Class<?>... types) {
         XOQueryImpl<CompositeRowObject, ?, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type, Arrays.asList(types));
-        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
+        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery, Query.class);
     }
 
     @Override
     public <T> Query<T> createQuery(Class<T> query) {
         XOQueryImpl<T, ?, Class<T>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query);
-        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
+        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery, Query.class);
     }
 
     @Override
     public <Q> Query<CompositeRowObject> createQuery(Class<Q> query, Class<?>... types) {
         XOQueryImpl<CompositeRowObject, ?, Class<Q>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query, Arrays.asList(types));
-        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery);
+        return sessionContext.getInterceptorFactory().addInterceptor(xoQuery, Query.class);
     }
 
     @Override

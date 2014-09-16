@@ -52,7 +52,7 @@ public abstract class AbstractCollectionPropertyGetMethod<DatastoreType, Entity,
         } else {
             throw new XOException("Unsupported collection type " + collectionPropertyMetadata.getAnnotatedMethod().getType());
         }
-        return sessionContext.getInterceptorFactory().addInterceptor(collection);
+        return sessionContext.getInterceptorFactory().addInterceptor(collection, collection.getClass().getInterfaces());
     }
 
     /**

@@ -98,7 +98,7 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
             public void close() {
                 iterator.close();
             }
-        });
+        }, ResultIterator.class);
     }
 
     @Override

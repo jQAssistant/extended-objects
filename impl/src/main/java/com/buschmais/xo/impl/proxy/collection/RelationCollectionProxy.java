@@ -32,7 +32,7 @@ public class RelationCollectionProxy<Instance, Entity, Relation> extends Abstrac
             public void remove() {
                 throw new UnsupportedOperationException("Remove not supported");
             }
-        });
+        }, Iterator.class);
     }
 
     @Override

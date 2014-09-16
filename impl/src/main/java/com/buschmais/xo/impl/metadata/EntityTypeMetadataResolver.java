@@ -96,7 +96,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      */
     public TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getTypes(Set<Discriminator> discriminators) {
         // Get all types matching the discriminators
-        Set<EntityTypeMetadata<EntityMetadata>> allEntityTypeMetadatas = new HashSet<>();
+        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> allEntityTypeMetadatas = new TypeMetadataSet<>();
         for (Discriminator discriminator : discriminators) {
             Set<EntityTypeMetadata<EntityMetadata>> entityTypeMetadataOfDiscriminator = typeMetadataByDiscriminator.get(discriminator);
             if (entityTypeMetadataOfDiscriminator != null) {
@@ -107,22 +107,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
                 }
             }
         }
-        // remove all super types if their sub types are already contained in the type set
-        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> uniqueTypes = new TypeMetadataSet();
-        for (EntityTypeMetadata<EntityMetadata> entityTypeMetadata : allEntityTypeMetadatas) {
-            AnnotatedType annotatedType = entityTypeMetadata.getAnnotatedType();
-            boolean subtype = false;
-            for (Iterator<EntityTypeMetadata<EntityMetadata>> subTypeIterator = allEntityTypeMetadatas.iterator(); subTypeIterator.hasNext() && !subtype; ) {
-                AnnotatedType otherAnnotatedType = subTypeIterator.next().getAnnotatedType();
-                if (!annotatedType.equals(otherAnnotatedType) && annotatedType.getAnnotatedElement().isAssignableFrom(otherAnnotatedType.getAnnotatedElement())) {
-                    subtype = true;
-                }
-            }
-            if (!subtype) {
-                uniqueTypes.add(entityTypeMetadata);
-            }
-        }
-        return uniqueTypes;
+        return allEntityTypeMetadatas;
     }
 
     public Set<Discriminator> getDiscriminators(EntityTypeMetadata<EntityMetadata> entityTypeMetadata) {

@@ -22,10 +22,6 @@ public class InterceptorFactory {
         this.chain = effectiveChain.toArray(new XOInterceptor[effectiveChain.size()]);
     }
 
-    public <T> T addInterceptor(T instance) {
-        return addInterceptor(instance, instance.getClass().getInterfaces());
-    }
-
     public <T> T addInterceptor(T instance, Class<?>... interfaces) {
         if (chain.length == 0) {
             return instance;

@@ -32,7 +32,7 @@ public class EntityCollectionProxy<Instance, Entity, Relation> extends AbstractC
             public void remove() {
                 throw new UnsupportedOperationException("Remove not supported");
             }
-        });
+        }, Iterator.class);
     }
 
     @Override
