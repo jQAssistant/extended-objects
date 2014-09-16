@@ -49,7 +49,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
     private final InstanceValidationService instanceValidationService;
     private final CacheSynchronizationService<Entity, Relation> cacheSynchronizationService;
     private final XOTransactionImpl xoTransaction;
-    private final EntityPropertyManager<Entity, Relation> entityPropertyManager;
+    private final EntityPropertyManager<Entity, Relation, PropertyMetadata> entityPropertyManager;
     private final RelationPropertyManager<Entity, Relation> relationPropertyManager;
     private final InterceptorFactory interceptorFactory;
     private final ProxyFactory proxyFactory;
@@ -75,7 +75,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.entityInstanceManager = new EntityInstanceManager<>(this);
         this.instanceValidationService = new InstanceValidationService(validatorFactory, relationCache, entityCache);
         this.cacheSynchronizationService = new CacheSynchronizationService<>(this, validationMode);
-        if (xoTransaction!=null) {
+        if (xoTransaction != null) {
             // Register default synchronizations.
             xoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(cacheSynchronizationService, entityCache, relationCache));
         }
@@ -121,7 +121,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         return xoTransaction;
     }
 
-    public EntityPropertyManager<Entity, Relation> getEntityPropertyManager() {
+    public EntityPropertyManager<Entity, Relation, PropertyMetadata> getEntityPropertyManager() {
         return entityPropertyManager;
     }
 

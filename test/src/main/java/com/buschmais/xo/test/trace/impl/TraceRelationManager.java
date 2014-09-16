@@ -5,6 +5,8 @@ import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 
+import java.util.Map;
+
 /**
  * Implementation of a
  * {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager} which
@@ -36,8 +38,8 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
     }
 
     @Override
-    public Relation createRelation(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction, Entity target) {
-        return delegate.createRelation(source, metadata, direction, target);
+    public Relation createRelation(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction, Entity target, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
+        return delegate.createRelation(source, metadata, direction, target, example);
     }
 
     @Override

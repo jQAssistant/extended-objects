@@ -96,7 +96,7 @@ public interface XOManager extends AutoCloseable {
     <T> T create(Example<T> example, Class<T> type);
 
     /**
-     * Creates an instance of a typed relationType between a source and a target instance.
+     * Creates an instance of a typed relation between a source and a target instance.
      *
      * @param source       The source instance.
      * @param relationType The relation type.
@@ -107,6 +107,20 @@ public interface XOManager extends AutoCloseable {
      * @return The created relation instance.
      */
     <S, R, T> R create(S source, Class<R> relationType, T target);
+
+    /**
+     * Creates an instance of a typed relation between a source and a target instance using an example.
+     *
+     * @param example      The example instance.
+     * @param source       The source instance.
+     * @param relationType The relation type.
+     * @param target       The target instance.
+     * @param <S>          The source type.
+     * @param <R>          The relation type.
+     * @param <T>          The target type.
+     * @return The created relation instance.
+     */
+    <S, R, T> R create(Example<R> example, S source, Class<R> relationType, T target);
 
     /**
      * Return the id of the given instance.

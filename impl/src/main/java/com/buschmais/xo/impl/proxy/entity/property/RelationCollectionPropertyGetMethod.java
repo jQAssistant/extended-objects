@@ -12,7 +12,7 @@ import com.buschmais.xo.spi.metadata.method.RelationCollectionPropertyMethodMeta
  * @param <Entity>   The entity type.
  * @param <Relation> The relation type.
  */
-public class RelationCollectionPropertyGetMethod<Entity, Relation> extends AbstractCollectionPropertyGetMethod<Entity, Entity, Relation, EntityPropertyManager<Entity, Relation>, RelationCollectionPropertyMethodMetadata<?>> {
+public class RelationCollectionPropertyGetMethod<Entity, Relation> extends AbstractCollectionPropertyGetMethod<Entity, Entity, Relation, EntityPropertyManager<Entity, Relation, ?>, RelationCollectionPropertyMethodMetadata<?>> {
 
     /**
      * Constructor.

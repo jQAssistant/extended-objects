@@ -7,6 +7,7 @@ import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.example.composite.A;
 import com.buschmais.xo.neo4j.test.example.composite.B;
+import com.buschmais.xo.neo4j.test.example.composite.Parent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -26,7 +27,7 @@ public class ByExampleTest extends AbstractNeo4jXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(A.class, B.class);
+        return xoUnits(A.class, B.class, Parent.class);
     }
 
     @Test
@@ -50,6 +51,10 @@ public class ByExampleTest extends AbstractNeo4jXOManagerTest {
         }, A.class);
         assertThat(a2.getValue(), equalTo("A2"));
         assertThat(a2.getName(), equalTo("Name of A2"));
+        // Create a relation
+        Parent parent = xoManager.create(example -> example.setName("Name of A1->A2"), a1, Parent.class, a2);
+        assertThat(parent.getName(), equalTo("Name of A1->A2"));
+
         xoManager.currentTransaction().commit();
 
         xoManager.currentTransaction().begin();
@@ -62,6 +67,8 @@ public class ByExampleTest extends AbstractNeo4jXOManagerTest {
         }, A.class).getSingleResult(), equalTo(a1));
         // java 8: lambda expression
         assertThat(xoManager.find(example -> example.setValue("A1"), A.class).getSingleResult(), equalTo(a1));
+        assertThat(xoManager.find(example -> example.setValue("A2"), A.class).getSingleResult().getParent().getName(), equalTo("Name of A1->A2"));
+        xoManager.currentTransaction().commit();
     }
 
     @Test

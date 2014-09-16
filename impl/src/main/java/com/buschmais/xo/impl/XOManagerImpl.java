@@ -202,11 +202,21 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <S, R, T> R create(S from, Class<R> relationType, T to) {
+        return createByExample(from, relationType, to, Collections.emptyMap());
+    }
+
+    @Override
+    public <S, R, T> R create(Example<R> example, S from, Class<R> relationType, T to) {
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleRelation = prepareExample(example, relationType);
+        return createByExample(from, relationType, to, exampleRelation);
+    }
+
+    private <S, R, T> R createByExample(S from, Class<R> relationType, T to, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
         MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
         AbstractRelationPropertyMethodMetadata<?> fromProperty = metadataProvider.getPropertyMetadata(from.getClass(), relationType, FROM);
         AbstractRelationPropertyMethodMetadata<?> toProperty = metadataProvider.getPropertyMetadata(to.getClass(), relationType, TO);
         Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(from);
-        R instance = sessionContext.getEntityPropertyManager().createRelationReference(entity, fromProperty, to, toProperty);
+        R instance = sessionContext.getEntityPropertyManager().createRelationReference(entity, fromProperty, to, toProperty, example);
         sessionContext.getInstanceListenerService().postCreate(instance);
         return instance;
     }

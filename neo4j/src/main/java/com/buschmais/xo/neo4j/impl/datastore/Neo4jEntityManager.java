@@ -55,14 +55,9 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
     }
 
     @Override
-    public Node createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
+    public Node createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
         Node node = graphDatabaseService.createNode(discriminators.toArray(new Label[discriminators.size()]));
-        for (Map.Entry<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entry : exampleEntity.entrySet()) {
-            Object value = entry.getValue();
-            if (value != null) {
-                setProperty(node, entry.getKey(), value);
-            }
-        }
+        setProperties(node, example);
         labelCache.put(node.getId(), discriminators);
         return node;
     }

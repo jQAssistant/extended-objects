@@ -7,6 +7,8 @@ import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 import org.codehaus.jackson.node.ObjectNode;
 
+import java.util.Map;
+
 public class JsonRelationManager implements DatastoreRelationManager<ObjectNode, Long, JsonRelation, JsonRelationMetadata, String, JsonPropertyMetadata> {
 
     @Override
@@ -46,7 +48,7 @@ public class JsonRelationManager implements DatastoreRelationManager<ObjectNode,
     }
 
     @Override
-    public JsonRelation createRelation(ObjectNode source, RelationTypeMetadata<JsonRelationMetadata> metadata, RelationTypeMetadata.Direction direction, ObjectNode target) {
+    public JsonRelation createRelation(ObjectNode source, RelationTypeMetadata<JsonRelationMetadata> metadata, RelationTypeMetadata.Direction direction, ObjectNode target, Map<PrimitivePropertyMethodMetadata<JsonPropertyMetadata>, Object> example) {
         return null;
     }
 

@@ -1,7 +1,5 @@
 package com.buschmais.xo.impl.proxy.entity;
 
-import java.lang.reflect.Method;
-
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.proxy.ProxyMethod;
@@ -23,6 +21,8 @@ import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 import com.buschmais.xo.spi.reflection.GetPropertyMethod;
 import com.buschmais.xo.spi.reflection.PropertyMethod;
 import com.buschmais.xo.spi.reflection.SetPropertyMethod;
+
+import java.lang.reflect.Method;
 
 public class EntityProxyMethodService<Entity, Relation> extends AbstractProxyMethodService<Entity> {
 
@@ -50,7 +50,7 @@ public class EntityProxyMethodService<Entity, Relation> extends AbstractProxyMet
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
                     PropertyMethod propertyMethod = (PropertyMethod) typeMethod;
                     Method method = propertyMethod.getAnnotatedElement();
-                    EntityPropertyManager<Entity, Relation> propertyManager = sessionContext.getEntityPropertyManager();
+                    EntityPropertyManager<Entity, Relation, ?> propertyManager = sessionContext.getEntityPropertyManager();
                     if (methodMetadata instanceof PrimitivePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
                             addProxyMethod(new PrimitivePropertyGetMethod(propertyManager, (PrimitivePropertyMethodMetadata) methodMetadata), method);
