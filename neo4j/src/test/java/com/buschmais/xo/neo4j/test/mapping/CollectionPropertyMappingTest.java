@@ -81,6 +81,24 @@ public class CollectionPropertyMappingTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Test
+    public void listPropertyByIndex() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
+        B b1 = xoManager.create(B.class);
+        B b2 = xoManager.create(B.class);
+        List<B> listOfB = a.getListOfB();
+        assertThat(listOfB.add(b1), equalTo(true));
+        assertThat(listOfB.add(b2), equalTo(true));
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
+        assertThat(listOfB.size(), equalTo(2));
+        assertThat(a.getListOfB().get(0),equalTo(b1));
+        assertThat(a.getListOfB().get(1),equalTo(b2));
+        xoManager.currentTransaction().commit();
+    }
+
+    @Test
     public void mappedListProperty() {
         XOManager xoManager = getXoManager();
         xoManager.currentTransaction().begin();
