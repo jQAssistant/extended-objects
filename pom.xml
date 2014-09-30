@@ -67,8 +67,8 @@
         <profile>
             <id>QA</id>
             <properties>
-                <jqassistant.version>1.0.0-M2</jqassistant.version>
-                <org.neo4j_version>2.0.1</org.neo4j_version>
+                <jqassistant.version>1.0.0-M3</jqassistant.version>
+                <org.neo4j_version>2.1.5</org.neo4j_version>
             </properties>
             <build>
                 <plugins>

@@ -10,7 +10,7 @@
     <name>eXtended Objects - Neo4j Binding</name>
 
     <properties>
-        <org.neo4j_version>2.1.4</org.neo4j_version>
+        <org.neo4j_version>2.1.5</org.neo4j_version>
         <org.neo4j.neo4j-rest-graphdb_version>2.0.1</org.neo4j.neo4j-rest-graphdb_version>
     </properties>
 
