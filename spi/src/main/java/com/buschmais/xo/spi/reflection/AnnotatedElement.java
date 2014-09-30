@@ -17,6 +17,15 @@ public interface AnnotatedElement<AE extends java.lang.reflect.AnnotatedElement>
     AE getAnnotatedElement();
 
     /**
+     * Return if an annotation is present.
+     *
+     * @param annotation The annotation type.
+     * @param <T>        The annotation type.
+     * @return The <code>true</code> if an annotation is present.
+     */
+    <T extends Annotation> boolean isAnnotationPresent(Class<T> annotation);
+
+    /**
      * Return an annotation identified by its type.
      *
      * @param annotation The annotation type.

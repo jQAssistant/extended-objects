@@ -26,8 +26,11 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
     @Override
     public Object invoke(DatastoreType datastoreType, Object instance, Object[] args) {
         XOQueryImpl<?, ?, AnnotatedElement, ?, ?> query = new XOQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(), resultOfMethodMetadata.getReturnType());
-        String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
-        query.withParameter(usingThisAs, getInstanceManager(sessionContext).readInstance(datastoreType));
+        AbstractInstanceManager<?, DatastoreType> instanceManager = getInstanceManager(sessionContext);
+        if (instanceManager != null) {
+            String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
+            query.withParameter(usingThisAs, instanceManager.readInstance(datastoreType));
+        }
         List<ResultOf.Parameter> parameters = resultOfMethodMetadata.getParameters();
         for (int i = 0; i < parameters.size(); i++) {
             query.withParameter(parameters.get(i).value(), args[i]);

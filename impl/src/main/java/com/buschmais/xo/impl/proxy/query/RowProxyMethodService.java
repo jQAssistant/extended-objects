@@ -37,7 +37,7 @@ public class RowProxyMethodService extends AbstractProxyMethodService<Map<String
             }
         }
         addMethod(new AsMethod(), CompositeObject.class, "as", Class.class);
-        addMethod(new GetDelegateMethod<Map<String, Object>>(), CompositeObject.class, "getDelegate");
+        addMethod(new GetDelegateMethod<>(), CompositeObject.class, "getDelegate");
         addMethod(new com.buschmais.xo.impl.proxy.query.row.GetMethod(), CompositeRowObject.class, "get", String.class, Class.class);
         addMethod(new GetColumnsMethod(), CompositeRowObject.class, "getColumns");
         addMethod(new HashCodeMethod(), Object.class, "hashCode");

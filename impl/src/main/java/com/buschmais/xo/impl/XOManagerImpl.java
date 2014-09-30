@@ -3,6 +3,8 @@ package com.buschmais.xo.impl;
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.impl.proxy.example.ExampleProxyMethodService;
+import com.buschmais.xo.impl.proxy.repository.RepositoryInvocationHandler;
+import com.buschmais.xo.impl.proxy.repository.RepositoryProxyMethodService;
 import com.buschmais.xo.impl.query.XOQueryImpl;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
@@ -13,6 +15,7 @@ import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetada
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
 
 import javax.validation.ConstraintViolation;
 import java.util.*;
@@ -219,6 +222,15 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         R instance = sessionContext.getEntityPropertyManager().createRelationReference(entity, fromProperty, to, toProperty, example);
         sessionContext.getInstanceListenerService().postCreate(instance);
         return instance;
+    }
+
+    @Override
+    public <T> T getRepository(Class<T> repositoryType) {
+        RepositoryTypeMetadata repositoryMetadata = sessionContext.getMetadataProvider().getRepositoryMetadata(repositoryType);
+        RepositoryProxyMethodService<Entity, Relation> proxyMethodService = new RepositoryProxyMethodService<>(sessionContext);
+        RepositoryInvocationHandler invocationHandler = new RepositoryInvocationHandler(proxyMethodService, this);
+        T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, new Class<?>[0], repositoryType);
+        return sessionContext.getInterceptorFactory().addInterceptor(instance, repositoryType);
     }
 
     @Override

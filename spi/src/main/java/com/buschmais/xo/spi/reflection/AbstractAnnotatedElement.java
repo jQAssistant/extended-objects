@@ -26,6 +26,11 @@ public abstract class AbstractAnnotatedElement<AE extends java.lang.reflect.Anno
     }
 
     @Override
+    public <T extends Annotation> boolean isAnnotationPresent(Class<T> annotation) {
+        return annotated.isAnnotationPresent(annotation);
+    }
+
+    @Override
     public <T extends Annotation> T getAnnotation(Class<T> type) {
         return annotated.getAnnotation(type);
     }

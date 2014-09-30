@@ -6,6 +6,7 @@ import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
+import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 
 import java.util.Collection;
@@ -69,6 +70,14 @@ public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata
     RelationTypeMetadata<RelationMetadata> getRelationMetadata(Class<?> relationType);
 
     RelationTypeMetadata.Direction getRelationDirection(Set<Class<?>> sourceTypes, RelationTypeMetadata<RelationMetadata> relationMetadata, Set<Class<?>> targetTypes);
+
+    /**
+     * Return the repository metadata for a specific type.
+     *
+     * @param repositoryType The repository type.
+     * @return The repository metadata.
+     */
+    RepositoryTypeMetadata getRepositoryMetadata(Class<?> repositoryType);
 
     <R> AbstractRelationPropertyMethodMetadata<?> getPropertyMetadata(Class<?> entityType, Class<R> relationType, RelationTypeMetadata.Direction direction);
 }

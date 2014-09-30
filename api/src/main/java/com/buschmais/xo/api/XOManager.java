@@ -123,6 +123,15 @@ public interface XOManager extends AutoCloseable {
     <S, R, T> R create(Example<R> example, S source, Class<R> relationType, T target);
 
     /**
+     * Return a repository instance for the given type.
+     *
+     * @param repositoryType The repository type.
+     * @param <T>            The repository type.
+     * @return The repository instance.
+     */
+    <T> T getRepository(Class<T> repositoryType);
+
+    /**
      * Return the id of the given instance.
      */
     <T, Id> Id getId(T instance);
