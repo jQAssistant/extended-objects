@@ -9,6 +9,8 @@ import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.util.Collection;
 import java.util.Set;
 
@@ -79,5 +81,23 @@ public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata
      */
     RepositoryTypeMetadata getRepositoryMetadata(Class<?> repositoryType);
 
+    /**
+     * Return the property which represents a relation in an entity.
+     *
+     * @param entityType   The entity.
+     * @param relationType The relation type.
+     * @param direction    The direction.
+     * @param <R>          The Relation type.
+     * @return The property metadata.
+     */
     <R> AbstractRelationPropertyMethodMetadata<?> getPropertyMetadata(Class<?> entityType, Class<R> relationType, RelationTypeMetadata.Direction direction);
+
+    /**
+     * Return the annotation which represents a query definition.
+     *
+     * @param annotatedElement The annotated element.
+     * @param <QL>             The annotation type.
+     * @return The annotation or null if the element is not annotated with a query.
+     */
+    <QL extends Annotation> QL getQuery(AnnotatedElement annotatedElement);
 }

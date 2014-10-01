@@ -7,8 +7,6 @@ import com.buschmais.xo.impl.AbstractResultIterable;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.query.RowInvocationHandler;
 import com.buschmais.xo.impl.proxy.query.RowProxyMethodService;
-import com.buschmais.xo.spi.annotation.QueryDefinition;
-import com.buschmais.xo.spi.reflection.AnnotatedType;
 
 import java.io.IOException;
 import java.util.*;
@@ -25,7 +23,7 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
         this.sessionContext = sessionContext;
         this.iterator = iterator;
         this.returnTypes = returnTypes;
-        if (returnTypes.isEmpty() || returnTypes.size() > 1 || new AnnotatedType(returnTypes.first()).getByMetaAnnotation(QueryDefinition.class) != null) {
+        if (returnTypes.isEmpty() || returnTypes.size() > 1 || sessionContext.getMetadataProvider().getQuery(returnTypes.first()) != null) {
             this.rowProxyMethodService = new RowProxyMethodService(returnTypes);
         } else {
             this.rowProxyMethodService = null;

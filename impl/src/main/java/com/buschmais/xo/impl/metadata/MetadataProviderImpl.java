@@ -15,10 +15,10 @@ import com.buschmais.xo.spi.annotation.RelationDefinition;
 import com.buschmais.xo.spi.datastore.*;
 import com.buschmais.xo.spi.metadata.method.*;
 import com.buschmais.xo.spi.metadata.type.*;
-import com.buschmais.xo.spi.reflection.AnnotatedMethod;
-import com.buschmais.xo.spi.reflection.AnnotatedType;
-import com.buschmais.xo.spi.reflection.PropertyMethod;
-import com.buschmais.xo.spi.reflection.UserMethod;
+import com.buschmais.xo.spi.reflection.*;
+import com.google.common.base.Optional;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +53,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     private final RelationTypeMetadataResolver<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> relationTypeMetadataResolver;
     private final Map<Class<?>, Collection<AnnotatedMethod>> annotatedMethods;
     private final Map<Class<?>, TypeMetadata> metadataByType = new HashMap<>();
+    private final Cache<AnnotatedElement, com.google.common.base.Optional<Annotation>> queryTypes = CacheBuilder.newBuilder().build();
 
     /**
      * Constructor.
@@ -579,4 +580,37 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         }
         return metadataType.cast(typeMetadata);
     }
+
+    @Override
+    public <QL extends Annotation> QL getQuery(AnnotatedElement annotatedElement) {
+        Optional<Annotation> cachedOptional = queryTypes.getIfPresent(annotatedElement);
+        if (cachedOptional == null) {
+            AnnotatedQueryElement element = new AnnotatedQueryElement(annotatedElement);
+            Annotation annotation = element.getByMetaAnnotation(QueryDefinition.class);
+            cachedOptional = Optional.fromNullable(annotation);
+            queryTypes.put(annotatedElement, cachedOptional);
+        }
+        return cachedOptional.isPresent() ? (QL) cachedOptional.get() : null;
+    }
+
+    /**
+     * An annotated element.
+     */
+    private static class AnnotatedQueryElement extends AbstractAnnotatedElement<AnnotatedElement> {
+
+        /**
+         * Constructor.
+         *
+         * @param typeExpression The expression.
+         */
+        public AnnotatedQueryElement(AnnotatedElement typeExpression) {
+            super(typeExpression);
+        }
+
+        @Override
+        public String getName() {
+            return toString();
+        }
+    }
+
 }

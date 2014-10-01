@@ -8,13 +8,11 @@ import com.buschmais.xo.impl.AbstractInstanceManager;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.plugin.QueryLanguagePluginRepository;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
-import com.buschmais.xo.spi.annotation.QueryDefinition;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.plugin.QueryLanguagePlugin;
-import com.buschmais.xo.spi.reflection.AbstractAnnotatedElement;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -108,8 +106,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
             iterator = query.execute((String) expression, effectiveParameters);
         } else if (expression instanceof AnnotatedElement) {
             AnnotatedElement typeExpression = (AnnotatedElement) expression;
-            AnnotatedQueryElement element = new AnnotatedQueryElement(typeExpression);
-            QL queryAnnotation = element.getByMetaAnnotation(QueryDefinition.class);
+            QL queryAnnotation = sessionContext.getMetadataProvider().getQuery(typeExpression);
             if (queryAnnotation == null) {
                 throw new XOException("Cannot find query annotation on element " + expression.toString());
             }
@@ -136,23 +133,5 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         return resultTypes;
     }
 
-    /**
-     * An annotated element.
-     */
-    private static class AnnotatedQueryElement extends AbstractAnnotatedElement<AnnotatedElement> {
 
-        /**
-         * Constructor.
-         *
-         * @param typeExpression The expression.
-         */
-        public AnnotatedQueryElement(AnnotatedElement typeExpression) {
-            super(typeExpression);
-        }
-
-        @Override
-        public String getName() {
-            return toString();
-        }
-    }
 }
