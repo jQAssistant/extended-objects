@@ -6,6 +6,10 @@ import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.xo.impl.proxy.common.UnsupportedOperationMethod;
+import com.buschmais.xo.impl.proxy.repository.object.EqualsMethod;
+import com.buschmais.xo.impl.proxy.repository.object.HashCodeMethod;
+import com.buschmais.xo.impl.proxy.repository.object.ToStringMethod;
+import com.buschmais.xo.impl.proxy.repository.composite.ResultOfMethod;
 import com.buschmais.xo.spi.metadata.method.ImplementedByMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.MethodMetadata;
 import com.buschmais.xo.spi.metadata.method.ResultOfMethodMetadata;
@@ -38,6 +42,9 @@ public class RepositoryProxyMethodService<Entity, Relation> extends AbstractProx
                 }
             }
         }
+        addMethod(new HashCodeMethod(), Object.class, "hashCode");
+        addMethod(new EqualsMethod(), Object.class, "equals", Object.class);
+        addMethod(new ToStringMethod(), Object.class, "toString");
     }
 
 }

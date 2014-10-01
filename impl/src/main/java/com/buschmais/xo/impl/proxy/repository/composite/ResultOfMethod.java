@@ -1,4 +1,4 @@
-package com.buschmais.xo.impl.proxy.repository;
+package com.buschmais.xo.impl.proxy.repository.composite;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.impl.AbstractInstanceManager;
