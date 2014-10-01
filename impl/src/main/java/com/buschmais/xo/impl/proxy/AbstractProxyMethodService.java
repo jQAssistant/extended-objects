@@ -2,6 +2,11 @@ package com.buschmais.xo.impl.proxy;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.proxy.ProxyMethod;
+import com.buschmais.xo.impl.proxy.common.UnsupportedOperationMethod;
+import com.buschmais.xo.spi.metadata.method.ImplementedByMethodMetadata;
+import com.buschmais.xo.spi.metadata.method.MethodMetadata;
+import com.buschmais.xo.spi.metadata.method.UnsupportedOperationMethodMetadata;
+import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -36,4 +41,26 @@ public class AbstractProxyMethodService<E> implements ProxyMethodService<E> {
             proxyMethods.put(method, proxyMethod);
         }
     }
+
+
+    protected void addImplementedByMethod(MethodMetadata methodMetadata, AnnotatedMethod typeMethod) {
+        if (methodMetadata instanceof ImplementedByMethodMetadata) {
+            ImplementedByMethodMetadata implementedByMethodMetadata = (ImplementedByMethodMetadata) methodMetadata;
+            Class<? extends ProxyMethod> proxyMethodType = implementedByMethodMetadata.getProxyMethodType();
+            try {
+                addProxyMethod(proxyMethodType.newInstance(), typeMethod.getAnnotatedElement());
+            } catch (InstantiationException e) {
+                throw new XOException("Cannot instantiate proxy method of type " + proxyMethodType.getName(), e);
+            } catch (IllegalAccessException e) {
+                throw new XOException("Unexpected exception while instantiating type " + proxyMethodType.getName(), e);
+            }
+        }
+    }
+
+    protected void addUnsupportedOperationMethod(MethodMetadata methodMetadata, AnnotatedMethod typeMethod) {
+        if (methodMetadata instanceof UnsupportedOperationMethodMetadata) {
+            addProxyMethod(new UnsupportedOperationMethod((UnsupportedOperationMethodMetadata) methodMetadata), typeMethod.getAnnotatedElement());
+        }
+    }
+
 }

@@ -35,6 +35,7 @@ public class RepositoryTest extends AbstractNeo4jXOManagerTest {
         a.setName("A1");
         CustomRepository customRepository = xoManager.getRepository(CustomRepository.class);
         assertThat(customRepository.findByName("A1"), equalTo(a));
+        assertThat(customRepository.find("A1"), equalTo(a));
         xoManager.currentTransaction().commit();
     }
 

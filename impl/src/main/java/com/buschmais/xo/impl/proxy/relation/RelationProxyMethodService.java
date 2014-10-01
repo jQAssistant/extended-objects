@@ -30,19 +30,8 @@ public class RelationProxyMethodService<Entity, Relation> extends AbstractProxyM
         for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata()) {
             for (MethodMetadata methodMetadata : typeMetadata.getProperties()) {
                 AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
-                if (methodMetadata instanceof UnsupportedOperationMethodMetadata) {
-                    addProxyMethod(new UnsupportedOperationMethod((UnsupportedOperationMethodMetadata) methodMetadata), typeMethod.getAnnotatedElement());
-                } else if (methodMetadata instanceof ImplementedByMethodMetadata) {
-                    ImplementedByMethodMetadata implementedByMethodMetadata = (ImplementedByMethodMetadata) methodMetadata;
-                    Class<? extends ProxyMethod> proxyMethodType = implementedByMethodMetadata.getProxyMethodType();
-                    try {
-                        addProxyMethod(proxyMethodType.newInstance(), typeMethod.getAnnotatedElement());
-                    } catch (InstantiationException e) {
-                        throw new XOException("Cannot instantiate proxy method of type " + proxyMethodType.getName(), e);
-                    } catch (IllegalAccessException e) {
-                        throw new XOException("Unexpected exception while instantiating type " + proxyMethodType.getName(), e);
-                    }
-                }
+                addUnsupportedOperationMethod(methodMetadata, typeMethod);
+                addImplementedByMethod(methodMetadata, typeMethod);
                 if (methodMetadata instanceof ResultOfMethodMetadata) {
                     ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata) methodMetadata;
                     addProxyMethod(new ResultOfMethod(sessionContext, resultOfMethodMetadata), typeMethod.getAnnotatedElement());
