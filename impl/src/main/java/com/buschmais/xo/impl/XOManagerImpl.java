@@ -55,11 +55,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public XOTransaction currentTransaction() {
-        XOTransaction xoTransaction = sessionContext.getXOTransaction();
-        if (xoTransaction == null) {
-            throw new XOException("No XOTransaction available (e.g. not supported by the datastore).");
-        }
-        return xoTransaction;
+        return sessionContext.getXOTransaction();
     }
 
     @Override

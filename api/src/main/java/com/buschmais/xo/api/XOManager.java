@@ -14,7 +14,7 @@ public interface XOManager extends AutoCloseable {
     /**
      * Return the {@link XOTransaction} associated with the manager.
      *
-     * @return The {@link XOTransaction}.
+     * @return The {@link XOTransaction} or <code>null</code> if the datastore does not support transactions.
      */
     @Transaction(NOT_SUPPORTED)
     XOTransaction currentTransaction();
