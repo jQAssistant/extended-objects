@@ -68,10 +68,10 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      */
     private <T> T getInstance(DatastoreType datastoreType, TransactionalCache.Mode cacheMode) {
         DatastoreId id = getDatastoreId(datastoreType);
-        TypeMetadataSet<?> types = getTypes(datastoreType);
         Object instance = cache.get(id, cacheMode);
         if (instance == null) {
             InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(datastoreType, getProxyMethodService());
+            TypeMetadataSet<?> types = getTypes(datastoreType);
             instance = proxyFactory.createInstance(invocationHandler, types.toClasses(), CompositeObject.class);
             cache.put(id, instance, cacheMode);
             if (TransactionalCache.Mode.READ.equals(cacheMode)) {
