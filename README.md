@@ -1,5 +1,4 @@
 # eXtended Objects
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/buschmais/extended-objects?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Overview
 
@@ -21,3 +20,5 @@ Please refer to the
 ## Continuous Build
 [![Build Status](https://travis-ci.org/buschmais/extended-objects.png)](https://travis-ci.org/buschmais/extended-objects)
 
+## Gitter
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/buschmais/extended-objects?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
