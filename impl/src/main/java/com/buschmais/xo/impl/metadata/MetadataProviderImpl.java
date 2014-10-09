@@ -7,7 +7,6 @@ import com.buschmais.xo.api.annotation.Repository;
 import com.buschmais.xo.api.annotation.ResultOf;
 import com.buschmais.xo.api.annotation.Transient;
 import com.buschmais.xo.impl.MetadataProvider;
-import com.buschmais.xo.impl.reflection.BeanMethodProvider;
 import com.buschmais.xo.spi.annotation.EntityDefinition;
 import com.buschmais.xo.spi.annotation.IndexDefinition;
 import com.buschmais.xo.spi.annotation.QueryDefinition;
@@ -63,12 +62,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      */
     public MetadataProviderImpl(Collection<Class<?>> types, Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore) {
         this.metadataFactory = datastore.getMetadataFactory();
-        DependencyResolver.DependencyProvider<Class<?>> classDependencyProvider = new DependencyResolver.DependencyProvider<Class<?>>() {
-            @Override
-            public Set<Class<?>> getDependencies(Class<?> dependent) {
-                return new HashSet<>(Arrays.asList(dependent.getInterfaces()));
-            }
-        };
+        DependencyResolver.DependencyProvider<Class<?>> classDependencyProvider = dependent -> new HashSet<>(Arrays.asList(dependent.getInterfaces()));
         List<Class<?>> allClasses = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
         LOGGER.debug("Processing types {}", allClasses);
         this.annotatedMethods = new HashMap<>();
@@ -76,7 +70,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             if (!currentClass.isInterface()) {
                 throw new XOException("Type " + currentClass.getName() + " is not an interface.");
             }
-            annotatedMethods.put(currentClass, BeanMethodProvider.newInstance().getMethods(currentClass));
+            annotatedMethods.put(currentClass, BeanMethodProvider.newInstance(currentClass).getMethods());
         }
         for (Class<?> currentClass : allClasses) {
             getOrCreateTypeMetadata(currentClass);

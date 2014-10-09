@@ -1,32 +1,46 @@
-package com.buschmais.xo.impl.reflection;
+package com.buschmais.xo.spi.reflection;
+
+import com.buschmais.xo.api.XOException;
+import com.google.common.base.CaseFormat;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
 
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.spi.reflection.AnnotatedMethod;
-import com.buschmais.xo.spi.reflection.GetPropertyMethod;
-import com.buschmais.xo.spi.reflection.SetPropertyMethod;
-import com.buschmais.xo.spi.reflection.UserMethod;
-import com.google.common.base.CaseFormat;
-
+/**
+ * Reflection based utility for analyzing classes.
+ */
 public final class BeanMethodProvider {
 
+    private final Class<?> type;
     private final Set<Method> methods = new HashSet<>();
     private final Map<String, Method> getters = new HashMap<>();
     private final Map<String, Method> setters = new HashMap<>();
     private final Map<String, Class<?>> types = new HashMap<>();
     private final Map<String, Type> genericTypes = new HashMap<>();
 
-    private BeanMethodProvider() {
+    /**
+     * Private constructor.
+     */
+    private BeanMethodProvider(Class<?> type) {
+        this.type = type;
     }
 
-    public static BeanMethodProvider newInstance() {
-        return new BeanMethodProvider();
+    /**
+     * Creates a new instance.
+     *
+     * @return The instance.
+     */
+    public static BeanMethodProvider newInstance(Class<?> type) {
+        return new BeanMethodProvider(type);
     }
 
-    public Collection<AnnotatedMethod> getMethods(Class<?> type) {
+    /**
+     * Return the methods of the type.
+     *
+     * @return The methods.
+     */
+    public Collection<AnnotatedMethod> getMethods() {
         for (Method method : type.getDeclaredMethods()) {
             String methodName = method.getName();
             Class<?> returnType = method.getReturnType();

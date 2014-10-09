@@ -10,8 +10,8 @@ import com.buschmais.xo.impl.proxy.query.object.HashCodeMethod;
 import com.buschmais.xo.impl.proxy.query.object.ToStringMethod;
 import com.buschmais.xo.impl.proxy.query.property.GetMethod;
 import com.buschmais.xo.impl.proxy.query.row.GetColumnsMethod;
-import com.buschmais.xo.impl.reflection.BeanMethodProvider;
 import com.buschmais.xo.spi.reflection.AnnotatedMethod;
+import com.buschmais.xo.spi.reflection.BeanMethodProvider;
 import com.buschmais.xo.spi.reflection.GetPropertyMethod;
 import com.buschmais.xo.spi.reflection.PropertyMethod;
 
@@ -24,9 +24,9 @@ import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 public class RowProxyMethodService extends AbstractProxyMethodService<Map<String, Object>> {
 
     public RowProxyMethodService(SortedSet<Class<?>> types) {
-        BeanMethodProvider beanMethodProvider = BeanMethodProvider.newInstance();
         for (Class<?> type : types) {
-            Collection<AnnotatedMethod> typeMethodsOfType = beanMethodProvider.getMethods(type);
+            BeanMethodProvider beanMethodProvider = BeanMethodProvider.newInstance(type);
+            Collection<AnnotatedMethod> typeMethodsOfType = beanMethodProvider.getMethods();
             for (AnnotatedMethod typeMethod : typeMethodsOfType) {
                 if (!(typeMethod instanceof GetPropertyMethod)) {
                     throw new XOException("Only get methods are supported for projections: '" + typeMethod.getAnnotatedElement().getName() + "'.");
