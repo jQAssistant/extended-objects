@@ -359,6 +359,11 @@
                 <version>2.4</version>
                 <executions>
                     <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>attach-java8</id>
                         <goals>
                             <goal>jar</goal>
