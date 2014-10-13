@@ -42,13 +42,19 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
                     EntityTypeMetadata<NodeMetadata> entityTypeMetadata = (EntityTypeMetadata<NodeMetadata>) typeMetadata;
                     IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedPropertyMethodMetadata = entityTypeMetadata.getIndexedProperty();
                     if (indexedPropertyMethodMetadata != null) {
-                        if (indexedPropertyMethodMetadata.getDatastoreMetadata().isCreate()) {
+                        IndexedPropertyMetadata propertyMetadata = indexedPropertyMethodMetadata.getDatastoreMetadata();
+                        if (propertyMetadata.isCreate()) {
                             initCreateIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
                         }
 
-                        if (indexedPropertyMethodMetadata.getDatastoreMetadata().isUnique()) {
+                        if (propertyMetadata.isUnique()) {
                             initUniqueIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
                         }
+
+                        if (!propertyMetadata.isCreate() && !propertyMetadata.isUnique()) {
+                            initCreateIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
+                        }
+
                     }
                 }
             }
