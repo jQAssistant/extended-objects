@@ -10,8 +10,6 @@ import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.schema.ConstraintDefinition;
-import org.neo4j.graphdb.schema.ConstraintType;
 import org.neo4j.graphdb.schema.IndexDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,12 +40,9 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
                     EntityTypeMetadata<NodeMetadata> entityTypeMetadata = (EntityTypeMetadata<NodeMetadata>) typeMetadata;
                     IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedPropertyMethodMetadata = entityTypeMetadata.getIndexedProperty();
                     if (indexedPropertyMethodMetadata != null) {
-                        if (indexedPropertyMethodMetadata.getDatastoreMetadata().isCreate()) {
-                            initCreateIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
-                        }
-
-                        if (indexedPropertyMethodMetadata.getDatastoreMetadata().isUnique()) {
-                            initUniqueIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata());
+                        IndexedPropertyMetadata datastoreMetadata = indexedPropertyMethodMetadata.getDatastoreMetadata();
+                        if (datastoreMetadata.isCreate()) {
+                            initIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata(), datastoreMetadata.isUnique());
                         }
                     }
                 }
@@ -56,43 +51,24 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
         }
     }
 
-    private void initUniqueIndex(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
+    private void initIndex(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, PrimitivePropertyMethodMetadata propertyMethodMetadata, boolean unique) {
         Label label = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
         if (label != null && propertyMethodMetadata != null) {
-            reCreateUniqueConstraint(label, propertyMethodMetadata);
+            reCreateIndex(label, propertyMethodMetadata, unique);
         }
     }
 
-    private void initCreateIndex(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
-        Label label = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
-        if (label != null && propertyMethodMetadata != null) {
-            reCreateIndex(label, propertyMethodMetadata);
-        }
-    }
-
-    private void reCreateIndex(Label label, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
+    private void reCreateIndex(Label label, PrimitivePropertyMethodMetadata propertyMethodMetadata, boolean unique) {
         PropertyMetadata propertyMetadata = ((PrimitivePropertyMethodMetadata<PropertyMetadata>) propertyMethodMetadata).getDatastoreMetadata();
         IndexDefinition index = findIndex(label, propertyMetadata.getName());
-        //TODO propertyMethodMetadata is always != null
-        if (propertyMethodMetadata != null && index == null) {
-            LOGGER.info("Creating index for label {} on property '{}'.", label, propertyMetadata.getName());
-            graphDatabaseService.schema().indexFor(label).on(propertyMetadata.getName()).create();
-        } else if (propertyMethodMetadata == null && index != null) {
-            LOGGER.info("Dropping index for label {} on properties '{}'.", label, index.getPropertyKeys());
-            index.drop();
-        }
-    }
-
-    private void reCreateUniqueConstraint(Label label, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
-        PropertyMetadata propertyMetadata = ((PrimitivePropertyMethodMetadata<PropertyMetadata>) propertyMethodMetadata).getDatastoreMetadata();
-        ConstraintDefinition constraint = findUniqueConstraint(label, propertyMetadata.getName());
-        //TODO propertyMethodMetadata is always != null
-        if (propertyMethodMetadata != null && constraint == null) {
-            LOGGER.info("Creating constraint for label {} on property '{}'.", label, propertyMetadata.getName());
-            graphDatabaseService.schema().constraintFor(label).assertPropertyIsUnique(propertyMetadata.getName()).create();
-        } else if (propertyMethodMetadata == null && constraint != null) {
-            LOGGER.info("Dropping constraint for label {} on properties '{}'.", label, constraint.getPropertyKeys());
-            constraint.drop();
+        if (index == null) {
+            if (unique) {
+                LOGGER.info("Creating constraint for label {} on property '{}'.", label, propertyMetadata.getName());
+                graphDatabaseService.schema().constraintFor(label).assertPropertyIsUnique(propertyMetadata.getName()).create();
+            } else {
+                LOGGER.info("Creating index for label {} on property '{}'.", label, propertyMetadata.getName());
+                graphDatabaseService.schema().indexFor(label).on(propertyMetadata.getName()).create();
+            }
         }
     }
 
@@ -102,20 +78,6 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
             for (String key : indexDefinition.getPropertyKeys()) {
                 if (key.equals(propertyName)) {
                     return indexDefinition;
-                }
-            }
-        }
-        return null;
-    }
-
-    private ConstraintDefinition findUniqueConstraint(Label label, String propertyName) {
-        final Iterable<ConstraintDefinition> constraints = graphDatabaseService.schema().getConstraints(label);
-        for (ConstraintDefinition constraintDefinition : constraints) {
-            if (constraintDefinition.isConstraintType(ConstraintType.UNIQUENESS)) {
-                for (String key : constraintDefinition.getPropertyKeys()) {
-                    if (key.equals(propertyName)) {
-                        return constraintDefinition;
-                    }
                 }
             }
         }
