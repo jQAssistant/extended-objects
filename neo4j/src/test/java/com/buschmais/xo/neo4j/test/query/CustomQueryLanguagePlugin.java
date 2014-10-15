@@ -31,7 +31,7 @@ public class CustomQueryLanguagePlugin implements QueryLanguagePlugin<CustomQuer
         if (datastore instanceof Neo4jDatastore) {
             return CustomQueryLanguage.class;
         }
-        throw new XOException("Datastore not supported");
+        return null;
     }
 
     @Override
