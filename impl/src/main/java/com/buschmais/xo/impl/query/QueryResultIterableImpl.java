@@ -18,8 +18,8 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
     private final SortedSet<Class<?>> returnTypes;
     private final RowProxyMethodService rowProxyMethodService;
 
-    QueryResultIterableImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext,
-                            ResultIterator<Map<String, Object>> iterator, SortedSet<Class<?>> returnTypes) {
+    QueryResultIterableImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, ResultIterator<Map<String, Object>> iterator,
+            SortedSet<Class<?>> returnTypes) {
         this.sessionContext = sessionContext;
         this.iterator = iterator;
         this.returnTypes = returnTypes;
@@ -42,7 +42,7 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
             @Override
             public T next() {
                 Map<String, Object> next = iterator.next();
-                Map<String, Object> row = new LinkedHashMap<>();
+                Map<String, Object> row = new LinkedHashMap<>(next.size(), 1);
                 for (Map.Entry<String, Object> entry : next.entrySet()) {
                     String column = entry.getKey();
                     Object value = entry.getValue();
@@ -51,7 +51,8 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
                 }
                 if (rowProxyMethodService != null) {
                     RowInvocationHandler invocationHandler = new RowInvocationHandler(row, rowProxyMethodService);
-                    return (T) sessionContext.getProxyFactory().createInstance(invocationHandler, returnTypes.toArray(new Class<?>[0]), CompositeRowObject.class);
+                    return (T) sessionContext.getProxyFactory().createInstance(invocationHandler, returnTypes.toArray(new Class<?>[0]),
+                            CompositeRowObject.class);
                 }
                 if (row.size() != 1) {
                     throw new XOException("Only single columns per row can be returned.");

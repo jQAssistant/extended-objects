@@ -108,7 +108,7 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
                 @Override
                 public Map<String, Object> next() {
                     Map<String, Object> next = resourceIterator.next();
-                    Map<String, Object> result = new LinkedHashMap<>(next.size());
+                    Map<String, Object> result = new LinkedHashMap<>(next.size(), 1);
                     for (String column : columns) {
                         result.put(column, next.get(column));
                     }
