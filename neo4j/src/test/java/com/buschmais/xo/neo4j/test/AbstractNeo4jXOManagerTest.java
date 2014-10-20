@@ -26,7 +26,7 @@ import static com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest.Neo4jDataba
 
 public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
 
-    protected enum Neo4jDatabase implements AbstractXOManagerTest.Database {
+    public enum Neo4jDatabase implements AbstractXOManagerTest.Database {
         MEMORY("memory:///"),
         REST("http://localhost:7474/db/data");
         private URI uri;
