@@ -73,7 +73,7 @@ public class TestXODatastore<D extends DatastoreSession> implements Datastore<D,
     }
 
     @Override
-    public void init(Collection<TypeMetadata> registeredMetadata) {
+    public void init(Map<Class<?>, TypeMetadata> registeredMetadata) {
     }
 
     public XOUnit getXOUnit() {

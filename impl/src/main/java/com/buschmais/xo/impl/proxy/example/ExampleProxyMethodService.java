@@ -16,7 +16,7 @@ import java.util.Map;
 public class ExampleProxyMethodService<Entity> extends AbstractProxyMethodService<Map<PrimitivePropertyMethodMetadata<?>, Object>> {
 
     public ExampleProxyMethodService(Class<?> type, SessionContext<?, Entity, ?, ?, ?, ?, ?, ?, ?> sessionContext) {
-        for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata()) {
+        for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata().values()) {
             if (typeMetadata.getAnnotatedType().getAnnotatedElement().isAssignableFrom(type)) {
                 for (MethodMetadata<?, ?> methodMetadata : typeMetadata.getProperties()) {
                     if (methodMetadata instanceof PrimitivePropertyMethodMetadata<?>) {

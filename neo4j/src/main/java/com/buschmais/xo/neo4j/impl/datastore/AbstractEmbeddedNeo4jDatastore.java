@@ -14,7 +14,7 @@ import org.neo4j.graphdb.schema.IndexDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
+import java.util.Map;
 
 /**
  * Abstract base implementation for embedded graph stores.
@@ -23,6 +23,12 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
     private static final Logger LOGGER = LoggerFactory.getLogger(EmbeddedNeo4jDatastore.class);
     protected final GraphDatabaseService graphDatabaseService;
 
+    /**
+     * Constructor.
+     * 
+     * @param graphDatabaseService
+     *            The graph database service.
+     */
     public AbstractEmbeddedNeo4jDatastore(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
     }
@@ -33,33 +39,51 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
     }
 
     @Override
-    public void init(Collection<TypeMetadata> registeredMetadata) {
+    public void init(Map<Class<?>, TypeMetadata> registeredMetadata) {
         try (Transaction transaction = graphDatabaseService.beginTx()) {
-            for (TypeMetadata typeMetadata : registeredMetadata) {
+            for (TypeMetadata typeMetadata : registeredMetadata.values()) {
                 if (typeMetadata instanceof EntityTypeMetadata) {
                     EntityTypeMetadata<NodeMetadata> entityTypeMetadata = (EntityTypeMetadata<NodeMetadata>) typeMetadata;
-                    IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedPropertyMethodMetadata = entityTypeMetadata.getIndexedProperty();
-                    if (indexedPropertyMethodMetadata != null) {
-                        IndexedPropertyMetadata datastoreMetadata = indexedPropertyMethodMetadata.getDatastoreMetadata();
-                        if (datastoreMetadata.isCreate()) {
-                            initIndex(entityTypeMetadata, indexedPropertyMethodMetadata.getPropertyMethodMetadata(), datastoreMetadata.isUnique());
-                        }
-                    }
+                    // check for indexed property declared in type
+                    ensureIndex(entityTypeMetadata, entityTypeMetadata.getIndexedProperty());
+                    ensureIndex(entityTypeMetadata, entityTypeMetadata.getDatastoreMetadata().getUsingIndexedPropertyOf());
                 }
             }
             transaction.success();
         }
     }
 
-    private void initIndex(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, PrimitivePropertyMethodMetadata propertyMethodMetadata, boolean unique) {
-        Label label = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
-        if (label != null && propertyMethodMetadata != null) {
-            reCreateIndex(label, propertyMethodMetadata, unique);
+    /**
+     * Ensures that an index exists for the given entity and property.
+     * 
+     * @param entityTypeMetadata
+     *            The entity.
+     * @param indexedProperty
+     *            The index metadata.
+     */
+    private void ensureIndex(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedProperty) {
+        if (indexedProperty != null) {
+            IndexedPropertyMetadata datastoreMetadata = indexedProperty.getDatastoreMetadata();
+            if (datastoreMetadata.isCreate()) {
+                Label label = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
+                PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
+                if (label != null && propertyMethodMetadata != null) {
+                    ensureIndex(label, propertyMethodMetadata, datastoreMetadata.isUnique());
+                }
+            }
         }
     }
 
-    private void reCreateIndex(Label label, PrimitivePropertyMethodMetadata propertyMethodMetadata, boolean unique) {
-        PropertyMetadata propertyMetadata = ((PrimitivePropertyMethodMetadata<PropertyMetadata>) propertyMethodMetadata).getDatastoreMetadata();
+    /**
+     * Ensures that an index exists for the given label and property.
+     *
+     * @param label
+     *            The label.
+     * @param propertyMethodMetadata
+     *            The property metadata.
+     */
+    private void ensureIndex(Label label, PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata, boolean unique) {
+        PropertyMetadata propertyMetadata = propertyMethodMetadata.getDatastoreMetadata();
         IndexDefinition index = findIndex(label, propertyMetadata.getName());
         if (index == null) {
             if (unique) {
@@ -72,6 +96,15 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
         }
     }
 
+    /**
+     * Find an existing index.
+     * 
+     * @param label
+     *            The label.
+     * @param propertyName
+     *            The property name.
+     * @return The index or <code>null</code> if it does not exist.
+     */
     private IndexDefinition findIndex(Label label, String propertyName) {
         final Iterable<IndexDefinition> indexes = graphDatabaseService.schema().getIndexes(label);
         for (IndexDefinition indexDefinition : indexes) {

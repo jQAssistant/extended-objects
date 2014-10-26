@@ -3,6 +3,7 @@ package com.buschmais.xo.spi.datastore;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Defines the interface of a datastore.
@@ -18,9 +19,9 @@ public interface Datastore<DatastoreSession extends com.buschmais.xo.spi.datasto
     /**
      * Initialize the datastore.
      *
-     * @param registeredMetadata A collection of all registered types.
+     * @param registeredMetadata A map of all registered types and their associated metadata.
      */
-    void init(Collection<TypeMetadata> registeredMetadata);
+    void init(Map<Class<?>, TypeMetadata> registeredMetadata);
 
     /**
      * Return the datastore specific metadata factory.

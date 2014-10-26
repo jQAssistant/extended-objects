@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 public class RelationProxyMethodService<Entity, Relation> extends AbstractProxyMethodService<Relation> {
 
     public RelationProxyMethodService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
-        for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata()) {
+        for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata().values()) {
             for (MethodMetadata methodMetadata : typeMetadata.getProperties()) {
                 AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
                 addUnsupportedOperationMethod(methodMetadata, typeMethod);

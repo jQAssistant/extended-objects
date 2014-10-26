@@ -103,8 +103,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     }
 
     @Override
-    public Collection<TypeMetadata> getRegisteredMetadata() {
-        return metadataByType.values();
+    public Map<Class<?>, TypeMetadata> getRegisteredMetadata() {
+        return Collections.unmodifiableMap(metadataByType);
     }
 
     @Override
@@ -176,7 +176,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         } else if (annotatedType.isAnnotationPresent(Repository.class)) {
             metadata = createRepositoryTypeMetadata(annotatedType, superTypes, methodMetadataOfType);
         } else {
-            IndexedPropertyMethodMetadata indexedProperty = getIndexedPropertyMethodMetadata(methodMetadataOfType, superTypes);
+            IndexedPropertyMethodMetadata indexedProperty = getIndexedPropertyMethodMetadata(methodMetadataOfType);
             metadata = new SimpleTypeMetadata(annotatedType, superTypes, methodMetadataOfType, indexedProperty);
         }
         return metadata;
@@ -236,7 +236,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      */
     private EntityTypeMetadata<EntityMetadata> createEntityTypeMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes,
                                                                         Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
-        IndexedPropertyMethodMetadata indexedProperty = getIndexedPropertyMethodMetadata(methodMetadataOfType, superTypes);
+        IndexedPropertyMethodMetadata indexedProperty = getIndexedPropertyMethodMetadata(methodMetadataOfType);
         EntityMetadata datastoreEntityMetadata = metadataFactory.createEntityMetadata(annotatedType, metadataByType);
         return new EntityTypeMetadata<>(annotatedType, superTypes, methodMetadataOfType, indexedProperty, datastoreEntityMetadata);
     }
@@ -321,11 +321,9 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      * Determine the indexed property from a list of method metadata.
      *
      * @param methodMetadataOfType The list of method metadata.
-     * @param superTypes           The list of metadata for all super types.
      * @return The {@link IndexedPropertyMethodMetadata}.
      */
-    private IndexedPropertyMethodMetadata<?> getIndexedPropertyMethodMetadata(Collection<MethodMetadata<?, ?>> methodMetadataOfType,
-                                                                              List<TypeMetadata> superTypes) {
+    private IndexedPropertyMethodMetadata<?> getIndexedPropertyMethodMetadata(Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
         for (MethodMetadata methodMetadata : methodMetadataOfType) {
             AnnotatedMethod annotatedMethod = methodMetadata.getAnnotatedMethod();
             Annotation indexedAnnotation = annotatedMethod.getByMetaAnnotation(IndexDefinition.class);
@@ -335,12 +333,6 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 }
                 return new IndexedPropertyMethodMetadata<>((PropertyMethod) annotatedMethod, (PrimitivePropertyMethodMetadata) methodMetadata,
                         metadataFactory.createIndexedPropertyMetadata((PropertyMethod) annotatedMethod));
-            }
-        }
-        for (TypeMetadata superType : superTypes) {
-            IndexedPropertyMethodMetadata indexedProperty = superType.getIndexedProperty();
-            if (indexedProperty != null) {
-                return indexedProperty;
             }
         }
         return null;

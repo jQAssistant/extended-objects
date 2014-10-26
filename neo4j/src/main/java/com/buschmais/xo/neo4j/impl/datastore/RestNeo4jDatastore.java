@@ -4,6 +4,7 @@ import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 import org.neo4j.rest.graphdb.RestGraphDatabase;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class RestNeo4jDatastore extends AbstractNeo4jDatastore<RestNeo4jDatastoreSession> {
 
@@ -14,7 +15,7 @@ public class RestNeo4jDatastore extends AbstractNeo4jDatastore<RestNeo4jDatastor
     }
 
     @Override
-    public void init(Collection<TypeMetadata> registeredMetadata) {
+    public void init(Map<Class<?>, TypeMetadata> registeredMetadata) {
     }
 
     @Override

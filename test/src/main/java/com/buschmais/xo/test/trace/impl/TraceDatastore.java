@@ -6,10 +6,12 @@ import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
+import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 
 import javax.management.*;
 import java.lang.management.ManagementFactory;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * {@link Datastore} implementation allowing tracing on delegates.
@@ -29,7 +31,7 @@ public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datast
     }
 
     @Override
-    public void init(Collection registeredMetadata) {
+    public void init(Map<Class<?>, TypeMetadata> registeredMetadata) {
         ObjectName objectName = getObjectName();
         try {
             getMBeanServer().registerMBean(traceMonitor, objectName);

@@ -1,13 +1,13 @@
 package com.buschmais.xo.json.impl;
 
+import java.io.File;
+import java.util.Map;
+
 import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
-
-import java.io.File;
-import java.util.Collection;
 
 public class JsonFileStore implements Datastore<JsonDatastoreSession, JsonNodeMetadata, String, JsonRelationMetadata, String> {
 
@@ -33,6 +33,6 @@ public class JsonFileStore implements Datastore<JsonDatastoreSession, JsonNodeMe
     }
 
     @Override
-    public void init(Collection<TypeMetadata> registeredMetadata) {
+    public void init(Map<Class<?>, TypeMetadata> registeredMetadata) {
     }
 }

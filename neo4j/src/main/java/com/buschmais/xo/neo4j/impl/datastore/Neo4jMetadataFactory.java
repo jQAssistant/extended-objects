@@ -9,11 +9,7 @@ import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Property;
 import com.buschmais.xo.neo4j.api.annotation.Relation;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.IndexedPropertyMetadata;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipMetadata;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipType;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.*;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
@@ -32,7 +28,7 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
     public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
         Label labelAnnotation = annotatedType.getAnnotation(Label.class);
         org.neo4j.graphdb.Label label = null;
-        IndexedPropertyMethodMetadata<?> indexedProperty = null;
+        IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedProperty = null;
         if (labelAnnotation != null) {
             String value = labelAnnotation.value();
             if (Label.DEFAULT_VALUE.equals(value)) {

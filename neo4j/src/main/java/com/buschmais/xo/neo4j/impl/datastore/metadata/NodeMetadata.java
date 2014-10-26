@@ -8,11 +8,11 @@ public class NodeMetadata implements DatastoreEntityMetadata<Label> {
 
     private final Label label;
 
-    private final IndexedPropertyMethodMetadata<?> indexedProperty;
+    private final IndexedPropertyMethodMetadata<IndexedPropertyMetadata> usingIndexedPropertyOf;
 
-    public NodeMetadata(Label label, IndexedPropertyMethodMetadata<?> indexedProperty) {
+    public NodeMetadata(Label label, IndexedPropertyMethodMetadata<IndexedPropertyMetadata> usingIndexedPropertyOf) {
         this.label = label;
-        this.indexedProperty = indexedProperty;
+        this.usingIndexedPropertyOf = usingIndexedPropertyOf;
     }
 
     @Override
@@ -20,8 +20,8 @@ public class NodeMetadata implements DatastoreEntityMetadata<Label> {
         return label;
     }
 
-    public IndexedPropertyMethodMetadata<?> getIndexedProperty() {
-        return indexedProperty;
+    public IndexedPropertyMethodMetadata<IndexedPropertyMetadata> getUsingIndexedPropertyOf() {
+        return usingIndexedPropertyOf;
     }
 
 }

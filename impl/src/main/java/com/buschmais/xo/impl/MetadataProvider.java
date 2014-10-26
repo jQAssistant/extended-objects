@@ -1,5 +1,10 @@
 package com.buschmais.xo.impl;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.util.Map;
+import java.util.Set;
+
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
@@ -8,11 +13,6 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.util.Collection;
-import java.util.Set;
 
 /**
  * Defines the interface for the metadata provider.
@@ -53,7 +53,7 @@ public interface MetadataProvider<EntityMetadata extends DatastoreEntityMetadata
      *
      * @return The collection of all registered entity type metadata.
      */
-    Collection<TypeMetadata> getRegisteredMetadata();
+    Map<Class<?>, TypeMetadata> getRegisteredMetadata();
 
     /**
      * Return the entity metadata for a specific type.
