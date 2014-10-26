@@ -20,10 +20,10 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
     /**
      * Constructor.
      *
-     * @param delegate The delegate.
+     * @param delegate
+     *            The delegate.
      */
-    public TraceRelationManager(
-            DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> delegate) {
+    public TraceRelationManager(DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> delegate) {
         this.delegate = delegate;
     }
 
@@ -38,7 +38,8 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
     }
 
     @Override
-    public Relation createRelation(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction, Entity target, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
+    public Relation createRelation(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction, Entity target,
+            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
         return delegate.createRelation(source, metadata, direction, target, example);
     }
 
@@ -50,6 +51,11 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
     @Override
     public RelationId getRelationId(Relation relation) {
         return delegate.getRelationId(relation);
+    }
+
+    @Override
+    public Relation findRelationById(RelationTypeMetadata<RelationMetadata> metadata, RelationId relationId) {
+        return delegate.findRelationById(metadata, relationId);
     }
 
     @Override

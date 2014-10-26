@@ -10,20 +10,24 @@ import java.util.Set;
 /**
  * Defines the interface for all entity related datastore operations.
  */
-public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, PropertyMetadata> extends DatastorePropertyManager<Entity, PropertyMetadata> {
+public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, PropertyMetadata>
+        extends DatastorePropertyManager<Entity, PropertyMetadata> {
 
     /**
      * Determine if the given object is an entity.
      *
-     * @param o The object.
-     * @return <code>true</code> if the object is an entity, <code>false</code> otherwise.
+     * @param o
+     *            The object.
+     * @return <code>true</code> if the object is an entity, <code>false</code>
+     *         otherwise.
      */
     boolean isEntity(Object o);
 
     /**
      * Return the type discriminators of an entity.
      *
-     * @param entity The entity.
+     * @param entity
+     *            The entity.
      * @return The set of all type discriminators associated with the entity.
      */
     Set<EntityDiscriminator> getEntityDiscriminators(Entity entity);
@@ -31,53 +35,85 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
     /**
      * Return the id of an entity.
      *
-     * @param entity The entity.
+     * @param entity
+     *            The entity.
      * @return The id of the entity.
      */
     EntityId getEntityId(Entity entity);
 
     /**
-     * Create a new entity for the given types using a set of discriminators representing these types.
+     * Create a new entity for the given types using a set of discriminators
+     * representing these types.
      *
-     * @param types          The types.
-     * @param discriminators The set of discriminators.
-     * @param exampleEntity  The example entity.
+     * @param types
+     *            The types.
+     * @param discriminators
+     *            The set of discriminators.
+     * @param exampleEntity
+     *            The example entity.
      * @return The created entity.
      */
-    Entity createEntity(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity);
+    Entity createEntity(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators,
+            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity);
 
     /**
      * Delete an entity.
      *
-     * @param entity The entity to deleteEntity.
+     * @param entity
+     *            The entity to deleteEntity.
      */
     void deleteEntity(Entity entity);
 
     /**
-     * Find entities using given primitive property values.
+     * Find an entity using its id.
      *
-     * @param type          The type of the instances.
-     * @param discriminator The discriminator to find the entities.
-     * @param values        The primitive value.
-     * @return An iterator returning matching entities.
+     * @param metadata
+     *            The metadata of the type.
+     * @param discriminator
+     *            The discriminator to find the entity.
+     * @param id
+     *            The id.
+     * @return The entity.
      */
-    ResultIterator<Entity> findEntity(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator discriminator, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values);
+    Entity findEntityById(EntityTypeMetadata<EntityMetadata> metadata, EntityDiscriminator discriminator, EntityId id);
 
     /**
-     * Migrate an entity of a given type and discriminators to the given target types and target discriminators.
+     * Find entities using given primitive property values.
      *
-     * @param entity               The entity to migrate.
-     * @param types                The entity types before migration.
-     * @param discriminators       The discriminators of the entity before migration.
-     * @param targetTypes          The entity types after migration.
-     * @param targetDiscriminators The discriminators of the entity after migration.
+     * @param type
+     *            The type of the instances.
+     * @param discriminator
+     *            The discriminator to find the entities.
+     * @param values
+     *            The primitive value.
+     * @return An iterator returning matching entities.
      */
-    void migrateEntity(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<EntityDiscriminator> targetDiscriminators);
+    ResultIterator<Entity> findEntity(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator discriminator,
+            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values);
+
+    /**
+     * Migrate an entity of a given type and discriminators to the given target
+     * types and target discriminators.
+     *
+     * @param entity
+     *            The entity to migrate.
+     * @param types
+     *            The entity types before migration.
+     * @param discriminators
+     *            The discriminators of the entity before migration.
+     * @param targetTypes
+     *            The entity types after migration.
+     * @param targetDiscriminators
+     *            The discriminators of the entity after migration.
+     */
+    void migrateEntity(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators,
+            TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<EntityDiscriminator> targetDiscriminators);
 
     /**
      * Flush the given entity to the datastore.
      *
-     * @param entity The entity to flushEntity.
+     * @param entity
+     *            The entity to flushEntity.
      */
     void flushEntity(Entity entity);
 

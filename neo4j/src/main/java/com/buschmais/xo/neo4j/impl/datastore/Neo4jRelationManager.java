@@ -8,6 +8,7 @@ import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 
@@ -18,6 +19,16 @@ import java.util.Map;
  */
 public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Relationship> implements DatastoreRelationManager<Node, Long, Relationship, RelationshipMetadata, RelationshipType, PropertyMetadata> {
 
+    private final GraphDatabaseService graphDatabaseService;
+
+    /**
+     * Constructor.
+     * @param graphDatabaseService The graph database service.
+     */
+    public Neo4jRelationManager(GraphDatabaseService graphDatabaseService) {
+        this.graphDatabaseService = graphDatabaseService;
+    }
+
     @Override
     public boolean isRelation(Object o) {
         return Relationship.class.isAssignableFrom(o.getClass());
@@ -27,7 +38,6 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Relations
     public RelationshipType getRelationDiscriminator(Relationship relationship) {
         return new RelationshipType(relationship.getType());
     }
-
 
     @Override
     public Relationship createRelation(Node source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction, Node target, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
@@ -54,6 +64,11 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Relations
     @Override
     public Long getRelationId(Relationship relationship) {
         return relationship.getId();
+    }
+
+    @Override
+    public Relationship findRelationById(RelationTypeMetadata<RelationshipMetadata> metadata, Long id) {
+        return graphDatabaseService.getRelationshipById(id);
     }
 
     @Override

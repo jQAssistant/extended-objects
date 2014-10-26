@@ -30,7 +30,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     public AbstractNeo4jDatastoreSession(GDS graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
         this.entityManager = new Neo4jEntityManager(graphDatabaseService);
-        this.relationManager = new Neo4jRelationManager();
+        this.relationManager = new Neo4jRelationManager(graphDatabaseService);
     }
 
     @Override

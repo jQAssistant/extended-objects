@@ -1,5 +1,6 @@
 package com.buschmais.xo.json.impl;
 
+import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.json.impl.metadata.JsonPropertyMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
@@ -21,12 +22,15 @@ public class JsonRelationManager implements DatastoreRelationManager<ObjectNode,
         return null;
     }
 
-
     @Override
     public Long getRelationId(JsonRelation jsonRelation) {
         return null;
     }
 
+    @Override
+    public JsonRelation findRelationById(RelationTypeMetadata<JsonRelationMetadata> metadata, Long aLong) {
+        throw new XOException("Not supported");
+    }
 
     @Override
     public void flushRelation(JsonRelation jsonRelation) {
@@ -48,7 +52,8 @@ public class JsonRelationManager implements DatastoreRelationManager<ObjectNode,
     }
 
     @Override
-    public JsonRelation createRelation(ObjectNode source, RelationTypeMetadata<JsonRelationMetadata> metadata, RelationTypeMetadata.Direction direction, ObjectNode target, Map<PrimitivePropertyMethodMetadata<JsonPropertyMetadata>, Object> example) {
+    public JsonRelation createRelation(ObjectNode source, RelationTypeMetadata<JsonRelationMetadata> metadata, RelationTypeMetadata.Direction direction,
+            ObjectNode target, Map<PrimitivePropertyMethodMetadata<JsonPropertyMetadata>, Object> example) {
         return null;
     }
 

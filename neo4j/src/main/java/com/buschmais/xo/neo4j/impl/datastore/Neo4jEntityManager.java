@@ -69,6 +69,11 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
     }
 
     @Override
+    public Node findEntityById(EntityTypeMetadata<NodeMetadata> metadata, Label label, Long id) {
+        return graphDatabaseService.getNodeById(id);
+    }
+
+    @Override
     public ResultIterator<Node> findEntity(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, Label discriminator, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
         if (values.size() > 1) {
             throw new XOException("Only one property value is supported for find operation");

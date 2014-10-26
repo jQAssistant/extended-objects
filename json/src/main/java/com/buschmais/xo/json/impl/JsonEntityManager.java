@@ -81,6 +81,11 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     }
 
     @Override
+    public ObjectNode findEntityById(EntityTypeMetadata<JsonNodeMetadata> metadata, String s, UUID uuid) {
+        throw new XOException("Not supported");
+    }
+
+    @Override
     public ResultIterator<ObjectNode> findEntity(EntityTypeMetadata<JsonNodeMetadata> type, String s, Map<PrimitivePropertyMethodMetadata<JsonPropertyMetadata>, Object> values) {
         return null;
     }

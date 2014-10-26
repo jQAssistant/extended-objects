@@ -12,10 +12,11 @@ import java.util.Set;
 
 /**
  * Implementation of a
- * {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager} which
- * delegates to another implementation.
+ * {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager} which delegates
+ * to another implementation.
  */
-public class TraceEntityManager<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, PropertyMetadata> implements DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> {
+public class TraceEntityManager<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, PropertyMetadata>
+        implements DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> {
 
     private DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> delegate;
 
@@ -37,7 +38,8 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
     }
 
     @Override
-    public Entity createEntity(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> entityDiscriminators, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
+    public Entity createEntity(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> entityDiscriminators,
+            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
         return delegate.createEntity(types, entityDiscriminators, exampleEntity);
     }
 
@@ -46,11 +48,18 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
     }
 
     @Override
-    public ResultIterator<Entity> findEntity(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator entityDiscriminator, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
+    public Entity findEntityById(EntityTypeMetadata<EntityMetadata> metadata, EntityDiscriminator entityDiscriminator, EntityId entityId) {
+        return delegate.findEntityById(metadata, entityDiscriminator, entityId);
+    }
+
+    @Override
+    public ResultIterator<Entity> findEntity(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator entityDiscriminator,
+            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
         return delegate.findEntity(type, entityDiscriminator, values);
     }
 
-    public void migrateEntity(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> entityDiscriminators, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<EntityDiscriminator> targetDiscriminators) {
+    public void migrateEntity(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> entityDiscriminators,
+            TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<EntityDiscriminator> targetDiscriminators) {
         delegate.migrateEntity(entity, types, entityDiscriminators, targetTypes, targetDiscriminators);
     }
 
