@@ -39,7 +39,7 @@ public interface XOManager extends AutoCloseable {
      *            The type of the instance
      * @param <I>
      *            The type of the id.
-     * @return
+     * @return The instance.
      */
     <T, I> T findById(Class<T> type, I id);
 
