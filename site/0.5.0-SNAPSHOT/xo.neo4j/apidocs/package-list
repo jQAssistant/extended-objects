@@ -1,0 +1,4 @@
+com.buschmais.xo.neo4j.api
+com.buschmais.xo.neo4j.api.annotation
+com.buschmais.xo.neo4j.impl.datastore
+com.buschmais.xo.neo4j.impl.datastore.metadata
