@@ -1,0 +1,5 @@
+com.buschmais.xo.impl.test.bootstrap
+com.buschmais.xo.impl.test.bootstrap.composite
+com.buschmais.xo.impl.test.bootstrap.osgi
+com.buschmais.xo.impl.test.bootstrap.provider
+com.buschmais.xo.impl.test.bootstrap.provider.metadata
