@@ -4,7 +4,6 @@ import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.annotation.ResultOf;
 import com.buschmais.xo.api.proxy.ProxyMethod;
-import com.buschmais.xo.impl.AbstractInstanceManager;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.query.XOQueryImpl;
 import com.buschmais.xo.spi.metadata.method.ResultOfMethodMetadata;
@@ -13,23 +12,32 @@ import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
+/**
+ * Abstract base implementation for ResultOf methods.
+ *
+ * @param <DatastoreType> The datastore type to be used as "this" instance.
+ * @param <Entity>        The entity type.
+ * @param <Relation>      The relation type.
+ */
 public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> implements ProxyMethod<DatastoreType> {
 
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
     private final ResultOfMethodMetadata<?> resultOfMethodMetadata;
 
-    public AbstractResultOfMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, ResultOfMethodMetadata<?> resultOfMethodMetadata) {
+    public AbstractResultOfMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext,
+                                  ResultOfMethodMetadata<?> resultOfMethodMetadata) {
         this.sessionContext = sessionContext;
         this.resultOfMethodMetadata = resultOfMethodMetadata;
     }
 
     @Override
     public Object invoke(DatastoreType datastoreType, Object instance, Object[] args) {
-        XOQueryImpl<?, ?, AnnotatedElement, ?, ?> query = new XOQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(), resultOfMethodMetadata.getReturnType());
-        AbstractInstanceManager<?, DatastoreType> instanceManager = getInstanceManager(sessionContext);
-        if (instanceManager != null) {
+        XOQueryImpl<?, ?, AnnotatedElement, ?, ?> query = new XOQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(),
+                resultOfMethodMetadata.getReturnType());
+        Object thisInstance = getThisInstance(datastoreType, sessionContext);
+        if (thisInstance != null) {
             String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
-            query.withParameter(usingThisAs, instanceManager.readInstance(datastoreType));
+            query.withParameter(usingThisAs, thisInstance);
         }
         List<ResultOf.Parameter> parameters = resultOfMethodMetadata.getParameters();
         for (int i = 0; i < parameters.size(); i++) {
@@ -48,5 +56,6 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
         return result;
     }
 
-    protected abstract AbstractInstanceManager<?, DatastoreType> getInstanceManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext);
+    protected abstract Object getThisInstance(DatastoreType datastoreType, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext);
+
 }
