@@ -7,8 +7,16 @@ import com.buschmais.xo.spi.reflection.AnnotatedType;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * Represents metadata for entity types.
+ *
+ * @param <DatastoreMetadata> The datastore specific metadata type.
+ */
 public class RelationTypeMetadata<DatastoreMetadata> extends AbstractDatastoreTypeMetadata<DatastoreMetadata> {
 
+    /**
+     * Defines the allowed directions..
+     */
     public enum Direction {
         FROM,
         TO;
@@ -46,6 +54,6 @@ public class RelationTypeMetadata<DatastoreMetadata> extends AbstractDatastoreTy
 
     @Override
     public boolean isFinal() {
-        return false;
+        return true;
     }
 }

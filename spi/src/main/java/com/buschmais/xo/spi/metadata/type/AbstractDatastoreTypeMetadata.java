@@ -6,6 +6,11 @@ import com.buschmais.xo.spi.reflection.AnnotatedType;
 
 import java.util.Collection;
 
+/**
+ * Abstract base implementation for metadata representing a datastore type.
+ *
+ * @param <DatastoreMetadata> The datastore metadate type.
+ */
 public abstract class AbstractDatastoreTypeMetadata<DatastoreMetadata> extends AbstractTypeMetadata implements DatastoreTypeMetadata<DatastoreMetadata> {
 
     private final DatastoreMetadata datastoreMetadata;
