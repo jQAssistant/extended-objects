@@ -39,4 +39,13 @@ public class RelationTypeMetadata<DatastoreMetadata> extends AbstractDatastoreTy
         return toType;
     }
 
+    @Override
+    public boolean isAbstract() {
+        return false;
+    }
+
+    @Override
+    public boolean isFinal() {
+        return false;
+    }
 }

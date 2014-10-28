@@ -2,10 +2,7 @@ package com.buschmais.xo.impl.metadata;
 
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.api.annotation.ImplementedBy;
-import com.buschmais.xo.api.annotation.Repository;
-import com.buschmais.xo.api.annotation.ResultOf;
-import com.buschmais.xo.api.annotation.Transient;
+import com.buschmais.xo.api.annotation.*;
 import com.buschmais.xo.impl.MetadataProvider;
 import com.buschmais.xo.spi.annotation.EntityDefinition;
 import com.buschmais.xo.spi.annotation.IndexDefinition;
@@ -256,7 +253,9 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
         IndexedPropertyMethodMetadata indexedProperty = getIndexedPropertyMethodMetadata(methodMetadataOfType);
         EntityMetadata datastoreEntityMetadata = metadataFactory.createEntityMetadata(annotatedType, metadataByType);
-        return new EntityTypeMetadata<>(annotatedType, superTypes, methodMetadataOfType, indexedProperty, datastoreEntityMetadata);
+        boolean abstractType = annotatedType.isAnnotationPresent(Abstract.class);
+        boolean finalType = annotatedType.isAnnotationPresent(Abstract.class);
+        return new EntityTypeMetadata<>(annotatedType, superTypes, methodMetadataOfType, abstractType, finalType, indexedProperty, datastoreEntityMetadata);
     }
 
     /**
