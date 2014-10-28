@@ -1,18 +1,5 @@
 package com.buschmais.xo.neo4j.test.modifier;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
-import java.net.URISyntaxException;
-import java.util.Collection;
-
-import org.hamcrest.CoreMatchers;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManager;
@@ -21,9 +8,18 @@ import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.modifier.composite.AbstractType;
 import com.buschmais.xo.neo4j.test.modifier.composite.ConcreteType;
 import com.buschmais.xo.neo4j.test.modifier.composite.FinalType;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import java.net.URISyntaxException;
+import java.util.Collection;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
-@Ignore("Not yet implemented.")
 public class ModifierTest extends AbstractNeo4jXOManagerTest {
 
     public ModifierTest(XOUnit xoUnit) {
@@ -47,6 +43,20 @@ public class ModifierTest extends AbstractNeo4jXOManagerTest {
         CompositeObject compositeObject = xoManager.create(AbstractType.class, ConcreteType.class);
         assertThat(compositeObject, instanceOf(AbstractType.class));
         assertThat(compositeObject, instanceOf(ConcreteType.class));
+        xoManager.currentTransaction().commit();
+    }
+
+    @Test
+    public void finalModifier() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        FinalType finalType = xoManager.create(FinalType.class);
+        assertThat(finalType, instanceOf(FinalType.class));
+        try {
+            xoManager.create(FinalType.class, ConcreteType.class);
+            fail("Expecting an " + XOException.class.getName());
+        } catch (XOException e) {
+        }
         xoManager.currentTransaction().commit();
     }
 

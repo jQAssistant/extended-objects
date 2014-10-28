@@ -1,6 +1,7 @@
 package com.buschmais.xo.impl;
 
 import com.buschmais.xo.api.CompositeObject;
+import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.impl.cache.TransactionalCache;
 import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
@@ -72,6 +73,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
         if (instance == null) {
             InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(datastoreType, getProxyMethodService());
             TypeMetadataSet<?> types = getTypes(datastoreType);
+            validateTypes(types);
             instance = proxyFactory.createInstance(invocationHandler, types.toClasses(), CompositeObject.class);
             cache.put(id, instance, cacheMode);
             if (TransactionalCache.Mode.READ.equals(cacheMode)) {
@@ -79,6 +81,22 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
             }
         }
         return (T) instance;
+    }
+
+    /**
+     * Validates the given types.
+     *
+     * @param types The types.
+     */
+    private void validateTypes(TypeMetadataSet<?> types) {
+        int size = types.size();
+        if (size == 1) {
+            if (types.containsAbstractType()) {
+                throw new XOException("Cannot create an instance of a single abstract type " + types);
+            }
+        } else if (types.containsFinalType()) {
+            throw new XOException("Cannot create an instance overriding a final type " + types);
+        }
     }
 
     /**
