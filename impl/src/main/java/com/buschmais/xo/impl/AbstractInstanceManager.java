@@ -6,6 +6,7 @@ import com.buschmais.xo.impl.cache.TransactionalCache;
 import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.impl.proxy.ProxyMethodService;
+import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 
 /**
@@ -15,7 +16,7 @@ import com.buschmais.xo.spi.datastore.TypeMetadataSet;
  * @param <DatastoreId>   The id type of the datastore type.
  * @param <DatastoreType> The datastore type.
  */
-public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
+public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implements InstanceManager<DatastoreId,DatastoreType> {
 
     private final TransactionalCache<DatastoreId> cache;
     private final InstanceListenerService instanceListenerService;
@@ -41,6 +42,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      * @param <T>           The instance type.
      * @return The instance.
      */
+    @Override
     public <T> T readInstance(DatastoreType datastoreType) {
         return getInstance(datastoreType, TransactionalCache.Mode.READ);
     }
@@ -52,10 +54,12 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      * @param <T>           The instance type.
      * @return The instance.
      */
+    @Override
     public <T> T createInstance(DatastoreType datastoreType) {
         return getInstance(datastoreType, TransactionalCache.Mode.WRITE);
     }
 
+    @Override
     public <T> T updateInstance(DatastoreType datastoreType) {
         return getInstance(datastoreType, TransactionalCache.Mode.WRITE);
     }
@@ -105,6 +109,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      * @param instance   The instance.
      * @param <Instance> The instance type.
      */
+    @Override
     public <Instance> void removeInstance(Instance instance) {
         DatastoreType datastoreType = getDatastoreType(instance);
         DatastoreId id = getDatastoreId(datastoreType);
@@ -117,6 +122,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      * @param instance   The instance.
      * @param <Instance> The instance type.
      */
+    @Override
     public <Instance> void closeInstance(Instance instance) {
         proxyFactory.getInvocationHandler(instance).close();
     }
@@ -128,6 +134,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      * @param <Instance> The instance type.
      * @return <code>true</code> if the instance is handled by this manager.
      */
+    @Override
     public <Instance> boolean isInstance(Instance instance) {
         if (instance instanceof CompositeObject) {
             Object delegate = ((CompositeObject) instance).getDelegate();
@@ -143,22 +150,16 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> {
      * @param <Instance> The instance type.
      * @return The corresponding datastore type.
      */
+    @Override
     public <Instance> DatastoreType getDatastoreType(Instance instance) {
         InstanceInvocationHandler<DatastoreType> invocationHandler = proxyFactory.getInvocationHandler(instance);
         return invocationHandler.getDatastoreType();
     }
 
     /**
-     * Return the unique id of a datastore type.
-     *
-     * @param datastoreType The datastore type.
-     * @return The id.
-     */
-    public abstract DatastoreId getDatastoreId(DatastoreType datastoreType);
-
-    /**
      * Closes this manager instance.
      */
+    @Override
     public void close() {
         for (Object instance : cache.readInstances()) {
             closeInstance(instance);

@@ -8,7 +8,7 @@ import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOTransaction;
-import com.buschmais.xo.impl.AbstractInstanceManager;
+import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.plugin.QueryLanguagePluginRepository;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
@@ -40,8 +40,8 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     private final QueryLanguagePluginRepository queryLanguagePluginManager;
     private final Class<?> returnType;
     private final Collection<? extends Class<?>> returnTypes;
-    private final AbstractInstanceManager<?, Entity> entityInstanceManager;
-    private final AbstractInstanceManager<?, Relation> relationInstanceManager;
+    private final InstanceManager<?, Entity> entityInstanceManager;
+    private final InstanceManager<?, Relation> relationInstanceManager;
     private Map<String, Object> parameters = null;
 
     public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression, Class<?> returnType,

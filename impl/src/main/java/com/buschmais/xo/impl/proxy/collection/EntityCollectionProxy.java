@@ -1,6 +1,6 @@
 package com.buschmais.xo.impl.proxy.collection;
 
-import com.buschmais.xo.impl.AbstractInstanceManager;
+import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.spi.metadata.method.EntityCollectionPropertyMethodMetadata;
 
@@ -44,7 +44,7 @@ public class EntityCollectionProxy<Instance, Entity, Relation> extends AbstractC
     @Override
     public boolean remove(Object o) {
         SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext = getSessionContext();
-        AbstractInstanceManager<?, Entity> instanceManager = sessionContext.getEntityInstanceManager();
+        InstanceManager<?, Entity> instanceManager = sessionContext.getEntityInstanceManager();
         if (instanceManager.isInstance(o)) {
             return sessionContext.getEntityPropertyManager().removeEntityReference(getEntity(), getMetadata(), o);
         }

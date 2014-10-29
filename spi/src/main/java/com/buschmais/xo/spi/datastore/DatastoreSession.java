@@ -1,16 +1,24 @@
 package com.buschmais.xo.spi.datastore;
 
+import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
+import com.buschmais.xo.spi.session.XOSession;
+
 import java.lang.annotation.Annotation;
 
 /**
  * Defines the interface of a datastore session, e.g. a connection to the
  * datastore.
  *
- * @param <EntityId>            The type of entity ids used by the datastore.
- * @param <Entity>              The type of entities used by the datastore.
- * @param <EntityDiscriminator> The type of entity discriminators used by the datastore.
- * @param <RelationId>          The type of relation ids used by the datastore.
- * @param <Relation>            The type of relations used by the datastore.
+ * @param <EntityId>
+ *            The type of entity ids used by the datastore.
+ * @param <Entity>
+ *            The type of entities used by the datastore.
+ * @param <EntityDiscriminator>
+ *            The type of entity discriminators used by the datastore.
+ * @param <RelationId>
+ *            The type of relation ids used by the datastore.
+ * @param <Relation>
+ *            The type of relations used by the datastore.
  */
 public interface DatastoreSession<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata> {
 
@@ -26,7 +34,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * Return the {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager}.
      *
      * @return The {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager}
-     * .
+     *         .
      */
     DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> getDatastoreEntityManager();
 
@@ -35,7 +43,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager}.
      *
      * @return The
-     * {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager}.
+     *         {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager}.
      */
     DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> getDatastoreRelationManager();
 
@@ -49,11 +57,24 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
     /**
      * Create a query for the given query language.
      *
-     * @param queryLanguage The query language.
-     * @param <QL>          The query language type.
+     * @param queryLanguage
+     *            The query language.
+     * @param <QL>
+     *            The query language type.
      * @return The query.
      */
     <QL extends Annotation> DatastoreQuery<QL> createQuery(Class<QL> queryLanguage);
+
+    /**
+     * Create a datastore repository for the given type.
+     * 
+     * @param xoSession
+     *            The {@link com.buschmais.xo.spi.session.XOSession}.
+     * @param repositoryTypeMetadata
+     *            The metadata of the repository type.
+     * @return The repository type.
+     */
+    <R> R createRepository(XOSession xoSession, RepositoryTypeMetadata repositoryTypeMetadata);
 
     /**
      * Close the session.

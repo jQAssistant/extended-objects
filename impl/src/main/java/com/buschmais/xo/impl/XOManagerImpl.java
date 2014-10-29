@@ -7,6 +7,7 @@ import com.buschmais.xo.impl.proxy.repository.RepositoryInvocationHandler;
 import com.buschmais.xo.impl.proxy.repository.RepositoryProxyMethodService;
 import com.buschmais.xo.impl.query.XOQueryImpl;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
+import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
@@ -15,6 +16,7 @@ import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetada
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.*;
+import com.buschmais.xo.spi.session.XOSession;
 
 import javax.validation.ConstraintViolation;
 import java.util.*;
@@ -51,6 +53,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     private final SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext;
 
+    private final XOSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> session;
+
     /**
      * Constructor.
      *
@@ -60,6 +64,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     public XOManagerImpl(
             SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext) {
         this.sessionContext = sessionContext;
+        this.session = new XOSessionImpl<>(sessionContext);
     }
 
     @Override
@@ -149,7 +154,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
      *            The example entity.
      * @param <T>
      *            The entity type.
-     * @return A {@link com.buschmais.xo.api.ResultIterable}.
+     * @return A {@link ResultIterable}.
      */
     private <T> ResultIterable<T> findByExample(Class<?> type, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entity) {
         EntityTypeMetadata<EntityMetadata> entityTypeMetadata = sessionContext.getMetadataProvider().getEntityMetadata(type);
@@ -262,7 +267,9 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     @Override
     public <T> T getRepository(Class<T> repositoryType) {
         RepositoryTypeMetadata repositoryMetadata = sessionContext.getMetadataProvider().getRepositoryMetadata(repositoryType);
-        RepositoryProxyMethodService<Entity, Relation> proxyMethodService = new RepositoryProxyMethodService<>(sessionContext);
+        T datastoreRepository = sessionContext.getDatastoreSession().createRepository(session, repositoryMetadata);
+        RepositoryProxyMethodService<T, Entity, Relation> proxyMethodService = new RepositoryProxyMethodService<>(datastoreRepository, repositoryMetadata,
+                sessionContext);
         RepositoryInvocationHandler invocationHandler = new RepositoryInvocationHandler(proxyMethodService, this);
         T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, new Class<?>[0], repositoryType);
         return sessionContext.getInterceptorFactory().addInterceptor(instance, repositoryType);
@@ -270,8 +277,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <T, Id> Id getId(T instance) {
-        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        AbstractInstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
+        InstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+        InstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
         if (entityInstanceManager.isInstance(instance)) {
             Entity entity = entityInstanceManager.getDatastoreType(instance);
             return (Id) sessionContext.getDatastoreSession().getDatastoreEntityManager().getEntityId(entity);
@@ -320,8 +327,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <T> void delete(T instance) {
-        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        AbstractInstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
+        InstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+        InstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = sessionContext
                 .getDatastoreSession();
         if (entityInstanceManager.isInstance(instance)) {

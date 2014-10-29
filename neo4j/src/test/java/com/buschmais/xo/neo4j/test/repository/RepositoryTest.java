@@ -4,7 +4,8 @@ import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.repository.composite.A;
-import com.buschmais.xo.neo4j.test.repository.composite.CustomRepository;
+import com.buschmais.xo.neo4j.test.repository.composite.DatastoreSpecificRepository;
+import com.buschmais.xo.neo4j.test.repository.composite.GenericRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -24,20 +25,31 @@ public class RepositoryTest extends AbstractNeo4jXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(A.class, CustomRepository.class);
+        return xoUnits(A.class, GenericRepository.class, DatastoreSpecificRepository.class);
     }
 
     @Test
-    public void typedQuery() {
+    public void genericRepository() {
         XOManager xoManager = getXoManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setName("A1");
-        CustomRepository customRepository = xoManager.getRepository(CustomRepository.class);
-        assertThat(customRepository.findByName("A1"), equalTo(a));
-        assertThat(customRepository.find("A1"), equalTo(a));
+        GenericRepository repository = xoManager.getRepository(GenericRepository.class);
+        assertThat(repository.findByName("A1"), equalTo(a));
+        assertThat(repository.find("A1"), equalTo(a));
         xoManager.currentTransaction().commit();
     }
 
-
+    @Test
+    public void datastoreSpecificRepository() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
+        a.setName("A1");
+        DatastoreSpecificRepository repository = xoManager.getRepository(DatastoreSpecificRepository.class);
+        assertThat(repository.find(A.class, "A1").getSingleResult(), equalTo(a));
+        assertThat(repository.findByName("A1"), equalTo(a));
+        assertThat(repository.find("A1"), equalTo(a));
+        xoManager.currentTransaction().commit();
+    }
 }

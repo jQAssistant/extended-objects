@@ -1,7 +1,7 @@
 package com.buschmais.xo.impl.proxy.entity.object;
 
 import com.buschmais.xo.api.proxy.ProxyMethod;
-import com.buschmais.xo.impl.AbstractInstanceManager;
+import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
@@ -18,7 +18,7 @@ public class EqualsMethod<Entity> implements ProxyMethod<Entity> {
     @Override
     public Object invoke(Entity entity, Object instance, Object[] args) {
         Object other = args[0];
-        AbstractInstanceManager<?, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
+        InstanceManager<?, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         if (entityInstanceManager.isInstance(other)) {
             Entity otherEntity = entityInstanceManager.getDatastoreType(other);
             DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, ?, ? extends DatastoreRelationMetadata<?>, ?, ?> datastoreSession = sessionContext.getDatastoreSession();

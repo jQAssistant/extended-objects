@@ -7,10 +7,10 @@ import com.buschmais.xo.impl.proxy.common.object.AbstractToStringMethod;
 
 import java.util.Arrays;
 
-public class ToStringMethod implements ProxyMethod<XOManager> {
+public class ToStringMethod<T> implements ProxyMethod<T> {
 
     @Override
-    public Object invoke(XOManager xoManager, Object instance, Object[] args) throws Exception {
-        return Arrays.asList(instance.getClass().getInterfaces()) + "(" + xoManager.toString() + ")";
+    public Object invoke(T delegate, Object instance, Object[] args) throws Exception {
+        return Arrays.asList(instance.getClass().getInterfaces()) + "(" + delegate.toString() + ")";
     }
 }

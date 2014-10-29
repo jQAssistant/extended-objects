@@ -8,6 +8,8 @@ import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipType;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
+import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
+import com.buschmais.xo.spi.session.XOSession;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
@@ -51,6 +53,11 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     @Override
     public GDS getGraphDatabaseService() {
         return graphDatabaseService;
+    }
+
+    @Override
+    public <R> R createRepository(XOSession xoSession, RepositoryTypeMetadata repositoryTypeMetadata) {
+        return (R) new Neo4jRepositoryImpl(graphDatabaseService, xoSession);
     }
 
     @Override

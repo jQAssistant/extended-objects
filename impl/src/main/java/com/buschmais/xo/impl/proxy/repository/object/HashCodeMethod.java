@@ -4,10 +4,10 @@ import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.impl.SessionContext;
 
-public class HashCodeMethod implements ProxyMethod<XOManager> {
+public class HashCodeMethod<T> implements ProxyMethod<T> {
 
     @Override
-    public Object invoke(XOManager xoManager, Object instance, Object[] args) {
-        return xoManager.hashCode();
+    public Object invoke(T delegate, Object instance, Object[] args) {
+        return delegate.hashCode();
     }
 }

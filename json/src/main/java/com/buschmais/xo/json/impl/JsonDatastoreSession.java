@@ -1,17 +1,20 @@
 package com.buschmais.xo.json.impl;
 
+import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonPropertyMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.xo.spi.datastore.*;
+import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
+import com.buschmais.xo.spi.session.XOSession;
 import org.codehaus.jackson.node.ObjectNode;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.util.UUID;
 
-public class JsonDatastoreSession implements DatastoreSession<UUID, ObjectNode, JsonNodeMetadata, String, Long, JsonRelation, JsonRelationMetadata, String, JsonPropertyMetadata> {
-
+public class JsonDatastoreSession implements
+        DatastoreSession<UUID, ObjectNode, JsonNodeMetadata, String, Long, JsonRelation, JsonRelationMetadata, String, JsonPropertyMetadata> {
 
     private final JsonEntityManager entityManager;
     private final JsonRelationManager relationManager;
@@ -47,8 +50,11 @@ public class JsonDatastoreSession implements DatastoreSession<UUID, ObjectNode, 
     }
 
     @Override
-    public void close() {
+    public <R> R createRepository(XOSession xoSession, RepositoryTypeMetadata repositoryTypeMetadata) {
+        throw new XOException("Repositories are not supported");
     }
 
-
+    @Override
+    public void close() {
+    }
 }
