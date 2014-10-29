@@ -2,7 +2,6 @@ package com.buschmais.xo.test.trace.impl;
 
 import com.buschmais.xo.spi.datastore.*;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
-import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
 import com.buschmais.xo.spi.session.XOSession;
 
 import java.lang.annotation.Annotation;
@@ -56,8 +55,8 @@ public class TraceDatastoreSession<EntityId, Entity, EntityMetadata extends Data
     }
 
     @Override
-    public <R> R createRepository(XOSession xoSession, RepositoryTypeMetadata repositoryTypeMetadata) {
-        return delegate.createRepository(xoSession, repositoryTypeMetadata);
+    public <R> R createRepository(XOSession xoSession, Class<R> type) {
+        return delegate.createRepository(xoSession, type);
     }
 
     @Override

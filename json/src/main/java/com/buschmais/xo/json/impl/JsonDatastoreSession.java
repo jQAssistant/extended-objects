@@ -5,7 +5,6 @@ import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonPropertyMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.xo.spi.datastore.*;
-import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
 import com.buschmais.xo.spi.session.XOSession;
 import org.codehaus.jackson.node.ObjectNode;
 
@@ -50,7 +49,7 @@ public class JsonDatastoreSession implements
     }
 
     @Override
-    public <R> R createRepository(XOSession xoSession, RepositoryTypeMetadata repositoryTypeMetadata) {
+    public <R> R createRepository(XOSession xoSession, Class<R> type) {
         throw new XOException("Repositories are not supported");
     }
 

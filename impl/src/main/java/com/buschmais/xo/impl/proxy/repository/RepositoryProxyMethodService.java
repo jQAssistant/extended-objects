@@ -15,22 +15,27 @@ import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 
+/**
+ * Proxy method service for repositories.
+ * 
+ * @param <T>
+ *            The repository type.
+ * @param <Entity>
+ *            The entity type.
+ * @param <Relation>
+ *            The relation type.
+ */
 public class RepositoryProxyMethodService<T, Entity, Relation> extends AbstractProxyMethodService<T> {
 
-    public RepositoryProxyMethodService(T datastoreRepository, RepositoryTypeMetadata repositoryMetadata,
-            SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
-        for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata().values()) {
-            for (MethodMetadata methodMetadata : typeMetadata.getProperties()) {
-                AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
-                addUnsupportedOperationMethod(methodMetadata, typeMethod);
-                addImplementedByMethod(methodMetadata, typeMethod);
-                if (methodMetadata instanceof ResultOfMethodMetadata) {
-                    ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata) methodMetadata;
-                    addProxyMethod(new ResultOfMethod(sessionContext, resultOfMethodMetadata), typeMethod.getAnnotatedElement());
-                }
-            }
-        }
-        Class<?> repositoryType = repositoryMetadata.getAnnotatedType().getAnnotatedElement();
+    /**
+     * Constructor for datastore repository instances.
+     * 
+     * @param datastoreRepository
+     *            The datastore repository.
+     * @param repositoryType
+     *            The repository type.
+     */
+    public RepositoryProxyMethodService(T datastoreRepository, Class<?> repositoryType) {
         for (Method method : repositoryType.getMethods()) {
             if (method.getDeclaringClass().isAssignableFrom(datastoreRepository.getClass())) {
                 DelegateMethod<T> proxyMethod = new DelegateMethod<>(datastoreRepository, method);
@@ -42,4 +47,27 @@ public class RepositoryProxyMethodService<T, Entity, Relation> extends AbstractP
         addMethod(new ToStringMethod(), Object.class, "toString");
     }
 
+    /**
+     * Constructor for repositories with custom method declaration
+     * 
+     * @param datastoreRepository
+     *            The datastore repository.
+     * @param repositoryMetadata
+     *            The repository metadata.
+     * @param sessionContext
+     *            The session context.
+     */
+    public RepositoryProxyMethodService(T datastoreRepository, RepositoryTypeMetadata repositoryMetadata,
+            SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
+        this(datastoreRepository, repositoryMetadata.getAnnotatedType().getAnnotatedElement());
+        for (MethodMetadata methodMetadata : repositoryMetadata.getProperties()) {
+            AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
+            addUnsupportedOperationMethod(methodMetadata, typeMethod);
+            addImplementedByMethod(methodMetadata, typeMethod);
+            if (methodMetadata instanceof ResultOfMethodMetadata) {
+                ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata) methodMetadata;
+                addProxyMethod(new ResultOfMethod(sessionContext, resultOfMethodMetadata), typeMethod.getAnnotatedElement());
+            }
+        }
+    }
 }

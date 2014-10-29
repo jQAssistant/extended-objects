@@ -55,6 +55,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     private final XOSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> session;
 
+    private final Map<Class<?>, Object> repositories = new HashMap<>();
+
     /**
      * Constructor.
      *
@@ -266,13 +268,22 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <T> T getRepository(Class<T> repositoryType) {
-        RepositoryTypeMetadata repositoryMetadata = sessionContext.getMetadataProvider().getRepositoryMetadata(repositoryType);
-        T datastoreRepository = sessionContext.getDatastoreSession().createRepository(session, repositoryMetadata);
-        RepositoryProxyMethodService<T, Entity, Relation> proxyMethodService = new RepositoryProxyMethodService<>(datastoreRepository, repositoryMetadata,
-                sessionContext);
-        RepositoryInvocationHandler invocationHandler = new RepositoryInvocationHandler(proxyMethodService, this);
-        T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, new Class<?>[0], repositoryType);
-        return sessionContext.getInterceptorFactory().addInterceptor(instance, repositoryType);
+        T repository = (T) repositories.get(repositoryType);
+        if (repository == null) {
+            T datastoreRepository = sessionContext.getDatastoreSession().createRepository(session, repositoryType);
+            RepositoryProxyMethodService<T, Entity, Relation> proxyMethodService;
+            if (repositoryType.isAssignableFrom(datastoreRepository.getClass())) {
+                proxyMethodService = new RepositoryProxyMethodService<>(datastoreRepository, repositoryType);
+            } else {
+                RepositoryTypeMetadata repositoryMetadata = sessionContext.getMetadataProvider().getRepositoryMetadata(repositoryType);
+                proxyMethodService = new RepositoryProxyMethodService<>(datastoreRepository, repositoryMetadata, sessionContext);
+            }
+            RepositoryInvocationHandler invocationHandler = new RepositoryInvocationHandler(proxyMethodService, this);
+            T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, new Class<?>[0], repositoryType);
+            repository = sessionContext.getInterceptorFactory().addInterceptor(instance, repositoryType);
+            repositories.put(repositoryType, repository);
+        }
+        return repository;
     }
 
     @Override

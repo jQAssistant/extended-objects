@@ -70,11 +70,10 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
      * 
      * @param xoSession
      *            The {@link com.buschmais.xo.spi.session.XOSession}.
-     * @param repositoryTypeMetadata
-     *            The metadata of the repository type.
+     * @param type
      * @return The repository type.
      */
-    <R> R createRepository(XOSession xoSession, RepositoryTypeMetadata repositoryTypeMetadata);
+    <R> R createRepository(XOSession xoSession, Class<R> type);
 
     /**
      * Close the session.

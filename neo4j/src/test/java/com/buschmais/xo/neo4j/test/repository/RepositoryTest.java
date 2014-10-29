@@ -2,6 +2,7 @@ package com.buschmais.xo.neo4j.test.repository;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.api.Neo4jRepository;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.repository.composite.A;
 import com.buschmais.xo.neo4j.test.repository.composite.DatastoreSpecificRepository;
@@ -50,6 +51,17 @@ public class RepositoryTest extends AbstractNeo4jXOManagerTest {
         assertThat(repository.find(A.class, "A1").getSingleResult(), equalTo(a));
         assertThat(repository.findByName("A1"), equalTo(a));
         assertThat(repository.find("A1"), equalTo(a));
+        xoManager.currentTransaction().commit();
+    }
+
+    @Test
+    public void datastoreRepository() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
+        a.setName("A1");
+        Neo4jRepository repository = xoManager.getRepository(Neo4jRepository.class);
+        assertThat(repository.find(A.class, "A1").getSingleResult(), equalTo(a));
         xoManager.currentTransaction().commit();
     }
 }
