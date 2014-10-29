@@ -6,10 +6,11 @@ import com.buschmais.xo.api.XOTransaction;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
-import com.buschmais.xo.spi.session.InstanceManager;
-import com.buschmais.xo.spi.session.XOSession;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
+import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
+import com.buschmais.xo.spi.session.InstanceManager;
+import com.buschmais.xo.spi.session.XOSession;
 
 /**
  * Implementation of the {@link XOSession} interface.
@@ -53,6 +54,11 @@ public class XOSessionImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     @Override
     public <T> RelationTypeMetadata<RelationMetadata> getRelationMetadata(Class<T> type) {
         return sessionContext.getMetadataProvider().getRelationMetadata(type);
+    }
+
+    @Override
+    public <R> RepositoryTypeMetadata getRepositoryMetadata(Class<R> type) {
+        return sessionContext.getMetadataProvider().getRepositoryMetadata(type);
     }
 
     @Override

@@ -6,6 +6,8 @@ import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
+import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
+import com.buschmais.xo.spi.metadata.type.SimpleTypeMetadata;
 
 /**
  * Defines functionality to be used by repository implementations.
@@ -59,6 +61,17 @@ public interface XOSession<EntityId, Entity, EntityMetadata extends DatastoreEnt
      * @return The metadata.
      */
     <T> RelationTypeMetadata<RelationMetadata> getRelationMetadata(Class<T> type);
+
+    /**
+     * Return the metadata for a repository type.
+     *
+     * @param type
+     *            The repository type.
+     * @param <R>
+     *            The repository type.
+     * @return The metadata.
+     */
+    <R> RepositoryTypeMetadata getRepositoryMetadata(Class<R> type);
 
     /**
      * Return the {@link com.buschmais.xo.spi.session.InstanceManager} for a
