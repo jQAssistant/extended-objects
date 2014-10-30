@@ -15,49 +15,16 @@ import org.neo4j.graphdb.*;
 /**
  * Implementation of the {@link Neo4jRepository}.
  */
-public class Neo4jRepositoryImpl implements Neo4jRepository {
+public class Neo4jRepositoryImpl extends AbstractNeo4jRepositoryImpl implements Neo4jRepository {
 
-    private final GraphDatabaseService graphDatabaseService;
-    private final XOSession<Long, Node, NodeMetadata, Label, Long, Relationship, RelationshipMetadata, RelationshipType, PropertyMetadata> xoSession;
-
-    public Neo4jRepositoryImpl(
-            GraphDatabaseService graphDatabaseService,
+    protected Neo4jRepositoryImpl(GraphDatabaseService graphDatabaseService,
             XOSession<Long, Node, NodeMetadata, Label, Long, Relationship, RelationshipMetadata, RelationshipType, PropertyMetadata> xoSession) {
-        this.graphDatabaseService = graphDatabaseService;
-        this.xoSession = xoSession;
+        super(graphDatabaseService, xoSession);
     }
 
     @Override
     public <T> ResultIterable<T> find(Class<T> type, Object value) {
-        // get the label for the type
-        EntityTypeMetadata<NodeMetadata> entityMetadata = xoSession.getEntityMetadata(type);
-        Label label = entityMetadata.getDatastoreMetadata().getDiscriminator();
-        // get the name of the indexed property
-        PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata = entityMetadata.getIndexedProperty().getPropertyMethodMetadata();
-        PropertyMetadata datastoreMetadata = propertyMethodMetadata.getDatastoreMetadata();
-        String propertyName = datastoreMetadata.getName();
-        // convert the value from object to datastore representation
-        Object datastoreValue = xoSession.toDatastore(value);
-        // find the nodes
-        ResourceIterable<Node> nodesIterable = graphDatabaseService.findNodesByLabelAndProperty(label, propertyName, datastoreValue);
-        ResourceIterator<Node> iterator = nodesIterable.iterator();
-        return xoSession.toResult(new ResultIterator<Node>() {
-
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public Node next() {
-                return iterator.next();
-            }
-
-            @Override
-            public void close() {
-                iterator.close();
-            }
-        });
+        return super.find(type, value);
     }
 
 }

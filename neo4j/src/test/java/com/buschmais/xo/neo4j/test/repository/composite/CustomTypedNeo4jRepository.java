@@ -8,24 +8,14 @@ import com.buschmais.xo.api.annotation.Repository;
 import com.buschmais.xo.api.annotation.ResultOf;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.neo4j.api.Neo4jRepository;
+import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 
 @Repository
-public interface DatastoreSpecificRepository extends Neo4jRepository {
+public interface CustomTypedNeo4jRepository extends TypedNeo4jRepository<A> {
 
     @ResultOf
     @Cypher("match a where a.name={name} return a")
     A findByName(@Parameter("name") String name);
 
-    @ImplementedBy(FindMethod.class)
-    A find(String name);
-
-    public class FindMethod implements ProxyMethod<XOManager> {
-
-        @Override
-        public Object invoke(XOManager xoManager, Object instance, Object[] args) throws Exception {
-            Object arg = args[0];
-            return xoManager.find(A.class, arg).getSingleResult();
-        }
-    }
 }
