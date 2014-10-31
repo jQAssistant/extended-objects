@@ -3,6 +3,7 @@ package com.buschmais.xo.test;
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+
 import org.junit.After;
 import org.junit.Before;
 
@@ -175,8 +176,9 @@ public abstract class AbstractXOManagerTest {
      */
     protected void closeXOmanager() {
         if (xoManager != null) {
-            if (xoManager.currentTransaction().isActive()) {
-                xoManager.currentTransaction().rollback();
+            XOTransaction transaction = xoManager.currentTransaction();
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
             }
             xoManager.close();
             xoManager = null;
