@@ -24,6 +24,15 @@ public enum CollectionPropertyType {
 	}
 
 	/**
+	 * Return the Java collection type.
+	 * 
+	 * @return The Java collection type.
+	 */
+	public Class<? extends Collection> getCollectionType() {
+		return collectionType;
+	}
+
+	/**
 	 * Determine the
 	 * {@link com.buschmais.xo.impl.proxy.entity.property.CollectionPropertyType}
 	 * for a given class.

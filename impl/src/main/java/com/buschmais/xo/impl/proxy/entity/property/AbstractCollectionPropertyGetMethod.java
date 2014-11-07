@@ -67,7 +67,7 @@ public abstract class AbstractCollectionPropertyGetMethod<DatastoreType, Entity,
 		default:
 			throw new XOException("Unsupported collection type " + collectionPropertyType);
 		}
-		return sessionContext.getInterceptorFactory().addInterceptor(collection, collection.getClass().getInterfaces());
+		return sessionContext.getInterceptorFactory().addInterceptor(collection, collectionPropertyType.getCollectionType());
 	}
 
 	/**
