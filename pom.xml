@@ -67,13 +67,13 @@
         <profile>
             <id>QA</id>
             <properties>
-                <jqassistant.version>1.0.0-M3</jqassistant.version>
+                <jqassistant.version>1.0.0-M4</jqassistant.version>
                 <org.neo4j_version>2.1.5</org.neo4j_version>
             </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.buschmais.jqassistant.maven</groupId>
+                        <groupId>com.buschmais.jqassistant.scm</groupId>
                         <artifactId>jqassistant-maven-plugin</artifactId>
                         <version>${jqassistant.version}</version>
                         <executions>
@@ -134,6 +134,57 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>m2e</id>
+            <activation>
+                <property>
+                    <name>m2e.version</name>
+                </property>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.eclipse.m2e</groupId>
+                            <artifactId>lifecycle-mapping</artifactId>
+                            <version>1.0.0</version>
+                            <configuration>
+                                <lifecycleMappingMetadata>
+                                    <pluginExecutions>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.asciidoctor</groupId>
+                                                <artifactId>asciidoctor-maven-plugin</artifactId>
+                                                <versionRange>[0.1.4,)</versionRange>
+                                                <goals>
+                                                    <goal>process-asciidoc</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore/>
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.servicemix.tooling</groupId>
+                                                <artifactId>depends-maven-plugin</artifactId>
+                                                <versionRange>[1.2,)</versionRange>
+                                                <goals>
+                                                    <goal>generate-depends-file</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore/>
+                                            </action>
+                                        </pluginExecution>
+                                    </pluginExecutions>
+                                </lifecycleMappingMetadata>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
     </profiles>
 
     <build>
@@ -180,44 +231,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>2.14.1</version>
-                </plugin>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.asciidoctor</groupId>
-                                        <artifactId>asciidoctor-maven-plugin</artifactId>
-                                        <versionRange>[0.1.4,)</versionRange>
-                                        <goals>
-                                            <goal>process-asciidoc</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.apache.servicemix.tooling</groupId>
-                                        <artifactId>depends-maven-plugin</artifactId>
-                                        <versionRange>[1.2,)</versionRange>
-                                        <goals>
-                                            <goal>generate-depends-file</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.asciidoctor</groupId>
