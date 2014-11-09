@@ -1,5 +1,14 @@
 package com.buschmais.xo.impl;
 
+import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
+import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.FROM;
+import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.TO;
+import static java.util.Collections.emptyMap;
+
+import java.util.*;
+
+import javax.validation.ConstraintViolation;
+
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.impl.proxy.example.ExampleProxyMethodService;
@@ -7,24 +16,17 @@ import com.buschmais.xo.impl.proxy.repository.RepositoryInvocationHandler;
 import com.buschmais.xo.impl.proxy.repository.RepositoryProxyMethodService;
 import com.buschmais.xo.impl.query.XOQueryImpl;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
-import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
+import com.buschmais.xo.spi.metadata.CompositeTypeBuilder;
 import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.*;
+import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.spi.session.XOSession;
-
-import javax.validation.ConstraintViolation;
-import java.util.*;
-
-import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.FROM;
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.TO;
-import static java.util.Collections.emptyMap;
 
 /**
  * Generic implementation of a {@link com.buschmais.xo.api.XOManager}.
@@ -141,8 +143,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         List<Class<?>> effectiveTypes = new ArrayList<>();
         effectiveTypes.add(type);
         effectiveTypes.addAll(Arrays.asList(types));
-        T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, effectiveTypes.toArray(new Class<?>[effectiveTypes.size()]),
-                CompositeObject.class);
+        CompositeType compositeType = CompositeTypeBuilder.create(CompositeObject.class, type, types);
+        T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, compositeType);
         example.prepare(instance);
         return exampleEntity;
     }
@@ -279,7 +281,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
                 proxyMethodService = new RepositoryProxyMethodService<>(datastoreRepository, repositoryMetadata, sessionContext);
             }
             RepositoryInvocationHandler invocationHandler = new RepositoryInvocationHandler(proxyMethodService, this);
-            T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, new Class<?>[0], repositoryType);
+            T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, CompositeTypeBuilder.create(repositoryType));
             repository = sessionContext.getInterceptorFactory().addInterceptor(instance, repositoryType);
             repositories.put(repositoryType, repository);
         }

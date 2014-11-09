@@ -1,12 +1,13 @@
 package com.buschmais.xo.spi.datastore;
 
-import com.buschmais.xo.spi.metadata.type.DatastoreTypeMetadata;
+import static java.util.Arrays.asList;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeSet;
 
-import static java.util.Arrays.asList;
+import com.buschmais.xo.api.CompositeObject;
+import com.buschmais.xo.api.CompositeType;
+import com.buschmais.xo.spi.metadata.CompositeTypeBuilder;
+import com.buschmais.xo.spi.metadata.type.DatastoreTypeMetadata;
 
 /**
  * Represents a set of type metadata.
@@ -24,24 +25,28 @@ public final class TypeMetadataSet<TypeMetadata extends DatastoreTypeMetadata<?>
         super((o1, o2) -> o1.getAnnotatedType().getAnnotatedElement().getName().compareTo(o2.getAnnotatedType().getAnnotatedElement().getName()));
     }
 
+    /**
+     * Add a type metadata.
+     * 
+     * @param typeMetadata
+     *            The type metadata.
+     * @return <code>true</code> if the metadata could be added.
+     */
     public boolean add(TypeMetadata typeMetadata) {
         containsAbstractType = containsAbstractType || typeMetadata.isAbstract();
         containsFinalType = containsFinalType || typeMetadata.isFinal();
         return super.add(typeMetadata);
     }
 
-    public Class<?>[] toClasses() {
-        List<Class<?>> classes = new ArrayList<>();
-        for (TypeMetadata typeMetadata : this) {
-            classes.add(typeMetadata.getAnnotatedType().getAnnotatedElement());
-        }
-        return classes.toArray(new Class[classes.size()]);
+    public CompositeType getCompositeType() {
+        return CompositeTypeBuilder.create(CompositeObject.class, this, t -> t.getAnnotatedType().getAnnotatedElement());
     }
 
     /**
      * Determine if at least one of the contained types is abstract.
      *
-     * @return <code>true</code>  if at least one of the contained types is abstract.
+     * @return <code>true</code> if at least one of the contained types is
+     *         abstract.
      */
     public boolean containsAbstractType() {
         return containsAbstractType;
@@ -50,7 +55,8 @@ public final class TypeMetadataSet<TypeMetadata extends DatastoreTypeMetadata<?>
     /**
      * Determine if at least one of the contained types is final.
      *
-     * @return <code>true</code>  if at least one of the contained types is final.
+     * @return <code>true</code> if at least one of the contained types is
+     *         final.
      */
     public boolean containsFinalType() {
         return containsFinalType;
@@ -58,6 +64,6 @@ public final class TypeMetadataSet<TypeMetadata extends DatastoreTypeMetadata<?>
 
     @Override
     public String toString() {
-        return asList(toClasses()).toString();
+        return asList(CompositeObject.class).toString();
     }
 }

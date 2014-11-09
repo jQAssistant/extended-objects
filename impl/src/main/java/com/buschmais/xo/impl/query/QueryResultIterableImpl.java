@@ -7,6 +7,8 @@ import com.buschmais.xo.impl.AbstractResultIterable;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.query.RowInvocationHandler;
 import com.buschmais.xo.impl.proxy.query.RowProxyMethodService;
+import com.buschmais.xo.api.CompositeType;
+import com.buschmais.xo.spi.metadata.CompositeTypeBuilder;
 
 import java.io.IOException;
 import java.util.*;
@@ -51,8 +53,8 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
                 }
                 if (rowProxyMethodService != null) {
                     RowInvocationHandler invocationHandler = new RowInvocationHandler(row, rowProxyMethodService);
-                    return (T) sessionContext.getProxyFactory().createInstance(invocationHandler, returnTypes.toArray(new Class<?>[0]),
-                            CompositeRowObject.class);
+                    CompositeType compositeType = CompositeTypeBuilder.create(CompositeRowObject.class, returnTypes.toArray(new Class[returnTypes.size()]));
+                    return (T) sessionContext.getProxyFactory().createInstance(invocationHandler, compositeType);
                 }
                 if (row.size() != 1) {
                     throw new XOException("Only single columns per row can be returned.");

@@ -11,23 +11,29 @@ import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 
 /**
  * Abstract base implementation of an instance manager.
- * <p>It provides functionality to map the lifecycle of proxy instances to their corresponding datastore type.</p>
+ * <p>
+ * It provides functionality to map the lifecycle of proxy instances to their
+ * corresponding datastore type.
+ * </p>
  *
- * @param <DatastoreId>   The id type of the datastore type.
- * @param <DatastoreType> The datastore type.
+ * @param <DatastoreId>
+ *            The id type of the datastore type.
+ * @param <DatastoreType>
+ *            The datastore type.
  */
-public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implements InstanceManager<DatastoreId,DatastoreType> {
+public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implements InstanceManager<DatastoreId, DatastoreType> {
 
     private final TransactionalCache<DatastoreId> cache;
     private final InstanceListenerService instanceListenerService;
     private final ProxyFactory proxyFactory;
 
-
     /**
      * Constructor.
      *
-     * @param cache        The transactional cache.
-     * @param proxyFactory The proxy factory.
+     * @param cache
+     *            The transactional cache.
+     * @param proxyFactory
+     *            The proxy factory.
      */
     public AbstractInstanceManager(TransactionalCache<DatastoreId> cache, InstanceListenerService instanceListenerService, ProxyFactory proxyFactory) {
         this.cache = cache;
@@ -36,10 +42,13 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     }
 
     /**
-     * Return the proxy instance which corresponds to the given datastore type for reading.
+     * Return the proxy instance which corresponds to the given datastore type
+     * for reading.
      *
-     * @param datastoreType The datastore type.
-     * @param <T>           The instance type.
+     * @param datastoreType
+     *            The datastore type.
+     * @param <T>
+     *            The instance type.
      * @return The instance.
      */
     @Override
@@ -48,10 +57,13 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     }
 
     /**
-     * Return the proxy instance which corresponds to the given datastore type for writing.
+     * Return the proxy instance which corresponds to the given datastore type
+     * for writing.
      *
-     * @param datastoreType The datastore type.
-     * @param <T>           The instance type.
+     * @param datastoreType
+     *            The datastore type.
+     * @param <T>
+     *            The instance type.
      * @return The instance.
      */
     @Override
@@ -67,8 +79,10 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     /**
      * Return the proxy instance which corresponds to the given datastore type.
      *
-     * @param datastoreType The datastore type.
-     * @param <T>           The instance type.
+     * @param datastoreType
+     *            The datastore type.
+     * @param <T>
+     *            The instance type.
      * @return The instance.
      */
     private <T> T getInstance(DatastoreType datastoreType, TransactionalCache.Mode cacheMode) {
@@ -78,7 +92,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
             InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(datastoreType, getProxyMethodService());
             TypeMetadataSet<?> types = getTypes(datastoreType);
             validateTypes(types);
-            instance = proxyFactory.createInstance(invocationHandler, types.toClasses(), CompositeObject.class);
+            instance = proxyFactory.createInstance(invocationHandler, types.getCompositeType());
             cache.put(id, instance, cacheMode);
             if (TransactionalCache.Mode.READ.equals(cacheMode)) {
                 instanceListenerService.postLoad(instance);
@@ -90,7 +104,8 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     /**
      * Validates the given types.
      *
-     * @param types The types.
+     * @param types
+     *            The types.
      */
     private void validateTypes(TypeMetadataSet<?> types) {
         int size = types.size();
@@ -106,8 +121,10 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     /**
      * Removes an instance, e.g. before deletion or migration.
      *
-     * @param instance   The instance.
-     * @param <Instance> The instance type.
+     * @param instance
+     *            The instance.
+     * @param <Instance>
+     *            The instance type.
      */
     @Override
     public <Instance> void removeInstance(Instance instance) {
@@ -119,8 +136,10 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     /**
      * Destroys an instance, i.e. makes it unusable-
      *
-     * @param instance   The instance.
-     * @param <Instance> The instance type.
+     * @param instance
+     *            The instance.
+     * @param <Instance>
+     *            The instance type.
      */
     @Override
     public <Instance> void closeInstance(Instance instance) {
@@ -128,10 +147,13 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     }
 
     /**
-     * Determine if a given instance is a datastore type handled by this manager.
+     * Determine if a given instance is a datastore type handled by this
+     * manager.
      *
-     * @param instance   The instance.
-     * @param <Instance> The instance type.
+     * @param instance
+     *            The instance.
+     * @param <Instance>
+     *            The instance type.
      * @return <code>true</code> if the instance is handled by this manager.
      */
     @Override
@@ -146,8 +168,10 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     /**
      * Return the datastore type represented by an instance.
      *
-     * @param instance   The instance.
-     * @param <Instance> The instance type.
+     * @param instance
+     *            The instance.
+     * @param <Instance>
+     *            The instance type.
      * @return The corresponding datastore type.
      */
     @Override
@@ -170,21 +194,25 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     /**
      * Determine if a given object is a datastore type.
      *
-     * @param o The object
+     * @param o
+     *            The object
      * @return <code>true</code> If the given object is a datastore type.
      */
     protected abstract boolean isDatastoreType(Object o);
 
     /**
-     * Determines the {@link com.buschmais.xo.spi.datastore.TypeMetadataSet} of a datastore type.
+     * Determines the {@link com.buschmais.xo.spi.datastore.TypeMetadataSet} of
+     * a datastore type.
      *
-     * @param datastoreType The datastore type.
+     * @param datastoreType
+     *            The datastore type.
      * @return The {@link com.buschmais.xo.spi.datastore.TypeMetadataSet}.
      */
     protected abstract TypeMetadataSet<?> getTypes(DatastoreType datastoreType);
 
     /**
-     * Return the {@link com.buschmais.xo.impl.proxy.ProxyMethodService} associated with this manager.
+     * Return the {@link com.buschmais.xo.impl.proxy.ProxyMethodService}
+     * associated with this manager.
      *
      * @return The {@link com.buschmais.xo.impl.proxy.ProxyMethodService}.
      */
