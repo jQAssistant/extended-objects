@@ -1,10 +1,9 @@
 package com.buschmais.xo.spi.metadata;
 
-import com.buschmais.xo.api.CompositeType;
-
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.Function;
+
+import com.buschmais.xo.api.CompositeType;
 
 /**
  * A builder for {@link com.buschmais.xo.api.CompositeType}s.
@@ -50,6 +49,28 @@ public class CompositeTypeBuilder {
     private static void arrayCopy(CompositeTypeImpl compositeType, Class<?>[] types, int startIndex) {
         System.arraycopy(types, 0, compositeType.classes, startIndex, types.length);
         compositeType.hashCode = Arrays.hashCode(compositeType.classes);
+    }
+
+    /**
+     * A function to map a input value to an output value.
+     * 
+     * @param <T>
+     *            The input type.
+     * @param <R>
+     *            The output type.
+     */
+    @FunctionalInterface
+    public interface Function<T, R> {
+
+        /**
+         * Apply the function.
+         * 
+         * @param t
+         *            The input value.
+         * @return The output value.
+         */
+        R apply(T t);
+
     }
 
     /**
