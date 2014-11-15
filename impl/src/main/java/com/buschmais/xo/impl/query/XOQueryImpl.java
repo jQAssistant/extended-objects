@@ -145,9 +145,16 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
      */
     private Object convertParameter(Object value) {
         if (entityInstanceManager.isInstance(value)) {
-            value = entityInstanceManager.getDatastoreType(value);
+            return entityInstanceManager.getDatastoreType(value);
         } else if (relationInstanceManager.isInstance(value)) {
-            value = relationInstanceManager.getDatastoreType(value);
+            return relationInstanceManager.getDatastoreType(value);
+        } else if (value instanceof Collection) {
+            Collection collection = (Collection) value;
+            List<Object> values = new ArrayList<>();
+            for (Object o : collection) {
+                values.add(convertParameter(o));
+            }
+            return values;
         }
         return value;
     }

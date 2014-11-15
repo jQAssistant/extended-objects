@@ -111,6 +111,15 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
         xoManager.currentTransaction().commit();
     }
 
+    @Test
+    public void instanceParameterCollection() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where a.value in {values} return a").withParameter("values", Arrays.asList("A1")).execute();
+        A a = row.getSingleResult().get("a", A.class);
+        assertThat(a, equalTo(a1));
+        xoManager.currentTransaction().commit();
+    }
 
     @Test
     public void optionalMatch() {

@@ -14,10 +14,7 @@ import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Transaction;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<GraphDatabaseService> {
 
@@ -131,14 +128,26 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
             Map<String, Object> effectiveParameters = new HashMap<>();
             for (Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
                 Object value = parameterEntry.getValue();
-                if (value instanceof Node) {
-                    value = ((Node) value).getId();
-                } else if (value instanceof Relationship) {
-                    value = ((Relationship) value).getId();
-                }
+                value = convertValue(value);
                 effectiveParameters.put(parameterEntry.getKey(), value);
             }
             return effectiveParameters;
         }
+    }
+
+    private Object convertValue(Object value) {
+        if (value instanceof Node) {
+            return ((Node) value).getId();
+        } else if (value instanceof Relationship) {
+            return ((Relationship) value).getId();
+        } else if (value instanceof Collection) {
+            Collection collection = (Collection) value;
+            List<Object> values = new ArrayList<>();
+            for (Object o : collection) {
+                values.add(convertValue(o));
+            }
+            return values;
+        }
+        return value;
     }
 }
