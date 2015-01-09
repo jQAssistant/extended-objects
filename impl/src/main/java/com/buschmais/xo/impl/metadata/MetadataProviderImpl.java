@@ -79,7 +79,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             getOrCreateTypeMetadata(currentClass);
         }
         entityTypeMetadataResolver = new EntityTypeMetadataResolver<>(metadataByType);
-        relationTypeMetadataResolver = new RelationTypeMetadataResolver<>(metadataByType);
+        relationTypeMetadataResolver = new RelationTypeMetadataResolver<>(metadataByType, entityTypeMetadataResolver);
         metadataByType.put(CompositeObject.class, new SimpleTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.<TypeMetadata> emptyList(),
                 Collections.<MethodMetadata<?, ?>> emptyList(), null));
     }
