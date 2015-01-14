@@ -1,10 +1,11 @@
 package com.buschmais.xo.api;
 
-import javax.validation.ConstraintViolation;
-import java.util.Set;
-
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 import static com.buschmais.xo.api.Transaction.TransactionAttribute.NOT_SUPPORTED;
+
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
 
 /**
  * Defines methods to manage the lifecycle of property instances, query
@@ -429,6 +430,7 @@ public interface XOManager extends AutoCloseable {
      * @param <M>
      *            The target instance type.
      */
+	@FunctionalInterface
     interface MigrationStrategy<T, M> {
         /**
          * Migrate an instance of a type to instance of another type.
