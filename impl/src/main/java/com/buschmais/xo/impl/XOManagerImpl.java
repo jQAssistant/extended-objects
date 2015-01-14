@@ -334,6 +334,11 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
+    public <T> XOMigrator migrate(T instance) {
+        return new XOMigratorImpl<T, EntityId, Entity, EntityMetadata, EntityDiscriminator>(instance, sessionContext);
+    }
+
+    @Override
     public <T, M> M migrate(T instance, Class<M> targetType) {
         return migrate(instance, null, targetType);
     }

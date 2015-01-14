@@ -125,10 +125,24 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
         }
         Set<Label> labelsToAdd = new HashSet<>(targetDiscriminators);
         labelsToAdd.removeAll(discriminators);
-        for (Label label : labelsToAdd) {
-            entity.addLabel(label);
-        }
+        addDiscriminators(entity, labelsToAdd);
         labelCache.put(entity.getId(), targetDiscriminators);
+    }
+
+    @Override
+    public void addDiscriminators(Node node, Set<Label> labels) {
+        for (Label label : labels) {
+            node.addLabel(label);
+        }
+        labelCache.invalidate(node.getId());
+    }
+
+    @Override
+    public void removeDiscriminators(Node node, Set<Label> labels) {
+        for (Label label : labels) {
+            node.removeLabel(label);
+        }
+        labelCache.invalidate(node.getId());
     }
 
     @Override

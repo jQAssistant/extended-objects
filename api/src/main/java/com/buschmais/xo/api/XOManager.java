@@ -276,6 +276,18 @@ public interface XOManager extends AutoCloseable {
     <T, M> M migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType);
 
     /**
+     * Return an {@link com.buschmais.xo.api.XOManager.XOMigrator} instance that
+     * provides methods for type migrations.
+     * 
+     * @param instance
+     *            The instance to migrate.
+     * @param <T>
+     *            The instance type.
+     * @return The migrator.
+     */
+    <T> XOMigrator migrate(T instance);
+
+    /**
      * Deletes a property instance.
      *
      * @param <T>
@@ -376,6 +388,37 @@ public interface XOManager extends AutoCloseable {
      */
     @Transaction(NOT_SUPPORTED)
     <I> void registerInstanceListener(I instanceListener);
+
+    /**
+     * Defines the interface for a type migrator.
+     * 
+     * @param <T>
+     *            The type of the instance to migrate.
+     */
+    public interface XOMigrator<T> {
+        /**
+         * Add a type to the instance.
+         * 
+         * @param newType
+         *            The new type.
+         * @param newTypes
+         *            The new types.
+         * @return A new instance representing the original types and the given
+         *         new types.
+         */
+        CompositeObject add(Class<?> newType, Class<?>... newTypes);
+
+        /**
+         * Remove a type from the instance.
+         * 
+         * @param obsoleteType
+         *            The obsolete type.
+         * @param obsoleteTypes
+         *            The obsolete types.
+         * @return A new instance without the obsolete types.
+         */
+        CompositeObject remove(Class<?> obsoleteType, Class<?>... obsoleteTypes);
+    }
 
     /**
      * Defines the interface of strategies for migration between different

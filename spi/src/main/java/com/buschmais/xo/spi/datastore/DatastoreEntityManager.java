@@ -110,6 +110,26 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
             TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<EntityDiscriminator> targetDiscriminators);
 
     /**
+     * Add a set of discriminators to an entity.
+     * 
+     * @param entity
+     *            The entity.
+     * @param discriminators
+     *            The set of discriminators
+     */
+    void addDiscriminators(Entity entity, Set<EntityDiscriminator> discriminators);
+
+    /**
+     * Remove a set of discriminators from an entity.
+     *
+     * @param entity
+     *            The entity.
+     * @param discriminators
+     *            The set of discriminators
+     */
+    void removeDiscriminators(Entity entity, Set<EntityDiscriminator> discriminators);
+
+    /**
      * Flush the given entity to the datastore.
      *
      * @param entity

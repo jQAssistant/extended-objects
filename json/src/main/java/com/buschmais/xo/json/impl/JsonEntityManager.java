@@ -95,6 +95,14 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     }
 
     @Override
+    public void addDiscriminators(ObjectNode jsonNodes, Set<String> strings) {
+    }
+
+    @Override
+    public void removeDiscriminators(ObjectNode jsonNodes, Set<String> strings) {
+    }
+
+    @Override
     public void flushEntity(ObjectNode objectNode) {
         File file = getFile(objectNode);
         try {

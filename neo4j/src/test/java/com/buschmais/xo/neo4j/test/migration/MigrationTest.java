@@ -1,5 +1,6 @@
 package com.buschmais.xo.neo4j.test.migration;
 
+import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
@@ -94,6 +95,30 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
         };
         C c = xoManager.migrate(a, migrationStrategy, C.class, D.class).as(C.class);
         assertThat(c.getName(), equalTo("Value"));
+        xoManager.currentTransaction().commit();
+        xoManager.close();
+    }
+
+    @Test
+    public void addType() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
+        a.setValue("Value");
+        B b = xoManager.migrate(a).add(B.class).as(B.class);
+        assertThat(b.getValue(), equalTo("Value"));
+        xoManager.currentTransaction().commit();
+        xoManager.close();
+    }
+
+    @Test
+    public void removeType() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        CompositeObject compositeObject = xoManager.create(A.class, B.class);
+        compositeObject.as(A.class).setValue("Value");
+        A a = xoManager.migrate(compositeObject).remove(B.class).as(A.class);
+        assertThat(a.getValue(), equalTo("Value"));
         xoManager.currentTransaction().commit();
         xoManager.close();
     }

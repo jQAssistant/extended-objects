@@ -63,6 +63,16 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
         delegate.migrateEntity(entity, types, entityDiscriminators, targetTypes, targetDiscriminators);
     }
 
+    @Override
+    public void addDiscriminators(Entity entity, Set<EntityDiscriminator> discriminators) {
+        delegate.addDiscriminators(entity, discriminators);
+    }
+
+    @Override
+    public void removeDiscriminators(Entity entity, Set<EntityDiscriminator> discriminators) {
+        delegate.removeDiscriminators(entity, discriminators);
+    }
+
     public void flushEntity(Entity entity) {
         delegate.flushEntity(entity);
     }
