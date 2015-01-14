@@ -334,13 +334,13 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
-    public <T> XOMigrator migrate(T instance) {
-        return new XOMigratorImpl<T, EntityId, Entity, EntityMetadata, EntityDiscriminator>(instance, sessionContext);
+	public <T> XOMigrator<T> migrate(T instance) {
+		return sessionContext.getInterceptorFactory().addInterceptor(new XOMigratorImpl<>(instance, sessionContext));
     }
 
     @Override
     public <T, M> M migrate(T instance, Class<M> targetType) {
-        return migrate(instance, null, targetType);
+		return sessionContext.getInterceptorFactory().addInterceptor(migrate(instance, null, targetType));
     }
 
     @Override
