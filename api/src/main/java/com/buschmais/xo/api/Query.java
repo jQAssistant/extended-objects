@@ -43,7 +43,7 @@ public interface Query<T> {
      *
      * @param <T> The type of the elements contained in the result.
      */
-    public interface Result<T> extends ResultIterable<T>, AutoCloseable, Closeable {
+    public interface Result<T> extends ResultIterable<T>, Closeable {
 
         /**
          * Defines the interface which is implemented by all instances contained in a {@link ResultIterable} and which allows access to a column in a row.
