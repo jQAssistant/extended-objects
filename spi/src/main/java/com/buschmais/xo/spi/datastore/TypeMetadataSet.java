@@ -2,7 +2,7 @@ package com.buschmais.xo.spi.datastore;
 
 import static java.util.Arrays.asList;
 
-import java.util.TreeSet;
+import java.util.HashSet;
 
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.CompositeType;
@@ -12,29 +12,11 @@ import com.buschmais.xo.spi.metadata.type.DatastoreTypeMetadata;
 /**
  * Represents a set of type metadata.
  */
-public final class TypeMetadataSet<TypeMetadata extends DatastoreTypeMetadata<?>> extends TreeSet<TypeMetadata> {
+public final class TypeMetadataSet<TypeMetadata extends DatastoreTypeMetadata<?>> extends HashSet<TypeMetadata> {
 
     private boolean containsAbstractType = false;
 
     private boolean containsFinalType = false;
-
-    /**
-     * Constructor.
-     */
-    public TypeMetadataSet() {
-        super((o1, o2) -> {
-            Class<?> type1 = o1.getAnnotatedType().getAnnotatedElement();
-            Class<?> type2 = o2.getAnnotatedType().getAnnotatedElement();
-            if (type1.equals(type2)) {
-                return 0;
-            } else if (type1.isAssignableFrom(type2)) {
-                return 1;
-            } else if (type2.isAssignableFrom(type1)) {
-                return -1;
-            }
-            return type1.getName().compareTo(type2.getName());
-        });
-    }
 
     /**
      * Add a type metadata.

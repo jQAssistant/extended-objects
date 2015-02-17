@@ -1,9 +1,6 @@
 package com.buschmais.xo.spi.metadata;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.*;
 
 import com.buschmais.xo.api.CompositeType;
 
@@ -12,6 +9,21 @@ import com.buschmais.xo.api.CompositeType;
  */
 public class CompositeTypeBuilder {
 
+    private static final class ClassComparator implements Comparator<Class<?>> {
+
+        public int compare(Class<?> type1, Class<?> type2) {
+            if (type1.equals(type2)) {
+                return 0;
+            } else if (type1.isAssignableFrom(type2)) {
+                return 1;
+            } else if (type2.isAssignableFrom(type1)) {
+                return -1;
+            }
+            return type1.getName().compareTo(type2.getName());
+        }
+    }
+
+    private static final ClassComparator COMPARATOR = new ClassComparator();
 
     /**
      * Constructor.
@@ -20,7 +32,7 @@ public class CompositeTypeBuilder {
     }
 
     public static CompositeType create(Class<?> baseType, Class<?>... types) {
-        Map<Class<?>, Class<?>> map = new IdentityHashMap<>(types.length + 1);
+        SortedMap<Class<?>, Class<?>> map = new TreeMap<>(COMPARATOR);
         map.put(baseType, null);
         for (Class<?> additionalType : types) {
             map.put(additionalType, null);
@@ -29,7 +41,7 @@ public class CompositeTypeBuilder {
     }
 
     public static CompositeType create(Class<?> baseType, Class<?> type, Class<?>[] types) {
-        Map<Class<?>, Class<?>> map = new IdentityHashMap<>(types.length + 2);
+        SortedMap<Class<?>, Class<?>> map = new TreeMap<>(COMPARATOR);
         map.put(baseType, null);
         map.put(type, null);
         for (Class<?> additionalType : types) {
@@ -39,7 +51,7 @@ public class CompositeTypeBuilder {
     }
 
     public static <T> CompositeType create(Class<?> baseType, Collection<T> types, Function<T, Class<?>> typeMapper) {
-        Map<Class<?>, Class<?>> map = new IdentityHashMap<>(types.size() + 1);
+        SortedMap<Class<?>, Class<?>> map = new TreeMap<>(COMPARATOR);
         map.put(baseType, null);
         for (T type : types) {
             map.put(typeMapper.apply(type), null);
