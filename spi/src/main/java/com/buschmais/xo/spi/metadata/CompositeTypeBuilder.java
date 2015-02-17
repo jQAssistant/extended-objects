@@ -2,6 +2,8 @@ package com.buschmais.xo.spi.metadata;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 import com.buschmais.xo.api.CompositeType;
 
@@ -10,6 +12,7 @@ import com.buschmais.xo.api.CompositeType;
  */
 public class CompositeTypeBuilder {
 
+
     /**
      * Constructor.
      */
@@ -17,38 +20,38 @@ public class CompositeTypeBuilder {
     }
 
     public static CompositeType create(Class<?> baseType, Class<?>... types) {
-        CompositeTypeImpl compositeType = new CompositeTypeImpl();
-        compositeType.classes = new Class<?>[types.length + 1];
-        compositeType.classes[0] = baseType;
-        arrayCopy(compositeType, types, 1);
-        return compositeType;
+        Map<Class<?>, Class<?>> map = new IdentityHashMap<>(types.length + 1);
+        map.put(baseType, null);
+        for (Class<?> additionalType : types) {
+            map.put(additionalType, null);
+        }
+        return getCompositeType(map);
     }
 
     public static CompositeType create(Class<?> baseType, Class<?> type, Class<?>[] types) {
-        CompositeTypeImpl compositeType = new CompositeTypeImpl();
-        compositeType.classes = new Class<?>[types.length + 2];
-        compositeType.classes[0] = baseType;
-        compositeType.classes[1] = type;
-        arrayCopy(compositeType, types, 2);
-        return compositeType;
+        Map<Class<?>, Class<?>> map = new IdentityHashMap<>(types.length + 2);
+        map.put(baseType, null);
+        map.put(type, null);
+        for (Class<?> additionalType : types) {
+            map.put(additionalType, null);
+        }
+        return getCompositeType(map);
     }
 
     public static <T> CompositeType create(Class<?> baseType, Collection<T> types, Function<T, Class<?>> typeMapper) {
-        CompositeTypeImpl compositeType = new CompositeTypeImpl();
-        compositeType.classes = new Class<?>[types.size() + 1];
-        compositeType.classes[0] = baseType;
-        int i = 1;
+        Map<Class<?>, Class<?>> map = new IdentityHashMap<>(types.size() + 1);
+        map.put(baseType, null);
         for (T type : types) {
-            compositeType.classes[i] = typeMapper.apply(type);
-            i++;
+            map.put(typeMapper.apply(type), null);
         }
-        compositeType.hashCode = Arrays.hashCode(compositeType.classes);
-        return compositeType;
+        return getCompositeType(map);
     }
 
-    private static void arrayCopy(CompositeTypeImpl compositeType, Class<?>[] types, int startIndex) {
-        System.arraycopy(types, 0, compositeType.classes, startIndex, types.length);
+    private static CompositeTypeImpl getCompositeType(Map<Class<?>, Class<?>> map) {
+        CompositeTypeImpl compositeType = new CompositeTypeImpl();
+        compositeType.classes = map.keySet().toArray(new Class[map.size()]);
         compositeType.hashCode = Arrays.hashCode(compositeType.classes);
+        return compositeType;
     }
 
     /**
