@@ -2,6 +2,7 @@ package com.buschmais.xo.neo4j.api.annotation;
 
 import com.buschmais.xo.spi.annotation.RelationDefinition;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -20,6 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * </ul
  */
 @RelationDefinition
+@Documented
 @Retention(RUNTIME)
 @Target({TYPE, ANNOTATION_TYPE, METHOD})
 public @interface Relation {

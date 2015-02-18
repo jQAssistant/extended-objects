@@ -9,6 +9,10 @@ import com.buschmais.xo.api.CompositeType;
  */
 public class CompositeTypeBuilder {
 
+    /**
+     * A comparator for classes ordering them by assignability - most concrete
+     * classes first.
+     */
     private static final class ClassComparator implements Comparator<Class<?>> {
 
         public int compare(Class<?> type1, Class<?> type2) {
@@ -32,36 +36,38 @@ public class CompositeTypeBuilder {
     }
 
     public static CompositeType create(Class<?> baseType, Class<?>... types) {
-        SortedMap<Class<?>, Class<?>> map = new TreeMap<>(COMPARATOR);
-        map.put(baseType, null);
-        for (Class<?> additionalType : types) {
-            map.put(additionalType, null);
-        }
-        return getCompositeType(map);
+        SortedSet<Class<?>> classes = new TreeSet<>(COMPARATOR);
+        classes.add(baseType);
+        addTypes(classes, types);
+        return getCompositeType(classes);
     }
 
     public static CompositeType create(Class<?> baseType, Class<?> type, Class<?>[] types) {
-        SortedMap<Class<?>, Class<?>> map = new TreeMap<>(COMPARATOR);
-        map.put(baseType, null);
-        map.put(type, null);
-        for (Class<?> additionalType : types) {
-            map.put(additionalType, null);
-        }
-        return getCompositeType(map);
+        SortedSet<Class<?>> classes = new TreeSet<>(COMPARATOR);
+        classes.add(baseType);
+        classes.add(type);
+        addTypes(classes, types);
+        return getCompositeType(classes);
     }
 
     public static <T> CompositeType create(Class<?> baseType, Collection<T> types, Function<T, Class<?>> typeMapper) {
-        SortedMap<Class<?>, Class<?>> map = new TreeMap<>(COMPARATOR);
-        map.put(baseType, null);
+        SortedSet<Class<?>> classes = new TreeSet<>(COMPARATOR);
+        classes.add(baseType);
         for (T type : types) {
-            map.put(typeMapper.apply(type), null);
+            classes.add(typeMapper.apply(type));
         }
-        return getCompositeType(map);
+        return getCompositeType(classes);
     }
 
-    private static CompositeTypeImpl getCompositeType(Map<Class<?>, Class<?>> map) {
+    private static void addTypes(SortedSet<Class<?>> classes, Class<?>[] types) {
+        for (Class<?> additionalType : types) {
+            classes.add(additionalType);
+        }
+    }
+
+    private static CompositeTypeImpl getCompositeType(Set<Class<?>> classes) {
         CompositeTypeImpl compositeType = new CompositeTypeImpl();
-        compositeType.classes = map.keySet().toArray(new Class[map.size()]);
+        compositeType.classes = classes.toArray(new Class[classes.size()]);
         compositeType.hashCode = Arrays.hashCode(compositeType.classes);
         return compositeType;
     }
