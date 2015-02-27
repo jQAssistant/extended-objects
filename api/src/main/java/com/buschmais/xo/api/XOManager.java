@@ -191,9 +191,14 @@ public interface XOManager extends AutoCloseable {
     <T, Id> Id getId(T instance);
 
     /**
+     * 
      * Migrates the type of a property instance to the given target types and
      * returns it. The original instance will not be usable anymore after
      * migration.
+     *
+     * @deprecated The migration functionality is the responsibility of to the
+     *             {@link com.buschmais.xo.api.XOMigrator} interface, see
+     *             {@link #migrate(Object)}.
      *
      * @param <T>
      *            The property type.
@@ -210,12 +215,17 @@ public interface XOManager extends AutoCloseable {
      *            migrated instance.
      * @return The migrated instance.
      */
+    @Deprecated
     <T, M> CompositeObject migrate(T instance, Class<M> targetType, Class<?>... targetTypes);
 
     /**
      * Migrates the type of a property instance to the given target type and
      * returns it. The original instance will not be usable anymore after
      * migration.
+     *
+     * @deprecated The migration functionality is the responsibility of to the
+     *             {@link com.buschmais.xo.api.XOMigrator} interface, see
+     *             {@link #migrate(Object)}.
      *
      * @param <T>
      *            The property type.
@@ -229,11 +239,16 @@ public interface XOManager extends AutoCloseable {
      *            migrated instance.
      * @return The migrated instance.
      */
+    @Deprecated
     <T, M> M migrate(T instance, Class<M> targetType);
 
     /**
      * Migrates the type of a property instance to the given target and returns
      * it. The original instance will not be usable anymore after migration.
+     *
+     * @deprecated The migration functionality is the responsibility of to the
+     *             {@link com.buschmais.xo.api.XOMigrator} interface, see
+     *             {@link #migrate(Object)}.
      *
      * @param <T>
      *            The property type.
@@ -253,11 +268,16 @@ public interface XOManager extends AutoCloseable {
      *            migrated instance.
      * @return The migrated instance.
      */
+    @Deprecated
     <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes);
 
     /**
      * Migrates the type of a property instance to the given target and returns
      * it. The original instance will not be usable anymore after migration.
+     *
+     * @deprecated The migration functionality is the responsibility of to the
+     *             {@link com.buschmais.xo.api.XOMigrator} interface, see
+     *             {@link #migrate(Object)}.
      *
      * @param <T>
      *            The property type.
@@ -274,18 +294,19 @@ public interface XOManager extends AutoCloseable {
      *            migrated instance.
      * @return The migrated instance.
      */
+    @Deprecated
     <T, M> M migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType);
 
     /**
-	 * Return an {@link XOMigrator} instance that provides methods for type
-	 * migrations.
-	 * 
-	 * @param instance
-	 *            The instance to migrate.
-	 * @param <T>
-	 *            The instance type.
-	 * @return The migrator.
-	 */
+     * Return an {@link XOMigrator} instance that provides methods for type
+     * migrations.
+     * 
+     * @param instance
+     *            The instance to migrate.
+     * @param <T>
+     *            The instance type.
+     * @return The migrator.
+     */
     <T> XOMigrator migrate(T instance);
 
     /**
@@ -399,7 +420,7 @@ public interface XOManager extends AutoCloseable {
      * @param <M>
      *            The target instance type.
      */
-	@FunctionalInterface
+    @FunctionalInterface
     interface MigrationStrategy<T, M> {
         /**
          * Migrate an instance of a type to instance of another type.
