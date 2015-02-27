@@ -7,7 +7,7 @@
     </parent>
     <groupId>com.buschmais.xo</groupId>
     <artifactId>xo.parent</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
+    <version>0.4.6</version>
     <packaging>pom</packaging>
 
     <name>eXtended Objects</name>
@@ -161,7 +161,7 @@
                                                 </goals>
                                             </pluginExecutionFilter>
                                             <action>
-                                                <ignore/>
+                                                <ignore />
                                             </action>
                                         </pluginExecution>
                                         <pluginExecution>
@@ -174,7 +174,7 @@
                                                 </goals>
                                             </pluginExecutionFilter>
                                             <action>
-                                                <ignore/>
+                                                <ignore />
                                             </action>
                                         </pluginExecution>
                                     </pluginExecutions>
