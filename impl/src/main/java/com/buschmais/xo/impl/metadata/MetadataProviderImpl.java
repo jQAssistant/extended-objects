@@ -1,5 +1,21 @@
 package com.buschmais.xo.impl.metadata;
 
+import static com.buschmais.xo.api.Query.Result;
+import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
+import static com.buschmais.xo.spi.annotation.RelationDefinition.FromDefinition;
+import static com.buschmais.xo.spi.annotation.RelationDefinition.ToDefinition;
+import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.annotation.*;
@@ -15,21 +31,6 @@ import com.buschmais.xo.spi.reflection.*;
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.*;
-
-import static com.buschmais.xo.api.Query.Result;
-import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
-import static com.buschmais.xo.spi.annotation.RelationDefinition.FromDefinition;
-import static com.buschmais.xo.spi.annotation.RelationDefinition.ToDefinition;
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
 
 /**
  * Implementation of the {@link MetadataProvider}.
@@ -304,7 +305,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             } else {
                 current = null;
             }
-        } while (current != null && fromType == null && toType == null);
+        } while (current != null && (fromType == null || toType == null));
         if (fromType == null || toType == null) {
             throw new XOException("Relation type '" + annotatedType.getAnnotatedElement().getName()
                     + "' does not define target entity properties for both directions.");
