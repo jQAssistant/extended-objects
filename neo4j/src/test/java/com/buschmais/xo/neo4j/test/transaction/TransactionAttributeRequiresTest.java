@@ -21,6 +21,7 @@ import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
+import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.transaction.composite.A;
 import com.buschmais.xo.neo4j.test.transaction.composite.B;
 
@@ -33,7 +34,8 @@ public class TransactionAttributeRequiresTest extends AbstractNeo4jXOManagerTest
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(Neo4jDatabase.MEMORY), asList(A.class, B.class), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.REQUIRES);
+        return xoUnits(asList(Neo4jDatabase.MEMORY), asList(A.class, B.class), Collections.<Class<?>> emptyList(), ValidationMode.AUTO,
+                ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.REQUIRES);
     }
 
     @Test
@@ -78,7 +80,6 @@ public class TransactionAttributeRequiresTest extends AbstractNeo4jXOManagerTest
         xoManager.currentTransaction().rollback();
         assertThat(a.getValue(), equalTo("value2"));
     }
-
 
     @Test
     public void commitOnException() {

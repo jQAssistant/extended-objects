@@ -1,9 +1,7 @@
 package com.buschmais.xo.neo4j.test;
 
-import static com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest.Neo4jDatabase.MEMORY;
+import static com.buschmais.xo.neo4j.test.Neo4jDatabase.MEMORY;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,33 +19,9 @@ import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.api.Neo4jXOProvider;
 import com.buschmais.xo.test.AbstractXOManagerTest;
 
 public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
-
-    public enum Neo4jDatabase implements AbstractXOManagerTest.Database {
-        MEMORY("memory:///");
-        private URI uri;
-
-        private Neo4jDatabase(String uri) {
-            try {
-                this.uri = new URI(uri);
-            } catch (URISyntaxException e) {
-                throw new IllegalArgumentException(e);
-            }
-        }
-
-        @Override
-        public URI getUri() {
-            return uri;
-        }
-
-        @Override
-        public Class<?> getProvider() {
-            return Neo4jXOProvider.class;
-        }
-    }
 
     private static WrappingNeoServer server;
 
