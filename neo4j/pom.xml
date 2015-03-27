@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.buschmais.xo</groupId>
@@ -10,7 +11,7 @@
     <name>eXtended Objects - Neo4j Binding</name>
 
     <properties>
-        <org.neo4j_version>2.1.7</org.neo4j_version>
+        <org.neo4j_version>2.2.0</org.neo4j_version>
         <org.neo4j.neo4j-rest-graphdb_version>2.0.1</org.neo4j.neo4j-rest-graphdb_version>
     </properties>
 
@@ -30,7 +31,7 @@
                     <instructions>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
-                        com.buschmais.xo.neo4j.api.*;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}"
+                            com.buschmais.xo.neo4j.api.*;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}"
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -76,7 +77,13 @@
             <dependency>
                 <groupId>org.neo4j</groupId>
                 <artifactId>neo4j-kernel</artifactId>
-                <classifier>tests</classifier>
+                <type>test-jar</type>
+                <version>${org.neo4j_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.neo4j</groupId>
+                <artifactId>neo4j-io</artifactId>
+                <type>test-jar</type>
                 <version>${org.neo4j_version}</version>
             </dependency>
             <dependency>
@@ -117,11 +124,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.neo4j</groupId>
-                <artifactId>neo4j-rest-graphdb</artifactId>
-                <version>${org.neo4j.neo4j-rest-graphdb_version}</version>
-            </dependency>
-            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.4</version>
@@ -158,13 +160,14 @@
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-rest-graphdb</artifactId>
+            <artifactId>neo4j-kernel</artifactId>
+            <type>test-jar</type>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-kernel</artifactId>
-            <classifier>tests</classifier>
+            <artifactId>neo4j-io</artifactId>
+            <type>test-jar</type>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -176,7 +179,7 @@
             <artifactId>guava</artifactId>
         </dependency>
         <dependency>
-        <groupId>org.slf4j</groupId>
+            <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
@@ -208,7 +211,6 @@
             <artifactId>neo4j-server</artifactId>
             <classifier>static-web</classifier>
         </dependency>
-
     </dependencies>
 
 </project>

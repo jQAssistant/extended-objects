@@ -1,18 +1,6 @@
 package com.buschmais.xo.neo4j.test;
 
-import com.buschmais.xo.api.ConcurrencyMode;
-import com.buschmais.xo.api.Transaction;
-import com.buschmais.xo.api.ValidationMode;
-import com.buschmais.xo.api.XOManager;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.api.Neo4jXOProvider;
-import com.buschmais.xo.test.AbstractXOManagerTest;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.kernel.GraphDatabaseAPI;
-import org.neo4j.server.WrappingNeoServer;
-import org.neo4j.test.TestGraphDatabaseFactory;
+import static com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest.Neo4jDatabase.MEMORY;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,14 +9,25 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest.Neo4jDatabase.MEMORY;
-import static com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest.Neo4jDatabase.REST;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.kernel.GraphDatabaseAPI;
+import org.neo4j.server.WrappingNeoServer;
+import org.neo4j.test.TestGraphDatabaseFactory;
+
+import com.buschmais.xo.api.ConcurrencyMode;
+import com.buschmais.xo.api.Transaction;
+import com.buschmais.xo.api.ValidationMode;
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.api.Neo4jXOProvider;
+import com.buschmais.xo.test.AbstractXOManagerTest;
 
 public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
 
     public enum Neo4jDatabase implements AbstractXOManagerTest.Database {
-        MEMORY("memory:///"),
-        REST("http://localhost:7474/db/data");
+        MEMORY("memory:///");
         private URI uri;
 
         private Neo4jDatabase(String uri) {
@@ -64,11 +63,12 @@ public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
     }
 
     protected static Collection<Object[]> xoUnits(Class<?>... types) {
-        return xoUnits(Arrays.asList(MEMORY, REST), Arrays.asList(types), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.NONE);
+        return xoUnits(Arrays.asList(MEMORY), Arrays.asList(types), Collections.<Class<?>> emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED,
+                Transaction.TransactionAttribute.NONE);
     }
 
     protected static Collection<Object[]> xoUnits(List<? extends Class<?>> types, List<? extends Class<?>> instanceListeners, ValidationMode validationMode, ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
-        return xoUnits(Arrays.asList(MEMORY, REST), types, instanceListeners, validationMode, concurrencyMode, transactionAttribute);
+        return xoUnits(Arrays.asList(MEMORY), types, instanceListeners, validationMode, concurrencyMode, transactionAttribute);
     }
 
     @AfterClass

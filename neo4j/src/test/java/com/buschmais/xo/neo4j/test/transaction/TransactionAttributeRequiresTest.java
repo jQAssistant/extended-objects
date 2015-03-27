@@ -1,5 +1,20 @@
 package com.buschmais.xo.neo4j.test.transaction;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.ValidationMode;
@@ -8,18 +23,6 @@ import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.transaction.composite.A;
 import com.buschmais.xo.neo4j.test.transaction.composite.B;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
-import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Collections;
-
-import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 public class TransactionAttributeRequiresTest extends AbstractNeo4jXOManagerTest {
@@ -48,8 +51,10 @@ public class TransactionAttributeRequiresTest extends AbstractNeo4jXOManagerTest
         a.setValue("value2");
         assertThat(a.getValue(), equalTo("value2"));
         assertThat(a.getListOfB().size(), equalTo(2));
+        List<B> listOfB = new ArrayList<>(a.getListOfB());
+        Collections.sort(listOfB, (o1, o2) -> o1.getValue() - o2.getValue());
         int i = 1;
-        for (B b : a.getListOfB()) {
+        for (B b : listOfB) {
             assertThat(b.getValue(), equalTo(i));
             i++;
         }

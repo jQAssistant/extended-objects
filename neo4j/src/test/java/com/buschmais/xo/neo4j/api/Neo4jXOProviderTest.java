@@ -1,13 +1,13 @@
 package com.buschmais.xo.neo4j.api;
 
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
-import com.buschmais.xo.neo4j.impl.datastore.RestNeo4jDatastore;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
 
 public class Neo4jXOProviderTest {
 
@@ -18,14 +18,11 @@ public class Neo4jXOProviderTest {
         assertEquals(FileDatastoreFactory.class, provider.lookupFactory(new URI("file://foo/")).getClass());
         assertEquals(MemoryDatastoreFactory.class, provider.lookupFactory(new URI("memory:///")).getClass());
         assertEquals(GraphDbDatastoreFactory.class, provider.lookupFactory(new URI("graphDb:///")).getClass());
-        assertEquals(HttpDatastoreFactory.class, provider.lookupFactory(new URI("http://foo")).getClass());
-        assertEquals(HttpsDatastoreFactory.class, provider.lookupFactory(new URI("https://foo")).getClass());
     }
 
     @Test
     public void createDsTests() throws Exception {
         assertEquals(EmbeddedNeo4jDatastore.class, provider.createDatastore(unit("memory:///")).getClass());
-        assertEquals(RestNeo4jDatastore.class, provider.createDatastore(unit("http://foo")).getClass());
     }
 
     private XOUnit unit(String uri) throws Exception {

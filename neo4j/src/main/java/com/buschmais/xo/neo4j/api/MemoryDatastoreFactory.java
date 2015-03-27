@@ -1,11 +1,12 @@
 package com.buschmais.xo.neo4j.api;
 
-import com.buschmais.xo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
+import java.net.URI;
+import java.util.Properties;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
-import java.net.URI;
-import java.util.Properties;
+import com.buschmais.xo.neo4j.impl.datastore.EmbeddedNeo4jDatastore;
 
 public class MemoryDatastoreFactory implements DatastoreFactory<EmbeddedNeo4jDatastore> {
 

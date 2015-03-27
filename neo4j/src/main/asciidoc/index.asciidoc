@@ -103,7 +103,6 @@ API (JPA). The following snippet shows a minimum setup:
 url::
   The URL to pass to the Neo4j datastore. The following protocols are currently supported
   - "file:///C:/neo4j/movies": embedded local database using the specified directory as location for the Neo4j database
-  - "http://localhost:7474/db/data": remote database over REST
   - "memory:///": non-persistent in-memory database
 provider::
   The class name of the datastore provider, for Neo4j com.buschmais.xo.neo4j.api.Neo4jXOProvider

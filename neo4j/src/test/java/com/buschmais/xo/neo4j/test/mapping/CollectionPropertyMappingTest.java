@@ -1,22 +1,23 @@
 package com.buschmais.xo.neo4j.test.mapping;
 
-import com.buschmais.xo.api.XOManager;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
-import com.buschmais.xo.neo4j.test.mapping.composite.A;
-import com.buschmais.xo.neo4j.test.mapping.composite.B;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.junit.Assert.assertThat;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
+import com.buschmais.xo.neo4j.test.mapping.composite.A;
+import com.buschmais.xo.neo4j.test.mapping.composite.B;
 
 @RunWith(Parameterized.class)
 public class CollectionPropertyMappingTest extends AbstractNeo4jXOManagerTest {
@@ -93,8 +94,8 @@ public class CollectionPropertyMappingTest extends AbstractNeo4jXOManagerTest {
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         assertThat(listOfB.size(), equalTo(2));
-        assertThat(a.getListOfB().get(0),equalTo(b1));
-        assertThat(a.getListOfB().get(1),equalTo(b2));
+        assertThat(a.getListOfB(), hasItem(b1));
+        assertThat(a.getListOfB(), hasItem(b2));
         xoManager.currentTransaction().commit();
     }
 
