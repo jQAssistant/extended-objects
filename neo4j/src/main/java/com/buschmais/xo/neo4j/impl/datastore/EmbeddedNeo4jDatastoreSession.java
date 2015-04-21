@@ -1,20 +1,15 @@
 package com.buschmais.xo.neo4j.impl.datastore;
 
+import java.lang.annotation.Annotation;
+import java.util.*;
+
+import org.neo4j.graphdb.*;
+
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.cypher.javacompat.ExecutionResult;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.ResourceIterator;
-import org.neo4j.graphdb.Transaction;
-
-import java.lang.annotation.Annotation;
-import java.util.*;
 
 public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<GraphDatabaseService> {
 
@@ -62,12 +57,10 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
     }
 
     private final DatastoreTransaction datastoreTransaction;
-    private final ExecutionEngine executionEngine;
 
     public EmbeddedNeo4jDatastoreSession(GraphDatabaseService graphDatabaseService) {
         super(graphDatabaseService);
         datastoreTransaction = new EmbeddedNeo4jDatastoreTransaction();
-        executionEngine = new ExecutionEngine(graphDatabaseService);
     }
 
     @Override
@@ -92,19 +85,18 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
 
         @Override
         public ResultIterator<Map<String, Object>> execute(String expression, Map<String, Object> parameters) {
-            ExecutionResult executionResult = executionEngine.execute(expression, translateParameters(parameters));
-            final ResourceIterator<Map<String, Object>> resourceIterator = executionResult.iterator();
+            Result executionResult = getGraphDatabaseService().execute(expression, translateParameters(parameters));
             final List<String> columns = executionResult.columns();
             return new ResultIterator<Map<String, Object>>() {
 
                 @Override
                 public boolean hasNext() {
-                    return resourceIterator.hasNext();
+                    return executionResult.hasNext();
                 }
 
                 @Override
                 public Map<String, Object> next() {
-                    Map<String, Object> next = resourceIterator.next();
+                    Map<String, Object> next = executionResult.next();
                     Map<String, Object> result = new LinkedHashMap<>(next.size(), 1);
                     for (String column : columns) {
                         result.put(column, next.get(column));
@@ -119,7 +111,7 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
 
                 @Override
                 public void close() {
-                    resourceIterator.close();
+                    executionResult.close();
                 }
             };
         }
