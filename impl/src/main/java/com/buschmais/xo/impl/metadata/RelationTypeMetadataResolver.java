@@ -1,12 +1,5 @@
 package com.buschmais.xo.impl.metadata;
 
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
@@ -17,6 +10,13 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 import com.buschmais.xo.spi.reflection.AnnotatedType;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
 
 /**
  * Allows resolving types from relation discriminators as provided by the
@@ -92,14 +92,13 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
             RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators) {
         TypeMetadataSet<RelationTypeMetadata<RelationMetadata>> types = new TypeMetadataSet<>();
         Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>> relations = relationMappings.get(discriminator);
-        if (relations == null) {
-            throw new XOException("Cannot resolve relation from discriminator '" + discriminator + "'");
-        }
-        for (RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator> relation : relations) {
-            Set<EntityDiscriminator> source = relation.getSource();
-            Set<EntityDiscriminator> target = relation.getTarget();
-            if (sourceDiscriminators.containsAll(source) && targetDiscriminators.containsAll(target)) {
-                types.add(relation.getRelationType());
+        if (relations != null) {
+            for (RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator> relation : relations) {
+                Set<EntityDiscriminator> source = relation.getSource();
+                Set<EntityDiscriminator> target = relation.getTarget();
+                if (sourceDiscriminators.containsAll(source) && targetDiscriminators.containsAll(target)) {
+                    types.add(relation.getRelationType());
+                }
             }
         }
         return types;
