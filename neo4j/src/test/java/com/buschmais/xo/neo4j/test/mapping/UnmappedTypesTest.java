@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -38,7 +39,7 @@ public class UnmappedTypesTest extends AbstractNeo4jXOManagerTest {
         CompositeObject x = compositeRowObject.get("x", CompositeObject.class);
         assertThat(x.getDelegate(), instanceOf(Node.class));
         CompositeObject y = compositeRowObject.get("y", CompositeObject.class);
-        assertThat(y.getDelegate(), instanceOf(Node.class));
+        assertThat(y.getDelegate(), instanceOf(Relationship.class));
         CompositeObject z = compositeRowObject.get("z", CompositeObject.class);
         assertThat(z.getDelegate(), instanceOf(Node.class));
         xoManager.currentTransaction().commit();
