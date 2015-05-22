@@ -10,7 +10,7 @@
     <name>eXtended Objects - Neo4j Binding</name>
 
     <properties>
-        <org.neo4j_version>2.2.1</org.neo4j_version>
+        <org.neo4j_version>2.2.2</org.neo4j_version>
     </properties>
 
     <repositories>

@@ -68,7 +68,7 @@
             <id>QA</id>
             <properties>
                 <jqassistant.version>1.0.0-RC1</jqassistant.version>
-                <org.neo4j_version>2.2.0</org.neo4j_version>
+                <org.neo4j_version>2.2.2</org.neo4j_version>
             </properties>
             <build>
                 <plugins>
