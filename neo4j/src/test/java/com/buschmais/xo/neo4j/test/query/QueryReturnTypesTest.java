@@ -5,6 +5,7 @@ import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.query.composite.A;
 import com.buschmais.xo.neo4j.test.query.composite.InstanceByValue;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,7 @@ import org.junit.runners.Parameterized;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Map;
 
 import static com.buschmais.xo.api.Query.Result;
 import static org.hamcrest.Matchers.equalTo;
@@ -55,6 +57,15 @@ public class QueryReturnTypesTest extends AbstractNeo4jXOManagerTest {
         xoManager.currentTransaction().begin();
         Result<A> result = xoManager.createQuery("match (a:A) return a", A.class).execute();
         assertThat(result.getSingleResult(), equalTo(a));
+        xoManager.currentTransaction().commit();
+    }
+    
+    @Test
+    public void cypherWithJsonReturnType() {
+        XOManager xoManager = getXoManager();
+        xoManager.currentTransaction().begin();
+        Result<Map> result = xoManager.createQuery("match (a:A) return {node: a}", Map.class).execute();
+        assertThat(result.getSingleResult().get("node"), equalTo(a));
         xoManager.currentTransaction().commit();
     }
 

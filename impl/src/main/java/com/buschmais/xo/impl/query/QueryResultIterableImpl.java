@@ -12,6 +12,7 @@ import com.buschmais.xo.spi.metadata.CompositeTypeBuilder;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.Map.Entry;
 
 class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterable<T> implements Query.Result<T> {
 
@@ -80,6 +81,8 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
                     decodedValue = decodeIterable((Iterable<?>) value, new ArrayList<>());
                 } else if (value instanceof Set<?>) {
                     decodedValue = decodeIterable((Iterable<?>) value, new HashSet<>());
+                } else if (value instanceof Map<?, ?>) {
+                    decodedValue = decodeMap((Map<?, ?>) value, new HashMap<>());
                 } else if (value instanceof Iterable<?>) {
                     decodedValue = decodeIterable((Iterable<?>) value, new ArrayList<>());
                 } else {
@@ -94,6 +97,15 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
                 }
                 return decodedCollection;
             }
+            
+            private Map<Object, Object> decodeMap(Map<?, ?> map, Map<Object, Object> decodedMap) {
+            	for(Entry<?, ?> entry : map.entrySet()){
+            		decodedMap.put(decodeValue(entry.getKey()), decodeValue(entry.getValue()));
+            	}
+            	
+                return decodedMap;
+            }
+
 
             @Override
             public void close() {
