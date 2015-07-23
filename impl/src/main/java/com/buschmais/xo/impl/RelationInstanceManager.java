@@ -27,6 +27,9 @@ public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Re
 
     @Override
     public RelationId getDatastoreId(Relation relation) {
+        if (relation == null) {
+            throw new XOException("No relation provided.");
+        }
         return sessionContext.getDatastoreSession().getDatastoreRelationManager().getRelationId(relation);
     }
 

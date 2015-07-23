@@ -1,6 +1,18 @@
 package com.buschmais.xo.impl;
 
-import com.buschmais.xo.api.*;
+import javax.validation.Validation;
+import javax.validation.ValidationException;
+import javax.validation.ValidatorFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.buschmais.xo.api.ConcurrencyMode;
+import com.buschmais.xo.api.Transaction;
+import com.buschmais.xo.api.ValidationMode;
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.metadata.MetadataProviderImpl;
 import com.buschmais.xo.impl.plugin.PluginRepositoryManager;
@@ -11,12 +23,6 @@ import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.reflection.ClassHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.validation.Validation;
-import javax.validation.ValidationException;
-import javax.validation.ValidatorFactory;
 
 public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata> implements XOManagerFactory {
 
@@ -70,8 +76,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
         try {
             return Validation.buildDefaultValidatorFactory();
         } catch (ValidationException e) {
-            LOGGER.debug("Cannot find validation provider.", e);
-            LOGGER.info("No JSR 303 Bean Validation provider available.");
+            LOGGER.debug("No JSR 303 Bean Validation provider available.", e);
         }
         return null;
     }
