@@ -65,14 +65,14 @@
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-kernel</artifactId>
             <classifier>tests</classifier>
-            <version>2.2.2</version>
+            <version>${org.neo4j_version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-io</artifactId>
             <classifier>tests</classifier>
-            <version>2.2.2</version>
+            <version>${org.neo4j_version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
