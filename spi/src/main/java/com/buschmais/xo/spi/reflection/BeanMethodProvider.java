@@ -12,6 +12,38 @@ import java.util.*;
  */
 public final class BeanMethodProvider {
 
+    enum PropertyMethod {
+
+        SET {
+            @Override
+            boolean matches(Class<?>[] parameterTypes, Class<?> returnType) {
+                return parameterTypes.length == 1 && void.class.equals(returnType);
+            }
+        },
+        GET {
+            @Override
+            boolean matches(Class<?>[] parameterTypes, Class<?> returnType) {
+                return parameterTypes.length == 0 && !void.class.equals(returnType);
+            }
+        },
+        IS {
+            @Override
+            boolean matches(Class<?>[] parameterTypes, Class<?> returnType) {
+                return parameterTypes.length == 0 && !void.class.equals(returnType);
+            }
+        };
+
+        abstract boolean matches(Class<?>[] parameterTypes, Class<?> returnType);
+
+        public boolean matches(Method method) {
+            return method.getName().startsWith(name().toLowerCase()) && matches(method.getParameterTypes(), method.getReturnType());
+        }
+
+        String getName(Method method) {
+            return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, method.getName().substring(name().length()));
+        }
+    }
+
     private final Class<?> type;
     private final Set<Method> methods = new HashSet<>();
     private final Map<String, Method> getters = new HashMap<>();
@@ -42,25 +74,28 @@ public final class BeanMethodProvider {
      */
     public Collection<AnnotatedMethod> getMethods() {
         for (Method method : type.getDeclaredMethods()) {
-            String methodName = method.getName();
-            Class<?> returnType = method.getReturnType();
-            Type genericReturnType = method.getGenericReturnType();
-            Class<?>[] parameterTypes = method.getParameterTypes();
-            Type[] genericParameterTypes = method.getGenericParameterTypes();
-            if (methodName.startsWith("get") && parameterTypes.length == 0 && !void.class.equals(returnType)) {
-                String name = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, methodName.substring(3));
-                getters.put(name, method);
-                addType(type, name, returnType, genericReturnType);
-            } else if (methodName.startsWith("is") && parameterTypes.length == 0 && !void.class.equals(returnType)) {
-                String name = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, methodName.substring(2));
-                getters.put(name, method);
-                addType(type, name, returnType, genericReturnType);
-            } else if (methodName.startsWith("set") && parameterTypes.length == 1 && void.class.equals(returnType) && methodName.startsWith("set")) {
-                String name = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, methodName.substring(3));
-                setters.put(name, method);
-                addType(type, name, parameterTypes[0], genericParameterTypes[0]);
-            } else {
-                methods.add(method);
+            // only consider methods which have been explicitly declared in the
+            // interface
+            if (!method.isSynthetic()) {
+                Class<?> returnType = method.getReturnType();
+                Type genericReturnType = method.getGenericReturnType();
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                Type[] genericParameterTypes = method.getGenericParameterTypes();
+                if (PropertyMethod.GET.matches(method)) {
+                    String name = PropertyMethod.GET.getName(method);
+                    getters.put(name, method);
+                    addType(type, name, returnType, genericReturnType);
+                } else if (PropertyMethod.IS.matches(method)) {
+                    String name = PropertyMethod.IS.getName(method);
+                    getters.put(name, method);
+                    addType(type, name, returnType, genericReturnType);
+                } else if (PropertyMethod.SET.matches(method)) {
+                    String name = PropertyMethod.SET.getName(method);
+                    setters.put(name, method);
+                    addType(type, name, parameterTypes[0], genericParameterTypes[0]);
+                } else {
+                    methods.add(method);
+                }
             }
         }
         List<AnnotatedMethod> typeMethods = new ArrayList<>();
