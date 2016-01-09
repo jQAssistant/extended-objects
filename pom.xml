@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.buschmais.xo</groupId>
     <artifactId>xo.parent</artifactId>
-    <version>0.6.1</version>
+    <version>0.6.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>eXtended Objects</name>
@@ -26,8 +26,7 @@
         <connection>scm:git:git://github.com/buschmais/extended-objects.git</connection>
         <developerConnection>scm:git:git@github.com:buschmais/extended-objects.git</developerConnection>
         <url>https://github.com/buschmais/extended-objects</url>
-      <tag>0.6.1</tag>
-  </scm>
+    </scm>
 
     <ciManagement>
         <url>https://travis-ci.org/buschmais/extended-objects</url>
