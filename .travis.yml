@@ -1,10 +1,14 @@
 sudo: false
+
 language: java
+
 jdk: oraclejdk8
-notifications:
-  webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/b4ed54ce3018e1d6d32e
-    on_success: change  # options: [always|never|change] default: always
-    on_failure: always  # options: [always|never|change] default: always
-    on_start: false     # default: false
+
+after_success:
+  - test "${TRAVIS_PULL_REQUEST}" == "false" && test "${TRAVIS_TAG}" != "" && mvn deploy --settings build/travis-ci/settings.xml
+
+env:
+  global:
+  - secure: "goHB05JDWZCvOOGxk+DlYwmHVDgmdZTSrkJ7fTaZLcFrQGaMaYksAzfmNUpQct0PF6pZh/+bwjOlsrUpNfX3Ab3SyA3EM5aVZyL1lKc31fWEXVxrGxoMMV+w0A8xyHXI9SqzZNLkTsn8utvtdJNvvquVpyT97azs9k0hPm2eoRY="
+  - secure: "epF4786ydR5iubK7XnbmEkaZIw/t40EI23siRQU2OJ5prMCaEUKoLwoQv249F0SBvodeIFTFnNrMSBZBul96T+y7CQGRuHrVMz70AeudnP9o9hMJeocVIeiGi5p+DV/1t3MVv1Kli+RxnV3T3FFWtRG2EuIkBlKzKm2FPhpgtsQ="
+
