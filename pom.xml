@@ -35,7 +35,7 @@
 
     <distributionManagement>
         <repository>
-            <id>my-bintray-id</id>
+            <id>bintray</id>
             <url>https://api.bintray.com/maven/buschmais/maven/extended-objects;publish=1</url>
         </repository>
         <site>
