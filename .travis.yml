@@ -7,6 +7,11 @@ jdk: oraclejdk8
 after_success:
   - test "${TRAVIS_PULL_REQUEST}" == "false" && test "${TRAVIS_TAG}" != "" && mvn deploy --settings build/travis-ci/settings.xml
 
+branches:
+  only:
+    - master
+    - /^[0-9]+\.[0-9]+\.[0-9]+/
+
 env:
   global:
   - secure: "goHB05JDWZCvOOGxk+DlYwmHVDgmdZTSrkJ7fTaZLcFrQGaMaYksAzfmNUpQct0PF6pZh/+bwjOlsrUpNfX3Ab3SyA3EM5aVZyL1lKc31fWEXVxrGxoMMV+w0A8xyHXI9SqzZNLkTsn8utvtdJNvvquVpyT97azs9k0hPm2eoRY="
