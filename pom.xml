@@ -58,19 +58,16 @@
         <java8.build.outputDirectory>${project.build.directory}/classes-java8</java8.build.outputDirectory>
         <github.global.server>github</github.global.server>
         <org_asciidoctor.version>1.5.0</org_asciidoctor.version>
-        <org.neo4j_version>2.3.0</org.neo4j_version>
+        <org.neo4j_version>2.3.1</org.neo4j_version>
 
         <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
+        <jqassistant.version>1.1.1</jqassistant.version>
     </properties>
 
     <profiles>
         <profile>
             <id>QA</id>
-            <properties>
-                <jqassistant.version>1.0.0-RC1</jqassistant.version>
-                <org.neo4j_version>2.2.5</org.neo4j_version>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -79,19 +76,11 @@
                         <version>${jqassistant.version}</version>
                         <executions>
                             <execution>
-                                <id>scan</id>
+                                <id>default</id>
                                 <goals>
                                     <goal>scan</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>analyze</id>
-                                <goals>
                                     <goal>analyze</goal>
                                 </goals>
-                                <configuration>
-                                    <failOnConstraintViolations>false</failOnConstraintViolations>
-                                </configuration>
                             </execution>
                         </executions>
                         <dependencies>
