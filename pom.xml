@@ -27,7 +27,7 @@
         <developerConnection>scm:git:git@github.com:buschmais/extended-objects.git</developerConnection>
         <url>https://github.com/buschmais/extended-objects</url>
       <tag>HEAD</tag>
-  </scm>
+    </scm>
 
     <ciManagement>
         <url>https://travis-ci.org/buschmais/extended-objects</url>
