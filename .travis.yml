@@ -8,7 +8,7 @@ after_success:
   - test "${TRAVIS_PULL_REQUEST}" == "false" && test "${TRAVIS_TAG}" != "" && mvn deploy --settings build/travis-ci/settings.xml
 
 before_script:
-  - export
+  - echo "TRAVIS_TAG $TRAVIS_TAG"
 
 branches:
   only:
