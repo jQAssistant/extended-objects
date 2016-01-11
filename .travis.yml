@@ -7,7 +7,6 @@ branches:
   only:
   - master
   - "/^[0-9]+\\.[0-9]+\\.[0-9]+/"
-  - travis-bintray
 env:
   global:
   - secure: EvV6T5hI6B7K8qTICGhgDXP1c9cm/oK6DWbCRBZFmJ/gesJyXlOl96AgHnigXkuq8gmLBBrnucaL8bU95a5rc72mrPImmvlwHQjMAw8U4OK0andHXBOanXK9Hbgf5w+p3oHu+iHOkN5tSq9n+1HXN6MMXygxgfvXPWPVUdx0jhQ=
