@@ -87,10 +87,10 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
         IndexDefinition index = findIndex(label, propertyMetadata.getName());
         if (index == null) {
             if (unique) {
-                LOGGER.info("Creating constraint for label {} on property '{}'.", label, propertyMetadata.getName());
+                LOGGER.debug("Creating constraint for label {} on property '{}'.", label, propertyMetadata.getName());
                 graphDatabaseService.schema().constraintFor(label).assertPropertyIsUnique(propertyMetadata.getName()).create();
             } else {
-                LOGGER.info("Creating index for label {} on property '{}'.", label, propertyMetadata.getName());
+                LOGGER.debug("Creating index for label {} on property '{}'.", label, propertyMetadata.getName());
                 graphDatabaseService.schema().indexFor(label).on(propertyMetadata.getName()).create();
             }
         }
