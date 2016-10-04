@@ -1,5 +1,6 @@
 package com.buschmais.xo.neo4j.api;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -22,7 +23,7 @@ public class FileDatastoreFactory implements DatastoreFactory<EmbeddedNeo4jDatas
         } catch (UnsupportedEncodingException e) {
             throw new MalformedURLException(e.getMessage());
         }
-        GraphDatabaseBuilder databaseBuilder = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(path);
+        GraphDatabaseBuilder databaseBuilder = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(new File(path));
         Properties neo4jProperties = Neo4jPropertyHelper.getNeo4jProperties(properties);
         for (String name : neo4jProperties.stringPropertyNames()) {
             databaseBuilder.setConfig(name, neo4jProperties.getProperty(name));

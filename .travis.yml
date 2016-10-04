@@ -1,13 +1,3 @@
 sudo: false
 language: java
 jdk: oraclejdk8
-after_success:
-- test "${TRAVIS_PULL_REQUEST}" == "false" && test "${TRAVIS_TAG}" != "" && mvn deploy --settings build/travis-ci/settings.xml
-branches:
-  only:
-  - master
-  - "/^[0-9]+\\.[0-9]+\\.[0-9]+/"
-env:
-  global:
-  - secure: EvV6T5hI6B7K8qTICGhgDXP1c9cm/oK6DWbCRBZFmJ/gesJyXlOl96AgHnigXkuq8gmLBBrnucaL8bU95a5rc72mrPImmvlwHQjMAw8U4OK0andHXBOanXK9Hbgf5w+p3oHu+iHOkN5tSq9n+1HXN6MMXygxgfvXPWPVUdx0jhQ=
-  - secure: b961JrzR/lavfb/Q8EndryTYzQsXZ9UfuzSigXhev0InOV4FaJshiNYS5vWOuRvnnkdXvJtLLtHrtKEKcEtmvycU66olMAgrsRwaaNEgQC6cieWdI02CIR8jyaLJY/QpomgUH10l0JnUUo4a1856kSB1Nilqz2lSK1SZ7WOsOW4=

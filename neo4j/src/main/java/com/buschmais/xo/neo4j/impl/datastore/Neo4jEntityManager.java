@@ -11,7 +11,10 @@ import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.ResourceIterator;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -89,9 +92,8 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
         }
         PropertyMetadata propertyMetadata = propertyMethodMetadata.getDatastoreMetadata();
         Object value = entry.getValue();
-        ResourceIterable<Node> nodesByLabelAndProperty = graphDatabaseService.findNodesByLabelAndProperty(discriminator,
+        ResourceIterator<Node> iterator = graphDatabaseService.findNodes(discriminator,
                 propertyMetadata.getName(), value);
-        final ResourceIterator<Node> iterator = nodesByLabelAndProperty.iterator();
         return new ResultIterator<Node>() {
             @Override
             public boolean hasNext() {

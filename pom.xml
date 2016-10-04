@@ -34,9 +34,15 @@
     </ciManagement>
 
     <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
         <repository>
-            <id>bintray</id>
-            <url>https://api.bintray.com/maven/buschmais/maven/extended-objects;publish=1</url>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
         <site>
             <id>github-pages-site</id>
@@ -57,15 +63,45 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java8.build.outputDirectory>${project.build.directory}/classes-java8</java8.build.outputDirectory>
         <github.global.server>github</github.global.server>
-        <org_asciidoctor.version>1.5.0</org_asciidoctor.version>
-        <org.neo4j_version>2.3.1</org.neo4j_version>
+        <org_asciidoctor.version>1.5.3</org_asciidoctor.version>
+        <org.neo4j_version>2.3.7</org.neo4j_version>
 
         <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
-        <jqassistant.version>1.1.1</jqassistant.version>
+        <jqassistant.version>1.1.3</jqassistant.version>
     </properties>
 
     <profiles>
+        <profile>
+            <id>release</id>
+            <!--
+              ! This profile is automatically activated by using maven-release-plugin:perfom.
+              ! So this mean signing of artifacts is only done in case of running a release.
+            -->
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>QA</id>
             <build>
@@ -317,7 +353,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -343,12 +379,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.1</version>
+                <version>2.10.4</version>
                 <executions>
                     <execution>
                         <id>attach-javadoc</id>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>javadoc-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>

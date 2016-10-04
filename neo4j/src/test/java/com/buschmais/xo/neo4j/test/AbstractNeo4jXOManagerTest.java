@@ -1,29 +1,32 @@
 package com.buschmais.xo.neo4j.test;
 
-import static com.buschmais.xo.neo4j.test.Neo4jDatabase.MEMORY;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.kernel.GraphDatabaseAPI;
-import org.neo4j.server.WrappingNeoServer;
-import org.neo4j.test.TestGraphDatabaseFactory;
-
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.test.AbstractXOManagerTest;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.kernel.GraphDatabaseDependencies;
+import org.neo4j.kernel.configuration.Config;
+import org.neo4j.kernel.impl.factory.GraphDatabaseFacade;
+import org.neo4j.logging.NullLogProvider;
+import org.neo4j.server.CommunityNeoServer;
+import org.neo4j.test.TestGraphDatabaseFactory;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import static com.buschmais.xo.neo4j.test.Neo4jDatabase.MEMORY;
+import static org.neo4j.server.database.Database.Factory;
 
 public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
 
-    private static WrappingNeoServer server;
+    private static CommunityNeoServer server;
 
     protected AbstractNeo4jXOManagerTest(XOUnit xoUnit) {
         super(xoUnit);
@@ -31,13 +34,49 @@ public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
 
     @BeforeClass
     public static void startServer() {
-        GraphDatabaseService graphDatabaseService = new TestGraphDatabaseFactory().newImpermanentDatabase();
-        server = new WrappingNeoServer((GraphDatabaseAPI) graphDatabaseService);
+        GraphDatabaseService databaseService = new TestGraphDatabaseFactory().newImpermanentDatabase();
+        Factory factory = (config, dependencies) -> new org.neo4j.server.database.Database() {
+            @Override
+            public String getLocation() {
+                return "mem";
+            }
+
+            @Override
+            public GraphDatabaseFacade getGraph() {
+                return (GraphDatabaseFacade) databaseService;
+            }
+
+            @Override
+            public boolean isRunning() {
+                return true;
+            }
+
+            @Override
+            public void init() throws Throwable {
+
+            }
+
+            @Override
+            public void start() throws Throwable {
+
+            }
+
+            @Override
+            public void stop() throws Throwable {
+
+            }
+
+            @Override
+            public void shutdown() throws Throwable {
+                databaseService.shutdown();
+            }
+        };
+        server = new CommunityNeoServer(new Config(), factory, GraphDatabaseDependencies.newDependencies(), NullLogProvider.getInstance());
         server.start();
     }
 
     protected static Collection<Object[]> xoUnits(Class<?>... types) {
-        return xoUnits(Arrays.asList(MEMORY), Arrays.asList(types), Collections.<Class<?>> emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED,
+        return xoUnits(Arrays.asList(MEMORY), Arrays.asList(types), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED,
                 Transaction.TransactionAttribute.NONE);
     }
 

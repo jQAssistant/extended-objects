@@ -45,7 +45,7 @@ public class CustomQueryLanguagePlugin implements QueryLanguagePlugin<CustomQuer
                     String key = matcher.group(2);
                     String value = matcher.group(3);
                     final ResourceIterator<Node> iterator = ((Neo4jDatastoreSession<?>) session).getGraphDatabaseService()
-                            .findNodesByLabelAndProperty(DynamicLabel.label(label), key, value).iterator();
+                            .findNodes(DynamicLabel.label(label), key, value);
                     return new ResultIterator<Map<String, Object>>() {
                         @Override
                         public void close() {

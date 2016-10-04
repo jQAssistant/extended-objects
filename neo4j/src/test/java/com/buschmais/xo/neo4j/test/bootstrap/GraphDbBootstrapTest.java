@@ -32,8 +32,7 @@ public class GraphDbBootstrapTest {
         xoManager.close();
         xoManagerFactory.close();
         try (Transaction transaction = graphDatabaseService.beginTx()) {
-            ResourceIterable<Node> nodes = graphDatabaseService.findNodesByLabelAndProperty(label("A"), "name", "Test");
-            ResourceIterator<Node> iterator = nodes.iterator();
+            ResourceIterator<Node> iterator = graphDatabaseService.findNodes(label("A"), "name", "Test");
             assertThat(iterator.hasNext(), equalTo(true));
             Node node = iterator.next();
             assertThat(node.hasLabel(label("A")), equalTo(true));
