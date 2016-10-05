@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.buschmais.xo</groupId>
     <artifactId>xo.parent</artifactId>
-    <version>0.7</version>
+    <version>0.8.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>eXtended Objects</name>
@@ -26,7 +26,7 @@
         <connection>scm:git:git://github.com/buschmais/extended-objects.git</connection>
         <developerConnection>scm:git:git@github.com:buschmais/extended-objects.git</developerConnection>
         <url>https://github.com/buschmais/extended-objects</url>
-      <tag>0.7</tag>
+      <tag>HEAD</tag>
     </scm>
 
     <ciManagement>
