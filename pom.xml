@@ -384,7 +384,7 @@
                     <execution>
                         <id>attach-javadoc</id>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>javadoc-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
