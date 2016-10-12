@@ -9,5 +9,5 @@ import org.neo4j.graphdb.Label;
 /**
  * Base interface for Neoj datastores.
  */
-public interface Neo4jDatastore<DS extends Neo4jDatastoreSession> extends Datastore<DS, NodeMetadata, Label, RelationshipMetadata, RelationshipType> {
+public interface Neo4jDatastore<DS extends Neo4jDatastoreSession> extends Datastore<DS, NodeMetadata, Neo4jLabel, RelationshipMetadata, RelationshipType> {
 }

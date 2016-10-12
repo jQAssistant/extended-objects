@@ -2,6 +2,7 @@ package com.buschmais.xo.neo4j.impl.datastore;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
+import com.buschmais.xo.neo4j.api.Neo4jLabel;
 import com.buschmais.xo.neo4j.api.Neo4jRepository;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
@@ -42,7 +43,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public DatastoreEntityManager<Long, Node, NodeMetadata, Label, PropertyMetadata> getDatastoreEntityManager() {
+    public DatastoreEntityManager<Long, Node, NodeMetadata, Neo4jLabel, PropertyMetadata> getDatastoreEntityManager() {
         return entityManager;
     }
 

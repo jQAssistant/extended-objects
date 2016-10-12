@@ -1,12 +1,7 @@
 package com.buschmais.xo.neo4j.impl.datastore;
 
-import com.buschmais.xo.neo4j.impl.datastore.metadata.IndexedPropertyMetadata;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
-import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
+import java.util.Map;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Transaction;
@@ -14,7 +9,14 @@ import org.neo4j.graphdb.schema.IndexDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+import com.buschmais.xo.neo4j.api.Neo4jLabel;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.IndexedPropertyMetadata;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
+import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
+import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
+import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 
 /**
  * Abstract base implementation for embedded graph stores.
@@ -65,7 +67,7 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
         if (indexedProperty != null) {
             IndexedPropertyMetadata datastoreMetadata = indexedProperty.getDatastoreMetadata();
             if (datastoreMetadata.isCreate()) {
-                Label label = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
+                Neo4jLabel label = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
                 PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
                 if (label != null && propertyMethodMetadata != null) {
                     ensureIndex(label, propertyMethodMetadata, datastoreMetadata.isUnique());
@@ -82,16 +84,16 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
      * @param propertyMethodMetadata
      *            The property metadata.
      */
-    private void ensureIndex(Label label, PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata, boolean unique) {
+    private void ensureIndex(Neo4jLabel label, PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata, boolean unique) {
         PropertyMetadata propertyMetadata = propertyMethodMetadata.getDatastoreMetadata();
-        IndexDefinition index = findIndex(label, propertyMetadata.getName());
+        IndexDefinition index = findIndex(label.getLabel(), propertyMetadata.getName());
         if (index == null) {
             if (unique) {
                 LOGGER.debug("Creating constraint for label {} on property '{}'.", label, propertyMetadata.getName());
-                graphDatabaseService.schema().constraintFor(label).assertPropertyIsUnique(propertyMetadata.getName()).create();
+                graphDatabaseService.schema().constraintFor(label.getLabel()).assertPropertyIsUnique(propertyMetadata.getName()).create();
             } else {
                 LOGGER.debug("Creating index for label {} on property '{}'.", label, propertyMetadata.getName());
-                graphDatabaseService.schema().indexFor(label).on(propertyMetadata.getName()).create();
+                graphDatabaseService.schema().indexFor(label.getLabel()).on(propertyMetadata.getName()).create();
             }
         }
     }

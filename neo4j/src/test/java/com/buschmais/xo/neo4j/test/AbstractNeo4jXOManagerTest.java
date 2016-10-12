@@ -1,28 +1,27 @@
 package com.buschmais.xo.neo4j.test;
 
-import com.buschmais.xo.api.ConcurrencyMode;
-import com.buschmais.xo.api.Transaction;
-import com.buschmais.xo.api.ValidationMode;
-import com.buschmais.xo.api.XOManager;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.test.AbstractXOManagerTest;
+import static com.buschmais.xo.neo4j.test.Neo4jDatabase.MEMORY;
+import static org.neo4j.server.database.Database.Factory;
+
+import java.util.*;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.kernel.GraphDatabaseDependencies;
 import org.neo4j.kernel.configuration.Config;
 import org.neo4j.kernel.impl.factory.GraphDatabaseFacade;
+import org.neo4j.logging.FormattedLogProvider;
 import org.neo4j.logging.NullLogProvider;
 import org.neo4j.server.CommunityNeoServer;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import static com.buschmais.xo.neo4j.test.Neo4jDatabase.MEMORY;
-import static org.neo4j.server.database.Database.Factory;
+import com.buschmais.xo.api.ConcurrencyMode;
+import com.buschmais.xo.api.Transaction;
+import com.buschmais.xo.api.ValidationMode;
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.test.AbstractXOManagerTest;
 
 public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
 
@@ -71,16 +70,24 @@ public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
                 databaseService.shutdown();
             }
         };
-        server = new CommunityNeoServer(new Config(), factory, GraphDatabaseDependencies.newDependencies(), NullLogProvider.getInstance());
+        Map<String, String> opts = new HashMap<>();
+        opts.put("dbms.connector.http.type", "HTTP");
+        opts.put("dbms.connector.http.enabled", "true");
+        Config defaults = new Config(opts);
+        FormattedLogProvider logProvider = FormattedLogProvider.toOutputStream(System.out);
+        GraphDatabaseDependencies graphDatabaseDependencies = GraphDatabaseDependencies.newDependencies().userLogProvider(logProvider);
+        server = new CommunityNeoServer(defaults, graphDatabaseDependencies, logProvider);
+        //server = new CommunityNeoServer(Config.empty(), factory, GraphDatabaseDependencies.newDependencies(), NullLogProvider.getInstance());
         server.start();
     }
 
     protected static Collection<Object[]> xoUnits(Class<?>... types) {
-        return xoUnits(Arrays.asList(MEMORY), Arrays.asList(types), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED,
+        return xoUnits(Arrays.asList(MEMORY), Arrays.asList(types), Collections.<Class<?>> emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED,
                 Transaction.TransactionAttribute.NONE);
     }
 
-    protected static Collection<Object[]> xoUnits(List<? extends Class<?>> types, List<? extends Class<?>> instanceListeners, ValidationMode validationMode, ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
+    protected static Collection<Object[]> xoUnits(List<? extends Class<?>> types, List<? extends Class<?>> instanceListeners, ValidationMode validationMode,
+            ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
         return xoUnits(Arrays.asList(MEMORY), types, instanceListeners, validationMode, concurrencyMode, transactionAttribute);
     }
 

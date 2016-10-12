@@ -1,22 +1,22 @@
 package com.buschmais.xo.neo4j.impl.datastore.metadata;
 
+import com.buschmais.xo.neo4j.api.Neo4jLabel;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
-import org.neo4j.graphdb.Label;
 
-public class NodeMetadata implements DatastoreEntityMetadata<Label> {
+public class NodeMetadata implements DatastoreEntityMetadata<Neo4jLabel> {
 
-    private final Label label;
+    private final Neo4jLabel label;
 
     private final IndexedPropertyMethodMetadata<IndexedPropertyMetadata> usingIndexedPropertyOf;
 
-    public NodeMetadata(Label label, IndexedPropertyMethodMetadata<IndexedPropertyMetadata> usingIndexedPropertyOf) {
+    public NodeMetadata(Neo4jLabel label, IndexedPropertyMethodMetadata<IndexedPropertyMetadata> usingIndexedPropertyOf) {
         this.label = label;
         this.usingIndexedPropertyOf = usingIndexedPropertyOf;
     }
 
     @Override
-    public Label getDiscriminator() {
+    public Neo4jLabel getDiscriminator() {
         return label;
     }
 

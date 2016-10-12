@@ -5,6 +5,7 @@ import java.util.Map;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
 
+import com.buschmais.xo.neo4j.api.Neo4jLabel;
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Property;
@@ -20,21 +21,22 @@ import com.buschmais.xo.spi.reflection.PropertyMethod;
 import com.google.common.base.CaseFormat;
 
 /**
- * {@link com.buschmais.xo.spi.datastore.DatastoreMetadataFactory} implementation for Neo4j datastores.
+ * {@link com.buschmais.xo.spi.datastore.DatastoreMetadataFactory}
+ * implementation for Neo4j datastores.
  */
-public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, org.neo4j.graphdb.Label, RelationshipMetadata, RelationshipType> {
+public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, Neo4jLabel, RelationshipMetadata, RelationshipType> {
 
     @Override
     public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
         Label labelAnnotation = annotatedType.getAnnotation(Label.class);
-        org.neo4j.graphdb.Label label = null;
+        Neo4jLabel label = null;
         IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedProperty = null;
         if (labelAnnotation != null) {
             String value = labelAnnotation.value();
             if (Label.DEFAULT_VALUE.equals(value)) {
                 value = annotatedType.getName();
             }
-            label = DynamicLabel.label(value);
+            label = new Neo4jLabel(value);
             Class<?> usingIndexOf = labelAnnotation.usingIndexedPropertyOf();
             if (!Object.class.equals(usingIndexOf)) {
                 TypeMetadata typeMetadata = metadataByType.get(usingIndexOf);

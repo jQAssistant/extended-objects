@@ -1,7 +1,17 @@
 package com.buschmais.xo.neo4j.impl.datastore;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.ResourceIterator;
+
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.neo4j.api.Neo4jLabel;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
@@ -11,23 +21,17 @@ import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterator;
-
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
- * Implementation of a {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager} for Neo4j.
+ * Implementation of a
+ * {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager} for Neo4j.
  */
-public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> implements DatastoreEntityManager<Long, Node, NodeMetadata, Label, PropertyMetadata> {
+public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node>
+        implements DatastoreEntityManager<Long, Node, NodeMetadata, Neo4jLabel, PropertyMetadata> {
 
     private final GraphDatabaseService graphDatabaseService;
 
-    private final Cache<Long, Set<Label>> labelCache;
+    private final Cache<Long, Set<Neo4jLabel>> labelCache;
 
     public Neo4jEntityManager(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
@@ -40,12 +44,12 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
     }
 
     @Override
-    public Set<Label> getEntityDiscriminators(Node node) {
-        Set<Label> labels = labelCache.getIfPresent(node.getId());
+    public Set<Neo4jLabel> getEntityDiscriminators(Node node) {
+        Set<Neo4jLabel> labels = labelCache.getIfPresent(node.getId());
         if (labels == null) {
             labels = new HashSet<>();
             for (Label label : node.getLabels()) {
-                labels.add(label);
+                labels.add(new Neo4jLabel(label));
             }
             labelCache.put(node.getId(), labels);
         }
@@ -58,8 +62,14 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
     }
 
     @Override
-    public Node createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
-        Node node = graphDatabaseService.createNode(discriminators.toArray(new Label[discriminators.size()]));
+    public Node createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Neo4jLabel> discriminators,
+            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
+        Label[] labels = new Label[discriminators.size()];
+        int i = 0;
+        for (Neo4jLabel discriminator : discriminators) {
+            labels[i++] = discriminator.getLabel();
+        }
+        Node node = graphDatabaseService.createNode(labels);
         setProperties(node, example);
         labelCache.put(node.getId(), discriminators);
         return node;
@@ -72,12 +82,13 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
     }
 
     @Override
-    public Node findEntityById(EntityTypeMetadata<NodeMetadata> metadata, Label label, Long id) {
+    public Node findEntityById(EntityTypeMetadata<NodeMetadata> metadata, Neo4jLabel label, Long id) {
         return graphDatabaseService.getNodeById(id);
     }
 
     @Override
-    public ResultIterator<Node> findEntity(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, Label discriminator, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
+    public ResultIterator<Node> findEntity(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, Neo4jLabel discriminator,
+            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
         if (values.size() > 1) {
             throw new XOException("Only one property value is supported for find operation");
         }
@@ -92,8 +103,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
         }
         PropertyMetadata propertyMetadata = propertyMethodMetadata.getDatastoreMetadata();
         Object value = entry.getValue();
-        ResourceIterator<Node> iterator = graphDatabaseService.findNodes(discriminator,
-                propertyMetadata.getName(), value);
+        ResourceIterator<Node> iterator = graphDatabaseService.findNodes(discriminator.getLabel(), propertyMetadata.getName(), value);
         return new ResultIterator<Node>() {
             @Override
             public boolean hasNext() {
@@ -118,31 +128,31 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
     }
 
     @Override
-    public void migrateEntity(Node entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Label> discriminators,
-                              TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> targetTypes, Set<Label> targetDiscriminators) {
-        Set<Label> labelsToRemove = new HashSet<>(discriminators);
+    public void migrateEntity(Node entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Neo4jLabel> discriminators,
+            TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> targetTypes, Set<Neo4jLabel> targetDiscriminators) {
+        Set<Neo4jLabel> labelsToRemove = new HashSet<>(discriminators);
         labelsToRemove.removeAll(targetDiscriminators);
-        for (Label label : labelsToRemove) {
-            entity.removeLabel(label);
+        for (Neo4jLabel label : labelsToRemove) {
+            entity.removeLabel(label.getLabel());
         }
-        Set<Label> labelsToAdd = new HashSet<>(targetDiscriminators);
+        Set<Neo4jLabel> labelsToAdd = new HashSet<>(targetDiscriminators);
         labelsToAdd.removeAll(discriminators);
         addDiscriminators(entity, labelsToAdd);
         labelCache.put(entity.getId(), targetDiscriminators);
     }
 
     @Override
-    public void addDiscriminators(Node node, Set<Label> labels) {
-        for (Label label : labels) {
-            node.addLabel(label);
+    public void addDiscriminators(Node node, Set<Neo4jLabel> labels) {
+        for (Neo4jLabel label : labels) {
+            node.addLabel(label.getLabel());
         }
         labelCache.invalidate(node.getId());
     }
 
     @Override
-    public void removeDiscriminators(Node node, Set<Label> labels) {
-        for (Label label : labels) {
-            node.removeLabel(label);
+    public void removeDiscriminators(Node node, Set<Neo4jLabel> labels) {
+        for (Neo4jLabel label : labels) {
+            node.removeLabel(label.getLabel());
         }
         labelCache.invalidate(node.getId());
     }
@@ -151,6 +161,5 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Node> imple
     public void flushEntity(Node node) {
         labelCache.invalidate(node.getId());
     }
-
 
 }
