@@ -76,8 +76,7 @@ public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
         Config defaults = new Config(opts);
         FormattedLogProvider logProvider = FormattedLogProvider.toOutputStream(System.out);
         GraphDatabaseDependencies graphDatabaseDependencies = GraphDatabaseDependencies.newDependencies().userLogProvider(logProvider);
-        server = new CommunityNeoServer(defaults, graphDatabaseDependencies, logProvider);
-        //server = new CommunityNeoServer(Config.empty(), factory, GraphDatabaseDependencies.newDependencies(), NullLogProvider.getInstance());
+        server = new CommunityNeoServer(defaults, factory, graphDatabaseDependencies, logProvider);
         server.start();
     }
 
