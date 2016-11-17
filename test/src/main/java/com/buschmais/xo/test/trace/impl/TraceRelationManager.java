@@ -64,6 +64,11 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
     }
 
     @Override
+    public void clearRelation(Relation relation) {
+        delegate.clearRelation(relation);
+    }
+
+    @Override
     public boolean hasSingleRelation(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return delegate.hasSingleRelation(source, metadata, direction);
     }

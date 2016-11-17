@@ -113,6 +113,10 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     }
 
     @Override
+    public void clearEntity(ObjectNode jsonNodes) {
+    }
+
+    @Override
     public void setProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPropertyMetadata> metadata, Object value) {
         Class<?> type = metadata.getAnnotatedMethod().getType();
         if (String.class.equals(type)) {

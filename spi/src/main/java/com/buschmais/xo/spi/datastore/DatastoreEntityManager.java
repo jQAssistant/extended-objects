@@ -1,11 +1,11 @@
 package com.buschmais.xo.spi.datastore;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Defines the interface for all entity related datastore operations.
@@ -137,4 +137,11 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      */
     void flushEntity(Entity entity);
 
+    /**
+     * Clear any tracked state for the entity.
+     *
+     * @param entity
+     *            The entity;
+     */
+    void clearEntity(Entity entity);
 }

@@ -37,6 +37,10 @@ public class JsonRelationManager implements DatastoreRelationManager<ObjectNode,
     }
 
     @Override
+    public void clearRelation(JsonRelation jsonRelation) {
+    }
+
+    @Override
     public boolean hasSingleRelation(ObjectNode source, RelationTypeMetadata<JsonRelationMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return false;
     }

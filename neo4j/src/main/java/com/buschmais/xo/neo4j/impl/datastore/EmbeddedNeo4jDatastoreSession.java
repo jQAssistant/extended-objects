@@ -7,6 +7,8 @@ import org.neo4j.graphdb.*;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.neo4j.api.model.Neo4jNode;
+import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
@@ -85,7 +87,7 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
 
         @Override
         public ResultIterator<Map<String, Object>> execute(String expression, Map<String, Object> parameters) {
-            Result executionResult = getGraphDatabaseService().execute(expression, translateParameters(parameters));
+            Result executionResult = getGraphDatabaseService().execute(expression, convertParameters(parameters));
             final List<String> columns = executionResult.columns();
             return new ResultIterator<Map<String, Object>>() {
 
@@ -99,7 +101,7 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
                     Map<String, Object> next = executionResult.next();
                     Map<String, Object> result = new LinkedHashMap<>(next.size(), 1);
                     for (String column : columns) {
-                        result.put(column, next.get(column));
+                        result.put(column, convertValue(next.get(column)));
                     }
                     return result;
                 }
@@ -116,30 +118,14 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
             };
         }
 
-        private Map<String, Object> translateParameters(Map<String, Object> parameters) {
+        private Map<String, Object> convertParameters(Map<String, Object> parameters) {
             Map<String, Object> effectiveParameters = new HashMap<>();
             for (Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
                 Object value = parameterEntry.getValue();
-                value = convertValue(value);
+                value = convertParameter(value);
                 effectiveParameters.put(parameterEntry.getKey(), value);
             }
             return effectiveParameters;
         }
-    }
-
-    private Object convertValue(Object value) {
-        if (value instanceof Node) {
-            return ((Node) value).getId();
-        } else if (value instanceof Relationship) {
-            return ((Relationship) value).getId();
-        } else if (value instanceof Collection) {
-            Collection collection = (Collection) value;
-            List<Object> values = new ArrayList<>();
-            for (Object o : collection) {
-                values.add(convertValue(o));
-            }
-            return values;
-        }
-        return value;
     }
 }

@@ -1,10 +1,9 @@
 package com.buschmais.xo.spi.datastore;
 
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
-
 import java.util.Map;
+
+import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 
 /**
  * Defines the interface for all relation related datastore operations.
@@ -81,6 +80,14 @@ public interface DatastoreRelationManager<Entity, RelationId, Relation, Relation
     void flushRelation(Relation relation);
 
     /**
+     * Clear any tracked state for the relation.
+     * 
+     * @param relation
+     *            The relation;
+     */
+    void clearRelation(Relation relation);
+
+    /**
      * Determine if a single relation (i.e. direct reference) between two
      * entities exists.
      *
@@ -143,4 +150,5 @@ public interface DatastoreRelationManager<Entity, RelationId, Relation, Relation
      * @return The target entity.
      */
     Entity getTo(Relation relation);
+
 }

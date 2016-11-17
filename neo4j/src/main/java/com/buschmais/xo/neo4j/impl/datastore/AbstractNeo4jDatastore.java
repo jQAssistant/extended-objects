@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.impl.datastore;
 
 import com.buschmais.xo.neo4j.api.Neo4jDatastore;
 import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
-import com.buschmais.xo.neo4j.api.Neo4jLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipType;

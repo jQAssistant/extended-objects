@@ -2,12 +2,13 @@ package com.buschmais.xo.neo4j.impl.datastore;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.ResourceIterator;
 
 import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.neo4j.api.Neo4jLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jNode;
+import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipMetadata;
@@ -22,15 +23,16 @@ import com.buschmais.xo.spi.session.XOSession;
 abstract class AbstractNeo4jRepositoryImpl {
 
     private final GraphDatabaseService graphDatabaseService;
-    private final XOSession<Long, Node, NodeMetadata, Neo4jLabel, Long, Relationship, RelationshipMetadata, RelationshipType, PropertyMetadata> xoSession;
+    private final XOSession<Long, Neo4jNode, NodeMetadata, Neo4jLabel, Long, Neo4jRelationship, RelationshipMetadata, RelationshipType, PropertyMetadata> xoSession;
 
     protected AbstractNeo4jRepositoryImpl(GraphDatabaseService graphDatabaseService,
-            XOSession<Long, Node, NodeMetadata, Neo4jLabel, Long, Relationship, RelationshipMetadata, RelationshipType, PropertyMetadata> xoSession) {
+            XOSession<Long, Neo4jNode, NodeMetadata, Neo4jLabel, Long, Neo4jRelationship, RelationshipMetadata, RelationshipType, PropertyMetadata> xoSession) {
         this.graphDatabaseService = graphDatabaseService;
         this.xoSession = xoSession;
     }
 
     protected <T> ResultIterable<T> find(Class<T> type, Object value) {
+        this.xoSession.flush();
         // get the label for the type
         EntityTypeMetadata<NodeMetadata> entityMetadata = xoSession.getEntityMetadata(type);
         Neo4jLabel label = entityMetadata.getDatastoreMetadata().getDiscriminator();
@@ -42,7 +44,7 @@ abstract class AbstractNeo4jRepositoryImpl {
         Object datastoreValue = xoSession.toDatastore(value);
         // find the nodes
         ResourceIterator<Node> iterator = graphDatabaseService.findNodes(label.getLabel(), propertyName, datastoreValue);
-        return xoSession.toResult(new ResultIterator<Node>() {
+        return xoSession.toResult(new ResultIterator<Neo4jNode>() {
 
             @Override
             public boolean hasNext() {
@@ -50,8 +52,8 @@ abstract class AbstractNeo4jRepositoryImpl {
             }
 
             @Override
-            public Node next() {
-                return iterator.next();
+            public Neo4jNode next() {
+                return new Neo4jNode(iterator.next());
             }
 
             @Override

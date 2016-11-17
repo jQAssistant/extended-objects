@@ -1,5 +1,11 @@
 package com.buschmais.xo.impl.metadata;
 
+import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
@@ -11,12 +17,7 @@ import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 import com.buschmais.xo.spi.reflection.AnnotatedType;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 /**
  * Allows resolving types from relation discriminators as provided by the
@@ -38,8 +39,8 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
      *            A map of all types with their metadata.
      */
     public RelationTypeMetadataResolver(Map<Class<?>, TypeMetadata> metadataByType, EntityTypeMetadataResolver entityTypeMetadataResolver) {
-        relationMappings = new HashMap<>();
-        relationProperties = new HashMap<>();
+        relationMappings = new Object2ObjectOpenHashMap<>();
+        relationProperties = new Object2ObjectOpenHashMap<>();
         for (TypeMetadata typeMetadata : metadataByType.values()) {
             if (typeMetadata instanceof RelationTypeMetadata) {
                 RelationTypeMetadata<RelationMetadata> relationTypeMetadata = (RelationTypeMetadata) typeMetadata;

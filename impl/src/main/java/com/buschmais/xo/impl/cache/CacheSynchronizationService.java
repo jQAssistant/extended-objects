@@ -40,6 +40,18 @@ public class CacheSynchronizationService<Entity, Relation> {
         }
     }
 
+    public void clear() {
+        DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> datastoreSession = sessionContext.getDatastoreSession();
+        for (Object instance : sessionContext.getRelationCache().writtenInstances()) {
+            Relation relation = sessionContext.getRelationInstanceManager().getDatastoreType(instance);
+            datastoreSession.getDatastoreRelationManager().clearRelation(relation);
+        }
+        for (Object instance : sessionContext.getEntityCache().writtenInstances()) {
+            Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(instance);
+            datastoreSession.getDatastoreEntityManager().clearEntity(entity);
+        }
+    }
+
     private void validateInstance(Object instance) {
         if (!ValidationMode.NONE.equals(validationMode)) {
             Set<ConstraintViolation<Object>> constraintViolations = sessionContext.getInstanceValidationService().validate(instance);

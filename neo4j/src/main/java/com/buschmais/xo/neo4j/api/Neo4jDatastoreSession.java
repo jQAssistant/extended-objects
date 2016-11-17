@@ -1,8 +1,9 @@
 package com.buschmais.xo.neo4j.api;
 
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jNode;
+import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
 
 import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
@@ -18,8 +19,11 @@ import com.buschmais.xo.spi.datastore.DatastoreSession;
  *            concrete implementation.
  */
 public interface Neo4jDatastoreSession<GDS extends GraphDatabaseService>
-        extends DatastoreSession<Long, Node, NodeMetadata, Neo4jLabel, Long, Relationship, RelationshipMetadata, RelationshipType, PropertyMetadata> {
+        extends DatastoreSession<Long, Neo4jNode, NodeMetadata, Neo4jLabel, Long, Neo4jRelationship, RelationshipMetadata, RelationshipType, PropertyMetadata> {
 
     GDS getGraphDatabaseService();
 
+    Object convertValue(Object value);
+
+    Object convertParameter(Object value);
 }
