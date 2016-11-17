@@ -41,7 +41,7 @@ Neo4j label can be represented as a Java interface and vice versa.
 @Label("Person") // The value "Person" can be omitted, in this case the class name is used
 public interface Person {
   String getName();
-  void setName();
+  void setName(String name);
 }
 ----
 
@@ -176,7 +176,7 @@ which is annotated with @Label.
 public interface Person {
 
 String getName();
-void String setName();
+void String setName(String name);
 
 }
 ----
@@ -196,7 +196,7 @@ public interface Person {
 
   @Property("myName")
   String getName();
-  void String setName();
+  void String setName(String name);
 
 }
 ----
@@ -478,7 +478,7 @@ public interface Person {
 
   @Transient
   String getName();
-  void setName();
+  void setName(String name);
 
 }
 ----
