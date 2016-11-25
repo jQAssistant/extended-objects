@@ -7,7 +7,6 @@ import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.SimpleTypeMetadata;
 
 /**
  * Defines functionality to be used by repository implementations.
@@ -53,7 +52,7 @@ public interface XOSession<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     /**
      * Return the metadata for a relation type.
-     * 
+     *
      * @param type
      *            The relation type.
      * @param <T>
@@ -99,4 +98,13 @@ public interface XOSession<EntityId, Entity, EntityMetadata extends DatastoreEnt
      */
     <D, T> ResultIterable<T> toResult(ResultIterator<D> iterator);
 
+    /**
+     * Trigger a flush to the datastore.
+     */
+    void flush();
+
+    /**
+     * Clear any tracked state in the session.
+     */
+    void clear();
 }

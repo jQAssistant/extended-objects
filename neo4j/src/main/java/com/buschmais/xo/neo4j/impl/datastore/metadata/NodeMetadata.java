@@ -1,6 +1,6 @@
 package com.buschmais.xo.neo4j.impl.datastore.metadata;
 
-import com.buschmais.xo.neo4j.api.Neo4jLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 

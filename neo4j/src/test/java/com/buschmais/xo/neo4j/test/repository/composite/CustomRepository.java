@@ -19,7 +19,7 @@ public interface CustomRepository {
     @ImplementedBy(FindMethod.class)
     A find(String name);
 
-    public class FindMethod implements ProxyMethod<XOManager> {
+    class FindMethod implements ProxyMethod<XOManager> {
 
         @Override
         public Object invoke(XOManager xoManager, Object instance, Object[] args) throws Exception {

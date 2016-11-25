@@ -472,7 +472,7 @@
             <plugin>
                 <groupId>net.orfjackal.retrolambda</groupId>
                 <artifactId>retrolambda-maven-plugin</artifactId>
-                <version>1.6.1</version>
+                <version>2.3.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -585,6 +585,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>15.0</version>
+            </dependency>
+            <dependency>
+                <groupId>it.unimi.dsi</groupId>
+                <artifactId>fastutil</artifactId>
+                <version>7.0.13</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>

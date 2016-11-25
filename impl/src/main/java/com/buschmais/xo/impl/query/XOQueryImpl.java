@@ -102,6 +102,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
 
     @Override
     public Result<T> execute() {
+        sessionContext.getCacheSynchronizationService().flush();
         DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> datastoreSession = sessionContext
                 .getDatastoreSession();
         if (queryLanguage == null) {

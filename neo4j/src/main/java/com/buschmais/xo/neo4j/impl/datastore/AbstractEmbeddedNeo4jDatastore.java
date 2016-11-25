@@ -9,7 +9,7 @@ import org.neo4j.graphdb.schema.IndexDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.buschmais.xo.neo4j.api.Neo4jLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.IndexedPropertyMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;

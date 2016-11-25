@@ -2,10 +2,9 @@ package com.buschmais.xo.neo4j.impl.datastore;
 
 import java.util.Map;
 
-import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
 
-import com.buschmais.xo.neo4j.api.Neo4jLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Property;

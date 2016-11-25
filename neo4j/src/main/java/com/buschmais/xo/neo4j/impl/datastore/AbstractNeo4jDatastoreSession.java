@@ -1,11 +1,19 @@
 package com.buschmais.xo.neo4j.impl.datastore;
 
+import java.lang.annotation.Annotation;
+import java.util.*;
+
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
-import com.buschmais.xo.neo4j.api.Neo4jLabel;
-import com.buschmais.xo.neo4j.api.Neo4jRepository;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jNode;
+import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipMetadata;
@@ -14,14 +22,6 @@ import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.reflection.ClassHelper;
 import com.buschmais.xo.spi.session.XOSession;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 /**
  * Abstract base implementation of a Neo4j database session based on the
@@ -43,12 +43,12 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public DatastoreEntityManager<Long, Node, NodeMetadata, Neo4jLabel, PropertyMetadata> getDatastoreEntityManager() {
+    public DatastoreEntityManager<Long, Neo4jNode, NodeMetadata, Neo4jLabel, PropertyMetadata> getDatastoreEntityManager() {
         return entityManager;
     }
 
     @Override
-    public DatastoreRelationManager<Node, Long, Relationship, RelationshipMetadata, RelationshipType, PropertyMetadata> getDatastoreRelationManager() {
+    public DatastoreRelationManager<Neo4jNode, Long, Neo4jRelationship, RelationshipMetadata, RelationshipType, PropertyMetadata> getDatastoreRelationManager() {
         return relationManager;
     }
 
@@ -76,5 +76,45 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
 
     @Override
     public void close() {
+    }
+
+    @Override
+    public Object convertValue(Object value) {
+        if (value instanceof Node) {
+            return new Neo4jNode((Node) value);
+        } else if (value instanceof Relationship) {
+            return new Neo4jRelationship((Relationship) value);
+        } else if (value instanceof Iterable<?>) {
+            Iterable<?> iterable = (Iterable<?>) value;
+            List<Object> values = new ArrayList<>();
+            for (Object o : iterable) {
+                values.add(convertValue(o));
+            }
+            return values;
+        } else if (value instanceof Map<?, ?>) {
+            Map<Object, Object> result = new HashMap<>();
+            for (Map.Entry<?, ?> entry : ((Map<?, ?>) value).entrySet()) {
+                result.put(convertValue(entry.getKey()), convertValue(entry.getValue()));
+            }
+            return result;
+        }
+        return value;
+    }
+
+    @Override
+    public Object convertParameter(Object value) {
+        if (value instanceof Node) {
+            return ((Node) value).getId();
+        } else if (value instanceof Relationship) {
+            return ((Relationship) value).getId();
+        } else if (value instanceof Collection) {
+            Collection collection = (Collection) value;
+            List<Object> values = new ArrayList<>();
+            for (Object o : collection) {
+                values.add(convertParameter(o));
+            }
+            return values;
+        }
+        return value;
     }
 }

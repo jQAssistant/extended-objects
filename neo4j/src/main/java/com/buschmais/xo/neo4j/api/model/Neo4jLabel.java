@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.api;
+package com.buschmais.xo.neo4j.api.model;
 
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.Label;

@@ -106,4 +106,14 @@ public class XOSessionImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
             }
         }, ResultIterable.class);
     }
+
+    @Override
+    public void flush() {
+        sessionContext.getCacheSynchronizationService().flush();
+    }
+
+    @Override
+    public void clear() {
+        sessionContext.getCacheSynchronizationService().clear();
+    }
 }

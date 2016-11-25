@@ -19,6 +19,7 @@ public class CacheSynchronization<Entity, Relation> implements XOTransaction.Syn
 
     @Override
     public void afterCompletion(boolean committed) {
+        cacheSynchronizationService.clear();
         for (TransactionalCache<?> cache : caches) {
             cache.clear();
         }

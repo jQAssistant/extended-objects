@@ -77,6 +77,11 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
         delegate.flushEntity(entity);
     }
 
+    @Override
+    public void clearEntity(Entity entity) {
+        delegate.clearEntity(entity);
+    }
+
     public void setProperty(Entity entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata, Object value) {
         delegate.setProperty(entity, metadata, value);
     }
