@@ -457,17 +457,21 @@
                         <goals>
                             <goal>manifest</goal>
                         </goals>
-                        <configuration>
-                            <instructions>
-                                <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
-                                <Bundle-Name>${project.name}</Bundle-Name>
-                                <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}</Bundle-Version>
-                                <_snapshot>${maven.build.timestamp}</_snapshot>
-                                <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
-                            </instructions>
-                        </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <instructions>
+                        <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}</Bundle-Version>
+                        <_snapshot>${maven.build.timestamp}</_snapshot>
+                        <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
+                        <!--
+                          | each module can override these defaults in their osgi.bnd file
+                         -->
+                        <_include>-osgi.bnd</_include>
+                    </instructions>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>net.orfjackal.retrolambda</groupId>

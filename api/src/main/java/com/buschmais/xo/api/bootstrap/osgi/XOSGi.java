@@ -11,9 +11,11 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XOBootstrapService;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.api.bootstrap.osgi.internal.Activator;
 
-public final class XOSGI {
+/**
+ * Provides methods for bootstrapping XO when running in OSGi environment.
+ */
+public final class XOSGi {
 
     /**
      * Create a {@link com.buschmais.xo.api.XOManagerFactory} for the XO unit
@@ -28,9 +30,9 @@ public final class XOSGI {
      * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
      */
     public static XOManagerFactory createXOManagerFactory(String name) {
-        if (Activator.getDefault() != null) {
+        if (OSGiUtil.isXOLoadedAsOSGiBundle()) {
             try {
-                BundleContext bundleContext = FrameworkUtil.getBundle(XOSGI.class).getBundleContext();
+                BundleContext bundleContext = FrameworkUtil.getBundle(XOSGi.class).getBundleContext();
                 String filterString = "(name=" + name + ")";
                 Collection<ServiceReference<XOManagerFactory>> xoBootstrapServiceReferences = bundleContext
                         .getServiceReferences(XOManagerFactory.class, filterString);
@@ -56,8 +58,8 @@ public final class XOSGI {
      * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
      */
     public static XOManagerFactory createXOManagerFactory(XOUnit xoUnit) {
-        if (Activator.getDefault() != null) {
-            BundleContext bundleContext = FrameworkUtil.getBundle(Activator.class).getBundleContext();
+        if (OSGiUtil.isXOLoadedAsOSGiBundle()) {
+            BundleContext bundleContext = FrameworkUtil.getBundle(XOSGi.class).getBundleContext();
             ServiceReference<XOBootstrapService> xoBootstrapServiceReference = bundleContext
                     .getServiceReference(XOBootstrapService.class);
             if (xoBootstrapServiceReference == null) {
