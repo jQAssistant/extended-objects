@@ -61,9 +61,11 @@
         <org_asciidoctor.version>1.5.3</org_asciidoctor.version>
         <org.neo4j_version>2.3.7</org.neo4j_version>
 
-        <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+        <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
         <jqassistant.version>1.1.3</jqassistant.version>
+
+        <org.osgi_version>4.3.1</org.osgi_version>
     </properties>
 
     <profiles>
@@ -359,10 +361,8 @@
                         <configuration>
                             <archive>
                                 <manifestEntries>
-                                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
                                     <Bundle-Name>${project.name} (Source)</Bundle-Name>
                                     <Bundle-SymbolicName>${bundle.name}.source</Bundle-SymbolicName>
-                                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
                                     <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}</Bundle-Version>
                                     <Eclipse-SourceBundle>${bundle.name};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}";roots:="."</Eclipse-SourceBundle>
                                 </manifestEntries>
@@ -448,7 +448,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.4.0</version>
+                <version>3.2.0</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -459,8 +459,9 @@
                         </goals>
                         <configuration>
                             <instructions>
-                                <Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
+                                <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
                                 <Bundle-Name>${project.name}</Bundle-Name>
+                                <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}</Bundle-Version>
                                 <_snapshot>${maven.build.timestamp}</_snapshot>
                                 <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
                             </instructions>
@@ -609,6 +610,13 @@
                 <version>1.3</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.core</artifactId>
+                <version>${org.osgi_version}</version>
+                <scope>provided</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
