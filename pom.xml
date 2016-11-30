@@ -59,7 +59,7 @@
         <java8.build.outputDirectory>${project.build.directory}/classes-java8</java8.build.outputDirectory>
         <github.global.server>github</github.global.server>
         <org_asciidoctor.version>1.5.3</org_asciidoctor.version>
-        <org.neo4j_version>2.3.7</org.neo4j_version>
+        <org.neo4j_version>2.3.8</org.neo4j_version>
 
         <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
