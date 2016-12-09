@@ -2,6 +2,10 @@ package com.buschmais.xo.api.bootstrap.osgi;
 
 import org.osgi.framework.BundleReference;
 
+/**
+ *
+ * @since 0.8
+ */
 final class OSGiUtil {
 
     private static volatile Boolean loadedAsBundle;

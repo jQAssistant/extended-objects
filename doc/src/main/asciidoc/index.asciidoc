@@ -162,6 +162,32 @@ public class TempleOfDoom {
 }
 ----
 
+=== XO Bootstrapping in OSGi environments
+
+[source,java]
+.Activator.java
+----
+public class Activator implements BundleActivator {
+
+  public void start(BundleContext context) throws Exception {
+
+    // performs a lookup in the OSGi service registry
+    XOManagerFactory xmf = XOSGi.createXOManagerFactory("movies");
+
+    XOManager xm = xmf.createXOManager();
+    xm.currentTransaction.begin();
+    Actor harrison = xm.create(Actor.class);
+    harrison.setName("Harrison Ford");
+
+    //
+
+    xm.currentTransaction.commit();
+    xmf.close();
+  }
+}
+----
+
+
 == Entity Migration At Runtime
 
 There may be situations where an existing data object needs to be migrated to also represent other types. Using the
