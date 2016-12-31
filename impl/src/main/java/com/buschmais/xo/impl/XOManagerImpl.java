@@ -59,6 +59,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     private final Map<Class<?>, Object> repositories = new HashMap<>();
 
+    private final DefaultCloseSupport closeSupport = new DefaultCloseSupport();
+
     /**
      * Constructor.
      *
@@ -334,13 +336,13 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
-	public <T> XOMigrator<T> migrate(T instance) {
-		return sessionContext.getInterceptorFactory().addInterceptor(new XOMigratorImpl<>(instance, sessionContext));
+    public <T> XOMigrator<T> migrate(T instance) {
+        return sessionContext.getInterceptorFactory().addInterceptor(new XOMigratorImpl<>(instance, sessionContext));
     }
 
     @Override
     public <T, M> M migrate(T instance, Class<M> targetType) {
-		return sessionContext.getInterceptorFactory().addInterceptor(migrate(instance, null, targetType));
+        return sessionContext.getInterceptorFactory().addInterceptor(migrate(instance, null, targetType));
     }
 
     @Override
@@ -400,9 +402,11 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public void close() {
+        fireOnBeforeClose();
         sessionContext.getEntityInstanceManager().close();
         sessionContext.getRelationInstanceManager().close();
         sessionContext.getDatastoreSession().close();
+        fireOnAfterClose();
     }
 
     @Override
@@ -420,6 +424,24 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     @Override
     public <I> void registerInstanceListener(I instanceListener) {
         sessionContext.getInstanceListenerService().registerInstanceListener(instanceListener);
+    }
+
+    @Override
+    public void addCloseListener(CloseListener listener) {
+        closeSupport.addCloseListener(listener);
+    }
+
+    @Override
+    public void removeCloseListener(CloseListener listener) {
+        closeSupport.removeCloseListener(listener);
+    }
+
+    private void fireOnBeforeClose() {
+        closeSupport.fireOnBeforeClose();
+    }
+
+    private void fireOnAfterClose() {
+        closeSupport.fireOnAfterClose();
     }
 
     private TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getEffectiveTypes(Class<?> type, Class<?>... types) {

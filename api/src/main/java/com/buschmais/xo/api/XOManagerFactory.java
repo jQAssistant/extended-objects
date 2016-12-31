@@ -5,7 +5,7 @@ import com.buschmais.xo.api.bootstrap.XOUnit;
 /**
  * Defines the factory interfaces for {@link XOManager} instances.
  */
-public interface XOManagerFactory extends AutoCloseable {
+public interface XOManagerFactory extends AutoCloseable, CloseSupport {
 
     /**
      * The persistent identifier (PID).

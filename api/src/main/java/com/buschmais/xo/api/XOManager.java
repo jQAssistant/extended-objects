@@ -11,7 +11,7 @@ import javax.validation.ConstraintViolation;
  * Defines methods to manage the lifecycle of property instances, query
  * execution and transaction management.
  */
-public interface XOManager extends AutoCloseable {
+public interface XOManager extends AutoCloseable, CloseSupport {
 
     /**
      * Return the {@link XOTransaction} associated with the manager.
@@ -31,7 +31,7 @@ public interface XOManager extends AutoCloseable {
 
     /**
      * Find an entity or relation using its it.
-     * 
+     *
      * @param type
      *            The type of the instance.
      * @param id
@@ -191,7 +191,7 @@ public interface XOManager extends AutoCloseable {
     <T, Id> Id getId(T instance);
 
     /**
-     * 
+     *
      * Migrates the type of a property instance to the given target types and
      * returns it. The original instance will not be usable anymore after
      * migration.
@@ -300,7 +300,7 @@ public interface XOManager extends AutoCloseable {
     /**
      * Return an {@link XOMigrator} instance that provides methods for type
      * migrations.
-     * 
+     *
      * @param instance
      *            The instance to migrate.
      * @param <T>

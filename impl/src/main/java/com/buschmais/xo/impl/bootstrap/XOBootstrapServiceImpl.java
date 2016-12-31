@@ -12,6 +12,9 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Component;
+
+@Component
 public class XOBootstrapServiceImpl implements XOBootstrapService {
 
     private final XOUnitFactory xoUnitFactory;

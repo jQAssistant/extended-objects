@@ -7,6 +7,7 @@ import javax.validation.ValidatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.buschmais.xo.api.CloseListener;
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.ValidationMode;
@@ -37,6 +38,8 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
     private final ValidationMode validationMode;
     private final ConcurrencyMode concurrencyMode;
     private final Transaction.TransactionAttribute defaultTransactionAttribute;
+
+    private final DefaultCloseSupport closeSupport = new DefaultCloseSupport();
 
     public XOManagerFactoryImpl(XOUnit xoUnit) {
         this.xoUnit = xoUnit;
@@ -91,7 +94,9 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
 
     @Override
     public void close() {
+        fireOnBeforeClose();
         datastore.close();
+        fireOnAfterClose();
     }
 
     @Override
@@ -107,4 +112,23 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
     public PluginRepositoryManager getPluginRepositoryManager() {
         return pluginRepositoryManager;
     }
+
+    @Override
+    public void addCloseListener(CloseListener listener) {
+        closeSupport.addCloseListener(listener);
+    }
+
+    @Override
+    public void removeCloseListener(CloseListener listener) {
+        closeSupport.removeCloseListener(listener);
+    }
+
+    private void fireOnBeforeClose() {
+        closeSupport.fireOnBeforeClose();
+    }
+
+    private void fireOnAfterClose() {
+        closeSupport.fireOnAfterClose();
+    }
+
 }
