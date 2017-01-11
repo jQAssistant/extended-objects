@@ -41,7 +41,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
 
     @Override
     public boolean isEntity(Object o) {
-        return Node.class.isAssignableFrom(o.getClass());
+        return Neo4jNode.class.isAssignableFrom(o.getClass());
     }
 
     @Override

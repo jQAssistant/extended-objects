@@ -38,7 +38,7 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Neo4jRela
 
     @Override
     public boolean isRelation(Object o) {
-        return Relationship.class.isAssignableFrom(o.getClass());
+        return Neo4jRelationship.class.isAssignableFrom(o.getClass());
     }
 
     @Override
@@ -52,10 +52,10 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Neo4jRela
         Neo4jRelationship relationship;
         switch (direction) {
         case FROM:
-            relationship = new Neo4jRelationship(source.createRelationshipTo(target, metadata.getDatastoreMetadata().getDiscriminator()));
+            relationship = new Neo4jRelationship(source.createRelationshipTo(target.getDelegate(), metadata.getDatastoreMetadata().getDiscriminator()));
             break;
         case TO:
-            relationship = new Neo4jRelationship(target.createRelationshipTo(source, metadata.getDatastoreMetadata().getDiscriminator()));
+            relationship = new Neo4jRelationship(target.createRelationshipTo(source.getDelegate(), metadata.getDatastoreMetadata().getDiscriminator()));
             break;
         default:
             throw new XOException("Unsupported direction " + direction);
@@ -118,6 +118,10 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Neo4jRela
                     @Override
                     public Neo4jRelationship next() {
                         return new Neo4jRelationship(iterator.next());
+                    }
+
+                    @Override
+                    public void remove() {
                     }
                 };
             }

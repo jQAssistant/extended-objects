@@ -103,10 +103,10 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
 
     @Override
     public Object convertParameter(Object value) {
-        if (value instanceof Node) {
-            return ((Node) value).getId();
-        } else if (value instanceof Relationship) {
-            return ((Relationship) value).getId();
+        if (value instanceof Neo4jNode) {
+            return ((Neo4jNode) value).getId();
+        } else if (value instanceof Neo4jRelationship) {
+            return ((Neo4jRelationship) value).getId();
         } else if (value instanceof Collection) {
             Collection collection = (Collection) value;
             List<Object> values = new ArrayList<>();

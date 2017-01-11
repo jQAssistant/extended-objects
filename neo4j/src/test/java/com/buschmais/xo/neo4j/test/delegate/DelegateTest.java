@@ -3,6 +3,8 @@ package com.buschmais.xo.neo4j.test.delegate;
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.api.model.Neo4jNode;
+import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.delegate.composite.A;
 import com.buschmais.xo.neo4j.test.delegate.composite.A2B;
@@ -41,7 +43,7 @@ public class DelegateTest extends AbstractNeo4jXOManagerTest {
     public void entity() {
         XOManager xoManager = getXoManager();
         xoManager.currentTransaction().begin();
-        Node node = ((CompositeObject) xoManager.create(A.class)).getDelegate();
+        Neo4jNode node = ((CompositeObject) xoManager.create(A.class)).getDelegate();
         assertThat(node.hasLabel(DynamicLabel.label("A")), equalTo(true));
         xoManager.currentTransaction().commit();
     }
@@ -55,7 +57,7 @@ public class DelegateTest extends AbstractNeo4jXOManagerTest {
         xoManager.create(a, A2B.class, b);
         List<A2B> r = executeQuery("MATCH (a:A)-[r]->(b:B) RETURN r").getColumn("r");
         assertThat(r.size(), equalTo(1));
-        Relationship relationship = ((CompositeObject) r.get(0)).getDelegate();
+        Neo4jRelationship relationship = ((CompositeObject) r.get(0)).getDelegate();
         assertThat(relationship.getType().name(), equalTo("RELATION"));
         xoManager.currentTransaction().commit();
     }

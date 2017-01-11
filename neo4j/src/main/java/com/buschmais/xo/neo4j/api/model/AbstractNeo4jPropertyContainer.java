@@ -9,7 +9,7 @@ import com.buschmais.xo.api.XOException;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer> implements PropertyContainer {
+public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer>  {
 
     protected T delegate;
 
@@ -20,12 +20,10 @@ public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer
         this.delegate = delegate;
     }
 
-    @Override
-    public GraphDatabaseService getGraphDatabase() {
-        return delegate.getGraphDatabase();
+    public T getDelegate() {
+        return delegate;
     }
 
-    @Override
     public boolean hasProperty(String key) {
         if (getReadCache().containsKey(key)) {
             return true;
@@ -33,7 +31,6 @@ public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer
         return delegate.hasProperty(key);
     }
 
-    @Override
     public Object getProperty(String key) {
         Object2ObjectOpenHashMap<String, Object> readCache = getReadCache();
         if (readCache.containsKey(key)) {
@@ -44,37 +41,15 @@ public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer
         return value;
     };
 
-    @Override
-    public Object getProperty(String key, Object defaultValue) {
-        throw new XOException("Unsupported operation");
-    }
-
-    @Override
     public void setProperty(String key, Object value) {
         getWriteCache().put(key, value);
         getReadCache().put(key, value);
     }
 
-    @Override
     public Object removeProperty(String key) {
         getWriteCache().remove(key);
         getReadCache().remove(key);
         return delegate.removeProperty(key);
-    }
-
-    @Override
-    public Iterable<String> getPropertyKeys() {
-        return delegate.getPropertyKeys();
-    }
-
-    @Override
-    public Map<String, Object> getProperties(String... keys) {
-        throw new XOException("Unsupported operation");
-    }
-
-    @Override
-    public Map<String, Object> getAllProperties() {
-        throw new XOException("Unsupported operation");
     }
 
     public void flush() {
