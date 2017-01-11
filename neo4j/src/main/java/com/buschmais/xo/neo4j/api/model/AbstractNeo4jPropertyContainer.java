@@ -1,20 +1,16 @@
 package com.buschmais.xo.neo4j.api.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.PropertyContainer;
-
-import com.buschmais.xo.api.XOException;
-
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer>  {
 
     protected T delegate;
 
-    private Object2ObjectOpenHashMap<String, Object> readCache = null;
-    private Object2ObjectOpenHashMap<String, Object> writeCache = null;
+    private Map<String, Object> readCache = null;
+    private Map<String, Object> writeCache = null;
 
     public AbstractNeo4jPropertyContainer(T delegate) {
         this.delegate = delegate;
@@ -32,7 +28,7 @@ public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer
     }
 
     public Object getProperty(String key) {
-        Object2ObjectOpenHashMap<String, Object> readCache = getReadCache();
+        Map<String, Object> readCache = getReadCache();
         if (readCache.containsKey(key)) {
             return readCache.get(key);
         }
@@ -66,16 +62,16 @@ public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer
         writeCache = null;
     }
 
-    private Object2ObjectOpenHashMap<String, Object> getReadCache() {
+    private Map<String, Object> getReadCache() {
         if (readCache == null) {
-            readCache = new Object2ObjectOpenHashMap<>();
+            readCache = new HashMap<>();
         }
         return readCache;
     }
 
-    private Object2ObjectOpenHashMap<String, Object> getWriteCache() {
+    private Map<String, Object> getWriteCache() {
         if (writeCache == null) {
-            writeCache = new Object2ObjectOpenHashMap<>();
+            writeCache = new HashMap<>();
         }
         return writeCache;
     }
