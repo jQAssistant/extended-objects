@@ -1,9 +1,9 @@
 package com.buschmais.xo.neo4j.impl.datastore;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
@@ -48,7 +48,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
     public Set<Neo4jLabel> getEntityDiscriminators(Neo4jNode node) {
         Set<Neo4jLabel> labels = labelCache.getIfPresent(node.getId());
         if (labels == null) {
-            labels = new ObjectOpenHashSet<>();
+            labels = new HashSet<>();
             for (Label label : node.getLabels()) {
                 labels.add(new Neo4jLabel(label));
             }
@@ -131,12 +131,12 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
     @Override
     public void migrateEntity(Neo4jNode entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Neo4jLabel> discriminators,
             TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> targetTypes, Set<Neo4jLabel> targetDiscriminators) {
-        Set<Neo4jLabel> labelsToRemove = new ObjectOpenHashSet<>(discriminators);
+        Set<Neo4jLabel> labelsToRemove = new HashSet<>(discriminators);
         labelsToRemove.removeAll(targetDiscriminators);
         for (Neo4jLabel label : labelsToRemove) {
             entity.removeLabel(label.getLabel());
         }
-        Set<Neo4jLabel> labelsToAdd = new ObjectOpenHashSet<>(targetDiscriminators);
+        Set<Neo4jLabel> labelsToAdd = new HashSet<>(targetDiscriminators);
         labelsToAdd.removeAll(discriminators);
         addDiscriminators(entity, labelsToAdd);
         labelCache.put(entity.getId(), targetDiscriminators);
