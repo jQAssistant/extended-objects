@@ -3,6 +3,8 @@ package com.buschmais.xo.neo4j.test.mapping;
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.api.model.Neo4jNode;
+import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,11 +39,11 @@ public class UnmappedTypesTest extends AbstractNeo4jXOManagerTest {
         Result<CompositeRowObject> result = xoManager.createQuery("CREATE (x:X)-[y:Y]->(z:Z) RETURN x, y, z").execute();
         CompositeRowObject compositeRowObject = result.getSingleResult();
         CompositeObject x = compositeRowObject.get("x", CompositeObject.class);
-        assertThat(x.getDelegate(), instanceOf(Node.class));
+        assertThat(x.getDelegate(), instanceOf(Neo4jNode.class));
         CompositeObject y = compositeRowObject.get("y", CompositeObject.class);
-        assertThat(y.getDelegate(), instanceOf(Relationship.class));
+        assertThat(y.getDelegate(), instanceOf(Neo4jRelationship.class));
         CompositeObject z = compositeRowObject.get("z", CompositeObject.class);
-        assertThat(z.getDelegate(), instanceOf(Node.class));
+        assertThat(z.getDelegate(), instanceOf(Neo4jNode.class));
         xoManager.currentTransaction().commit();
     }
 

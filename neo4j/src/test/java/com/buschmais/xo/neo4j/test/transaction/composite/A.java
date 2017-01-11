@@ -6,6 +6,7 @@ import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
+import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 import org.neo4j.graphdb.Node;
 
 import java.util.List;
@@ -36,17 +37,17 @@ public interface A {
         A getA();
     }
 
-    class ThrowException implements ProxyMethod<Node> {
+    class ThrowException implements ProxyMethod<Neo4jNode> {
         @Override
-        public Object invoke(Node node, Object instance, Object[] args) throws Exception {
+        public Object invoke(Neo4jNode node, Object instance, Object[] args) throws Exception {
             ((A) instance).setValue((String) args[0]);
             throw new Exception();
         }
     }
 
-    class ThrowRuntimeException implements ProxyMethod<Node> {
+    class ThrowRuntimeException implements ProxyMethod<Neo4jNode> {
         @Override
-        public Object invoke(Node node, Object instance, Object[] args) {
+        public Object invoke(Neo4jNode node, Object instance, Object[] args) {
             ((A) instance).setValue((String) args[0]);
             throw new RuntimeException();
         }
