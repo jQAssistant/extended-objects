@@ -73,7 +73,7 @@ public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
         Map<String, String> opts = new HashMap<>();
         opts.put("dbms.connector.http.type", "HTTP");
         opts.put("dbms.connector.http.enabled", "true");
-        Config defaults = new Config(opts);
+        Config defaults = new Config(opts); // Config.empty().with(opts);
         FormattedLogProvider logProvider = FormattedLogProvider.toOutputStream(System.out);
         GraphDatabaseDependencies graphDatabaseDependencies = GraphDatabaseDependencies.newDependencies().userLogProvider(logProvider);
         server = new CommunityNeoServer(defaults, factory, graphDatabaseDependencies, logProvider);

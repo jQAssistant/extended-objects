@@ -70,11 +70,19 @@
 
     <profiles>
         <profile>
+            <id>Neo4j_2.x</id>
+            <properties>
+                <org.neo4j_version>2.3.8</org.neo4j_version>
+            </properties>
+        </profile>
+        <profile>
+            <id>Neo4j_3.2.x</id>
+            <properties>
+                <org.neo4j_version>3.2.0-alpha02</org.neo4j_version>
+            </properties>
+        </profile>
+        <profile>
             <id>release</id>
-            <!--
-              ! This profile is automatically activated by using maven-release-plugin:perfom.
-              ! So this mean signing of artifacts is only done in case of running a release.
-            -->
             <activation>
                 <property>
                     <name>performRelease</name>
