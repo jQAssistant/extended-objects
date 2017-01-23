@@ -48,6 +48,14 @@ public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer
         return delegate.removeProperty(key);
     }
 
+    public Map<String, Object> getProperties() {
+        Map<String, Object> properties = new HashMap<>();
+        for (String key : delegate.getPropertyKeys()) {
+            properties.put(key, getProperty(key));
+        }
+        return properties;
+    }
+
     public void flush() {
         if (writeCache != null) {
             for (Map.Entry<String, Object> entry : writeCache.entrySet()) {
