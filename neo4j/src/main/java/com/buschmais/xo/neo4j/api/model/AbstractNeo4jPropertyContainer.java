@@ -51,8 +51,8 @@ public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer
 
     public Map<String, Object> getProperties() {
         Map<String, Object> properties = new HashMap<>();
-        for (String property : delegate.getPropertyKeys()) {
-            properties.put(property, getProperty(property));
+        for (String key : delegate.getPropertyKeys()) {
+            properties.put(key, getProperty(key));
         }
         return properties;
     }
