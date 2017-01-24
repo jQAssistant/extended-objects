@@ -5,7 +5,8 @@ import java.util.Map;
 
 import org.neo4j.graphdb.PropertyContainer;
 
-public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer>  {
+
+public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer> {
 
     protected T delegate;
 
@@ -46,6 +47,14 @@ public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer
         getWriteCache().remove(key);
         getReadCache().remove(key);
         return delegate.removeProperty(key);
+    }
+
+    public Map<String, Object> getProperties() {
+        Map<String, Object> properties = new HashMap<>();
+        for (String property : delegate.getPropertyKeys()) {
+            properties.put(property, getProperty(property));
+        }
+        return properties;
     }
 
     public void flush() {

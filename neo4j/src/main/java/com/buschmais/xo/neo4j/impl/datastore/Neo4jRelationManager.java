@@ -130,12 +130,12 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Neo4jRela
 
     @Override
     public Neo4jNode getFrom(Neo4jRelationship relationship) {
-        return new Neo4jNode(relationship.getStartNode());
+        return relationship.getStartNode();
     }
 
     @Override
     public Neo4jNode getTo(Neo4jRelationship relationship) {
-        return new Neo4jNode(relationship.getEndNode());
+        return relationship.getEndNode();
     }
 
     private Direction getDirection(RelationTypeMetadata.Direction direction) {
