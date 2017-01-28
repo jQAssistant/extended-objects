@@ -27,6 +27,11 @@ public final class Neo4jLabel {
     }
 
     @Override
+    public String toString() {
+        return label.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
