@@ -5,7 +5,8 @@ import java.util.Map;
 
 import org.neo4j.graphdb.PropertyContainer;
 
-public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer>  {
+
+public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer> {
 
     protected T delegate;
 
