@@ -49,8 +49,8 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
         Set<Neo4jLabel> labels = labelCache.getIfPresent(node.getId());
         if (labels == null) {
             labels = new HashSet<>();
-            for (Label label : node.getLabels()) {
-                labels.add(new Neo4jLabel(label));
+            for (Neo4jLabel label : node.getLabels()) {
+                labels.add(label);
             }
             labelCache.put(node.getId(), labels);
         }
@@ -134,7 +134,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
         Set<Neo4jLabel> labelsToRemove = new HashSet<>(discriminators);
         labelsToRemove.removeAll(targetDiscriminators);
         for (Neo4jLabel label : labelsToRemove) {
-            entity.removeLabel(label.getLabel());
+            entity.removeLabel(label);
         }
         Set<Neo4jLabel> labelsToAdd = new HashSet<>(targetDiscriminators);
         labelsToAdd.removeAll(discriminators);
@@ -145,7 +145,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
     @Override
     public void addDiscriminators(Neo4jNode node, Set<Neo4jLabel> labels) {
         for (Neo4jLabel label : labels) {
-            node.addLabel(label.getLabel());
+            node.addLabel(label);
         }
         labelCache.invalidate(node.getId());
     }
@@ -153,7 +153,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
     @Override
     public void removeDiscriminators(Neo4jNode node, Set<Neo4jLabel> labels) {
         for (Neo4jLabel label : labels) {
-            node.removeLabel(label.getLabel());
+            node.removeLabel(label);
         }
         labelCache.invalidate(node.getId());
     }
