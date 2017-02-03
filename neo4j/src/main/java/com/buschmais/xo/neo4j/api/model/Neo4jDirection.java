@@ -6,13 +6,13 @@ public enum Neo4jDirection {
 
     INCOMING(Direction.INCOMING), OUTGOING(Direction.OUTGOING);
 
-    private Direction direction;
+    private Direction delegate;
 
-    Neo4jDirection(Direction direction) {
-        this.direction = direction;
+    Neo4jDirection(Direction delegate) {
+        this.delegate = delegate;
     }
 
     public Direction getDelegate() {
-        return direction;
+        return delegate;
     }
 }

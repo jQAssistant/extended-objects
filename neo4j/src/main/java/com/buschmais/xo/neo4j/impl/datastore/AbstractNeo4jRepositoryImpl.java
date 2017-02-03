@@ -43,7 +43,7 @@ abstract class AbstractNeo4jRepositoryImpl {
         // convert the value from object to datastore representation
         Object datastoreValue = xoSession.toDatastore(value);
         // find the nodes
-        ResourceIterator<Node> iterator = graphDatabaseService.findNodes(label.getLabel(), propertyName, datastoreValue);
+        ResourceIterator<Node> iterator = graphDatabaseService.findNodes(label.getDelegate(), propertyName, datastoreValue);
         return xoSession.toResult(new ResultIterator<Neo4jNode>() {
 
             @Override

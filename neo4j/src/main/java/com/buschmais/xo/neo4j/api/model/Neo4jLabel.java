@@ -7,28 +7,28 @@ public final class Neo4jLabel {
 
     private String name;
 
-    private Label label;
+    private Label delegate;
 
     public Neo4jLabel(String name) {
-        this.name = name;
-        this.label = DynamicLabel.label(name);
+        this(DynamicLabel.label(name));
     }
 
-    public Neo4jLabel(Label label) {
-        this(label.name());
+    public Neo4jLabel(Label delegate) {
+        this.delegate = delegate;
+        this.name = delegate.name();
     }
 
     public String getName() {
         return name;
     }
 
-    public Label getLabel() {
-        return label;
+    public Label getDelegate() {
+        return delegate;
     }
 
     @Override
     public String toString() {
-        return label.toString();
+        return delegate.toString();
     }
 
     @Override

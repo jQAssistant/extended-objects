@@ -21,7 +21,7 @@ public class Neo4jNode extends AbstractNeo4jPropertyContainer<Node> {
     }
 
     public Iterable<Neo4jRelationship> getRelationships(Neo4jRelationshipType type, Neo4jDirection dir) {
-        Iterable<Relationship> relationships = delegate.getRelationships(type.getRelationshipType(), dir.getDelegate());
+        Iterable<Relationship> relationships = delegate.getRelationships(type.getDelegate(), dir.getDelegate());
         return () -> {
             Iterator<Relationship> iterator = relationships.iterator();
             return new Iterator<Neo4jRelationship>() {
@@ -40,27 +40,27 @@ public class Neo4jNode extends AbstractNeo4jPropertyContainer<Node> {
     }
 
     public boolean hasRelationship(Neo4jRelationshipType type, Neo4jDirection dir) {
-        return delegate.hasRelationship(type.getRelationshipType(), dir.getDelegate());
+        return delegate.hasRelationship(type.getDelegate(), dir.getDelegate());
     }
 
     public Neo4jRelationship getSingleRelationship(Neo4jRelationshipType type, Neo4jDirection dir) {
-        return new Neo4jRelationship(delegate.getSingleRelationship(type.getRelationshipType(), dir.getDelegate()));
+        return new Neo4jRelationship(delegate.getSingleRelationship(type.getDelegate(), dir.getDelegate()));
     }
 
     public Neo4jRelationship createRelationshipTo(Neo4jNode otherNode, Neo4jRelationshipType type) {
-        return new Neo4jRelationship(delegate.createRelationshipTo(otherNode.getDelegate(), type.getRelationshipType()));
+        return new Neo4jRelationship(delegate.createRelationshipTo(otherNode.getDelegate(), type.getDelegate()));
     }
 
     public void addLabel(Neo4jLabel label) {
-        delegate.addLabel(label.getLabel());
+        delegate.addLabel(label.getDelegate());
     }
 
     public void removeLabel(Neo4jLabel label) {
-        delegate.removeLabel(label.getLabel());
+        delegate.removeLabel(label.getDelegate());
     }
 
     public boolean hasLabel(Neo4jLabel label) {
-        return delegate.hasLabel(label.getLabel());
+        return delegate.hasLabel(label.getDelegate());
     }
 
     public Iterable<Neo4jLabel> getLabels() {

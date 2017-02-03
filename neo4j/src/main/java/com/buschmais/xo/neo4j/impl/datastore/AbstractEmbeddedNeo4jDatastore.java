@@ -86,14 +86,14 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
      */
     private void ensureIndex(Neo4jLabel label, PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata, boolean unique) {
         PropertyMetadata propertyMetadata = propertyMethodMetadata.getDatastoreMetadata();
-        IndexDefinition index = findIndex(label.getLabel(), propertyMetadata.getName());
+        IndexDefinition index = findIndex(label.getDelegate(), propertyMetadata.getName());
         if (index == null) {
             if (unique) {
                 LOGGER.debug("Creating constraint for label {} on property '{}'.", label, propertyMetadata.getName());
-                graphDatabaseService.schema().constraintFor(label.getLabel()).assertPropertyIsUnique(propertyMetadata.getName()).create();
+                graphDatabaseService.schema().constraintFor(label.getDelegate()).assertPropertyIsUnique(propertyMetadata.getName()).create();
             } else {
                 LOGGER.debug("Creating index for label {} on property '{}'.", label, propertyMetadata.getName());
-                graphDatabaseService.schema().indexFor(label.getLabel()).on(propertyMetadata.getName()).create();
+                graphDatabaseService.schema().indexFor(label.getDelegate()).on(propertyMetadata.getName()).create();
             }
         }
     }

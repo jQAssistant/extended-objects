@@ -4,13 +4,13 @@ import org.neo4j.graphdb.RelationshipType;
 
 public class Neo4jRelationshipType {
 
-    private RelationshipType relationshipType;
+    private RelationshipType delegate;
 
     private String name;
 
-    public Neo4jRelationshipType(RelationshipType relationshipType) {
-        this.relationshipType = relationshipType;
-        this.name = relationshipType.name();
+    public Neo4jRelationshipType(RelationshipType delegate) {
+        this.delegate = delegate;
+        this.name = delegate.name();
     }
 
     public String getName() {
@@ -34,12 +34,12 @@ public class Neo4jRelationshipType {
         return name.hashCode();
     }
 
-    public RelationshipType getRelationshipType() {
-        return relationshipType;
+    public RelationshipType getDelegate() {
+        return delegate;
     }
 
     @Override
     public String toString() {
-        return relationshipType.toString();
+        return delegate.toString();
     }
 }

@@ -68,7 +68,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
         Label[] labels = new Label[discriminators.size()];
         int i = 0;
         for (Neo4jLabel discriminator : discriminators) {
-            labels[i++] = discriminator.getLabel();
+            labels[i++] = discriminator.getDelegate();
         }
         Neo4jNode node = new Neo4jNode(graphDatabaseService.createNode(labels));
         setProperties(node, example);
@@ -104,7 +104,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
         }
         PropertyMetadata propertyMetadata = propertyMethodMetadata.getDatastoreMetadata();
         Object value = entry.getValue();
-        ResourceIterator<Node> iterator = graphDatabaseService.findNodes(discriminator.getLabel(), propertyMetadata.getName(), value);
+        ResourceIterator<Node> iterator = graphDatabaseService.findNodes(discriminator.getDelegate(), propertyMetadata.getName(), value);
         return new ResultIterator<Neo4jNode>() {
             @Override
             public boolean hasNext() {
