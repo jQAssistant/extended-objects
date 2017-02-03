@@ -1,13 +1,11 @@
 package com.buschmais.xo.neo4j.impl.datastore;
 
-import java.util.Iterator;
 import java.util.Map;
 
-import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Relationship;
 
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.neo4j.api.model.Neo4jDirection;
 import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
@@ -50,14 +48,13 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Neo4jRela
     public Neo4jRelationship createRelation(Neo4jNode source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction,
             Neo4jNode target, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
         Neo4jRelationship relationship;
+        Neo4jRelationshipType relationshipType = metadata.getDatastoreMetadata().getDiscriminator();
         switch (direction) {
         case FROM:
-            relationship = new Neo4jRelationship(
-                    source.createRelationshipTo(target.getDelegate(), metadata.getDatastoreMetadata().getDiscriminator().getRelationshipType()));
+            relationship = source.createRelationshipTo(target, relationshipType);
             break;
         case TO:
-            relationship = new Neo4jRelationship(
-                    target.createRelationshipTo(source.getDelegate(), metadata.getDatastoreMetadata().getDiscriminator().getRelationshipType()));
+            relationship = target.createRelationshipTo(source, relationshipType);
             break;
         default:
             throw new XOException("Unsupported direction " + direction);
@@ -93,43 +90,19 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Neo4jRela
 
     @Override
     public boolean hasSingleRelation(Neo4jNode source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction) {
-        return source.hasRelationship(metadata.getDatastoreMetadata().getDiscriminator().getRelationshipType(), getDirection(direction));
+        return source.hasRelationship(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
     }
 
     @Override
     public Neo4jRelationship getSingleRelation(Neo4jNode source, RelationTypeMetadata<RelationshipMetadata> metadata,
             RelationTypeMetadata.Direction direction) {
-        return new Neo4jRelationship(
-                source.getSingleRelationship(metadata.getDatastoreMetadata().getDiscriminator().getRelationshipType(), getDirection(direction)));
+        return source.getSingleRelationship(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
     }
 
     @Override
     public Iterable<Neo4jRelationship> getRelations(Neo4jNode source, RelationTypeMetadata<RelationshipMetadata> metadata,
             RelationTypeMetadata.Direction direction) {
-        Iterable<Relationship> relationships = source.getRelationships(metadata.getDatastoreMetadata().getDiscriminator().getRelationshipType(),
-                getDirection(direction));
-        return new Iterable<Neo4jRelationship>() {
-
-            @Override
-            public Iterator<Neo4jRelationship> iterator() {
-                Iterator<Relationship> iterator = relationships.iterator();
-                return new Iterator<Neo4jRelationship>() {
-                    @Override
-                    public boolean hasNext() {
-                        return iterator.hasNext();
-                    }
-
-                    @Override
-                    public Neo4jRelationship next() {
-                        return new Neo4jRelationship(iterator.next());
-                    }
-
-                    @Override
-                    public void remove() {
-                    }
-                };
-            }
-        };
+        return source.getRelationships(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
     }
 
     @Override
@@ -142,12 +115,12 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Neo4jRela
         return relationship.getEndNode();
     }
 
-    private Direction getDirection(RelationTypeMetadata.Direction direction) {
+    private Neo4jDirection getDirection(RelationTypeMetadata.Direction direction) {
         switch (direction) {
         case FROM:
-            return Direction.OUTGOING;
+            return Neo4jDirection.OUTGOING;
         case TO:
-            return Direction.INCOMING;
+            return Neo4jDirection.INCOMING;
         default:
             throw new XOException("Unsupported direction " + direction);
         }

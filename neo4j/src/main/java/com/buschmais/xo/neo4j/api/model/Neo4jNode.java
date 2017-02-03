@@ -1,8 +1,10 @@
 package com.buschmais.xo.neo4j.api.model;
 
-import org.neo4j.graphdb.*;
-
 import java.util.Iterator;
+
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 
 public class Neo4jNode extends AbstractNeo4jPropertyContainer<Node> {
 
@@ -18,20 +20,35 @@ public class Neo4jNode extends AbstractNeo4jPropertyContainer<Node> {
         delegate.delete();
     }
 
-    public Iterable<Relationship> getRelationships(RelationshipType type, Direction dir) {
-        return delegate.getRelationships(type, dir);
+    public Iterable<Neo4jRelationship> getRelationships(Neo4jRelationshipType type, Neo4jDirection dir) {
+        Iterable<Relationship> relationships = delegate.getRelationships(type.getRelationshipType(), dir.getDelegate());
+        return () -> {
+            Iterator<Relationship> iterator = relationships.iterator();
+            return new Iterator<Neo4jRelationship>() {
+                @Override
+                public boolean hasNext() {
+                    return iterator.hasNext();
+                }
+
+                @Override
+                public Neo4jRelationship next() {
+                    return new Neo4jRelationship(iterator.next());
+                }
+            };
+        };
+
     }
 
-    public boolean hasRelationship(RelationshipType type, Direction dir) {
-        return delegate.hasRelationship(type, dir);
+    public boolean hasRelationship(Neo4jRelationshipType type, Neo4jDirection dir) {
+        return delegate.hasRelationship(type.getRelationshipType(), dir.getDelegate());
     }
 
-    public Relationship getSingleRelationship(RelationshipType type, Direction dir) {
-        return delegate.getSingleRelationship(type, dir);
+    public Neo4jRelationship getSingleRelationship(Neo4jRelationshipType type, Neo4jDirection dir) {
+        return new Neo4jRelationship(delegate.getSingleRelationship(type.getRelationshipType(), dir.getDelegate()));
     }
 
-    public Relationship createRelationshipTo(Node otherNode, RelationshipType type) {
-        return delegate.createRelationshipTo(otherNode, type);
+    public Neo4jRelationship createRelationshipTo(Neo4jNode otherNode, Neo4jRelationshipType type) {
+        return new Neo4jRelationship(delegate.createRelationshipTo(otherNode.getDelegate(), type.getRelationshipType()));
     }
 
     public void addLabel(Neo4jLabel label) {
@@ -48,7 +65,7 @@ public class Neo4jNode extends AbstractNeo4jPropertyContainer<Node> {
 
     public Iterable<Neo4jLabel> getLabels() {
         return () -> {
-            Iterator<Label> iterator= delegate.getLabels().iterator();
+            Iterator<Label> iterator = delegate.getLabels().iterator();
             return new Iterator<Neo4jLabel>() {
                 @Override
                 public boolean hasNext() {
