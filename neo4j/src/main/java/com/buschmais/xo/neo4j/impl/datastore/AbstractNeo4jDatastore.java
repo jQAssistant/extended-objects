@@ -3,9 +3,9 @@ package com.buschmais.xo.neo4j.impl.datastore;
 import com.buschmais.xo.neo4j.api.Neo4jDatastore;
 import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
 import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipMetadata;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipType;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 
 /**
@@ -19,7 +19,7 @@ public abstract class AbstractNeo4jDatastore<DS extends Neo4jDatastoreSession> i
     private final Neo4jMetadataFactory metadataFactory = new Neo4jMetadataFactory();
 
     @Override
-    public DatastoreMetadataFactory<NodeMetadata, Neo4jLabel, RelationshipMetadata, RelationshipType> getMetadataFactory() {
+    public DatastoreMetadataFactory<NodeMetadata, Neo4jLabel, RelationshipMetadata, Neo4jRelationshipType> getMetadataFactory() {
         return metadataFactory;
     }
 

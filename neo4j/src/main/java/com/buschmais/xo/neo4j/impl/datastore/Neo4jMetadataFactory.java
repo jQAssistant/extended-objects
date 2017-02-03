@@ -4,11 +4,12 @@ import java.util.Map;
 
 import org.neo4j.graphdb.DynamicRelationshipType;
 
-import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Property;
 import com.buschmais.xo.neo4j.api.annotation.Relation;
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.*;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
@@ -23,7 +24,7 @@ import com.google.common.base.CaseFormat;
  * {@link com.buschmais.xo.spi.datastore.DatastoreMetadataFactory}
  * implementation for Neo4j datastores.
  */
-public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, Neo4jLabel, RelationshipMetadata, RelationshipType> {
+public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, Neo4jLabel, RelationshipMetadata, Neo4jRelationshipType> {
 
     @Override
     public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
@@ -92,6 +93,6 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
             name = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, annotatedElement.getName());
         }
         RelationshipType relationshipType = new RelationshipType(DynamicRelationshipType.withName(name));
-        return new RelationshipMetadata(relationshipType);
+        return new RelationshipMetadata(new Neo4jRelationshipType(relationshipType));
     }
 }

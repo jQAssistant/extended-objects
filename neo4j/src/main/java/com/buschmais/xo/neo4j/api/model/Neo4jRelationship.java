@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.api.model;
 
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
 
 public class Neo4jRelationship extends AbstractNeo4jPropertyContainer<Relationship> {
 
@@ -31,8 +30,8 @@ public class Neo4jRelationship extends AbstractNeo4jPropertyContainer<Relationsh
         return endNode;
     }
 
-    public RelationshipType getType() {
-        return delegate.getType();
+    public Neo4jRelationshipType getType() {
+        return new Neo4jRelationshipType(delegate.getType());
     }
 
 }

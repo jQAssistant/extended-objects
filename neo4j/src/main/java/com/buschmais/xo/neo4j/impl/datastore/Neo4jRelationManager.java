@@ -10,9 +10,9 @@ import org.neo4j.graphdb.Relationship;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
+import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipMetadata;
-import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipType;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
@@ -22,7 +22,7 @@ import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
  * {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager} for Neo4j.
  */
 public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Neo4jRelationship>
-        implements DatastoreRelationManager<Neo4jNode, Long, Neo4jRelationship, RelationshipMetadata, RelationshipType, PropertyMetadata> {
+        implements DatastoreRelationManager<Neo4jNode, Long, Neo4jRelationship, RelationshipMetadata, Neo4jRelationshipType, PropertyMetadata> {
 
     private final GraphDatabaseService graphDatabaseService;
 
@@ -42,8 +42,8 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Neo4jRela
     }
 
     @Override
-    public RelationshipType getRelationDiscriminator(Neo4jRelationship relationship) {
-        return new RelationshipType(relationship.getType());
+    public Neo4jRelationshipType getRelationDiscriminator(Neo4jRelationship relationship) {
+        return relationship.getType();
     }
 
     @Override
@@ -52,10 +52,12 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Neo4jRela
         Neo4jRelationship relationship;
         switch (direction) {
         case FROM:
-            relationship = new Neo4jRelationship(source.createRelationshipTo(target.getDelegate(), metadata.getDatastoreMetadata().getDiscriminator()));
+            relationship = new Neo4jRelationship(
+                    source.createRelationshipTo(target.getDelegate(), metadata.getDatastoreMetadata().getDiscriminator().getRelationshipType()));
             break;
         case TO:
-            relationship = new Neo4jRelationship(target.createRelationshipTo(source.getDelegate(), metadata.getDatastoreMetadata().getDiscriminator()));
+            relationship = new Neo4jRelationship(
+                    target.createRelationshipTo(source.getDelegate(), metadata.getDatastoreMetadata().getDiscriminator().getRelationshipType()));
             break;
         default:
             throw new XOException("Unsupported direction " + direction);
@@ -91,19 +93,21 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<Neo4jRela
 
     @Override
     public boolean hasSingleRelation(Neo4jNode source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction) {
-        return source.hasRelationship(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
+        return source.hasRelationship(metadata.getDatastoreMetadata().getDiscriminator().getRelationshipType(), getDirection(direction));
     }
 
     @Override
     public Neo4jRelationship getSingleRelation(Neo4jNode source, RelationTypeMetadata<RelationshipMetadata> metadata,
             RelationTypeMetadata.Direction direction) {
-        return new Neo4jRelationship(source.getSingleRelationship(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction)));
+        return new Neo4jRelationship(
+                source.getSingleRelationship(metadata.getDatastoreMetadata().getDiscriminator().getRelationshipType(), getDirection(direction)));
     }
 
     @Override
     public Iterable<Neo4jRelationship> getRelations(Neo4jNode source, RelationTypeMetadata<RelationshipMetadata> metadata,
             RelationTypeMetadata.Direction direction) {
-        Iterable<Relationship> relationships = source.getRelationships(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
+        Iterable<Relationship> relationships = source.getRelationships(metadata.getDatastoreMetadata().getDiscriminator().getRelationshipType(),
+                getDirection(direction));
         return new Iterable<Neo4jRelationship>() {
 
             @Override
