@@ -11,10 +11,10 @@ import org.neo4j.graphdb.ResourceIterator;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
-import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
+import com.buschmais.xo.neo4j.impl.model.EmbeddedLabel;
+import com.buschmais.xo.neo4j.impl.model.EmbeddedNode;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
@@ -27,12 +27,12 @@ import com.google.common.cache.CacheBuilder;
  * Implementation of a
  * {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager} for Neo4j.
  */
-public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
-        implements DatastoreEntityManager<Long, Neo4jNode, NodeMetadata, Neo4jLabel, PropertyMetadata> {
+public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNode>
+        implements DatastoreEntityManager<Long, EmbeddedNode, NodeMetadata, EmbeddedLabel, PropertyMetadata> {
 
     private final GraphDatabaseService graphDatabaseService;
 
-    private final Cache<Long, Set<Neo4jLabel>> labelCache;
+    private final Cache<Long, Set<EmbeddedLabel>> labelCache;
 
     public Neo4jEntityManager(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
@@ -41,15 +41,15 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
 
     @Override
     public boolean isEntity(Object o) {
-        return Neo4jNode.class.isAssignableFrom(o.getClass());
+        return EmbeddedNode.class.isAssignableFrom(o.getClass());
     }
 
     @Override
-    public Set<Neo4jLabel> getEntityDiscriminators(Neo4jNode node) {
-        Set<Neo4jLabel> labels = labelCache.getIfPresent(node.getId());
+    public Set<EmbeddedLabel> getEntityDiscriminators(EmbeddedNode node) {
+        Set<EmbeddedLabel> labels = labelCache.getIfPresent(node.getId());
         if (labels == null) {
             labels = new HashSet<>();
-            for (Neo4jLabel label : node.getLabels()) {
+            for (EmbeddedLabel label : node.getLabels()) {
                 labels.add(label);
             }
             labelCache.put(node.getId(), labels);
@@ -58,38 +58,38 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
     }
 
     @Override
-    public Long getEntityId(Neo4jNode entity) {
+    public Long getEntityId(EmbeddedNode entity) {
         return Long.valueOf(entity.getId());
     }
 
     @Override
-    public Neo4jNode createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Neo4jLabel> discriminators,
-            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
+    public EmbeddedNode createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<EmbeddedLabel> discriminators,
+                                     Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
         Label[] labels = new Label[discriminators.size()];
         int i = 0;
-        for (Neo4jLabel discriminator : discriminators) {
+        for (EmbeddedLabel discriminator : discriminators) {
             labels[i++] = discriminator.getDelegate();
         }
-        Neo4jNode node = new Neo4jNode(graphDatabaseService.createNode(labels));
+        EmbeddedNode node = new EmbeddedNode(graphDatabaseService.createNode(labels));
         setProperties(node, example);
         labelCache.put(node.getId(), discriminators);
         return node;
     }
 
     @Override
-    public void deleteEntity(Neo4jNode entity) {
+    public void deleteEntity(EmbeddedNode entity) {
         entity.delete();
         labelCache.invalidate(entity.getId());
     }
 
     @Override
-    public Neo4jNode findEntityById(EntityTypeMetadata<NodeMetadata> metadata, Neo4jLabel label, Long id) {
-        return new Neo4jNode(graphDatabaseService.getNodeById(id));
+    public EmbeddedNode findEntityById(EntityTypeMetadata<NodeMetadata> metadata, EmbeddedLabel label, Long id) {
+        return new EmbeddedNode(graphDatabaseService.getNodeById(id));
     }
 
     @Override
-    public ResultIterator<Neo4jNode> findEntity(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, Neo4jLabel discriminator,
-            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
+    public ResultIterator<EmbeddedNode> findEntity(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, EmbeddedLabel discriminator,
+                                                   Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
         if (values.size() > 1) {
             throw new XOException("Only one property value is supported for find operation");
         }
@@ -105,15 +105,15 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
         PropertyMetadata propertyMetadata = propertyMethodMetadata.getDatastoreMetadata();
         Object value = entry.getValue();
         ResourceIterator<Node> iterator = graphDatabaseService.findNodes(discriminator.getDelegate(), propertyMetadata.getName(), value);
-        return new ResultIterator<Neo4jNode>() {
+        return new ResultIterator<EmbeddedNode>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
             }
 
             @Override
-            public Neo4jNode next() {
-                return new Neo4jNode(iterator.next());
+            public EmbeddedNode next() {
+                return new EmbeddedNode(iterator.next());
             }
 
             @Override
@@ -129,43 +129,43 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<Neo4jNode>
     }
 
     @Override
-    public void migrateEntity(Neo4jNode entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<Neo4jLabel> discriminators,
-            TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> targetTypes, Set<Neo4jLabel> targetDiscriminators) {
-        Set<Neo4jLabel> labelsToRemove = new HashSet<>(discriminators);
+    public void migrateEntity(EmbeddedNode entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<EmbeddedLabel> discriminators,
+                              TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> targetTypes, Set<EmbeddedLabel> targetDiscriminators) {
+        Set<EmbeddedLabel> labelsToRemove = new HashSet<>(discriminators);
         labelsToRemove.removeAll(targetDiscriminators);
-        for (Neo4jLabel label : labelsToRemove) {
+        for (EmbeddedLabel label : labelsToRemove) {
             entity.removeLabel(label);
         }
-        Set<Neo4jLabel> labelsToAdd = new HashSet<>(targetDiscriminators);
+        Set<EmbeddedLabel> labelsToAdd = new HashSet<>(targetDiscriminators);
         labelsToAdd.removeAll(discriminators);
         addDiscriminators(entity, labelsToAdd);
         labelCache.put(entity.getId(), targetDiscriminators);
     }
 
     @Override
-    public void addDiscriminators(Neo4jNode node, Set<Neo4jLabel> labels) {
-        for (Neo4jLabel label : labels) {
+    public void addDiscriminators(EmbeddedNode node, Set<EmbeddedLabel> labels) {
+        for (EmbeddedLabel label : labels) {
             node.addLabel(label);
         }
         labelCache.invalidate(node.getId());
     }
 
     @Override
-    public void removeDiscriminators(Neo4jNode node, Set<Neo4jLabel> labels) {
-        for (Neo4jLabel label : labels) {
+    public void removeDiscriminators(EmbeddedNode node, Set<EmbeddedLabel> labels) {
+        for (EmbeddedLabel label : labels) {
             node.removeLabel(label);
         }
         labelCache.invalidate(node.getId());
     }
 
     @Override
-    public void flushEntity(Neo4jNode node) {
+    public void flushEntity(EmbeddedNode node) {
         node.flush();
         labelCache.invalidate(node.getId());
     }
 
     @Override
-    public void clearEntity(Neo4jNode node) {
+    public void clearEntity(EmbeddedNode node) {
         node.clear();
         labelCache.invalidate(node.getId());
     }

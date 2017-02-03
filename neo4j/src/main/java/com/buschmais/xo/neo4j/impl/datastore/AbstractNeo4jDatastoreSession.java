@@ -11,13 +11,13 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.Neo4jDatastoreSession;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
-import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
-import com.buschmais.xo.neo4j.api.model.Neo4jNode;
-import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
-import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.RelationshipMetadata;
+import com.buschmais.xo.neo4j.impl.model.EmbeddedLabel;
+import com.buschmais.xo.neo4j.impl.model.EmbeddedNode;
+import com.buschmais.xo.neo4j.impl.model.EmbeddedRelationship;
+import com.buschmais.xo.neo4j.impl.model.EmbeddedRelationshipType;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.reflection.ClassHelper;
@@ -43,12 +43,12 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public DatastoreEntityManager<Long, Neo4jNode, NodeMetadata, Neo4jLabel, PropertyMetadata> getDatastoreEntityManager() {
+    public DatastoreEntityManager<Long, EmbeddedNode, NodeMetadata, EmbeddedLabel, PropertyMetadata> getDatastoreEntityManager() {
         return entityManager;
     }
 
     @Override
-    public DatastoreRelationManager<Neo4jNode, Long, Neo4jRelationship, RelationshipMetadata, Neo4jRelationshipType, PropertyMetadata> getDatastoreRelationManager() {
+    public DatastoreRelationManager<EmbeddedNode, Long, EmbeddedRelationship, RelationshipMetadata, EmbeddedRelationshipType, PropertyMetadata> getDatastoreRelationManager() {
         return relationManager;
     }
 
@@ -81,9 +81,9 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     @Override
     public Object convertValue(Object value) {
         if (value instanceof Node) {
-            return new Neo4jNode((Node) value);
+            return new EmbeddedNode((Node) value);
         } else if (value instanceof Relationship) {
-            return new Neo4jRelationship((Relationship) value);
+            return new EmbeddedRelationship((Relationship) value);
         } else if (value instanceof Iterable<?>) {
             Iterable<?> iterable = (Iterable<?>) value;
             List<Object> values = new ArrayList<>();
@@ -103,10 +103,10 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
 
     @Override
     public Object convertParameter(Object value) {
-        if (value instanceof Neo4jNode) {
-            return ((Neo4jNode) value).getId();
-        } else if (value instanceof Neo4jRelationship) {
-            return ((Neo4jRelationship) value).getId();
+        if (value instanceof EmbeddedNode) {
+            return ((EmbeddedNode) value).getId();
+        } else if (value instanceof EmbeddedRelationship) {
+            return ((EmbeddedRelationship) value).getId();
         } else if (value instanceof Collection) {
             Collection collection = (Collection) value;
             List<Object> values = new ArrayList<>();

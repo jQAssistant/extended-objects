@@ -1,17 +1,16 @@
 package com.buschmais.xo.neo4j.impl.datastore;
 
-import com.buschmais.xo.neo4j.api.model.AbstractNeo4jPropertyContainer;
+import java.util.Map;
+
 import com.buschmais.xo.neo4j.impl.datastore.metadata.PropertyMetadata;
+import com.buschmais.xo.neo4j.impl.model.AbstractEmbeddedPropertyContainer;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import org.neo4j.graphdb.PropertyContainer;
-
-import java.util.Map;
 
 /**
  * Abstract implementation of a {@link DatastorePropertyManager} for Neo4j.
  */
-public abstract class AbstractNeo4jPropertyManager<Element extends AbstractNeo4jPropertyContainer> implements DatastorePropertyManager<Element, PropertyMetadata> {
+public abstract class AbstractNeo4jPropertyManager<Element extends AbstractEmbeddedPropertyContainer> implements DatastorePropertyManager<Element, PropertyMetadata> {
 
     @Override
     public void setProperty(Element element, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata, Object value) {

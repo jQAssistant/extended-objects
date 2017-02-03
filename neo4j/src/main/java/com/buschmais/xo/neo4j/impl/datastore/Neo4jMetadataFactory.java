@@ -8,9 +8,9 @@ import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Property;
 import com.buschmais.xo.neo4j.api.annotation.Relation;
-import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
-import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
 import com.buschmais.xo.neo4j.impl.datastore.metadata.*;
+import com.buschmais.xo.neo4j.impl.model.EmbeddedLabel;
+import com.buschmais.xo.neo4j.impl.model.EmbeddedRelationshipType;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
@@ -24,19 +24,19 @@ import com.google.common.base.CaseFormat;
  * {@link com.buschmais.xo.spi.datastore.DatastoreMetadataFactory}
  * implementation for Neo4j datastores.
  */
-public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, Neo4jLabel, RelationshipMetadata, Neo4jRelationshipType> {
+public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, EmbeddedLabel, RelationshipMetadata, EmbeddedRelationshipType> {
 
     @Override
     public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
         Label labelAnnotation = annotatedType.getAnnotation(Label.class);
-        Neo4jLabel label = null;
+        EmbeddedLabel label = null;
         IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedProperty = null;
         if (labelAnnotation != null) {
             String value = labelAnnotation.value();
             if (Label.DEFAULT_VALUE.equals(value)) {
                 value = annotatedType.getName();
             }
-            label = new Neo4jLabel(value);
+            label = new EmbeddedLabel(value);
             Class<?> usingIndexOf = labelAnnotation.usingIndexedPropertyOf();
             if (!Object.class.equals(usingIndexOf)) {
                 TypeMetadata typeMetadata = metadataByType.get(usingIndexOf);
@@ -93,6 +93,6 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
             name = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, annotatedElement.getName());
         }
         RelationshipType relationshipType = new RelationshipType(DynamicRelationshipType.withName(name));
-        return new RelationshipMetadata(new Neo4jRelationshipType(relationshipType));
+        return new RelationshipMetadata(new EmbeddedRelationshipType(relationshipType));
     }
 }

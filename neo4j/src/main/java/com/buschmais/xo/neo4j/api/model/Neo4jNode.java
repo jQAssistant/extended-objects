@@ -1,82 +1,17 @@
 package com.buschmais.xo.neo4j.api.model;
 
-import java.util.Iterator;
+public interface Neo4jNode<L extends Neo4jLabel, R extends Neo4jRelationship, T extends Neo4jRelationshipType, D extends Neo4jDirection>
+        extends Neo4jPropertyContainer {
 
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
+    long getId();
 
-public class Neo4jNode extends AbstractNeo4jPropertyContainer<Node> {
+    Iterable<R> getRelationships(T type, D dir);
 
-    public Neo4jNode(Node delegate) {
-        super(delegate);
-    }
+    boolean hasRelationship(T type, D dir);
 
-    public long getId() {
-        return delegate.getId();
-    }
+    R getSingleRelationship(T type, D dir);
 
-    public void delete() {
-        delegate.delete();
-    }
+    boolean hasLabel(L label);
 
-    public Iterable<Neo4jRelationship> getRelationships(Neo4jRelationshipType type, Neo4jDirection dir) {
-        Iterable<Relationship> relationships = delegate.getRelationships(type.getDelegate(), dir.getDelegate());
-        return () -> {
-            Iterator<Relationship> iterator = relationships.iterator();
-            return new Iterator<Neo4jRelationship>() {
-                @Override
-                public boolean hasNext() {
-                    return iterator.hasNext();
-                }
-
-                @Override
-                public Neo4jRelationship next() {
-                    return new Neo4jRelationship(iterator.next());
-                }
-            };
-        };
-
-    }
-
-    public boolean hasRelationship(Neo4jRelationshipType type, Neo4jDirection dir) {
-        return delegate.hasRelationship(type.getDelegate(), dir.getDelegate());
-    }
-
-    public Neo4jRelationship getSingleRelationship(Neo4jRelationshipType type, Neo4jDirection dir) {
-        return new Neo4jRelationship(delegate.getSingleRelationship(type.getDelegate(), dir.getDelegate()));
-    }
-
-    public Neo4jRelationship createRelationshipTo(Neo4jNode otherNode, Neo4jRelationshipType type) {
-        return new Neo4jRelationship(delegate.createRelationshipTo(otherNode.getDelegate(), type.getDelegate()));
-    }
-
-    public void addLabel(Neo4jLabel label) {
-        delegate.addLabel(label.getDelegate());
-    }
-
-    public void removeLabel(Neo4jLabel label) {
-        delegate.removeLabel(label.getDelegate());
-    }
-
-    public boolean hasLabel(Neo4jLabel label) {
-        return delegate.hasLabel(label.getDelegate());
-    }
-
-    public Iterable<Neo4jLabel> getLabels() {
-        return () -> {
-            Iterator<Label> iterator = delegate.getLabels().iterator();
-            return new Iterator<Neo4jLabel>() {
-                @Override
-                public boolean hasNext() {
-                    return iterator.hasNext();
-                }
-
-                @Override
-                public Neo4jLabel next() {
-                    return new Neo4jLabel(iterator.next());
-                }
-            };
-        };
-    }
+    Iterable<L> getLabels();
 }

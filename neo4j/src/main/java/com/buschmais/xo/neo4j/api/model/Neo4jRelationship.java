@@ -1,37 +1,13 @@
 package com.buschmais.xo.neo4j.api.model;
 
-import org.neo4j.graphdb.Relationship;
+public interface Neo4jRelationship<N extends Neo4jNode<?, ?, T, ?>, T extends Neo4jRelationshipType> extends Neo4jPropertyContainer {
 
-public class Neo4jRelationship extends AbstractNeo4jPropertyContainer<Relationship> {
+    long getId();
 
-    private Neo4jNode startNode;
+    N getStartNode();
 
-    private Neo4jNode endNode;
+    N getEndNode();
 
-    public Neo4jRelationship(Relationship delegate) {
-        super(delegate);
-        this.startNode = new Neo4jNode(delegate.getStartNode());
-        this.endNode = new Neo4jNode(delegate.getEndNode());
-    }
-
-    public long getId() {
-        return delegate.getId();
-    }
-
-    public void delete() {
-        delegate.delete();
-    }
-
-    public Neo4jNode getStartNode() {
-        return startNode;
-    }
-
-    public Neo4jNode getEndNode() {
-        return endNode;
-    }
-
-    public Neo4jRelationshipType getType() {
-        return new Neo4jRelationshipType(delegate.getType());
-    }
+    T getType();
 
 }

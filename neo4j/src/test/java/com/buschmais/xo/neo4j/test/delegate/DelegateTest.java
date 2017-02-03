@@ -19,9 +19,9 @@ import org.neo4j.graphdb.DynamicLabel;
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
+import com.buschmais.xo.neo4j.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.delegate.composite.A;
 import com.buschmais.xo.neo4j.test.delegate.composite.A2B;
@@ -44,7 +44,7 @@ public class DelegateTest extends AbstractNeo4jXOManagerTest {
         XOManager xoManager = getXoManager();
         xoManager.currentTransaction().begin();
         Neo4jNode node = ((CompositeObject) xoManager.create(A.class)).getDelegate();
-        assertThat(node.hasLabel(new Neo4jLabel(DynamicLabel.label("A"))), equalTo(true));
+        assertThat(node.hasLabel(new EmbeddedLabel(DynamicLabel.label("A"))), equalTo(true));
         xoManager.currentTransaction().commit();
     }
 

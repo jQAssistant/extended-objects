@@ -1,19 +1,21 @@
-package com.buschmais.xo.neo4j.api.model;
+package com.buschmais.xo.neo4j.impl.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.neo4j.graphdb.PropertyContainer;
 
+import com.buschmais.xo.neo4j.api.model.Neo4jPropertyContainer;
 
-public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer> {
+
+public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContainer> implements Neo4jPropertyContainer {
 
     protected T delegate;
 
     private Map<String, Object> readCache = null;
     private Map<String, Object> writeCache = null;
 
-    public AbstractNeo4jPropertyContainer(T delegate) {
+    public AbstractEmbeddedPropertyContainer(T delegate) {
         this.delegate = delegate;
     }
 
@@ -21,6 +23,7 @@ public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer
         return delegate;
     }
 
+    @Override
     public boolean hasProperty(String key) {
         if (getReadCache().containsKey(key)) {
             return true;
@@ -28,6 +31,7 @@ public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer
         return delegate.hasProperty(key);
     }
 
+    @Override
     public Object getProperty(String key) {
         Map<String, Object> readCache = getReadCache();
         if (readCache.containsKey(key)) {
@@ -49,6 +53,7 @@ public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer
         return delegate.removeProperty(key);
     }
 
+    @Override
     public Map<String, Object> getProperties() {
         Map<String, Object> properties = new HashMap<>();
         for (String key : delegate.getPropertyKeys()) {
@@ -92,8 +97,8 @@ public abstract class AbstractNeo4jPropertyContainer<T extends PropertyContainer
 
     @Override
     public final boolean equals(Object obj) {
-        if (obj instanceof AbstractNeo4jPropertyContainer<?>) {
-            return delegate.equals(((AbstractNeo4jPropertyContainer<?>) obj).delegate);
+        if (obj instanceof AbstractEmbeddedPropertyContainer<?>) {
+            return delegate.equals(((AbstractEmbeddedPropertyContainer<?>) obj).delegate);
         }
         return false;
     }
