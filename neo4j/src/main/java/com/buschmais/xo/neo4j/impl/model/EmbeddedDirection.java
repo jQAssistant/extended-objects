@@ -17,4 +17,9 @@ public enum EmbeddedDirection implements Neo4jDirection {
     public Direction getDelegate() {
         return delegate;
     }
+
+    @Override
+    public String getName() {
+        return name();
+    }
 }

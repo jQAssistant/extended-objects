@@ -1,8 +1,15 @@
 package com.buschmais.xo.neo4j.api.model;
 
 /**
- * Created by dirk.mahler on 03.02.2017.
+ * Defines a label.
  */
 public interface Neo4jLabel {
+
+    /**
+     * Return the {@link String} representation of the label.
+     * 
+     * @return The {@link String} representation.
+     */
     String getName();
+
 }
