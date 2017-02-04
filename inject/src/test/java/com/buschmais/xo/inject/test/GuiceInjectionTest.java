@@ -1,25 +1,26 @@
 package com.buschmais.xo.inject.test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
+
+import javax.inject.Inject;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.inject.GuiceModule;
 import com.buschmais.xo.inject.test.composite.A;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import javax.inject.Inject;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
 
 public class GuiceInjectionTest {
 
     @Inject
-    private XOManagerFactory XOManagerFactory;
+    private XOManagerFactory xoManagerFactory;
 
     private XOManager xoManager;
 
@@ -27,19 +28,19 @@ public class GuiceInjectionTest {
     public void setUp() {
         Injector injector = Guice.createInjector(new GuiceModule());
         injector.injectMembers(this);
-        xoManager = XOManagerFactory.createXOManager();
+        xoManager = xoManagerFactory.createXOManager();
         dropDatabase();
     }
 
     @After
     public void tearDown() {
         closeXOManager();
-        XOManagerFactory.close();
+        xoManagerFactory.close();
     }
 
     @Test
     public void testInjectedXOManager() {
-        assertThat(XOManagerFactory, notNullValue());
+        assertThat(xoManagerFactory, notNullValue());
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setValue("Google Guice");

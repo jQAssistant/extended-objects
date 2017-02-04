@@ -1,19 +1,19 @@
 package com.buschmais.xo.inject.test;
 
-import com.buschmais.xo.api.XOManagerFactory;
-import com.buschmais.xo.api.bootstrap.XO;
-import com.buschmais.xo.impl.XOManagerFactoryImpl;
-import com.buschmais.xo.inject.GuiceModule;
-import com.google.inject.Injector;
-import com.google.inject.Provides;
-import org.junit.Test;
+import static com.google.inject.Guice.createInjector;
+import static org.junit.Assert.assertEquals;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import static com.google.inject.Guice.createInjector;
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import com.buschmais.xo.api.XOManagerFactory;
+import com.buschmais.xo.api.bootstrap.XO;
+import com.buschmais.xo.inject.GuiceModule;
+import com.google.inject.Injector;
+import com.google.inject.Provides;
 
 public class GuiceXOManagerFactoryInjectionTest {
 
@@ -31,15 +31,15 @@ public class GuiceXOManagerFactoryInjectionTest {
     @Test
     public void testInjectedFieldXOManager() {
         A a = injector.getInstance(A.class);
-        assertEquals("guice", ((XOManagerFactoryImpl) a.guiceXOManager).getXOUnit().getName());
-        assertEquals("default", ((XOManagerFactoryImpl) a.defaultXOManager).getXOUnit().getName());
+        assertEquals("guice", a.guiceXOManager.getXOUnit().getName());
+        assertEquals("default", a.defaultXOManager.getXOUnit().getName());
     }
 
     @Test
     public void testInjectedConstructorXOManager() {
         B b = injector.getInstance(B.class);
-        assertEquals("guice", ((XOManagerFactoryImpl) b.guiceXOManager).getXOUnit().getName());
-        assertEquals("default", ((XOManagerFactoryImpl) b.defaultXOManager).getXOUnit().getName());
+        assertEquals("guice", b.guiceXOManager.getXOUnit().getName());
+        assertEquals("default", b.defaultXOManager.getXOUnit().getName());
     }
 
     static class A {

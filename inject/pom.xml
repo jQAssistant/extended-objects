@@ -35,12 +35,12 @@
         </dependency>
         <dependency>
             <groupId>com.buschmais.xo</groupId>
-            <artifactId>xo.neo4j</artifactId>
+            <artifactId>xo.neo4j.embedded</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.buschmais.xo</groupId>
-            <artifactId>xo.api</artifactId>
+            <artifactId>xo.impl</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
