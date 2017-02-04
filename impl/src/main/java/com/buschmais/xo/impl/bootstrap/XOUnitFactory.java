@@ -1,14 +1,11 @@
 package com.buschmais.xo.impl.bootstrap;
 
-import com.buschmais.xo.api.ConcurrencyMode;
-import com.buschmais.xo.api.Transaction;
-import com.buschmais.xo.api.ValidationMode;
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.spi.reflection.ClassHelper;
-import com.buschmais.xo.impl.schema.v1.*;
-import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -17,12 +14,17 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
+
+import org.xml.sax.SAXException;
+
+import com.buschmais.xo.api.ConcurrencyMode;
+import com.buschmais.xo.api.Transaction;
+import com.buschmais.xo.api.ValidationMode;
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.impl.schema.v1.*;
+import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
+import com.buschmais.xo.spi.reflection.ClassHelper;
 
 public class XOUnitFactory {
 
@@ -107,7 +109,9 @@ public class XOUnitFactory {
                     properties.setProperty(propertyType.getName(), propertyType.getValue());
                 }
             }
-            XOUnit xoUnit = new XOUnit(name, description, uri, provider, types, instanceListeners, validationMode, concurrencyMode, defaultTransactionAttribute, properties);
+            XOUnit xoUnit = XOUnit.builder().name(name).description(description).uri(uri).provider(provider).types(types).instanceListeners(instanceListeners)
+                    .validationMode(validationMode).concurrencyMode(concurrencyMode).defaultTransactionAttribute(defaultTransactionAttribute)
+                    .properties(properties).build();
             xoUnits.add(xoUnit);
         }
         return xoUnits;

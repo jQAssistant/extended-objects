@@ -8,7 +8,7 @@
     </parent>
     <artifactId>xo.neo4j.api</artifactId>
 
-    <name>eXtended Objects - Neo4j API</name>
+    <name>eXtended Objects - Neo4j Binding API</name>
 
     <build>
         <plugins>

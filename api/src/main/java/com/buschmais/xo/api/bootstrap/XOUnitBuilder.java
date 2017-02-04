@@ -1,20 +1,18 @@
 package com.buschmais.xo.api.bootstrap;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.Transaction.TransactionAttribute;
 import com.buschmais.xo.api.ValidationMode;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
-
 /**
  * Provides functionality to build {@link XOUnit}s.
  */
+@Deprecated
 public class XOUnitBuilder {
 
     private String name = "default";
@@ -25,7 +23,7 @@ public class XOUnitBuilder {
 
     private Class<?> provider;
 
-    private Class<?>[] types;
+    private Set<? extends Class<?>> types;
 
     private ValidationMode validationMode = ValidationMode.AUTO;
 
@@ -33,14 +31,14 @@ public class XOUnitBuilder {
 
     private Transaction.TransactionAttribute transactionAttribute = Transaction.TransactionAttribute.NONE;
 
-    private List<Class<?>> instanceListenerTypes = Collections.emptyList();
+    private List<? extends Class<?>> instanceListenerTypes = Collections.emptyList();
 
     private Properties properties = new Properties();
 
     XOUnitBuilder(URI uri, Class<?> provider, Class<?>[] types) {
         this.uri = uri;
         this.provider = provider;
-        this.types = types;
+        this.types = new HashSet<>(Arrays.asList(types));
     }
 
     public static XOUnitBuilder create(URI uri, Class<?> provider, Class<?>... types) {
@@ -122,7 +120,9 @@ public class XOUnitBuilder {
     }
 
     public XOUnit create() {
-        return new XOUnit(name, description, uri, provider, types, instanceListenerTypes, validationMode, concurrencyMode, transactionAttribute, properties);
+        return XOUnit.builder().name(name).description(description).uri(uri).provider(provider).types(types).instanceListeners(instanceListenerTypes)
+                .validationMode(validationMode).concurrencyMode(concurrencyMode).defaultTransactionAttribute(transactionAttribute).properties(properties)
+                .build();
     }
 
 }

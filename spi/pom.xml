@@ -36,6 +36,10 @@
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -9,7 +9,7 @@
     <artifactId>xo.neo4j</artifactId>
     <packaging>pom</packaging>
 
-    <name>eXtended Objects - Neo4j Bindings</name>
+    <name>eXtended Objects - Neo4j Binding</name>
 
     <dependencyManagement>
         <dependencies>

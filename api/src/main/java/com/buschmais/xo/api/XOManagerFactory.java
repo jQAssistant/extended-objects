@@ -10,7 +10,7 @@ public interface XOManagerFactory extends AutoCloseable, CloseSupport {
     /**
      * The persistent identifier (PID).
      */
-    public static final String FACTORY_PID = "com.buschmais.xo.factory";
+    String FACTORY_PID = "com.buschmais.xo.factory";
 
     /**
      * Create a {@link XOManager} instance.
