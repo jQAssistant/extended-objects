@@ -92,7 +92,6 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
         if (name == null) {
             name = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, annotatedElement.getName());
         }
-        RelationshipType relationshipType = new RelationshipType(DynamicRelationshipType.withName(name));
-        return new RelationshipMetadata(new EmbeddedRelationshipType(relationshipType));
+        return new RelationshipMetadata(new EmbeddedRelationshipType(DynamicRelationshipType.withName(name)));
     }
 }
