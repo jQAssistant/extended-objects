@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.annotation.*;
+import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.MetadataProvider;
 import com.buschmais.xo.spi.annotation.EntityDefinition;
 import com.buschmais.xo.spi.annotation.IndexDefinition;
@@ -63,8 +64,12 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      *            All classes as provided by the XO unit.
      * @param datastore
      *            The datastore.
+     * @param mappingConfiguration
+     *            The mapping configuration.
      */
-    public MetadataProviderImpl(Collection<Class<?>> types, Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore) {
+    public MetadataProviderImpl(Collection<Class<?>> types,
+            Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore,
+            XOUnit.MappingConfiguration mappingConfiguration) {
         this.metadataFactory = datastore.getMetadataFactory();
         DependencyResolver.DependencyProvider<Class<?>> classDependencyProvider = dependent -> new HashSet<>(Arrays.asList(dependent.getInterfaces()));
         List<Class<?>> allClasses = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
@@ -79,7 +84,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         for (Class<?> currentClass : allClasses) {
             getOrCreateTypeMetadata(currentClass);
         }
-        entityTypeMetadataResolver = new EntityTypeMetadataResolver<>(metadataByType);
+        entityTypeMetadataResolver = new EntityTypeMetadataResolver<>(metadataByType, mappingConfiguration);
         relationTypeMetadataResolver = new RelationTypeMetadataResolver<>(metadataByType, entityTypeMetadataResolver);
         metadataByType.put(CompositeObject.class, new SimpleTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.<TypeMetadata> emptyList(),
                 Collections.<MethodMetadata<?, ?>> emptyList(), null));
@@ -307,8 +312,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             }
         } while (current != null && (fromType == null || toType == null));
         if (fromType == null || toType == null) {
-            throw new XOException("Relation type '" + annotatedType.getAnnotatedElement().getName()
-                    + "' does not define target entity properties for both directions.");
+            throw new XOException(
+                    "Relation type '" + annotatedType.getAnnotatedElement().getName() + "' does not define target entity properties for both directions.");
         }
         RelationMetadata relationMetadata = metadataFactory.createRelationMetadata(annotatedType, metadataByType);
         RelationTypeMetadata<RelationMetadata> relationTypeMetadata = new RelationTypeMetadata<>(annotatedType, superTypes, methodMetadataOfType, fromType,
@@ -488,8 +493,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             Class<?> fromType = relationMetadata.getFromType();
             Class<?> toType = relationMetadata.getToType();
             if (fromType.equals(toType)) {
-                throw new XOException("Direction of property '" + propertyMethod.getAnnotatedElement().toGenericString()
-                        + "' is ambiguous and must be specified.");
+                throw new XOException(
+                        "Direction of property '" + propertyMethod.getAnnotatedElement().toGenericString() + "' is ambiguous and must be specified.");
             }
             if (annotatedEntityType.getAnnotatedElement().equals(fromType)) {
                 relationDirection = Direction.FROM;
@@ -594,8 +599,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             throw new XOException("Cannot resolve metadata for type " + type.getName() + ".");
         }
         if (!metadataType.isAssignableFrom(typeMetadata.getClass())) {
-            throw new XOException("Expected metadata of type '" + metadataType.getName() + "' but got '" + typeMetadata.getClass() + "' for type '" + type
-                    + "'");
+            throw new XOException(
+                    "Expected metadata of type '" + metadataType.getName() + "' but got '" + typeMetadata.getClass() + "' for type '" + type + "'");
         }
         return metadataType.cast(typeMetadata);
     }

@@ -65,7 +65,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
                 return parentClassLoader.loadClass(name);
             }
         };
-        metadataProvider = new MetadataProviderImpl(xoUnit.getTypes(), datastore);
+        metadataProvider = new MetadataProviderImpl(xoUnit.getTypes(), datastore, xoUnit.getMappingConfiguration());
         this.validatorFactory = getValidatorFactory();
         datastore.init(metadataProvider.getRegisteredMetadata());
     }

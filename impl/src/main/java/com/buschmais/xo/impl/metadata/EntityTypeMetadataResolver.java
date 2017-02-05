@@ -2,6 +2,8 @@ package com.buschmais.xo.impl.metadata;
 
 import java.util.*;
 
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.bootstrap.XOUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +33,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * @param metadataByType
      *            A map of all types with their metadata.
      */
-    public EntityTypeMetadataResolver(Map<Class<?>, TypeMetadata> metadataByType) {
+    public EntityTypeMetadataResolver(Map<Class<?>, TypeMetadata> metadataByType, XOUnit.MappingConfiguration mappingConfiguration) {
         LOGGER.debug("Type metadata = '{}'", metadataByType);
         Map<Set<Discriminator>, Set<EntityTypeMetadata<EntityMetadata>>> entityMetadataByDiscriminators = new HashMap<>();
         for (TypeMetadata typeMetadata : metadataByType.values()) {
@@ -63,7 +65,12 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
         LOGGER.debug("Type metadata by discriminators: '{}'", typeMetadataByDiscriminator);
         for (Map.Entry<Set<Discriminator>, Set<EntityTypeMetadata<EntityMetadata>>> entry : entityMetadataByDiscriminators.entrySet()) {
             if (entry.getValue().size() > 1) {
-                LOGGER.info("{} use the same set of discriminators {}.", entry.getValue(), entry.getKey());
+                String message = String.format("%s use the same set of discriminators %s.", entry.getValue(), entry.getKey());
+                if (mappingConfiguration.isStrictValidation()) {
+                    throw new XOException(message);
+                } else {
+                    LOGGER.warn(message);
+                }
             }
         }
     }

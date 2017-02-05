@@ -1,6 +1,7 @@
 package com.buschmais.xo.api.bootstrap;
 
 import static com.buschmais.xo.api.Transaction.TransactionAttribute;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.net.URI;
 import java.util.*;
@@ -8,6 +9,7 @@ import java.util.*;
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.ValidationMode;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -18,8 +20,24 @@ import lombok.ToString;
  */
 @Getter
 @Builder
+@AllArgsConstructor(access = PRIVATE)
 @ToString
 public class XOUnit {
+
+    @Getter
+    @Builder
+    @ToString
+    public static class MappingConfiguration {
+
+        /**
+         * Indicates if mappings for entities and relations are performed
+         * strict. If <code>true</code> any detected problems will be reported
+         * by an {@link com.buschmais.xo.api.XOException} at startup, otherwise
+         * a warning.
+         */
+        private boolean strictValidation = false;
+
+    }
 
     /**
      * The name which is used to uniquely identify the XO unit.
@@ -70,6 +88,11 @@ public class XOUnit {
      * Additional properties to be passed to the provider.
      */
     private Properties properties = new Properties();
+
+    /**
+     * The mapping configuration.
+     */
+    private MappingConfiguration mappingConfiguration;
 
     /**
      * Constructs a XO unit.
