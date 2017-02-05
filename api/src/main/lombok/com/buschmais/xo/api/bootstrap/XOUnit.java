@@ -9,20 +9,24 @@ import java.util.*;
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.ValidationMode;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * Represents a XO unit, i.e. a configuration for a
  * {@link com.buschmais.xo.api.XOManagerFactory}.
  */
 @Getter
-@Builder
+@Builder(toBuilder = true)
+@NoArgsConstructor(access = PRIVATE)
 @AllArgsConstructor(access = PRIVATE)
 @ToString
 public class XOUnit {
+
+    private static final XOUnit PROTOTYPE = new XOUnit();
+
+    public static XOUnitBuilder builder() {
+        return PROTOTYPE.toBuilder();
+    }
 
     @Getter
     @Builder
@@ -52,22 +56,24 @@ public class XOUnit {
     /*
      * The datastore specific URI.
      */
-    private final URI uri;
+    private URI uri;
 
     /**
      * The provider class to use.
      */
-    private final Class<?> provider;
+    private Class<?> provider;
 
     /**
      * The entity types to register.
      */
-    private final Set<? extends Class<?>> types;
+    @Singular
+    private Set<? extends Class<?>> types = new HashSet<>();
 
     /**
      * The instance listener types.
      */
-    private final List<? extends Class<?>> instanceListeners;
+    @Singular
+    private List<? extends Class<?>> instanceListeners = new ArrayList<>();
 
     /**
      * The {@link com.buschmais.xo.api.ValidationMode} to use.
@@ -92,7 +98,7 @@ public class XOUnit {
     /**
      * The mapping configuration.
      */
-    private MappingConfiguration mappingConfiguration;
+    private MappingConfiguration mappingConfiguration = MappingConfiguration.builder().build();
 
     /**
      * Constructs a XO unit.
