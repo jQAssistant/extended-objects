@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.embedded.impl.datastore.metadata;
+package com.buschmais.xo.neo4j.spi.metadata;
 
 public class IndexedPropertyMetadata {
 

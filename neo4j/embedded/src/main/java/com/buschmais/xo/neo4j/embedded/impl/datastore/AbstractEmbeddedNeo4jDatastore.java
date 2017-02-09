@@ -9,10 +9,10 @@ import org.neo4j.graphdb.schema.IndexDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.IndexedPropertyMetadata;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
+import com.buschmais.xo.neo4j.spi.metadata.IndexedPropertyMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
@@ -45,7 +45,7 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
         try (Transaction transaction = graphDatabaseService.beginTx()) {
             for (TypeMetadata typeMetadata : registeredMetadata.values()) {
                 if (typeMetadata instanceof EntityTypeMetadata) {
-                    EntityTypeMetadata<NodeMetadata> entityTypeMetadata = (EntityTypeMetadata<NodeMetadata>) typeMetadata;
+                    EntityTypeMetadata<NodeMetadata<EmbeddedLabel>> entityTypeMetadata = (EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>) typeMetadata;
                     // check for indexed property declared in type
                     ensureIndex(entityTypeMetadata, entityTypeMetadata.getIndexedProperty());
                     ensureIndex(entityTypeMetadata, entityTypeMetadata.getDatastoreMetadata().getUsingIndexedPropertyOf());
@@ -63,7 +63,8 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
      * @param indexedProperty
      *            The index metadata.
      */
-    private void ensureIndex(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedProperty) {
+    private void ensureIndex(EntityTypeMetadata<NodeMetadata<EmbeddedLabel>> entityTypeMetadata,
+            IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedProperty) {
         if (indexedProperty != null) {
             IndexedPropertyMetadata datastoreMetadata = indexedProperty.getDatastoreMetadata();
             if (datastoreMetadata.isCreate()) {

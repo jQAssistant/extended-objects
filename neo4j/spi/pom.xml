@@ -6,9 +6,9 @@
         <artifactId>xo.neo4j</artifactId>
         <version>0.8.0-SNAPSHOT</version>
     </parent>
-    <artifactId>xo.neo4j.api</artifactId>
+    <artifactId>xo.neo4j.spi</artifactId>
 
-    <name>eXtended Objects - Neo4j Binding API</name>
+    <name>eXtended Objects - Neo4j Binding SPI</name>
 
     <build>
         <plugins>
@@ -25,17 +25,13 @@
                     </archive>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.asciidoctor</groupId>
-                <artifactId>asciidoctor-maven-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 
     <dependencies>
         <dependency>
             <groupId>com.buschmais.xo</groupId>
-            <artifactId>xo.api</artifactId>
+            <artifactId>xo.neo4j.api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.buschmais.xo</groupId>

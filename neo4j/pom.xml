@@ -18,12 +18,19 @@
                 <artifactId>xo.neo4j.api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.buschmais.xo</groupId>
+                <artifactId>xo.neo4j.spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <modules>
         <module>api</module>
+        <module>spi</module>
         <module>embedded</module>
+        <module>remote</module>
     </modules>
 
 </project>

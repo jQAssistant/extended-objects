@@ -2,13 +2,13 @@ package com.buschmais.xo.neo4j.embedded.api;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.PropertyMetadata;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationship;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
+import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 
 /**
@@ -19,7 +19,7 @@ import com.buschmais.xo.spi.datastore.DatastoreSession;
  *            concrete implementation.
  */
 public interface Neo4jDatastoreSession<GDS extends GraphDatabaseService> extends
-        DatastoreSession<Long, EmbeddedNode, NodeMetadata, EmbeddedLabel, Long, EmbeddedRelationship, RelationshipMetadata, EmbeddedRelationshipType, PropertyMetadata> {
+        DatastoreSession<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, Long, EmbeddedRelationship, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType, PropertyMetadata> {
 
     GDS getGraphDatabaseService();
 

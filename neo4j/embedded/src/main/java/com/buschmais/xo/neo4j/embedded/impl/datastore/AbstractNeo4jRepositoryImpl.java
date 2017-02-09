@@ -6,13 +6,13 @@ import org.neo4j.graphdb.ResourceIterator;
 
 import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.PropertyMetadata;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationship;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
+import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.session.XOSession;
@@ -23,10 +23,10 @@ import com.buschmais.xo.spi.session.XOSession;
 abstract class AbstractNeo4jRepositoryImpl {
 
     private final GraphDatabaseService graphDatabaseService;
-    private final XOSession<Long, EmbeddedNode, NodeMetadata, EmbeddedLabel, Long, EmbeddedRelationship, RelationshipMetadata, EmbeddedRelationshipType, PropertyMetadata> xoSession;
+    private final XOSession<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, Long, EmbeddedRelationship, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType, PropertyMetadata> xoSession;
 
     protected AbstractNeo4jRepositoryImpl(GraphDatabaseService graphDatabaseService,
-            XOSession<Long, EmbeddedNode, NodeMetadata, EmbeddedLabel, Long, EmbeddedRelationship, RelationshipMetadata, EmbeddedRelationshipType, PropertyMetadata> xoSession) {
+            XOSession<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, Long, EmbeddedRelationship, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType, PropertyMetadata> xoSession) {
         this.graphDatabaseService = graphDatabaseService;
         this.xoSession = xoSession;
     }
@@ -34,7 +34,7 @@ abstract class AbstractNeo4jRepositoryImpl {
     protected <T> ResultIterable<T> find(Class<T> type, Object value) {
         this.xoSession.flush();
         // get the label for the type
-        EntityTypeMetadata<NodeMetadata> entityMetadata = xoSession.getEntityMetadata(type);
+        EntityTypeMetadata<NodeMetadata<EmbeddedLabel>> entityMetadata = xoSession.getEntityMetadata(type);
         EmbeddedLabel label = entityMetadata.getDatastoreMetadata().getDiscriminator();
         // get the name of the indexed property
         PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata = entityMetadata.getIndexedProperty().getPropertyMethodMetadata();

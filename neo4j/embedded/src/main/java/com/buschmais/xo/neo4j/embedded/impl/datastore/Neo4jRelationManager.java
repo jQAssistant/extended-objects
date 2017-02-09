@@ -5,12 +5,12 @@ import java.util.Map;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.PropertyMetadata;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedDirection;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationship;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
+import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
@@ -19,8 +19,8 @@ import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
  * Implementation of a
  * {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager} for Neo4j.
  */
-public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedRelationship>
-        implements DatastoreRelationManager<EmbeddedNode, Long, EmbeddedRelationship, RelationshipMetadata, EmbeddedRelationshipType, PropertyMetadata> {
+public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedRelationship> implements
+        DatastoreRelationManager<EmbeddedNode, Long, EmbeddedRelationship, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType, PropertyMetadata> {
 
     private final GraphDatabaseService graphDatabaseService;
 
@@ -45,8 +45,8 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedR
     }
 
     @Override
-    public EmbeddedRelationship createRelation(EmbeddedNode source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction,
-                                               EmbeddedNode target, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
+    public EmbeddedRelationship createRelation(EmbeddedNode source, RelationTypeMetadata<RelationshipMetadata<EmbeddedRelationshipType>> metadata,
+            RelationTypeMetadata.Direction direction, EmbeddedNode target, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
         EmbeddedRelationship relationship;
         EmbeddedRelationshipType relationshipType = metadata.getDatastoreMetadata().getDiscriminator();
         switch (direction) {
@@ -74,7 +74,7 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedR
     }
 
     @Override
-    public EmbeddedRelationship findRelationById(RelationTypeMetadata<RelationshipMetadata> metadata, Long id) {
+    public EmbeddedRelationship findRelationById(RelationTypeMetadata<RelationshipMetadata<EmbeddedRelationshipType>> metadata, Long id) {
         return new EmbeddedRelationship(graphDatabaseService.getRelationshipById(id));
     }
 
@@ -89,19 +89,20 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedR
     }
 
     @Override
-    public boolean hasSingleRelation(EmbeddedNode source, RelationTypeMetadata<RelationshipMetadata> metadata, RelationTypeMetadata.Direction direction) {
+    public boolean hasSingleRelation(EmbeddedNode source, RelationTypeMetadata<RelationshipMetadata<EmbeddedRelationshipType>> metadata,
+            RelationTypeMetadata.Direction direction) {
         return source.hasRelationship(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
     }
 
     @Override
-    public EmbeddedRelationship getSingleRelation(EmbeddedNode source, RelationTypeMetadata<RelationshipMetadata> metadata,
-                                                  RelationTypeMetadata.Direction direction) {
+    public EmbeddedRelationship getSingleRelation(EmbeddedNode source, RelationTypeMetadata<RelationshipMetadata<EmbeddedRelationshipType>> metadata,
+            RelationTypeMetadata.Direction direction) {
         return source.getSingleRelationship(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
     }
 
     @Override
-    public Iterable<EmbeddedRelationship> getRelations(EmbeddedNode source, RelationTypeMetadata<RelationshipMetadata> metadata,
-                                                       RelationTypeMetadata.Direction direction) {
+    public Iterable<EmbeddedRelationship> getRelations(EmbeddedNode source, RelationTypeMetadata<RelationshipMetadata<EmbeddedRelationshipType>> metadata,
+            RelationTypeMetadata.Direction direction) {
         return source.getRelationships(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
     }
 
