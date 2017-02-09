@@ -1,16 +1,17 @@
-package com.buschmais.xo.neo4j.embedded.impl.datastore;
+package com.buschmais.xo.neo4j.spi;
 
 import java.util.Map;
-
-import org.neo4j.graphdb.DynamicRelationshipType;
 
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Property;
 import com.buschmais.xo.neo4j.api.annotation.Relation;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.*;
-import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
-import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
+import com.buschmais.xo.neo4j.spi.metadata.IndexedPropertyMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
@@ -24,27 +25,29 @@ import com.google.common.base.CaseFormat;
  * {@link com.buschmais.xo.spi.datastore.DatastoreMetadataFactory}
  * implementation for Neo4j datastores.
  */
-public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetadata, EmbeddedLabel, RelationshipMetadata, EmbeddedRelationshipType> {
+public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R extends Neo4jRelationshipType> implements DatastoreMetadataFactory<NodeMetadata<L>, L, RelationshipMetadata<R>, R> {
 
     @Override
     public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
         Label labelAnnotation = annotatedType.getAnnotation(Label.class);
-        EmbeddedLabel label = null;
+        L label = null;
         IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedProperty = null;
         if (labelAnnotation != null) {
             String value = labelAnnotation.value();
             if (Label.DEFAULT_VALUE.equals(value)) {
                 value = annotatedType.getName();
             }
-            label = new EmbeddedLabel(value);
+            label = createLabel(value);
             Class<?> usingIndexOf = labelAnnotation.usingIndexedPropertyOf();
             if (!Object.class.equals(usingIndexOf)) {
                 TypeMetadata typeMetadata = metadataByType.get(usingIndexOf);
                 indexedProperty = typeMetadata.getIndexedProperty();
             }
         }
-        return new NodeMetadata(label, indexedProperty);
+        return new NodeMetadata<L>(label, indexedProperty);
     }
+
+
 
     @Override
     public <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(AnnotatedMethod annotatedMethod) {
@@ -75,7 +78,7 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
     }
 
     @Override
-    public RelationshipMetadata createRelationMetadata(AnnotatedElement<?> annotatedElement, Map<Class<?>, TypeMetadata> metadataByType) {
+    public RelationshipMetadata<R> createRelationMetadata(AnnotatedElement<?> annotatedElement, Map<Class<?>, TypeMetadata> metadataByType) {
         Relation relationAnnotation;
         if (annotatedElement instanceof PropertyMethod) {
             relationAnnotation = ((PropertyMethod) annotatedElement).getAnnotationOfProperty(Relation.class);
@@ -92,6 +95,11 @@ public class Neo4jMetadataFactory implements DatastoreMetadataFactory<NodeMetada
         if (name == null) {
             name = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, annotatedElement.getName());
         }
-        return new RelationshipMetadata(new EmbeddedRelationshipType(DynamicRelationshipType.withName(name)));
+        return new RelationshipMetadata<R>(createRelationshipType(name));
     }
+
+    protected abstract R createRelationshipType(String name);
+
+    protected abstract L createLabel(String name);
+
 }

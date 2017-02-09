@@ -8,7 +8,8 @@ package com.buschmais.xo.neo4j.api.model;
  * @param <T>
  *            The type representing relationship types.
  */
-public interface Neo4jRelationship<N extends Neo4jNode<?, ?, T, ?>, T extends Neo4jRelationshipType> extends Neo4jPropertyContainer {
+public interface Neo4jRelationship<N extends Neo4jNode<L, R, T, D>, L extends Neo4jLabel, T extends Neo4jRelationshipType, R extends Neo4jRelationship, D extends Neo4jDirection>
+        extends Neo4jPropertyContainer {
 
     /**
      * Return the id of the relationship.

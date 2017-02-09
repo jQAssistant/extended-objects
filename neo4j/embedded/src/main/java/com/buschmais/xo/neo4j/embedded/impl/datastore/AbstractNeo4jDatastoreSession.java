@@ -11,13 +11,13 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.embedded.api.Neo4jDatastoreSession;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.PropertyMetadata;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.RelationshipMetadata;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationship;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
+import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.reflection.ClassHelper;
@@ -43,12 +43,12 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public DatastoreEntityManager<Long, EmbeddedNode, NodeMetadata, EmbeddedLabel, PropertyMetadata> getDatastoreEntityManager() {
+    public DatastoreEntityManager<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, PropertyMetadata> getDatastoreEntityManager() {
         return entityManager;
     }
 
     @Override
-    public DatastoreRelationManager<EmbeddedNode, Long, EmbeddedRelationship, RelationshipMetadata, EmbeddedRelationshipType, PropertyMetadata> getDatastoreRelationManager() {
+    public DatastoreRelationManager<EmbeddedNode, Long, EmbeddedRelationship, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType, PropertyMetadata> getDatastoreRelationManager() {
         return relationManager;
     }
 

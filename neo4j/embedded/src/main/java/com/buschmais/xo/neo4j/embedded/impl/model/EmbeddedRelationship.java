@@ -4,7 +4,8 @@ import org.neo4j.graphdb.Relationship;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
 
-public class EmbeddedRelationship extends AbstractEmbeddedPropertyContainer<Relationship> implements Neo4jRelationship<EmbeddedNode, EmbeddedRelationshipType> {
+public class EmbeddedRelationship extends AbstractEmbeddedPropertyContainer<Relationship>
+        implements Neo4jRelationship<EmbeddedNode, EmbeddedLabel, EmbeddedRelationshipType, EmbeddedRelationship, EmbeddedDirection> {
 
     private EmbeddedNode startNode;
 

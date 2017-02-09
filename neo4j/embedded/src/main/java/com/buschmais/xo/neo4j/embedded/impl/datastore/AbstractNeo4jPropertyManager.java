@@ -2,8 +2,8 @@ package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
 import java.util.Map;
 
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.embedded.impl.model.AbstractEmbeddedPropertyContainer;
+import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 

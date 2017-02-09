@@ -1,22 +1,22 @@
-package com.buschmais.xo.neo4j.embedded.impl.datastore.metadata;
+package com.buschmais.xo.neo4j.spi.metadata;
 
-import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 
-public class NodeMetadata implements DatastoreEntityMetadata<EmbeddedLabel> {
+public class NodeMetadata<L extends Neo4jLabel> implements DatastoreEntityMetadata<L> {
 
-    private final EmbeddedLabel label;
+    private final L label;
 
     private final IndexedPropertyMethodMetadata<IndexedPropertyMetadata> usingIndexedPropertyOf;
 
-    public NodeMetadata(EmbeddedLabel label, IndexedPropertyMethodMetadata<IndexedPropertyMetadata> usingIndexedPropertyOf) {
+    public NodeMetadata(L label, IndexedPropertyMethodMetadata<IndexedPropertyMetadata> usingIndexedPropertyOf) {
         this.label = label;
         this.usingIndexedPropertyOf = usingIndexedPropertyOf;
     }
 
     @Override
-    public EmbeddedLabel getDiscriminator() {
+    public L getDiscriminator() {
         return label;
     }
 

@@ -11,10 +11,10 @@ import org.neo4j.graphdb.ResourceIterator;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.NodeMetadata;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
+import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
@@ -28,7 +28,7 @@ import com.google.common.cache.CacheBuilder;
  * {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager} for Neo4j.
  */
 public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNode>
-        implements DatastoreEntityManager<Long, EmbeddedNode, NodeMetadata, EmbeddedLabel, PropertyMetadata> {
+        implements DatastoreEntityManager<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, PropertyMetadata> {
 
     private final GraphDatabaseService graphDatabaseService;
 
@@ -63,7 +63,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
     }
 
     @Override
-    public EmbeddedNode createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<EmbeddedLabel> discriminators,
+    public EmbeddedNode createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> types, Set<EmbeddedLabel> discriminators,
                                      Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
         Label[] labels = new Label[discriminators.size()];
         int i = 0;
@@ -83,12 +83,12 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
     }
 
     @Override
-    public EmbeddedNode findEntityById(EntityTypeMetadata<NodeMetadata> metadata, EmbeddedLabel label, Long id) {
+    public EmbeddedNode findEntityById(EntityTypeMetadata<NodeMetadata<EmbeddedLabel>> metadata, EmbeddedLabel label, Long id) {
         return new EmbeddedNode(graphDatabaseService.getNodeById(id));
     }
 
     @Override
-    public ResultIterator<EmbeddedNode> findEntity(EntityTypeMetadata<NodeMetadata> entityTypeMetadata, EmbeddedLabel discriminator,
+    public ResultIterator<EmbeddedNode> findEntity(EntityTypeMetadata<NodeMetadata<EmbeddedLabel>> entityTypeMetadata, EmbeddedLabel discriminator,
                                                    Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
         if (values.size() > 1) {
             throw new XOException("Only one property value is supported for find operation");
@@ -129,8 +129,8 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
     }
 
     @Override
-    public void migrateEntity(EmbeddedNode entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> types, Set<EmbeddedLabel> discriminators,
-                              TypeMetadataSet<EntityTypeMetadata<NodeMetadata>> targetTypes, Set<EmbeddedLabel> targetDiscriminators) {
+    public void migrateEntity(EmbeddedNode entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> types, Set<EmbeddedLabel> discriminators,
+                              TypeMetadataSet<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> targetTypes, Set<EmbeddedLabel> targetDiscriminators) {
         Set<EmbeddedLabel> labelsToRemove = new HashSet<>(discriminators);
         labelsToRemove.removeAll(targetDiscriminators);
         for (EmbeddedLabel label : labelsToRemove) {
