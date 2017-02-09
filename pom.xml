@@ -63,7 +63,8 @@
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
-        <jqassistant.version>1.1.4</jqassistant.version>
+        <jqassistant.version>1.2.0</jqassistant.version>
+        <jqassistant.plugin.version>1.2</jqassistant.plugin.version>
         <org.osgi_version>4.3.1</org.osgi_version>
 
     </properties>
@@ -103,64 +104,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>QA</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.buschmais.jqassistant.scm</groupId>
-                        <artifactId>jqassistant-maven-plugin</artifactId>
-                        <version>${jqassistant.version}</version>
-                        <executions>
-                            <execution>
-                                <id>default</id>
-                                <goals>
-                                    <goal>scan</goal>
-                                    <goal>analyze</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.buschmais.jqassistant.plugin</groupId>
-                                <artifactId>jqassistant.plugin.java</artifactId>
-                                <version>${jqassistant.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>com.buschmais.jqassistant.plugin</groupId>
-                                <artifactId>jqassistant.plugin.junit4</artifactId>
-                                <version>${jqassistant.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>com.buschmais.jqassistant.plugin</groupId>
-                                <artifactId>jqassistant.plugin.osgi</artifactId>
-                                <version>${jqassistant.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.neo4j</groupId>
-                                <artifactId>server-api</artifactId>
-                                <version>${org.neo4j_version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.neo4j</groupId>
-                                <artifactId>neo4j-kernel</artifactId>
-                                <version>${org.neo4j_version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.neo4j</groupId>
-                                <artifactId>neo4j-lucene-index</artifactId>
-                                <version>${org.neo4j_version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.neo4j</groupId>
-                                <artifactId>neo4j</artifactId>
-                                <version>${org.neo4j_version}</version>
-                            </dependency>
-                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
@@ -532,23 +475,35 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.10</version>
-                <configuration>
-                    <message>Creating site for ${project.artifactId}, ${project.version}</message>
-                    <path>${project.distributionManagement.site.url}</path>
-                    <merge>true</merge>
-                </configuration>
+                <groupId>com.buschmais.jqassistant</groupId>
+                <artifactId>jqassistant-maven-plugin</artifactId>
+                <version>${jqassistant.version}</version>
                 <executions>
                     <execution>
-                        <id>github-site</id>
+                        <id>default</id>
                         <goals>
-                            <goal>site</goal>
+                            <goal>scan</goal>
+                            <goal>analyze</goal>
                         </goals>
-                        <phase>site-deploy</phase>
                     </execution>
                 </executions>
+                <configuration>
+                    <reportProperties>
+                        <graphml.report.directory>${project.build.directory}/graphml</graphml.report.directory>
+                    </reportProperties>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.buschmais.jqassistant.plugin</groupId>
+                        <artifactId>graphml</artifactId>
+                        <version>${jqassistant.plugin.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.buschmais.jqassistant.plugin</groupId>
+                        <artifactId>osgi</artifactId>
+                        <version>${jqassistant.plugin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

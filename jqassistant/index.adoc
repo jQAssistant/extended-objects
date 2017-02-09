@@ -1,0 +1,14 @@
+= Coding Rules
+
+== Build
+
+The following rule groups are executed during a build:
+
+[[default]]
+[role=group,includesGroups="naming:Default"]
+- <<naming:Default>>
+- <<maven:Default>>
+
+include::naming.adoc[]
+include::maven.adoc[]
+

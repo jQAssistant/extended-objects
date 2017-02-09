@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AbstractProxyMethodService<E> implements ProxyMethodService<E> {
+public abstract class AbstractProxyMethodService<E> implements ProxyMethodService<E> {
 
     private final Map<Method, ProxyMethod<E>> proxyMethods = new HashMap<>();
 

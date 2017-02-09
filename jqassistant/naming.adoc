@@ -1,0 +1,35 @@
+[[naming:Default]]
+[role=group,includesConstraints="naming:AbstractClassNamePrefix,naming:NonAbstractClassNamePrefix"]
+== Naming Rules
+
+This section describes naming rules that apply to the elements of the code base.
+
+=== Java Classes
+
+[[naming:AbstractClassNamePrefix]]
+[source,cypher,role=constraint]
+.All abstract classes must have a name that starts with the prefix `Abstract`.
+----
+MATCH
+  (c:Type:Class)
+WHERE
+  has(c.abstract) and c.abstract=true
+  and not c.name starts with "Abstract"
+RETURN
+  c as AbstractClass
+----
+
+[[naming:NonAbstractClassNamePrefix]]
+[source,cypher,role=constraint,requiresConcepts="java:InnerType"]
+.Non-abstract classes must have a name that does start with the prefix `Abstract`.
+----
+MATCH
+  (c:Type:Class)
+WHERE
+  not c:Inner
+  and not (has(c.abstract) and c.abstract=true)
+  and c.name starts with "Abstract"
+RETURN
+  c as NonAbstractClass
+----
+

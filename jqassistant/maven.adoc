@@ -1,0 +1,20 @@
+[[maven:Default]]
+[role=group]
+== Maven Rules
+
+This section describes rules that apply to the Maven build system.
+
+[[maven:MainArtifact]]
+[source,cypher,role=concept]
+.Adds a label `Main` to all non test artifacts created by a Maven project.
+----
+MATCH
+  (:Maven:Project)-[:CREATES]->(artifact:Artifact)
+WHERE
+  artifact.type <> "test-jar"
+SET
+  artifact:Main
+RETURN
+  artifact as MainArtifact
+----
+
