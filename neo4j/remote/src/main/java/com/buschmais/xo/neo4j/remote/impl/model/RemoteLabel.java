@@ -1,12 +1,12 @@
-package com.buschmais.jqassistant.xo.neo4j.remote.impl.model;
+package com.buschmais.xo.neo4j.remote.impl.model;
 
-import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 
-public class RemoteRelationshipType implements Neo4jRelationshipType {
+public class RemoteLabel implements Neo4jLabel {
 
     private String name;
 
-    public RemoteRelationshipType(String name) {
+    public RemoteLabel(String name) {
         this.name = name;
     }
 
@@ -22,7 +22,7 @@ public class RemoteRelationshipType implements Neo4jRelationshipType {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        RemoteRelationshipType that = (RemoteRelationshipType) o;
+        RemoteLabel that = (RemoteLabel) o;
 
         return name != null ? name.equals(that.name) : that.name == null;
     }

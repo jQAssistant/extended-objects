@@ -1,6 +1,6 @@
-package com.buschmais.jqassistant.xo.neo4j.remote.impl.model;
+package com.buschmais.xo.neo4j.remote.impl.model;
 
-import com.buschmais.jqassistant.xo.neo4j.remote.api.AbstractRemotePropertyContainer;
+import com.buschmais.xo.neo4j.remote.api.AbstractRemotePropertyContainer;
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
 
 public class RemoteRelationship extends AbstractRemotePropertyContainer

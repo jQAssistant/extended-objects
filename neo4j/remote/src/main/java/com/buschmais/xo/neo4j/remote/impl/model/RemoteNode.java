@@ -1,11 +1,20 @@
-package com.buschmais.jqassistant.xo.neo4j.remote.impl.model;
+package com.buschmais.xo.neo4j.remote.impl.model;
 
-import com.buschmais.jqassistant.xo.neo4j.remote.api.AbstractRemotePropertyContainer;
+import com.buschmais.xo.neo4j.remote.api.AbstractRemotePropertyContainer;
 import com.buschmais.xo.neo4j.api.model.Neo4jNode;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class RemoteNode extends AbstractRemotePropertyContainer implements Neo4jNode<RemoteLabel, RemoteRelationship, RemoteRelationshipType, RemoteDirection> {
 
     private long id;
+
+    private Set<RemoteLabel> labels = new HashSet<>();
+
+    public RemoteNode(long id) {
+        this.id = id;
+    }
 
     @Override
     public long getId() {
@@ -33,8 +42,8 @@ public class RemoteNode extends AbstractRemotePropertyContainer implements Neo4j
     }
 
     @Override
-    public Iterable<RemoteLabel> getLabels() {
-        return null;
+    public Set<RemoteLabel> getLabels() {
+        return labels;
     }
 
 }

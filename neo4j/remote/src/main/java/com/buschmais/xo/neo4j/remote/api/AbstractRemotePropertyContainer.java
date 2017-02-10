@@ -1,4 +1,4 @@
-package com.buschmais.jqassistant.xo.neo4j.remote.api;
+package com.buschmais.xo.neo4j.remote.api;
 
 import java.util.Map;
 
