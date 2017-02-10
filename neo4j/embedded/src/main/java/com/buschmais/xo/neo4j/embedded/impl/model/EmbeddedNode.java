@@ -1,6 +1,8 @@
 package com.buschmais.xo.neo4j.embedded.impl.model;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
@@ -11,13 +13,22 @@ import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
         implements Neo4jNode<EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {
 
+    private long id;
+
+    private final Set<EmbeddedLabel> labels;
+
     public EmbeddedNode(Node delegate) {
         super(delegate);
+        this.id = delegate.getId();
+        this.labels = new HashSet<>();
+        for (Label label : delegate.getLabels()) {
+            labels.add(new EmbeddedLabel(label));
+        }
     }
 
     @Override
     public long getId() {
-        return delegate.getId();
+        return id;
     }
 
     public void delete() {
@@ -60,32 +71,21 @@ public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
 
     public void addLabel(EmbeddedLabel label) {
         delegate.addLabel(label.getDelegate());
+        labels.add(label);
     }
 
     public void removeLabel(EmbeddedLabel label) {
         delegate.removeLabel(label.getDelegate());
+        labels.remove(label);
     }
 
     @Override
     public boolean hasLabel(EmbeddedLabel label) {
-        return delegate.hasLabel(label.getDelegate());
+        return labels.contains(label);
     }
 
     @Override
-    public Iterable<EmbeddedLabel> getLabels() {
-        return () -> {
-            Iterator<Label> iterator = delegate.getLabels().iterator();
-            return new Iterator<EmbeddedLabel>() {
-                @Override
-                public boolean hasNext() {
-                    return iterator.hasNext();
-                }
-
-                @Override
-                public EmbeddedLabel next() {
-                    return new EmbeddedLabel(iterator.next());
-                }
-            };
-        };
+    public Set<EmbeddedLabel> getLabels() {
+        return labels;
     }
 }

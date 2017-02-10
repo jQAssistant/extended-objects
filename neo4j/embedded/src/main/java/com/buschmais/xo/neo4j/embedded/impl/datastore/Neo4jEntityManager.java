@@ -20,8 +20,6 @@ import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * Implementation of a
@@ -32,11 +30,8 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
 
     private final GraphDatabaseService graphDatabaseService;
 
-    private final Cache<Long, Set<EmbeddedLabel>> labelCache;
-
     public Neo4jEntityManager(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
-        this.labelCache = CacheBuilder.newBuilder().maximumSize(256).build();
     }
 
     @Override
@@ -46,15 +41,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
 
     @Override
     public Set<EmbeddedLabel> getEntityDiscriminators(EmbeddedNode node) {
-        Set<EmbeddedLabel> labels = labelCache.getIfPresent(node.getId());
-        if (labels == null) {
-            labels = new HashSet<>();
-            for (EmbeddedLabel label : node.getLabels()) {
-                labels.add(label);
-            }
-            labelCache.put(node.getId(), labels);
-        }
-        return labels;
+        return node.getLabels();
     }
 
     @Override
@@ -72,14 +59,12 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
         }
         EmbeddedNode node = new EmbeddedNode(graphDatabaseService.createNode(labels));
         setProperties(node, example);
-        labelCache.put(node.getId(), discriminators);
         return node;
     }
 
     @Override
     public void deleteEntity(EmbeddedNode entity) {
         entity.delete();
-        labelCache.invalidate(entity.getId());
     }
 
     @Override
@@ -139,7 +124,6 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
         Set<EmbeddedLabel> labelsToAdd = new HashSet<>(targetDiscriminators);
         labelsToAdd.removeAll(discriminators);
         addDiscriminators(entity, labelsToAdd);
-        labelCache.put(entity.getId(), targetDiscriminators);
     }
 
     @Override
@@ -147,7 +131,6 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
         for (EmbeddedLabel label : labels) {
             node.addLabel(label);
         }
-        labelCache.invalidate(node.getId());
     }
 
     @Override
@@ -155,14 +138,12 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
         for (EmbeddedLabel label : labels) {
             node.removeLabel(label);
         }
-        labelCache.invalidate(node.getId());
     }
 
     @Override
     public void clear(Iterable<EmbeddedNode> nodes) {
         for (EmbeddedNode node : nodes) {
             node.clear();
-            labelCache.invalidate(node.getId());
         }
     }
 
@@ -170,7 +151,6 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
     public void flush(Iterable<EmbeddedNode> nodes) {
         for (EmbeddedNode node : nodes) {
             node.flush();
-            labelCache.invalidate(node.getId());
         }
     }
 }
