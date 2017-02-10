@@ -13,7 +13,7 @@ import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 
-public class RemoteDatastoreRelationManager extends RemoteDatastorePropertyManager<RemoteRelationship> implements
+public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePropertyManager<RemoteRelationship> implements
         DatastoreRelationManager<RemoteNode, Long, RemoteRelationship, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType, PropertyMetadata> {
 
     public RemoteDatastoreRelationManager(Session session) {
@@ -77,5 +77,13 @@ public class RemoteDatastoreRelationManager extends RemoteDatastorePropertyManag
     @Override
     public RemoteNode getTo(RemoteRelationship remoteRelationship) {
         return remoteRelationship.getEndNode();
+    }
+
+    @Override
+    public void flush(Iterable<RemoteRelationship> entities) {
+    }
+
+    @Override
+    public void clear(Iterable<RemoteRelationship> entities) {
     }
 }

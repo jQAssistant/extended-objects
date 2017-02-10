@@ -28,14 +28,14 @@ public class AbstractRemotePropertyContainer implements Neo4jPropertyContainer {
     }
 
     public void setProperty(String key, Object value) {
-        getWriteCache().put(key, value);
-        properties.put(key, value);
-    }
-
-    private Map<String, Object> getWriteCache() {
         if (writeCache == null) {
             writeCache = new HashMap();
         }
+        writeCache.put(key, value);
+        properties.put(key, value);
+    }
+
+    public Map<String, Object> getWriteCache() {
         return writeCache;
     }
 

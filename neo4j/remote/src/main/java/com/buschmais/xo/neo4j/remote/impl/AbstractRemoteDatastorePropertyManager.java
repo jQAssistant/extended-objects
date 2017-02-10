@@ -7,11 +7,12 @@ import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 
-public class RemoteDatastorePropertyManager<T extends AbstractRemotePropertyContainer> implements DatastorePropertyManager<T, PropertyMetadata> {
+public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractRemotePropertyContainer>
+        implements DatastorePropertyManager<T, PropertyMetadata> {
 
     protected Session session;
 
-    public RemoteDatastorePropertyManager(Session session) {
+    public AbstractRemoteDatastorePropertyManager(Session session) {
         this.session = session;
     }
 
@@ -33,13 +34,5 @@ public class RemoteDatastorePropertyManager<T extends AbstractRemotePropertyCont
     @Override
     public Object getProperty(T entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
         return entity.getProperty(metadata.getDatastoreMetadata().getName());
-    }
-
-    @Override
-    public void flush(Iterable<T> entities) {
-    }
-
-    @Override
-    public void clear(Iterable<T> entities) {
     }
 }

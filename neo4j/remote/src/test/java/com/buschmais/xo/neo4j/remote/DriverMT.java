@@ -18,11 +18,15 @@ public class DriverMT {
         Properties properties = new Properties();
         properties.setProperty("neo4j.remote.username", "neo4j");
         properties.setProperty("neo4j.remote.password", "admin");
-        XOUnit xoUnit = XOUnit.builder().provider(Neo4jRemoteStoreProvider.class).uri(new URI("bolt://localhost:17687")).properties(properties)
+        XOUnit xoUnit = XOUnit.builder().provider(Neo4jRemoteStoreProvider.class).uri(new URI("bolt://localhost:7687")).properties(properties)
                 .type(Person.class).build();
         XOManagerFactory xoManagerFactory = XO.createXOManagerFactory(xoUnit);
         XOManager xoManager = xoManagerFactory.createXOManager();
-        Person person = xoManager.create(Person.class);
+        Person person1 = xoManager.create(Person.class);
+        person1.setName("Foo");
+        Person person2 = xoManager.create(Person.class);
+        person2.setName("Bar");
+        xoManager.flush();
         xoManager.close();
     }
 }

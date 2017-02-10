@@ -1,5 +1,6 @@
 package com.buschmais.xo.neo4j.remote.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
-public class RemoteDatastoreEntityManager extends RemoteDatastorePropertyManager<RemoteNode>
+public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropertyManager<RemoteNode>
         implements DatastoreEntityManager<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, PropertyMetadata> {
 
     public RemoteDatastoreEntityManager(Session session) {
@@ -82,7 +83,38 @@ public class RemoteDatastoreEntityManager extends RemoteDatastorePropertyManager
 
     @Override
     public void removeDiscriminators(RemoteNode remoteNode, Set<RemoteLabel> remoteLabels) {
-
     }
 
+    @Override
+    public void flush(Iterable<RemoteNode> entities) {
+        StringBuilder statement = new StringBuilder();
+        int i = 0;
+        Map<String, Object> parameters = new HashMap<>();
+        for (RemoteNode entity : entities) {
+            Map<String, Object> writeCache = entity.getWriteCache();
+            if (writeCache != null && !writeCache.isEmpty()) {
+                String nodeIdentifier = "n" + i;
+                parameters.put(nodeIdentifier, entity.getId());
+                statement.append(String.format("MATCH (%s) WHERE id(%s)={%s} SET ", nodeIdentifier, nodeIdentifier, nodeIdentifier));
+                for (Map.Entry<String, Object> entry : writeCache.entrySet()) {
+                    String property = entry.getKey();
+                    Object value = entry.getValue();
+                    String parameterName = nodeIdentifier + '_' + property;
+                    statement.append(nodeIdentifier).append('.').append(property).append('=').append('{').append(parameterName).append('}');
+                    parameters.put(parameterName, value);
+                }
+                statement.append("\n");
+                i++;
+            }
+        }
+        if (statement.length() > 0) {
+            statement.append("RETURN count(*) as nodes");
+            Record record = session.run(statement.toString(), parameters).single();
+            long nodes = record.get("nodes").asLong();
+        }
+    }
+
+    @Override
+    public void clear(Iterable<RemoteNode> entities) {
+    }
 }
