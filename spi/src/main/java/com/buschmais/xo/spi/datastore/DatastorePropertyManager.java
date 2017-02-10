@@ -49,4 +49,19 @@ public interface DatastorePropertyManager<Element, PropertyMetadata> {
      */
     Object getProperty(Element entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata);
 
+    /**
+     * Flush any tracked state of the given entities to the datastore.
+     * 
+     * @param entities
+     *            The entities.
+     */
+    void flush(Iterable<Element> entities);
+
+    /**
+     * Clear any tracked state for the given entities.
+     * 
+     * @param entities
+     *            The entities.
+     */
+    void clear(Iterable<Element> entities);
 }

@@ -42,13 +42,15 @@ public class RemoteDatastoreEntityManager extends RemoteDatastorePropertyManager
     public RemoteNode createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> types, Set<RemoteLabel> remoteLabels,
             Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
         StringBuilder labels = new StringBuilder();
-        for (EntityTypeMetadata<NodeMetadata<RemoteLabel>> type : types) {
-            labels.append(':').append(type.getDatastoreMetadata().getDiscriminator());
+        for (RemoteLabel remoteLabel : remoteLabels) {
+            labels.append(':').append(remoteLabel.getName());
         }
         String statement = String.format("CREATE (n%s) RETURN id(n) as id", labels.toString());
         Record record = session.run(statement).single();
         long id = record.get("id").asLong();
-        return new RemoteNode(id);
+        RemoteNode remoteNode = new RemoteNode(id);
+        remoteNode.getLabels().addAll(remoteLabels);
+        return remoteNode;
     }
 
     @Override
@@ -83,13 +85,4 @@ public class RemoteDatastoreEntityManager extends RemoteDatastorePropertyManager
 
     }
 
-    @Override
-    public void flushEntity(RemoteNode remoteNode) {
-
-    }
-
-    @Override
-    public void clearEntity(RemoteNode remoteNode) {
-
-    }
 }

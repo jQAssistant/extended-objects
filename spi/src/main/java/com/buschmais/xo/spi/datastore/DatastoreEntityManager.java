@@ -129,19 +129,4 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      */
     void removeDiscriminators(Entity entity, Set<EntityDiscriminator> discriminators);
 
-    /**
-     * Flush the given entity to the datastore.
-     *
-     * @param entity
-     *            The entity to flushEntity.
-     */
-    void flushEntity(Entity entity);
-
-    /**
-     * Clear any tracked state for the entity.
-     *
-     * @param entity
-     *            The entity;
-     */
-    void clearEntity(Entity entity);
 }

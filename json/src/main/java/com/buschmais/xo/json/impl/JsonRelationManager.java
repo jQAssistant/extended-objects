@@ -1,14 +1,15 @@
 package com.buschmais.xo.json.impl;
 
+import java.util.Map;
+
+import org.codehaus.jackson.node.ObjectNode;
+
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.json.impl.metadata.JsonPropertyMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
-import org.codehaus.jackson.node.ObjectNode;
-
-import java.util.Map;
 
 public class JsonRelationManager implements DatastoreRelationManager<ObjectNode, Long, JsonRelation, JsonRelationMetadata, String, JsonPropertyMetadata> {
 
@@ -30,14 +31,6 @@ public class JsonRelationManager implements DatastoreRelationManager<ObjectNode,
     @Override
     public JsonRelation findRelationById(RelationTypeMetadata<JsonRelationMetadata> metadata, Long aLong) {
         throw new XOException("Not supported");
-    }
-
-    @Override
-    public void flushRelation(JsonRelation jsonRelation) {
-    }
-
-    @Override
-    public void clearRelation(JsonRelation jsonRelation) {
     }
 
     @Override
@@ -91,5 +84,13 @@ public class JsonRelationManager implements DatastoreRelationManager<ObjectNode,
     @Override
     public Object getProperty(JsonRelation jsonRelation, PrimitivePropertyMethodMetadata<JsonPropertyMetadata> metadata) {
         return null;
+    }
+
+    @Override
+    public void flush(Iterable<JsonRelation> entities) {
+    }
+
+    @Override
+    public void clear(Iterable<JsonRelation> entities) {
     }
 }

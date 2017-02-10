@@ -1,22 +1,28 @@
 package com.buschmais.xo.neo4j.remote;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Properties;
+
 import org.junit.Test;
-import org.neo4j.driver.v1.*;
+
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.XOManagerFactory;
+import com.buschmais.xo.api.bootstrap.XO;
+import com.buschmais.xo.api.bootstrap.XOUnit;
 
 public class DriverMT {
 
     @Test
-    public void query() {
-        String username = "neo4j";
-        String password = "admin";
-        Driver driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic(username, password));
-        Session session = driver.session();
-        StatementResult result = session.run("MATCH (m:Movie) RETURN m");
-        for (Record record : result.list()) {
-            Value m = record.get("m");
-            System.out.println(m);
-        }
-
+    public void test() throws URISyntaxException {
+        Properties properties = new Properties();
+        properties.setProperty("neo4j.remote.username", "neo4j");
+        properties.setProperty("neo4j.remote.password", "admin");
+        XOUnit xoUnit = XOUnit.builder().provider(Neo4jRemoteStoreProvider.class).uri(new URI("bolt://localhost:17687")).properties(properties)
+                .type(Person.class).build();
+        XOManagerFactory xoManagerFactory = XO.createXOManagerFactory(xoUnit);
+        XOManager xoManager = xoManagerFactory.createXOManager();
+        Person person = xoManager.create(Person.class);
+        xoManager.close();
     }
-
 }

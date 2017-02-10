@@ -72,22 +72,6 @@ public interface DatastoreRelationManager<Entity, RelationId, Relation, Relation
     Relation findRelationById(RelationTypeMetadata<RelationMetadata> metadata, RelationId id);
 
     /**
-     * Flush the given relation to the datastore.
-     *
-     * @param relation
-     *            The relation to flushEntity.
-     */
-    void flushRelation(Relation relation);
-
-    /**
-     * Clear any tracked state for the relation.
-     * 
-     * @param relation
-     *            The relation;
-     */
-    void clearRelation(Relation relation);
-
-    /**
      * Determine if a single relation (i.e. direct reference) between two
      * entities exists.
      *

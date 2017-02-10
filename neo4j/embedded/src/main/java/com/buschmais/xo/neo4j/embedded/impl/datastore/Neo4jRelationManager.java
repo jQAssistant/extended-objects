@@ -79,16 +79,6 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedR
     }
 
     @Override
-    public void flushRelation(EmbeddedRelationship relationship) {
-        relationship.flush();
-    }
-
-    @Override
-    public void clearRelation(EmbeddedRelationship neo4jRelationship) {
-        neo4jRelationship.clear();
-    }
-
-    @Override
     public boolean hasSingleRelation(EmbeddedNode source, RelationTypeMetadata<RelationshipMetadata<EmbeddedRelationshipType>> metadata,
             RelationTypeMetadata.Direction direction) {
         return source.hasRelationship(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
@@ -127,4 +117,17 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedR
         }
     }
 
+    @Override
+    public void flush(Iterable<EmbeddedRelationship> relationships) {
+        for (EmbeddedRelationship relationship : relationships) {
+            relationship.flush();
+        }
+    }
+
+    @Override
+    public void clear(Iterable<EmbeddedRelationship> relationships) {
+        for (EmbeddedRelationship relationship : relationships) {
+            relationship.clear();
+        }
+    }
 }

@@ -1,14 +1,14 @@
 package com.buschmais.xo.test.trace.impl;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Implementation of a
@@ -73,15 +73,6 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
         delegate.removeDiscriminators(entity, discriminators);
     }
 
-    public void flushEntity(Entity entity) {
-        delegate.flushEntity(entity);
-    }
-
-    @Override
-    public void clearEntity(Entity entity) {
-        delegate.clearEntity(entity);
-    }
-
     public void setProperty(Entity entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata, Object value) {
         delegate.setProperty(entity, metadata, value);
     }
@@ -96,5 +87,15 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
 
     public Object getProperty(Entity entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
         return delegate.getProperty(entity, metadata);
+    }
+
+    @Override
+    public void flush(Iterable<Entity> entities) {
+        delegate.flush(entities);
+    }
+
+    @Override
+    public void clear(Iterable<Entity> entities) {
+        delegate.clear(entities);
     }
 }

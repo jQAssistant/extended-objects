@@ -1,11 +1,11 @@
 package com.buschmais.xo.test.trace.impl;
 
+import java.util.Map;
+
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
-
-import java.util.Map;
 
 /**
  * Implementation of a
@@ -59,16 +59,6 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
     }
 
     @Override
-    public void flushRelation(Relation relation) {
-        delegate.flushRelation(relation);
-    }
-
-    @Override
-    public void clearRelation(Relation relation) {
-        delegate.clearRelation(relation);
-    }
-
-    @Override
     public boolean hasSingleRelation(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction) {
         return delegate.hasSingleRelation(source, metadata, direction);
     }
@@ -111,5 +101,15 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
     @Override
     public Object getProperty(Relation entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
         return delegate.getProperty(entity, metadata);
+    }
+
+    @Override
+    public void flush(Iterable<Relation> entities) {
+        delegate.flush(entities);
+    }
+
+    @Override
+    public void clear(Iterable<Relation> relations) {
+        delegate.clear(relations);
     }
 }

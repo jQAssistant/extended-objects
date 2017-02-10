@@ -1,15 +1,18 @@
 package com.buschmais.xo.impl.cache;
 
-import com.buschmais.xo.api.ValidationMode;
-import com.buschmais.xo.impl.SessionContext;
-import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
-import com.buschmais.xo.spi.datastore.DatastoreSession;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.Set;
+
+import com.buschmais.xo.api.ValidationMode;
+import com.buschmais.xo.impl.AbstractInstanceManager;
+import com.buschmais.xo.impl.SessionContext;
+import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
+import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
+import com.buschmais.xo.spi.datastore.DatastoreSession;
 
 public class CacheSynchronizationService<Entity, Relation> {
 
@@ -22,34 +25,40 @@ public class CacheSynchronizationService<Entity, Relation> {
     }
 
     public void flush() {
-        DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> datastoreSession = sessionContext.getDatastoreSession();
+        DatastoreSession<?, Entity, ?, ?, ?, Relation, ?, ?, ?> datastoreSession = sessionContext.getDatastoreSession();
         InstanceListenerService instanceListenerService = sessionContext.getInstanceListenerService();
-        for (Object instance : sessionContext.getRelationCache().writtenInstances()) {
-            Relation relation = sessionContext.getRelationInstanceManager().getDatastoreType(instance);
+        flush(sessionContext.getRelationCache(), sessionContext.getRelationInstanceManager(), datastoreSession.getDatastoreRelationManager(),
+                instanceListenerService);
+        flush(sessionContext.getEntityCache(), sessionContext.getEntityInstanceManager(), datastoreSession.getDatastoreEntityManager(),
+                instanceListenerService);
+    }
+
+    private <T> void flush(TransactionalCache<?> cache, AbstractInstanceManager<?, T> instanceManager, DatastorePropertyManager<T, ?> datastoreManager,
+            InstanceListenerService instanceListenerService) {
+        List<T> entities = new ArrayList<>();
+        for (Object instance : cache.writtenInstances()) {
+            T entity = instanceManager.getDatastoreType(instance);
+            entities.add(entity);
             instanceListenerService.preUpdate(instance);
             validateInstance(instance);
-            datastoreSession.getDatastoreRelationManager().flushRelation(relation);
             instanceListenerService.postUpdate(instance);
         }
-        for (Object instance : sessionContext.getEntityCache().writtenInstances()) {
-            Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(instance);
-            instanceListenerService.preUpdate(instance);
-            validateInstance(instance);
-            datastoreSession.getDatastoreEntityManager().flushEntity(entity);
-            instanceListenerService.postUpdate(instance);
-        }
+        datastoreManager.flush(entities);
     }
 
     public void clear() {
-        DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> datastoreSession = sessionContext.getDatastoreSession();
-        for (Object instance : sessionContext.getRelationCache().writtenInstances()) {
-            Relation relation = sessionContext.getRelationInstanceManager().getDatastoreType(instance);
-            datastoreSession.getDatastoreRelationManager().clearRelation(relation);
+        DatastoreSession<?, Entity, ?, ?, ?, Relation, ?, ?, ?> datastoreSession = sessionContext.getDatastoreSession();
+        clear(sessionContext.getRelationCache(), sessionContext.getRelationInstanceManager(), datastoreSession.getDatastoreRelationManager());
+        clear(sessionContext.getEntityCache(), sessionContext.getEntityInstanceManager(), datastoreSession.getDatastoreEntityManager());
+    }
+
+    private <T> void clear(TransactionalCache<?> cache, AbstractInstanceManager<?, T> instanceManager, DatastorePropertyManager<T, ?> datastoreManager) {
+        List<T> entities = new ArrayList<>();
+        for (Object instance : cache.writtenInstances()) {
+            T entity = instanceManager.getDatastoreType(instance);
+            entities.add(entity);
         }
-        for (Object instance : sessionContext.getEntityCache().writtenInstances()) {
-            Entity entity = sessionContext.getEntityInstanceManager().getDatastoreType(instance);
-            datastoreSession.getDatastoreEntityManager().clearEntity(entity);
-        }
+        datastoreManager.clear(entities);
     }
 
     private void validateInstance(Object instance) {

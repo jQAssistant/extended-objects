@@ -1,5 +1,18 @@
 package com.buschmais.xo.json.impl;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
@@ -8,18 +21,6 @@ import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNode, JsonNodeMetadata, String, JsonPropertyMetadata> {
 
@@ -103,20 +104,6 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     }
 
     @Override
-    public void flushEntity(ObjectNode objectNode) {
-        File file = getFile(objectNode);
-        try {
-            mapper.writeValue(new FileWriter(file), objectNode);
-        } catch (IOException e) {
-            throw new XOException("Cannot write file " + file.getName(), e);
-        }
-    }
-
-    @Override
-    public void clearEntity(ObjectNode jsonNodes) {
-    }
-
-    @Override
     public void setProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPropertyMetadata> metadata, Object value) {
         Class<?> type = metadata.getAnnotatedMethod().getType();
         if (String.class.equals(type)) {
@@ -140,6 +127,22 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     @Override
     public Object getProperty(ObjectNode objectNode, PrimitivePropertyMethodMetadata<JsonPropertyMetadata> metadata) {
         return objectNode.get(metadata.getAnnotatedMethod().getName());
+    }
+
+    @Override
+    public void flush(Iterable<ObjectNode> objectNodes) {
+        for (ObjectNode objectNode : objectNodes) {
+            File file = getFile(objectNode);
+            try {
+                mapper.writeValue(new FileWriter(file), objectNode);
+            } catch (IOException e) {
+                throw new XOException("Cannot write file " + file.getName(), e);
+            }
+        }
+    }
+
+    @Override
+    public void clear(Iterable<ObjectNode> entities) {
     }
 
     /**

@@ -18,10 +18,14 @@ import com.buschmais.xo.spi.session.XOSession;
 public class RemoteDatastoreSession implements
         DatastoreSession<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, Long, RemoteRelationship, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType, PropertyMetadata> {
 
-    private Session session;
+    private final Session session;
+    private final RemoteDatastoreEntityManager entityManager;
+    private final RemoteDatastoreRelationManager relationManager;
 
     public RemoteDatastoreSession(Session session) {
         this.session = session;
+        entityManager = new RemoteDatastoreEntityManager(session);
+        relationManager = new RemoteDatastoreRelationManager(session);
     }
 
     @Override
@@ -31,12 +35,12 @@ public class RemoteDatastoreSession implements
 
     @Override
     public DatastoreEntityManager<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, PropertyMetadata> getDatastoreEntityManager() {
-        return new RemoteDatastoreEntityManager();
+        return entityManager;
     }
 
     @Override
     public DatastoreRelationManager<RemoteNode, Long, RemoteRelationship, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType, PropertyMetadata> getDatastoreRelationManager() {
-        return null;
+        return relationManager;
     }
 
     @Override
@@ -56,6 +60,6 @@ public class RemoteDatastoreSession implements
 
     @Override
     public void close() {
-
+        session.close();
     }
 }

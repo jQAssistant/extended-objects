@@ -64,7 +64,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
 
     @Override
     public EmbeddedNode createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> types, Set<EmbeddedLabel> discriminators,
-                                     Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
+            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
         Label[] labels = new Label[discriminators.size()];
         int i = 0;
         for (EmbeddedLabel discriminator : discriminators) {
@@ -89,7 +89,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
 
     @Override
     public ResultIterator<EmbeddedNode> findEntity(EntityTypeMetadata<NodeMetadata<EmbeddedLabel>> entityTypeMetadata, EmbeddedLabel discriminator,
-                                                   Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
+            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
         if (values.size() > 1) {
             throw new XOException("Only one property value is supported for find operation");
         }
@@ -130,7 +130,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
 
     @Override
     public void migrateEntity(EmbeddedNode entity, TypeMetadataSet<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> types, Set<EmbeddedLabel> discriminators,
-                              TypeMetadataSet<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> targetTypes, Set<EmbeddedLabel> targetDiscriminators) {
+            TypeMetadataSet<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> targetTypes, Set<EmbeddedLabel> targetDiscriminators) {
         Set<EmbeddedLabel> labelsToRemove = new HashSet<>(discriminators);
         labelsToRemove.removeAll(targetDiscriminators);
         for (EmbeddedLabel label : labelsToRemove) {
@@ -159,15 +159,18 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
     }
 
     @Override
-    public void flushEntity(EmbeddedNode node) {
-        node.flush();
-        labelCache.invalidate(node.getId());
+    public void clear(Iterable<EmbeddedNode> nodes) {
+        for (EmbeddedNode node : nodes) {
+            node.clear();
+            labelCache.invalidate(node.getId());
+        }
     }
 
     @Override
-    public void clearEntity(EmbeddedNode node) {
-        node.clear();
-        labelCache.invalidate(node.getId());
+    public void flush(Iterable<EmbeddedNode> nodes) {
+        for (EmbeddedNode node : nodes) {
+            node.flush();
+            labelCache.invalidate(node.getId());
+        }
     }
-
 }
