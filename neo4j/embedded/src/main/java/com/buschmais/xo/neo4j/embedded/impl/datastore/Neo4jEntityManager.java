@@ -118,9 +118,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
             TypeMetadataSet<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> targetTypes, Set<EmbeddedLabel> targetDiscriminators) {
         Set<EmbeddedLabel> labelsToRemove = new HashSet<>(discriminators);
         labelsToRemove.removeAll(targetDiscriminators);
-        for (EmbeddedLabel label : labelsToRemove) {
-            entity.removeLabel(label);
-        }
+        removeDiscriminators(entity, labelsToRemove);
         Set<EmbeddedLabel> labelsToAdd = new HashSet<>(targetDiscriminators);
         labelsToAdd.removeAll(discriminators);
         addDiscriminators(entity, labelsToAdd);

@@ -2,8 +2,6 @@ package com.buschmais.xo.neo4j.remote.impl;
 
 import java.util.Map;
 
-import org.neo4j.driver.v1.Session;
-
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationship;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
@@ -16,8 +14,8 @@ import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePropertyManager<RemoteRelationship> implements
         DatastoreRelationManager<RemoteNode, Long, RemoteRelationship, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType, PropertyMetadata> {
 
-    public RemoteDatastoreRelationManager(Session session) {
-        super(session);
+    public RemoteDatastoreRelationManager(RemoteDatastoreTransaction transaction) {
+        super(transaction);
     }
 
     @Override
@@ -85,5 +83,15 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
 
     @Override
     public void clear(Iterable<RemoteRelationship> entities) {
+    }
+
+    @Override
+    protected String createIdentifier(int i) {
+        return "r" + i;
+    }
+
+    @Override
+    protected String createIdentifierPattern(String identifier) {
+        return String.format("()-[%s]-()", identifier);
     }
 }

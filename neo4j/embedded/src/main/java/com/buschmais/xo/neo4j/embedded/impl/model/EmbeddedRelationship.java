@@ -5,21 +5,16 @@ import org.neo4j.graphdb.Relationship;
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
 
 public class EmbeddedRelationship extends AbstractEmbeddedPropertyContainer<Relationship>
-        implements Neo4jRelationship<EmbeddedNode, EmbeddedLabel, EmbeddedRelationshipType, EmbeddedRelationship, EmbeddedDirection> {
+        implements Neo4jRelationship<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {
 
     private EmbeddedNode startNode;
 
     private EmbeddedNode endNode;
 
     public EmbeddedRelationship(Relationship delegate) {
-        super(delegate);
+        super(delegate.getId(), delegate);
         this.startNode = new EmbeddedNode(delegate.getStartNode());
         this.endNode = new EmbeddedNode(delegate.getEndNode());
-    }
-
-    @Override
-    public long getId() {
-        return delegate.getId();
     }
 
     public void delete() {

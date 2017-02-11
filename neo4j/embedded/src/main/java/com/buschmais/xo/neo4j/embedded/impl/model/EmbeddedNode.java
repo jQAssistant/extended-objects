@@ -13,22 +13,14 @@ import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
         implements Neo4jNode<EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {
 
-    private long id;
-
     private final Set<EmbeddedLabel> labels;
 
     public EmbeddedNode(Node delegate) {
-        super(delegate);
-        this.id = delegate.getId();
+        super(delegate.getId(), delegate);
         this.labels = new HashSet<>();
         for (Label label : delegate.getLabels()) {
             labels.add(new EmbeddedLabel(label));
         }
-    }
-
-    @Override
-    public long getId() {
-        return id;
     }
 
     public void delete() {

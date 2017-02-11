@@ -16,13 +16,6 @@ public interface Neo4jNode<L extends Neo4jLabel, R extends Neo4jRelationship, T 
         extends Neo4jPropertyContainer {
 
     /**
-     * Return the id of the node.
-     * 
-     * @return The id.
-     */
-    long getId();
-
-    /**
      * Return all relationships of the given type and direction.
      * 
      * @param type

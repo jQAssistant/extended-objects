@@ -8,6 +8,13 @@ import java.util.Map;
 public interface Neo4jPropertyContainer {
 
     /**
+     * Return the id of the container.
+     *
+     * @return The id.
+     */
+    long getId();
+
+    /**
      * Return if the container has a property for a given key.
      * 
      * @param key

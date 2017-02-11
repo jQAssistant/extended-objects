@@ -8,17 +8,10 @@ import com.buschmais.xo.neo4j.remote.api.AbstractRemotePropertyContainer;
 
 public class RemoteNode extends AbstractRemotePropertyContainer implements Neo4jNode<RemoteLabel, RemoteRelationship, RemoteRelationshipType, RemoteDirection> {
 
-    private long id;
-
     private Set<RemoteLabel> labels = new HashSet<>();
 
     public RemoteNode(long id) {
-        this.id = id;
-    }
-
-    @Override
-    public long getId() {
-        return id;
+        super(id);
     }
 
     @Override

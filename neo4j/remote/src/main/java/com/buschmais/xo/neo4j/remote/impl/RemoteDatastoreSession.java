@@ -19,18 +19,20 @@ public class RemoteDatastoreSession implements
         DatastoreSession<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, Long, RemoteRelationship, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType, PropertyMetadata> {
 
     private final Session session;
+    private final RemoteDatastoreTransaction transaction;
     private final RemoteDatastoreEntityManager entityManager;
     private final RemoteDatastoreRelationManager relationManager;
 
     public RemoteDatastoreSession(Session session) {
         this.session = session;
-        entityManager = new RemoteDatastoreEntityManager(session);
-        relationManager = new RemoteDatastoreRelationManager(session);
+        transaction = new RemoteDatastoreTransaction(session);
+        entityManager = new RemoteDatastoreEntityManager(transaction);
+        relationManager = new RemoteDatastoreRelationManager(transaction);
     }
 
     @Override
     public DatastoreTransaction getDatastoreTransaction() {
-        return null;
+        return transaction;
     }
 
     @Override

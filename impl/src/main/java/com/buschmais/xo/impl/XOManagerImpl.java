@@ -16,10 +16,7 @@ import com.buschmais.xo.impl.proxy.repository.RepositoryInvocationHandler;
 import com.buschmais.xo.impl.proxy.repository.RepositoryProxyMethodService;
 import com.buschmais.xo.impl.query.XOQueryImpl;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
-import com.buschmais.xo.spi.datastore.DatastoreSession;
-import com.buschmais.xo.spi.datastore.TypeMetadataSet;
+import com.buschmais.xo.spi.datastore.*;
 import com.buschmais.xo.spi.metadata.CompositeTypeBuilder;
 import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
@@ -315,7 +312,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = metadataProvider.getTypes(entityDiscriminators);
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
         Set<EntityDiscriminator> targetEntityDiscriminators = metadataProvider.getEntityDiscriminators(effectiveTargetTypes);
-        datastoreSession.getDatastoreEntityManager().migrateEntity(entity, types, entityDiscriminators, effectiveTargetTypes, targetEntityDiscriminators);
+        migrateEntity(entity, entityDiscriminators, targetEntityDiscriminators);
         entityInstanceManager.removeInstance(instance);
         CompositeObject migratedInstance = entityInstanceManager.updateInstance(entity);
         if (migrationStrategy != null) {
@@ -333,6 +330,18 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     @Override
     public <T, M> M migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType) {
         return migrate(instance, migrationStrategy, targetType, new Class<?>[0]).as(targetType);
+    }
+
+
+    private void migrateEntity(Entity entity, Set<EntityDiscriminator> discriminators, Set<EntityDiscriminator> targetDiscriminators) {
+        DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> datastoreEntityManager = sessionContext
+                .getDatastoreSession().getDatastoreEntityManager();
+        Set<EntityDiscriminator> labelsToRemove = new HashSet<>(discriminators);
+        labelsToRemove.removeAll(targetDiscriminators);
+        datastoreEntityManager.removeDiscriminators(entity, labelsToRemove);
+        Set<EntityDiscriminator> labelsToAdd = new HashSet<>(targetDiscriminators);
+        labelsToAdd.removeAll(discriminators);
+        datastoreEntityManager.addDiscriminators(entity, labelsToAdd);
     }
 
     @Override

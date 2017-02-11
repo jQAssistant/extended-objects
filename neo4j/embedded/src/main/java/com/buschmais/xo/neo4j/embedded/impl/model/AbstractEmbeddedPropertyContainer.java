@@ -7,16 +7,23 @@ import org.neo4j.graphdb.PropertyContainer;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jPropertyContainer;
 
-
 public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContainer> implements Neo4jPropertyContainer {
+
+    private long id;
 
     protected T delegate;
 
     private Map<String, Object> readCache = null;
     private Map<String, Object> writeCache = null;
 
-    public AbstractEmbeddedPropertyContainer(T delegate) {
+    public AbstractEmbeddedPropertyContainer(long id, T delegate) {
+        this.id = id;
         this.delegate = delegate;
+    }
+
+    @Override
+    public long getId() {
+        return id;
     }
 
     public T getDelegate() {
@@ -91,16 +98,20 @@ public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContai
     }
 
     @Override
-    public final int hashCode() {
-        return delegate.hashCode();
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof AbstractEmbeddedPropertyContainer))
+            return false;
+
+        AbstractEmbeddedPropertyContainer<?> that = (AbstractEmbeddedPropertyContainer<?>) o;
+
+        return id == that.id;
     }
 
     @Override
-    public final boolean equals(Object obj) {
-        if (obj instanceof AbstractEmbeddedPropertyContainer<?>) {
-            return delegate.equals(((AbstractEmbeddedPropertyContainer<?>) obj).delegate);
-        }
-        return false;
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
     }
 
     @Override

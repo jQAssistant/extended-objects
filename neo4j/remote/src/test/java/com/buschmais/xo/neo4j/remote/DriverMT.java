@@ -22,11 +22,12 @@ public class DriverMT {
                 .type(Person.class).build();
         XOManagerFactory xoManagerFactory = XO.createXOManagerFactory(xoUnit);
         XOManager xoManager = xoManagerFactory.createXOManager();
+        xoManager.currentTransaction().begin();
         Person person1 = xoManager.create(Person.class);
         person1.setName("Foo");
         Person person2 = xoManager.create(Person.class);
         person2.setName("Bar");
-        xoManager.flush();
+        xoManager.currentTransaction().commit();
         xoManager.close();
     }
 }
