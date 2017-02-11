@@ -68,14 +68,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     }
 
     @Override
-    public void migrateEntity(RemoteNode remoteNode, TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> types, Set<RemoteLabel> remoteLabels,
-            TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> targetTypes, Set<RemoteLabel> targetDiscriminators) {
-
-    }
-
-    @Override
     public void addDiscriminators(RemoteNode remoteNode, Set<RemoteLabel> remoteLabels) {
-
     }
 
     @Override

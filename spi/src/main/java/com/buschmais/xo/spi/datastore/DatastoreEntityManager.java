@@ -92,24 +92,6 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
             Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values);
 
     /**
-     * Migrate an entity of a given type and discriminators to the given target
-     * types and target discriminators.
-     *
-     * @param entity
-     *            The entity to migrate.
-     * @param types
-     *            The entity types before migration.
-     * @param discriminators
-     *            The discriminators of the entity before migration.
-     * @param targetTypes
-     *            The entity types after migration.
-     * @param targetDiscriminators
-     *            The discriminators of the entity after migration.
-     */
-    void migrateEntity(Entity entity, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators,
-            TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> targetTypes, Set<EntityDiscriminator> targetDiscriminators);
-
-    /**
      * Add a set of discriminators to an entity.
      * 
      * @param entity

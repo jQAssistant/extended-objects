@@ -332,7 +332,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         return migrate(instance, migrationStrategy, targetType, new Class<?>[0]).as(targetType);
     }
 
-
+    @Deprecated
     private void migrateEntity(Entity entity, Set<EntityDiscriminator> discriminators, Set<EntityDiscriminator> targetDiscriminators) {
         DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> datastoreEntityManager = sessionContext
                 .getDatastoreSession().getDatastoreEntityManager();
