@@ -1,5 +1,5 @@
 [[maven:Default]]
-[role=group]
+[role=group,includesConcepts="maven:MainArtifactDependencies.graphml"]
 == Maven Rules
 
 This section describes rules that apply to the Maven build system.
@@ -18,3 +18,14 @@ RETURN
   artifact as MainArtifact
 ----
 
+[[maven:MainArtifactDependencies.graphml]]
+[source,cypher,role=concept,requiresConcepts="maven:MainArtifact"]
+.Creates a GraphML report about the created artifacts and their dependencies
+----
+MATCH
+  (artifact:Main:Artifact)
+OPTIONAL MATCH
+  (artifact)-[dependsOn:DEPENDS_ON]->(:Main:Artifact)
+RETURN
+  *
+----

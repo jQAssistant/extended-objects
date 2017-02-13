@@ -489,7 +489,7 @@
                 </executions>
                 <configuration>
                     <reportProperties>
-                        <graphml.report.directory>${project.build.directory}/graphml</graphml.report.directory>
+                        <graphml.report.directory>${session.topLevelProject.build.directory}/graphml</graphml.report.directory>
                     </reportProperties>
                 </configuration>
                 <dependencies>
