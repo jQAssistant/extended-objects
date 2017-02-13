@@ -1,22 +1,20 @@
-package com.buschmais.xo.neo4j.remote.api;
+package com.buschmais.xo.neo4j.remote.impl.model;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jPropertyContainer;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationship;
+import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
 
-public abstract class AbstractRemotePropertyContainer implements Neo4jPropertyContainer {
+public abstract class AbstractRemotePropertyContainer<S extends AbstractPropertyContainerState> implements Neo4jPropertyContainer {
 
     private long id;
 
-    private Map<String, Object> properties = new HashMap<>();
+    private S state;
 
-    private Map<String, Object> writeCache = null;
-
-    protected AbstractRemotePropertyContainer(long id) {
+    protected AbstractRemotePropertyContainer(long id, S state) {
         this.id = id;
+        this.state = state;
     }
 
     @Override
@@ -24,37 +22,45 @@ public abstract class AbstractRemotePropertyContainer implements Neo4jPropertyCo
         return id;
     }
 
+    public S getState() {
+        return state;
+    }
+
     @Override
     public boolean hasProperty(String key) {
-        return properties.containsKey(key);
+        return state.getReadCache().containsKey(key);
     }
 
     @Override
     public Object getProperty(String key) {
-        return properties.get(key);
+        return state.getReadCache().get(key);
     }
 
     @Override
     public Map<String, Object> getProperties() {
-        return Collections.unmodifiableMap(properties);
+        return Collections.unmodifiableMap(state.getReadCache());
+    }
+
+    public void load(S state) {
+        this.state = state;
     }
 
     public void setProperty(String key, Object value) {
-        if (writeCache == null) {
-            writeCache = new HashMap();
-        }
-        writeCache.put(key, value);
-        properties.put(key, value);
+        state.getOrCreateWriteCache().put(key, value);
+        state.getReadCache().put(key, value);
+    }
+
+    public void clear() {
+        state = null;
     }
 
     public Map<String, Object> getWriteCache() {
-        return writeCache;
+        return state.getWriteCache();
     }
 
     public void removeProperty(String name) {
         setProperty(name, null);
     }
-
 
     @Override
     public final boolean equals(Object o) {

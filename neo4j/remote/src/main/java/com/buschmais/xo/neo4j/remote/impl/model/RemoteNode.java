@@ -4,14 +4,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jNode;
-import com.buschmais.xo.neo4j.remote.api.AbstractRemotePropertyContainer;
+import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
 
-public class RemoteNode extends AbstractRemotePropertyContainer implements Neo4jNode<RemoteLabel, RemoteRelationship, RemoteRelationshipType, RemoteDirection> {
+public class RemoteNode extends AbstractRemotePropertyContainer<NodeState>
+        implements Neo4jNode<RemoteLabel, RemoteRelationship, RemoteRelationshipType, RemoteDirection> {
 
-    private Set<RemoteLabel> labels = new HashSet<>();
-
-    public RemoteNode(long id) {
-        super(id);
+    public RemoteNode(long id, NodeState state) {
+        super(id, state);
     }
 
     @Override
@@ -31,12 +30,12 @@ public class RemoteNode extends AbstractRemotePropertyContainer implements Neo4j
 
     @Override
     public boolean hasLabel(RemoteLabel label) {
-        return false;
+        return getState().getLabels().contains(label);
     }
 
     @Override
     public Set<RemoteLabel> getLabels() {
-        return labels;
+        return getState().getLabels();
     }
 
 }

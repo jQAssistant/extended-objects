@@ -22,11 +22,13 @@ public class RemoteDatastoreSession implements
     private final RemoteDatastoreTransaction transaction;
     private final RemoteDatastoreEntityManager entityManager;
     private final RemoteDatastoreRelationManager relationManager;
+    private final RemoteDatastoreSessionCache datastoreCache;
 
     public RemoteDatastoreSession(Session session) {
         this.session = session;
         transaction = new RemoteDatastoreTransaction(session);
-        entityManager = new RemoteDatastoreEntityManager(transaction);
+        datastoreCache = new RemoteDatastoreSessionCache();
+        entityManager = new RemoteDatastoreEntityManager(transaction, datastoreCache);
         relationManager = new RemoteDatastoreRelationManager(transaction);
     }
 

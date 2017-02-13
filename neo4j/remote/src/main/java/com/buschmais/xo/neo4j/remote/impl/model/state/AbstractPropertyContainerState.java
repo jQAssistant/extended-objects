@@ -1,0 +1,31 @@
+package com.buschmais.xo.neo4j.remote.impl.model.state;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public abstract class AbstractPropertyContainerState {
+
+    private Map<String, Object> readCache = new HashMap<>();
+
+    private Map<String, Object> writeCache = null;
+
+    protected AbstractPropertyContainerState(Map<String, Object> readCache) {
+        this.readCache = readCache;
+    }
+
+    public Map<String, Object> getReadCache() {
+        return readCache;
+    }
+
+    public Map<String, Object> getWriteCache() {
+        return writeCache;
+    }
+
+    public Map<String, Object> getOrCreateWriteCache() {
+        if (writeCache == null) {
+            writeCache = new HashMap<>();
+        }
+        return writeCache;
+    }
+
+}

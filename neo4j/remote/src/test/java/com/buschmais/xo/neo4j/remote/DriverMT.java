@@ -19,15 +19,34 @@ public class DriverMT {
         properties.setProperty("neo4j.remote.username", "neo4j");
         properties.setProperty("neo4j.remote.password", "admin");
         XOUnit xoUnit = XOUnit.builder().provider(Neo4jRemoteStoreProvider.class).uri(new URI("bolt://localhost:7687")).properties(properties)
-                .type(Person.class).build();
+                .type(Person.class).type(Customer.class).build();
         XOManagerFactory xoManagerFactory = XO.createXOManagerFactory(xoUnit);
-        XOManager xoManager = xoManagerFactory.createXOManager();
-        xoManager.currentTransaction().begin();
-        Person person1 = xoManager.create(Person.class);
-        person1.setName("Foo");
-        Person person2 = xoManager.create(Person.class);
+        XOManager xoManager1 = xoManagerFactory.createXOManager();
+        xoManager1.currentTransaction().begin();
+        Person person1 = xoManager1.create((exampe) -> {
+            exampe.setName("Foo");
+        }, Person.class);
+        Person person2 = xoManager1.create(Person.class);
         person2.setName("Bar");
-        xoManager.currentTransaction().commit();
-        xoManager.close();
+        xoManager1.currentTransaction().commit();
+        XOManager xoManager2 = xoManagerFactory.createXOManager();
+        xoManager2.currentTransaction().begin();
+        Person byId1 = xoManager1.findById(Person.class, person1.getId());
+        byId1.setName("FOO");
+        Person byId2 = xoManager2.findById(Person.class, person2.getId());
+        byId2.setName("BAR");
+        Customer customer = xoManager2.migrate(byId2).add(Customer.class).as(Customer.class);
+        customer.setCustomerNo(12345);
+        Person p = xoManager2.migrate(customer).remove(Customer.class).as(Person.class);
+        for (Person foo : xoManager2.find(Person.class, "BAR")) {
+            System.out.println(foo);
+        }
+        xoManager2.currentTransaction().commit();
+        xoManager2.close();
+        xoManager1.currentTransaction().begin();
+        xoManager1.delete(person1);
+        xoManager1.delete(person2);
+        xoManager1.currentTransaction().commit();
+        xoManager1.close();
     }
 }

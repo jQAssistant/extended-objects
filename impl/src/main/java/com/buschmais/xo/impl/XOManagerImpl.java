@@ -102,6 +102,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <T> ResultIterable<T> find(final Class<T> type, final Object value) {
+        sessionContext.getCacheSynchronizationService().flush();
         EntityTypeMetadata<EntityMetadata> entityTypeMetadata = sessionContext.getMetadataProvider().getEntityMetadata(type);
         IndexedPropertyMethodMetadata indexedProperty = entityTypeMetadata.getIndexedProperty();
         Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = new HashMap<>(1);
@@ -160,6 +161,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
      * @return A {@link ResultIterable}.
      */
     private <T> ResultIterable<T> findByExample(Class<?> type, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entity) {
+        sessionContext.getCacheSynchronizationService().flush();
         EntityTypeMetadata<EntityMetadata> entityTypeMetadata = sessionContext.getMetadataProvider().getEntityMetadata(type);
         EntityDiscriminator entityDiscriminator = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
         if (entityDiscriminator == null) {

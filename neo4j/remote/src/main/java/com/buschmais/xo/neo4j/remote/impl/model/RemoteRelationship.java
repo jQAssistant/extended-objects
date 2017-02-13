@@ -1,9 +1,9 @@
 package com.buschmais.xo.neo4j.remote.impl.model;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
-import com.buschmais.xo.neo4j.remote.api.AbstractRemotePropertyContainer;
+import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
 
-public class RemoteRelationship extends AbstractRemotePropertyContainer
+public class RemoteRelationship extends AbstractRemotePropertyContainer<RelationshipState>
         implements Neo4jRelationship<RemoteNode, RemoteLabel, RemoteRelationship, RemoteRelationshipType, RemoteDirection> {
 
     private RemoteNode startNode;
@@ -12,11 +12,11 @@ public class RemoteRelationship extends AbstractRemotePropertyContainer
 
     private RemoteRelationshipType relationshipType;
 
-    public RemoteRelationship(long id, RemoteNode startNode, RemoteNode endNode, RemoteRelationshipType relationshipType) {
-        super(id);
+    public RemoteRelationship(long id, RelationshipState state, RemoteNode startNode, RemoteRelationshipType relationshipType, RemoteNode endNode) {
+        super(id, state);
         this.startNode = startNode;
-        this.endNode = endNode;
         this.relationshipType = relationshipType;
+        this.endNode = endNode;
     }
 
     @Override

@@ -59,5 +59,6 @@ public class RemoteDatastore implements
 
     @Override
     public void close() {
+        driver.close();
     }
 }

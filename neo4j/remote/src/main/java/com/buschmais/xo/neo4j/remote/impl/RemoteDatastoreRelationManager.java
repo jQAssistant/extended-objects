@@ -5,13 +5,14 @@ import java.util.Map;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationship;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
+import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 
-public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePropertyManager<RemoteRelationship> implements
+public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePropertyManager<RemoteRelationship, RelationshipState> implements
         DatastoreRelationManager<RemoteNode, Long, RemoteRelationship, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType, PropertyMetadata> {
 
     public RemoteDatastoreRelationManager(RemoteDatastoreTransaction transaction) {
@@ -36,7 +37,6 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
 
     @Override
     public void deleteRelation(RemoteRelationship remoteRelationship) {
-
     }
 
     @Override
@@ -78,14 +78,6 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     }
 
     @Override
-    public void flush(Iterable<RemoteRelationship> entities) {
-    }
-
-    @Override
-    public void clear(Iterable<RemoteRelationship> entities) {
-    }
-
-    @Override
     protected String createIdentifier(int i) {
         return "r" + i;
     }
@@ -93,5 +85,10 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     @Override
     protected String createIdentifierPattern(String identifier) {
         return String.format("()-[%s]-()", identifier);
+    }
+
+    @Override
+    protected RelationshipState load(RemoteRelationship entity) {
+        return null;
     }
 }
