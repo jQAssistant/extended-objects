@@ -3,19 +3,19 @@ package com.buschmais.xo.neo4j.remote.impl;
 import static org.neo4j.driver.v1.Values.parameters;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
-import org.neo4j.driver.v1.Value;
-import org.neo4j.driver.v1.exceptions.NoSuchRecordException;
 import org.neo4j.driver.v1.types.Node;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
+import com.buschmais.xo.neo4j.remote.impl.model.StatementExecutor;
 import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
@@ -28,11 +28,8 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropertyManager<RemoteNode, NodeState>
         implements DatastoreEntityManager<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, PropertyMetadata> {
 
-    private RemoteDatastoreSessionCache datastoreCache;
-
-    public RemoteDatastoreEntityManager(RemoteDatastoreTransaction transaction, RemoteDatastoreSessionCache datastoreCache) {
-        super(transaction);
-        this.datastoreCache = datastoreCache;
+    public RemoteDatastoreEntityManager(StatementExecutor statementExecutor, RemoteDatastoreSessionCache datastoreSessionCache) {
+        super(statementExecutor, datastoreSessionCache);
     }
 
     @Override
@@ -54,12 +51,9 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     public RemoteNode createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> types, Set<RemoteLabel> remoteLabels,
             Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
         StringBuilder labels = getLabelExpression(remoteLabels);
-        Map<String, Object> properties = new HashMap<>();
-        for (Map.Entry<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entry : exampleEntity.entrySet()) {
-            properties.put(entry.getKey().getDatastoreMetadata().getName(), entry.getValue());
-        }
+        Map<String, Object> properties = getProperties(exampleEntity);
         String statement = String.format("CREATE (n%s{n}) RETURN id(n) as id", labels.toString());
-        Record record = getSingleResult(statement, parameters("n", properties));
+        Record record = statementExecutor.getSingleResult(statement, parameters("n", properties));
         long id = record.get("id").asLong();
         NodeState nodeState = new NodeState(remoteLabels, properties);
         return new RemoteNode(id, nodeState);
@@ -68,7 +62,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     @Override
     public void deleteEntity(RemoteNode remoteNode) {
         String statement = "MATCH (n) WHERE id(n)=({id}) DELETE n RETURN count(n) as count";
-        Record record = getSingleResult(statement, parameters("id", remoteNode.getId()));
+        Record record = statementExecutor.getSingleResult(statement, parameters("id", remoteNode.getId()));
         long count = record.get("count").asLong();
         if (count != 1) {
             throw new XOException("Could not delete " + remoteNode);
@@ -77,12 +71,12 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public RemoteNode findEntityById(EntityTypeMetadata<NodeMetadata<RemoteLabel>> metadata, RemoteLabel remoteLabel, Long id) {
-        return datastoreCache.getNode(load(id));
+        return datastoreSessionCache.getNode(id, getNodeState(fetch(id)));
     }
 
     @Override
     protected NodeState load(RemoteNode remoteNode) {
-        return datastoreCache.getNodeState(load(remoteNode.getId()));
+        return getNodeState(fetch(remoteNode.getId()));
     }
 
     @Override
@@ -103,7 +97,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         PropertyMetadata propertyMetadata = propertyMethodMetadata.getDatastoreMetadata();
         Object value = entry.getValue();
         String statement = String.format("MATCH (n:%s) WHERE n.%s={v} RETURN n", remoteLabel.getName(), propertyMetadata.getName());
-        StatementResult result = transaction.getStatementRunner().run(statement, parameters("v", value));
+        StatementResult result = statementExecutor.execute(statement, parameters("v", value));
         return new ResultIterator<RemoteNode>() {
             @Override
             public boolean hasNext() {
@@ -114,7 +108,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
             public RemoteNode next() {
                 Record record = result.next();
                 Node node = record.get("n").asNode();
-                return datastoreCache.getNode(node);
+                return datastoreSessionCache.getNode(node.id(), getNodeState(node));
             }
 
             @Override
@@ -127,7 +121,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     @Override
     public void addDiscriminators(RemoteNode remoteNode, Set<RemoteLabel> remoteLabels) {
         String statement = "MATCH (n) WHERE id(n)={id} SET n" + getLabelExpression(remoteLabels) + " RETURN count(*) as count";
-        Record record = getSingleResult(statement, parameters("id", remoteNode.getId()));
+        Record record = statementExecutor.getSingleResult(statement, parameters("id", remoteNode.getId()));
         long count = record.get("count").asLong();
         if (count != 1) {
             throw new XOException("Cannot add labels " + remoteLabels + " to node " + remoteNode);
@@ -138,7 +132,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     @Override
     public void removeDiscriminators(RemoteNode remoteNode, Set<RemoteLabel> remoteLabels) {
         String statement = "MATCH (n) WHERE id(n)={id} REMOVE n" + getLabelExpression(remoteLabels) + " RETURN count(*) as count";
-        Record record = getSingleResult(statement, parameters("id", remoteNode.getId()));
+        Record record = statementExecutor.getSingleResult(statement, parameters("id", remoteNode.getId()));
         long count = record.get("count").asLong();
         if (count != 1) {
             throw new XOException("Cannot remove labels " + remoteLabels + " from node " + remoteNode);
@@ -154,20 +148,17 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         return String.format("(%s)", nodeIdentifier);
     }
 
-    private Node load(Long id) {
-        Record record = getSingleResult("MATCH (n) WHERE id(n)={id} RETURN n", parameters("id", id));
+    private Node fetch(Long id) {
+        Record record = statementExecutor.getSingleResult("MATCH (n) WHERE id(n)={id} RETURN n", parameters("id", id));
         return record.get("n").asNode();
     }
 
-    private Record getSingleResult(String statement, Value parameters) {
-        StatementResult result = transaction.getStatementRunner().run(statement, parameters);
-        try {
-            return result.single();
-        } catch (NoSuchRecordException e) {
-            throw new XOException("Query returned no result.");
-        } finally {
-            result.consume();
+    private NodeState getNodeState(Node node) {
+        Set<RemoteLabel> labels = new HashSet<>();
+        for (String label : node.labels()) {
+            labels.add(new RemoteLabel(label));
         }
+        return new NodeState(labels, new HashMap<>(node.asMap()));
     }
 
     /**

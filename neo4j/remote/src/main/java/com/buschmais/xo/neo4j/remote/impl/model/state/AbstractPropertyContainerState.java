@@ -28,4 +28,7 @@ public abstract class AbstractPropertyContainerState {
         return writeCache;
     }
 
+    public void flush() {
+        writeCache = null;
+    }
 }

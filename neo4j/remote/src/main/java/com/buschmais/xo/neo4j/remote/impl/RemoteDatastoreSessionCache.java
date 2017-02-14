@@ -21,20 +21,11 @@ public class RemoteDatastoreSessionCache {
 
     private Cache<Long, RemoteRelationship> relationshipCache = CacheBuilder.newBuilder().weakValues().build();
 
-    public RemoteNode getNode(Node node) {
+    public RemoteNode getNode(long id, NodeState nodeState) {
         try {
-            return nodeCache.get(node.id(), () -> new RemoteNode(node.id(), getNodeState(node)));
+            return nodeCache.get(id, () -> new RemoteNode(id, nodeState));
         } catch (ExecutionException e) {
             throw new XOException("Cannot fetch node");
         }
-    };
-
-    public NodeState getNodeState(Node node) {
-        Set<RemoteLabel> labels = new HashSet<>();
-        for (String label : node.labels()) {
-            labels.add(new RemoteLabel(label));
-        }
-        return new NodeState(labels, new HashMap<>(node.asMap()));
     }
-
 }

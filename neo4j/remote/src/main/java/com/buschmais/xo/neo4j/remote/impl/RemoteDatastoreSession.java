@@ -5,10 +5,7 @@ import java.lang.annotation.Annotation;
 import org.neo4j.driver.v1.Session;
 
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationship;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
+import com.buschmais.xo.neo4j.remote.impl.model.*;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
@@ -20,16 +17,18 @@ public class RemoteDatastoreSession implements
 
     private final Session session;
     private final RemoteDatastoreTransaction transaction;
+    private final StatementExecutor statementExecutor;
     private final RemoteDatastoreEntityManager entityManager;
     private final RemoteDatastoreRelationManager relationManager;
-    private final RemoteDatastoreSessionCache datastoreCache;
+    private final RemoteDatastoreSessionCache datastoreSessionCache;
 
     public RemoteDatastoreSession(Session session) {
         this.session = session;
         transaction = new RemoteDatastoreTransaction(session);
-        datastoreCache = new RemoteDatastoreSessionCache();
-        entityManager = new RemoteDatastoreEntityManager(transaction, datastoreCache);
-        relationManager = new RemoteDatastoreRelationManager(transaction);
+        statementExecutor = new StatementExecutor(transaction);
+        datastoreSessionCache = new RemoteDatastoreSessionCache();
+        entityManager = new RemoteDatastoreEntityManager(statementExecutor, datastoreSessionCache);
+        relationManager = new RemoteDatastoreRelationManager(statementExecutor, datastoreSessionCache);
     }
 
     @Override

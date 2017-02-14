@@ -19,7 +19,7 @@ public class DriverMT {
         properties.setProperty("neo4j.remote.username", "neo4j");
         properties.setProperty("neo4j.remote.password", "admin");
         XOUnit xoUnit = XOUnit.builder().provider(Neo4jRemoteStoreProvider.class).uri(new URI("bolt://localhost:7687")).properties(properties)
-                .type(Person.class).type(Customer.class).build();
+                .type(Person.class).type(Customer.class).type(Address.class).build();
         XOManagerFactory xoManagerFactory = XO.createXOManagerFactory(xoUnit);
         XOManager xoManager1 = xoManagerFactory.createXOManager();
         xoManager1.currentTransaction().begin();
@@ -41,6 +41,9 @@ public class DriverMT {
         for (Person foo : xoManager2.find(Person.class, "BAR")) {
             System.out.println(foo);
         }
+        Address address = xoManager2.create(Address.class);
+        address.setCity("Dresden");
+        p.getAddresses().add(address);
         xoManager2.currentTransaction().commit();
         xoManager2.close();
         xoManager1.currentTransaction().begin();
