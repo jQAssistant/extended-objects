@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.remote.impl;
+package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementRunner;

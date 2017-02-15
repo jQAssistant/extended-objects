@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.remote.impl;
+package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
 import static org.neo4j.driver.v1.Values.parameters;

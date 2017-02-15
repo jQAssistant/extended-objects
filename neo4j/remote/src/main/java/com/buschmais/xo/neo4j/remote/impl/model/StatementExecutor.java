@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.remote.impl.RemoteDatastoreTransaction;
+import com.buschmais.xo.neo4j.remote.impl.datastore.RemoteDatastoreTransaction;
 
 public class StatementExecutor {
 

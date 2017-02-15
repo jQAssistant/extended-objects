@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +89,8 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
 
         @Override
         public ResultIterator<Map<String, Object>> execute(String expression, Map<String, Object> parameters) {
-            Result executionResult = getGraphDatabaseService().execute(expression, convertParameters(parameters));
+            Map<String, Object> convertedParameters = (Map<String, Object>) convertParameter(parameters);
+            Result executionResult = getGraphDatabaseService().execute(expression, convertedParameters);
             final List<String> columns = executionResult.columns();
             return new ResultIterator<Map<String, Object>>() {
 
@@ -119,16 +119,6 @@ public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession
                     executionResult.close();
                 }
             };
-        }
-
-        private Map<String, Object> convertParameters(Map<String, Object> parameters) {
-            Map<String, Object> effectiveParameters = new HashMap<>();
-            for (Map.Entry<String, Object> parameterEntry : parameters.entrySet()) {
-                Object value = parameterEntry.getValue();
-                value = convertParameter(value);
-                effectiveParameters.put(parameterEntry.getKey(), value);
-            }
-            return effectiveParameters;
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.remote.impl;
+package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import java.net.URI;
 import java.util.Map;

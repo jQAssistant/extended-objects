@@ -1,20 +1,21 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.Arrays;
 
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.embedded.api.Neo4jDatastoreSession;
+import com.buschmais.xo.neo4j.embedded.impl.converter.EmbeddedParameterConverter;
+import com.buschmais.xo.neo4j.embedded.impl.converter.EmbeddedValueConverter;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationship;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
+import com.buschmais.xo.neo4j.spi.helper.Converter;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
@@ -25,21 +26,25 @@ import com.buschmais.xo.spi.session.XOSession;
 
 /**
  * Abstract base implementation of a Neo4j database session based on the
- * {@link org.neo4j.graphdb.GraphDatabaseService} API.
+ * {@link GraphDatabaseService} API.
  *
  * @param <GDS>
- *            The type of {@link org.neo4j.graphdb.GraphDatabaseService}.
+ *            The type of {@link GraphDatabaseService}.
  */
 public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements Neo4jDatastoreSession<GDS> {
 
     private final GDS graphDatabaseService;
     private final Neo4jEntityManager entityManager;
     private final Neo4jRelationManager relationManager;
+    private final Converter parameterConverter;
+    private final Converter valueConverter;
 
     public AbstractNeo4jDatastoreSession(GDS graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
         this.entityManager = new Neo4jEntityManager(graphDatabaseService);
         this.relationManager = new Neo4jRelationManager(graphDatabaseService);
+        this.parameterConverter = new Converter(Arrays.asList(new EmbeddedParameterConverter()));
+        this.valueConverter = new Converter(Arrays.asList(new EmbeddedValueConverter()));
     }
 
     @Override
@@ -79,42 +84,12 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
     }
 
     @Override
-    public Object convertValue(Object value) {
-        if (value instanceof Node) {
-            return new EmbeddedNode((Node) value);
-        } else if (value instanceof Relationship) {
-            return new EmbeddedRelationship((Relationship) value);
-        } else if (value instanceof Iterable<?>) {
-            Iterable<?> iterable = (Iterable<?>) value;
-            List<Object> values = new ArrayList<>();
-            for (Object o : iterable) {
-                values.add(convertValue(o));
-            }
-            return values;
-        } else if (value instanceof Map<?, ?>) {
-            Map<Object, Object> result = new HashMap<>();
-            for (Map.Entry<?, ?> entry : ((Map<?, ?>) value).entrySet()) {
-                result.put(convertValue(entry.getKey()), convertValue(entry.getValue()));
-            }
-            return result;
-        }
-        return value;
+    public Object convertParameter(Object value) {
+        return parameterConverter.convert(value);
     }
 
     @Override
-    public Object convertParameter(Object value) {
-        if (value instanceof EmbeddedNode) {
-            return ((EmbeddedNode) value).getId();
-        } else if (value instanceof EmbeddedRelationship) {
-            return ((EmbeddedRelationship) value).getId();
-        } else if (value instanceof Collection) {
-            Collection collection = (Collection) value;
-            List<Object> values = new ArrayList<>();
-            for (Object o : collection) {
-                values.add(convertParameter(o));
-            }
-            return values;
-        }
-        return value;
+    public Object convertValue(Object value) {
+        return valueConverter.convert(value);
     }
 }

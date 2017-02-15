@@ -1,12 +1,11 @@
 package com.buschmais.xo.neo4j.remote;
 
+import java.util.List;
+
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Relation;
-import org.neo4j.cypher.internal.compiler.v2_3.commands.expressions.Add;
-
-import java.util.List;
 
 @Label
 public interface Person extends CompositeObject {
@@ -18,4 +17,9 @@ public interface Person extends CompositeObject {
 
     @Relation("HAS_ADDRESS")
     List<Address> getAddresses();
+
+    @Relation("HAS_PRIMARY_ADDRESS")
+    Address getPrimaryAddress();
+
+    void setPrimaryAddress(Address addresses);
 }

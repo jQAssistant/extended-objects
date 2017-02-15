@@ -2,6 +2,8 @@ package com.buschmais.xo.neo4j.remote;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Test;
@@ -10,6 +12,7 @@ import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.remote.api.Neo4jRemoteStoreProvider;
 
 public class DriverMT {
 
@@ -40,9 +43,14 @@ public class DriverMT {
         Address address = xoManager2.create(Address.class);
         address.setCity("Dresden");
         p.getAddresses().add(address);
+        p.setPrimaryAddress(address);
         xoManager2.currentTransaction().commit();
         xoManager2.currentTransaction().begin();
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "BAR");
+        Person singleResult = xoManager2.createQuery("MATCH (p:Person{name:{name}}) RETURN p", Person.class).withParameters(params).execute().getSingleResult();
         p.getAddresses().remove(address);
+        p.setPrimaryAddress(null);
         xoManager2.currentTransaction().commit();
         xoManager2.close();
         xoManager1.currentTransaction().begin();

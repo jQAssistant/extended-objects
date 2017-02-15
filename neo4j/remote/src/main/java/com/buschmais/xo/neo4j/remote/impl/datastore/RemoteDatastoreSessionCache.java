@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.remote.impl;
+package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,7 +59,16 @@ public class RemoteDatastoreSessionCache {
         return getRelationship(relationship.id(), startNode, type, endNode, getRelationshipState(relationship));
     }
 
+    public RemoteRelationship getRelationship(Relationship relationship) {
+        RemoteNode startNode = getNode(relationship.startNodeId(), new NodeState(new HashSet<>(), new HashMap<>()));
+        RemoteNode endNode = getNode(relationship.endNodeId(), new NodeState(new HashSet<>(), new HashMap<>()));
+        RemoteRelationshipType type = new RemoteRelationshipType(relationship.type());
+        RelationshipState relationshipState = getRelationshipState(relationship);
+        return getRelationship(relationship.id(), startNode, type, endNode, relationshipState);
+    }
+
     public RelationshipState getRelationshipState(Relationship relationship) {
         return new RelationshipState(new HashMap<>(relationship.asMap()));
     }
+
 }

@@ -1,9 +1,10 @@
-package com.buschmais.xo.neo4j.remote.impl;
+package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import java.lang.annotation.Annotation;
 
 import org.neo4j.driver.v1.Session;
 
+import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.remote.impl.model.*;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
@@ -53,7 +54,10 @@ public class RemoteDatastoreSession implements
 
     @Override
     public <QL extends Annotation> DatastoreQuery<QL> createQuery(Class<QL> queryLanguage) {
-        return null;
+        if (Cypher.class.equals(queryLanguage)) {
+            return (DatastoreQuery<QL>) new RemoteDatastoreCypherQuery(statementExecutor, datastoreSessionCache);
+        }
+        throw new XOException("Unsupported query language: " + queryLanguage.getName());
     }
 
     @Override
