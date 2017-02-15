@@ -56,6 +56,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     private final Map<Class<?>, Object> repositories = new HashMap<>();
 
+    private final Map<Class<?>, ExampleProxyMethodService<?>> exampleProxyMethodServices = new HashMap<>();
+
     private final DefaultCloseSupport closeSupport = new DefaultCloseSupport();
 
     /**
@@ -139,7 +141,12 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
      */
     private <T> Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> prepareExample(Example<T> example, Class<?> type, Class<?>... types) {
         Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = new HashMap<>();
-        InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(exampleEntity, new ExampleProxyMethodService(type, sessionContext));
+        ExampleProxyMethodService<T> proxyMethodService = (ExampleProxyMethodService<T>) exampleProxyMethodServices.get(type);
+        if (proxyMethodService == null) {
+            proxyMethodService = new ExampleProxyMethodService(type, sessionContext);
+            exampleProxyMethodServices.put(type, proxyMethodService);
+        }
+        InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(exampleEntity, proxyMethodService);
         List<Class<?>> effectiveTypes = new ArrayList<>();
         effectiveTypes.add(type);
         effectiveTypes.addAll(Arrays.asList(types));

@@ -53,9 +53,12 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
     public final void flush(Iterable<T> entities) {
         Map<T, Map<String, Object>> entityProperties = new HashMap<>();
         for (T entity : entities) {
-            Map<String, Object> writeCache = entity.getWriteCache();
-            if (writeCache != null && !writeCache.isEmpty()) {
-                entityProperties.put(entity, writeCache);
+            AbstractPropertyContainerState state = entity.getState();
+            if (state != null) {
+                Map<String, Object> writeCache = state.getWriteCache();
+                if (writeCache != null && !writeCache.isEmpty()) {
+                    entityProperties.put(entity, writeCache);
+                }
             }
         }
         if (!entityProperties.isEmpty()) {

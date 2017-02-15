@@ -1,9 +1,8 @@
 package com.buschmais.xo.neo4j.remote.impl;
 
+import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
 import static org.neo4j.driver.v1.Values.parameters;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,7 +20,6 @@ import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
-import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
@@ -56,7 +54,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         Record record = statementExecutor.getSingleResult(statement, parameters("n", properties));
         long id = record.get("id").asLong();
         NodeState nodeState = new NodeState(remoteLabels, properties);
-        return new RemoteNode(id, nodeState);
+        return datastoreSessionCache.getNode(id, nodeState);
     }
 
     @Override
@@ -71,12 +69,12 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public RemoteNode findEntityById(EntityTypeMetadata<NodeMetadata<RemoteLabel>> metadata, RemoteLabel remoteLabel, Long id) {
-        return datastoreSessionCache.getNode(id, getNodeState(fetch(id)));
+        return datastoreSessionCache.getNode(id, datastoreSessionCache.getNodeState(fetch(id)));
     }
 
     @Override
     protected NodeState load(RemoteNode remoteNode) {
-        return getNodeState(fetch(remoteNode.getId()));
+        return datastoreSessionCache.getNodeState(fetch(remoteNode.getId()));
     }
 
     @Override
@@ -86,15 +84,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
             throw new XOException("Only one property value is supported for find operation");
         }
         Map.Entry<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entry = values.entrySet().iterator().next();
-        PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata = entry.getKey();
-        if (propertyMethodMetadata == null) {
-            IndexedPropertyMethodMetadata<?> indexedProperty = type.getDatastoreMetadata().getUsingIndexedPropertyOf();
-            if (indexedProperty == null) {
-                throw new XOException("Type " + type.getAnnotatedType().getAnnotatedElement().getName() + " has no indexed property.");
-            }
-            propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
-        }
-        PropertyMetadata propertyMetadata = propertyMethodMetadata.getDatastoreMetadata();
+        PropertyMetadata propertyMetadata = getIndexedPropertyMetadata(type, entry.getKey());
         Object value = entry.getValue();
         String statement = String.format("MATCH (n:%s) WHERE n.%s={v} RETURN n", remoteLabel.getName(), propertyMetadata.getName());
         StatementResult result = statementExecutor.execute(statement, parameters("v", value));
@@ -108,7 +98,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
             public RemoteNode next() {
                 Record record = result.next();
                 Node node = record.get("n").asNode();
-                return datastoreSessionCache.getNode(node.id(), getNodeState(node));
+                return datastoreSessionCache.getNode(node.id(), datastoreSessionCache.getNodeState(node));
             }
 
             @Override
@@ -151,14 +141,6 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     private Node fetch(Long id) {
         Record record = statementExecutor.getSingleResult("MATCH (n) WHERE id(n)={id} RETURN n", parameters("id", id));
         return record.get("n").asNode();
-    }
-
-    private NodeState getNodeState(Node node) {
-        Set<RemoteLabel> labels = new HashSet<>();
-        for (String label : node.labels()) {
-            labels.add(new RemoteLabel(label));
-        }
-        return new NodeState(labels, new HashMap<>(node.asMap()));
     }
 
     /**

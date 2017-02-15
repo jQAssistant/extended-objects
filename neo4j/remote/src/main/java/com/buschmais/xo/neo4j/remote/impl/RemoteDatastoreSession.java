@@ -28,7 +28,7 @@ public class RemoteDatastoreSession implements
         statementExecutor = new StatementExecutor(transaction);
         datastoreSessionCache = new RemoteDatastoreSessionCache();
         entityManager = new RemoteDatastoreEntityManager(statementExecutor, datastoreSessionCache);
-        relationManager = new RemoteDatastoreRelationManager(statementExecutor, datastoreSessionCache);
+        relationManager = new RemoteDatastoreRelationManager(entityManager, statementExecutor, datastoreSessionCache);
     }
 
     @Override

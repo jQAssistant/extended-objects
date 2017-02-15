@@ -15,11 +15,7 @@ public class DriverMT {
 
     @Test
     public void test() throws URISyntaxException {
-        Properties properties = new Properties();
-        properties.setProperty("neo4j.remote.username", "neo4j");
-        properties.setProperty("neo4j.remote.password", "admin");
-        XOUnit xoUnit = XOUnit.builder().provider(Neo4jRemoteStoreProvider.class).uri(new URI("bolt://localhost:7687")).properties(properties)
-                .type(Person.class).type(Customer.class).type(Address.class).build();
+        XOUnit xoUnit = getXoUnit();
         XOManagerFactory xoManagerFactory = XO.createXOManagerFactory(xoUnit);
         XOManager xoManager1 = xoManagerFactory.createXOManager();
         xoManager1.currentTransaction().begin();
@@ -45,11 +41,42 @@ public class DriverMT {
         address.setCity("Dresden");
         p.getAddresses().add(address);
         xoManager2.currentTransaction().commit();
+        xoManager2.currentTransaction().begin();
+        p.getAddresses().remove(address);
+        xoManager2.currentTransaction().commit();
         xoManager2.close();
         xoManager1.currentTransaction().begin();
         xoManager1.delete(person1);
         xoManager1.delete(person2);
         xoManager1.currentTransaction().commit();
         xoManager1.close();
+    }
+
+    @Test
+    public void manyPersons() throws URISyntaxException {
+        XOManagerFactory xmf = XO.createXOManagerFactory(getXoUnit());
+        try (XOManager xm = xmf.createXOManager()) {
+            for (int i = 0; i < 100; i++) {
+                xm.currentTransaction().begin();
+                for (int k = 0; k < 1000; k++) {
+                    String name = "Foo_" + i + "_" + k;
+                    Person person = xm.create((exampe) -> exampe.setName(name), Person.class);
+                    for (int l = 0; l < 2; l++) {
+                        String city = "City_" + i + "_" + k + "_" + l;
+                        Address address = xm.create((example) -> example.setCity(city), Address.class);
+                        person.getAddresses().add(address);
+                    }
+                }
+                xm.currentTransaction().commit();
+            }
+        }
+    }
+
+    private XOUnit getXoUnit() throws URISyntaxException {
+        Properties properties = new Properties();
+        properties.setProperty("neo4j.remote.username", "neo4j");
+        properties.setProperty("neo4j.remote.password", "admin");
+        return XOUnit.builder().provider(Neo4jRemoteStoreProvider.class).uri(new URI("bolt://localhost:7687")).properties(properties).type(Person.class)
+                .type(Customer.class).type(Address.class).build();
     }
 }

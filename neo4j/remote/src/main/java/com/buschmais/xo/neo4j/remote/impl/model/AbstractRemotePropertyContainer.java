@@ -54,10 +54,6 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
         state = null;
     }
 
-    public Map<String, Object> getWriteCache() {
-        return state.getWriteCache();
-    }
-
     public void removeProperty(String name) {
         setProperty(name, null);
     }

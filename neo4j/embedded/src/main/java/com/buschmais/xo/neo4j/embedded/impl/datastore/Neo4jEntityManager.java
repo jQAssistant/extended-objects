@@ -1,6 +1,7 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
-import java.util.HashSet;
+import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -17,7 +18,6 @@ import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
-import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
@@ -79,16 +79,8 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
             throw new XOException("Only one property value is supported for find operation");
         }
         Map.Entry<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entry = values.entrySet().iterator().next();
-        PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata = entry.getKey();
-        if (propertyMethodMetadata == null) {
-            IndexedPropertyMethodMetadata<?> indexedProperty = entityTypeMetadata.getDatastoreMetadata().getUsingIndexedPropertyOf();
-            if (indexedProperty == null) {
-                throw new XOException("Type " + entityTypeMetadata.getAnnotatedType().getAnnotatedElement().getName() + " has no indexed property.");
-            }
-            propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
-        }
-        PropertyMetadata propertyMetadata = propertyMethodMetadata.getDatastoreMetadata();
         Object value = entry.getValue();
+        PropertyMetadata propertyMetadata = getIndexedPropertyMetadata(entityTypeMetadata, entry.getKey());
         ResourceIterator<Node> iterator = graphDatabaseService.findNodes(discriminator.getDelegate(), propertyMetadata.getName(), value);
         return new ResultIterator<EmbeddedNode>() {
             @Override
