@@ -23,6 +23,48 @@
                 <artifactId>xo.neo4j.spi</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.buschmais.xo</groupId>
+                <artifactId>xo.neo4j.embedded</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.buschmais.xo</groupId>
+                <artifactId>xo.neo4j.remote</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.neo4j</groupId>
+                <artifactId>neo4j-kernel</artifactId>
+                <type>test-jar</type>
+                <version>${org.neo4j_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.neo4j</groupId>
+                <artifactId>neo4j-io</artifactId>
+                <type>test-jar</type>
+                <version>${org.neo4j_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.neo4j.app</groupId>
+                <artifactId>neo4j-server</artifactId>
+                <version>${org.neo4j_version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>asm</groupId>
+                        <artifactId>asm</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-access</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                    </exclusion>
+                </exclusions>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -31,6 +73,7 @@
         <module>spi</module>
         <module>embedded</module>
         <module>remote</module>
+        <module>test</module>
     </modules>
 
 </project>
