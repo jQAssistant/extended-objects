@@ -5,12 +5,14 @@ import java.lang.annotation.Annotation;
 import org.neo4j.driver.v1.Session;
 
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.remote.impl.model.*;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.*;
+import com.buschmais.xo.spi.reflection.ClassHelper;
 import com.buschmais.xo.spi.session.XOSession;
 
 public class RemoteDatastoreSession implements
@@ -62,7 +64,14 @@ public class RemoteDatastoreSession implements
 
     @Override
     public <R> R createRepository(XOSession xoSession, Class<R> type) {
-        return null;
+        if (TypedNeo4jRepository.class.isAssignableFrom(type)) {
+            Class<?> typeParameter = ClassHelper.getTypeParameter(TypedNeo4jRepository.class, type);
+            if (typeParameter == null) {
+                throw new XOException("Cannot determine type parameter for " + type.getName());
+            }
+            return (R) new RemoteTypedNeo4jRepositoryImpl<>(xoSession, typeParameter, statementExecutor, datastoreSessionCache);
+        }
+        return (R) new RemoteNeo4jRepositoryImpl(xoSession, statementExecutor, datastoreSessionCache);
     }
 
     @Override

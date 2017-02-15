@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import org.junit.Test;
 
+import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
@@ -49,6 +50,12 @@ public class DriverMT {
         Map<String, Object> params = new HashMap<>();
         params.put("name", "BAR");
         Person singleResult = xoManager2.createQuery("MATCH (p:Person{name:{name}}) RETURN p", Person.class).withParameters(params).execute().getSingleResult();
+
+        PersonRepository personRepository = xoManager2.getRepository(PersonRepository.class);
+        ResultIterable<Person> bar = personRepository.find("BAR");
+        for (Person person : bar) {
+            System.out.println(person);
+        }
         p.getAddresses().remove(address);
         p.setPrimaryAddress(null);
         xoManager2.currentTransaction().commit();
@@ -85,6 +92,6 @@ public class DriverMT {
         properties.setProperty("neo4j.remote.username", "neo4j");
         properties.setProperty("neo4j.remote.password", "admin");
         return XOUnit.builder().provider(Neo4jRemoteStoreProvider.class).uri(new URI("bolt://localhost:7687")).properties(properties).type(Person.class)
-                .type(Customer.class).type(Address.class).build();
+                .type(Customer.class).type(Address.class).type(PersonRepository.class).build();
     }
 }
