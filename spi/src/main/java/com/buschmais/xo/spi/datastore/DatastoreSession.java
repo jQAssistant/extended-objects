@@ -1,9 +1,8 @@
 package com.buschmais.xo.spi.datastore;
 
-import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
-import com.buschmais.xo.spi.session.XOSession;
-
 import java.lang.annotation.Annotation;
+
+import com.buschmais.xo.spi.session.XOSession;
 
 /**
  * Defines the interface of a datastore session, e.g. a connection to the
@@ -20,7 +19,8 @@ import java.lang.annotation.Annotation;
  * @param <Relation>
  *            The type of relations used by the datastore.
  */
-public interface DatastoreSession<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata> {
+public interface DatastoreSession<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata>
+        extends AutoCloseable {
 
     /**
      * Return the instance of the datastore transaction associated with the

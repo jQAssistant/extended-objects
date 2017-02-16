@@ -10,7 +10,7 @@ import com.buschmais.xo.neo4j.api.annotation.Relation;
 @Label
 public interface Person extends CompositeObject {
 
-    @Indexed
+    @Indexed(unique = true)
     String getName();
 
     void setName(String name);
