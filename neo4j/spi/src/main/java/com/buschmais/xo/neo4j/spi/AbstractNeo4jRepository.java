@@ -1,6 +1,7 @@
 package com.buschmais.xo.neo4j.spi;
 
 import com.buschmais.xo.api.ResultIterable;
+import com.buschmais.xo.neo4j.api.Neo4jRepository;
 import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
@@ -11,7 +12,7 @@ import com.buschmais.xo.spi.session.XOSession;
 /**
  * Abstract base implementation for Neo4j repositories.
  */
-public abstract class AbstractNeo4jRepository<Label extends Neo4jLabel> {
+public abstract class AbstractNeo4jRepository<Label extends Neo4jLabel> implements Neo4jRepository {
 
     protected final XOSession<?, ?, NodeMetadata<Label>, Label, ?, ?, ?, ?, PropertyMetadata> xoSession;
 
@@ -19,7 +20,7 @@ public abstract class AbstractNeo4jRepository<Label extends Neo4jLabel> {
         this.xoSession = xoSession;
     }
 
-    protected <T> ResultIterable<T> find(Class<T> type, Object value) {
+    public <T> ResultIterable<T> find(Class<T> type, Object value) {
         this.xoSession.flush();
         // get the label for the type
         EntityTypeMetadata<NodeMetadata<Label>> entityMetadata = xoSession.getEntityMetadata(type);

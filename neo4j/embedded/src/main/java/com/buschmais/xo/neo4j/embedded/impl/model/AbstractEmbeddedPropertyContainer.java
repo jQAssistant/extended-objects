@@ -5,9 +5,7 @@ import java.util.Map;
 
 import org.neo4j.graphdb.PropertyContainer;
 
-import com.buschmais.xo.neo4j.api.model.Neo4jPropertyContainer;
-
-public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContainer> implements Neo4jPropertyContainer {
+public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContainer> implements EmbeddedNeo4jPropertyContainer {
 
     private long id;
 
@@ -49,11 +47,13 @@ public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContai
         return value;
     };
 
+    @Override
     public void setProperty(String key, Object value) {
         getWriteCache().put(key, value);
         getReadCache().put(key, value);
     }
 
+    @Override
     public Object removeProperty(String key) {
         getWriteCache().remove(key);
         getReadCache().remove(key);

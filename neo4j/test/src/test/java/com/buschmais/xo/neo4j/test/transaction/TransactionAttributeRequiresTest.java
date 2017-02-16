@@ -34,7 +34,7 @@ public class TransactionAttributeRequiresTest extends AbstractNeo4jXOManagerTest
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(Neo4jDatabase.MEMORY), asList(A.class, B.class), Collections.<Class<?>> emptyList(), ValidationMode.AUTO,
+        return xoUnits(asList(Neo4jDatabase.MEMORY, Neo4jDatabase.BOLT), asList(A.class, B.class), Collections.emptyList(), ValidationMode.AUTO,
                 ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.REQUIRES);
     }
 

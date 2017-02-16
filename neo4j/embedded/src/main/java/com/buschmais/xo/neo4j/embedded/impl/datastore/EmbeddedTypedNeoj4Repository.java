@@ -18,7 +18,7 @@ import com.buschmais.xo.spi.session.XOSession;
  * 
  * @param <T>
  */
-public class TypedNeoj4RepositoryImpl<T> extends AbstractNeo4jRepositoryImpl implements TypedNeo4jRepository<T> {
+public class EmbeddedTypedNeoj4Repository<T> extends EmbeddedNeo4jRepository implements TypedNeo4jRepository<T> {
 
     private Class<T> type;
 
@@ -32,8 +32,8 @@ public class TypedNeoj4RepositoryImpl<T> extends AbstractNeo4jRepositoryImpl imp
      * @param xoSession
      *            The {@link XOSession}.
      */
-    public TypedNeoj4RepositoryImpl(Class<T> type, GraphDatabaseService graphDatabaseService,
-            XOSession<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, Long, EmbeddedRelationship, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType, PropertyMetadata> xoSession) {
+    public EmbeddedTypedNeoj4Repository(Class<T> type, GraphDatabaseService graphDatabaseService,
+                                        XOSession<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, Long, EmbeddedRelationship, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType, PropertyMetadata> xoSession) {
         super(graphDatabaseService, xoSession);
         this.type = type;
     }

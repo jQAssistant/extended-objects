@@ -85,6 +85,8 @@ public class ByExampleTest extends AbstractNeo4jXOManagerTest {
         }, A.class, B.class);
         // java 8: lambda expression
         xoManager.<CompositeObject>create(example -> example.as(A.class).setValue("A2"), A.class, B.class);
+        // java 8: lambda expression, alternative
+        xoManager.create(A.class, example -> example.setValue("A3"));
         xoManager.currentTransaction().commit();
 
         xoManager.currentTransaction().begin();
@@ -99,7 +101,8 @@ public class ByExampleTest extends AbstractNeo4jXOManagerTest {
         assertThat(xoManager.find(
                 example -> example.as(A.class).setValue("A1"),
                 A.class, B.class).getSingleResult(), equalTo(compositeObject1));
-
+        // java 8: lambda expression, alternative
+        assertThat(xoManager.find(A.class, example -> example.setValue("A1")).getSingleResult(), equalTo(compositeObject1));
     }
 
 }

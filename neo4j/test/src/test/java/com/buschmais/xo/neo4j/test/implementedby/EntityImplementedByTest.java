@@ -2,6 +2,7 @@ package com.buschmais.xo.neo4j.test.implementedby;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeThat;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import org.junit.runners.Parameterized;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
+import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.implementedby.composite.A;
 import com.buschmais.xo.neo4j.test.implementedby.composite.A2B;
 import com.buschmais.xo.neo4j.test.implementedby.composite.B;
@@ -43,6 +45,7 @@ public class EntityImplementedByTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void propertyMethods() {
+        assumeThat(getXoManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
         XOManager xoManager = getXoManagerFactory().createXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);

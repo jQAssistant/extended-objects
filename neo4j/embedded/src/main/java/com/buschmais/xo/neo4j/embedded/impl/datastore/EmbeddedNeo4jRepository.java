@@ -16,11 +16,11 @@ import com.buschmais.xo.spi.session.XOSession;
 /**
  * Abstract base implementation for Neo4j repositories.
  */
-abstract class AbstractNeo4jRepositoryImpl extends AbstractNeo4jRepository<EmbeddedLabel> {
+public class EmbeddedNeo4jRepository extends AbstractNeo4jRepository<EmbeddedLabel> {
 
     private final GraphDatabaseService graphDatabaseService;
 
-    protected AbstractNeo4jRepositoryImpl(GraphDatabaseService graphDatabaseService,
+    protected EmbeddedNeo4jRepository(GraphDatabaseService graphDatabaseService,
             XOSession<?, ?, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?, ?, ?, PropertyMetadata> xoSession) {
         super(xoSession);
         this.graphDatabaseService = graphDatabaseService;

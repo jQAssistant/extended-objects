@@ -128,6 +128,12 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         return findByExample(type, exampleEntity);
     }
 
+    @Override
+    public <T> ResultIterable<T> find(Class<T> type, Example<T> example) {
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type, new Class<?>[0]);
+        return findByExample(type, exampleEntity);
+    }
+
     /**
      * Setup an example entity.
      *
@@ -219,7 +225,13 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     @Override
     public CompositeObject create(Example<CompositeObject> example, Class<?> type, Class<?>... types) {
         Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type);
-        return createByExample(type, new Class<?>[0], exampleEntity);
+        return createByExample(type, types, exampleEntity);
+    }
+
+    @Override
+    public <T> T create(Class<T> type, Example<T> example) {
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type);
+        return createByExample(type, new Class<?>[0], exampleEntity).as(type);
     }
 
     public <T> T create(Class<T> type) {

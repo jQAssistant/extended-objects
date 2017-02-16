@@ -30,7 +30,7 @@ public class ValidationModeNoneTest extends AbstractNeo4jXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(A.class, B.class), Collections.<Class<?>>emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
+        return xoUnits(asList(A.class, B.class), Collections.emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
     }
 
     @Test

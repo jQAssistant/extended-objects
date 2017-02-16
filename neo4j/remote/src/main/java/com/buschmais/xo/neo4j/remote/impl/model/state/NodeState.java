@@ -12,7 +12,7 @@ import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
 public class NodeState extends AbstractPropertyContainerState {
 
     private Set<RemoteLabel> labels;
-    private Map<RemoteDirection, Map<RemoteRelationshipType, Set<RemoteRelationship>>> relationships = new HashMap<>();
+    private Map<RemoteDirection, Map<RemoteRelationshipType, Set<RemoteRelationship>>> cachedRelationships = new HashMap<>();
 
     public NodeState(Set<RemoteLabel> labels, Map<String, Object> readCache) {
         super(readCache);
@@ -23,20 +23,21 @@ public class NodeState extends AbstractPropertyContainerState {
         return labels;
     }
 
-    public void setRelationships(RemoteDirection direction, RemoteRelationshipType type, Set<RemoteRelationship> remoteRelationships) {
-        Map<RemoteRelationshipType, Set<RemoteRelationship>> map = getRelationshipsByDirection(direction);
-        map.put(type, remoteRelationships);
+    public Set<RemoteRelationship> getRelationships(RemoteDirection direction, RemoteRelationshipType type) {
+        Map<RemoteRelationshipType, Set<RemoteRelationship>> relationshipsByDirection = getRelationshipsByDirection(direction);
+        return relationshipsByDirection.get(type);
     }
 
-    public Set<RemoteRelationship> getRelationships(RemoteDirection direction, RemoteRelationshipType type) {
-        return getRelationshipsByDirection(direction).get(type);
+    public void setRelationships(RemoteDirection direction, RemoteRelationshipType type, Set<RemoteRelationship> relationships) {
+        Map<RemoteRelationshipType, Set<RemoteRelationship>> relationshipsByDirection = getRelationshipsByDirection(direction);
+        relationshipsByDirection.put(type, relationships);
     }
 
     private Map<RemoteRelationshipType, Set<RemoteRelationship>> getRelationshipsByDirection(RemoteDirection direction) {
-        Map<RemoteRelationshipType, Set<RemoteRelationship>> relationships = this.relationships.get(direction);
+        Map<RemoteRelationshipType, Set<RemoteRelationship>> relationships = this.cachedRelationships.get(direction);
         if (relationships == null) {
             relationships = new HashMap<>();
-            this.relationships.put(direction, relationships);
+            this.cachedRelationships.put(direction, relationships);
         }
         return relationships;
     }

@@ -3,6 +3,7 @@ package com.buschmais.xo.neo4j.test.concurrency;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeThat;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +19,7 @@ import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
+import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.concurrency.composite.A;
 
 @RunWith(Parameterized.class)
@@ -29,11 +31,12 @@ public class MultithreadedTest extends AbstractNeo4jXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() {
-        return xoUnits(asList(A.class), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.MULTITHREADED, Transaction.TransactionAttribute.REQUIRES);
+        return xoUnits(asList(A.class), Collections.emptyList(), ValidationMode.AUTO, ConcurrencyMode.MULTITHREADED, Transaction.TransactionAttribute.REQUIRES);
     }
 
     @Test
     public void instance() throws ExecutionException, InterruptedException {
+        assumeThat(getXoManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
         XOManager xoManager = getXoManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);

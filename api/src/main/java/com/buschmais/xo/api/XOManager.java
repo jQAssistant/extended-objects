@@ -83,6 +83,17 @@ public interface XOManager extends AutoCloseable, CloseSupport {
     ResultIterable<CompositeObject> find(Example<CompositeObject> example, Class<?> type, Class<?>... types);
 
     /**
+     * Find all instances according to the given type and and {@link Example}.
+     *
+     * @param type
+     *            The interface of the property type.
+     * @param example
+     *            The {@link Example}.
+     * @return An {@link Iterable} returning the property instance.
+     */
+    <T> ResultIterable<T> find( Class<T> type, Example<T> example);
+
+    /**
      * Create a new {@link CompositeObject} instance.
      *
      * @param type
@@ -105,6 +116,17 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * @return The {@link CompositeObject} instance.
      */
     CompositeObject create(Example<CompositeObject> example, Class<?> type, Class<?>... types);
+
+    /**
+     * Create a new {@link CompositeObject} instance using an example.
+     *
+     * @param type
+     *            The interface the property type shall implement.
+     * @param example
+     *            The example instance.
+     * @return The {@link CompositeObject} instance.
+     */
+    <T> T create(Class<T> type, Example<T> example);
 
     /**
      * Create a new property instance.

@@ -19,7 +19,7 @@ public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
 
     // This rule starts a Neo4j instance
     @ClassRule
-    public static Neo4jRule neo4j = new Neo4jRule().withConfig("dbms.connector.bolt.listen_address","localhost:7687");
+    public static Neo4jRule neo4j = new Neo4jRule();
 
     protected AbstractNeo4jXOManagerTest(XOUnit xoUnit) {
         super(xoUnit);
@@ -32,7 +32,8 @@ public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
 
     protected static Collection<Object[]> xoUnits(List<? extends Class<?>> types, List<? extends Class<?>> instanceListeners, ValidationMode validationMode,
             ConcurrencyMode concurrencyMode, Transaction.TransactionAttribute transactionAttribute) {
-        return xoUnits(Arrays.asList(Neo4jDatabase.MEMORY), types, instanceListeners, validationMode, concurrencyMode, transactionAttribute);
+        return xoUnits(Arrays.asList(Neo4jDatabase.MEMORY, Neo4jDatabase.BOLT), types, instanceListeners, validationMode, concurrencyMode,
+                transactionAttribute);
     }
 
     protected void dropDatabase() {

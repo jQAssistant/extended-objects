@@ -3,10 +3,7 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 import java.net.URI;
 import java.util.Properties;
 
-import org.neo4j.driver.v1.Config;
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.GraphDatabase;
-import org.neo4j.driver.v1.Session;
+import org.neo4j.driver.v1.*;
 
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
@@ -26,9 +23,13 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
         Properties properties = xoUnit.getProperties();
         String username = (String) properties.get("neo4j.remote.username");
         String password = (String) properties.get("neo4j.remote.password");
-        this.driver = GraphDatabase.driver(uri, Config.build().withEncryptionLevel(Config.EncryptionLevel.NONE).toConfig());
-        // this.driver = GraphDatabase.driver(uri, AuthTokens.basic(username,
-        // password));
+        String encryptionLevel = (String) properties.get("neo4j.remote.encryptionLevel");
+        Config.ConfigBuilder configBuilder = Config.build();
+        if (encryptionLevel != null) {
+            configBuilder.withEncryptionLevel(Config.EncryptionLevel.valueOf(encryptionLevel.toUpperCase()));
+        }
+        AuthToken authToken = username != null ? AuthTokens.basic(username, password) : null;
+        this.driver = GraphDatabase.driver(uri, authToken, configBuilder.toConfig());
     }
 
     @Override

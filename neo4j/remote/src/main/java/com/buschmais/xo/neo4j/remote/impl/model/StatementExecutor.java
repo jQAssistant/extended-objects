@@ -14,7 +14,7 @@ import com.buschmais.xo.neo4j.remote.impl.datastore.RemoteDatastoreTransaction;
 
 public class StatementExecutor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRemotePropertyContainer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StatementExecutor.class);
 
     private RemoteDatastoreTransaction transaction;
 
@@ -35,7 +35,7 @@ public class StatementExecutor {
     }
 
     public StatementResult execute(String statement, Map<String, Object> parameters) {
-        LOGGER.info("Executing '" + statement + "', " + parameters);
+        LOGGER.debug("Executing '" + statement + "', " + parameters);
         return transaction.getStatementRunner().run(statement, parameters);
     }
 

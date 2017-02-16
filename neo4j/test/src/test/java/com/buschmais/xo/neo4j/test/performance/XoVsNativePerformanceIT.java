@@ -22,7 +22,7 @@ import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.embedded.api.Neo4jDatastoreSession;
+import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNode;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNodeRelation;
@@ -42,7 +42,7 @@ public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(TreeNode.class, TreeNodeRelation.class), Collections.<Class<?>> emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED,
+        return xoUnits(asList(TreeNode.class, TreeNodeRelation.class), Collections.emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED,
                 TransactionAttribute.NONE);
     }
 
@@ -76,7 +76,7 @@ public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {
     @Before
     public void initialize() {
         try (XOManager xoManager = getXoManagerFactory().createXOManager()) {
-            Neo4jDatastoreSession datastoreSession = xoManager.getDatastoreSession(Neo4jDatastoreSession.class);
+            EmbeddedNeo4jDatastoreSession datastoreSession = xoManager.getDatastoreSession(EmbeddedNeo4jDatastoreSession.class);
             GraphDatabaseService graphDatabaseService = datastoreSession.getGraphDatabaseService();
             Transaction transaction = graphDatabaseService.beginTx();
             Node n1 = graphDatabaseService.createNode();
@@ -135,7 +135,7 @@ public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {
     }
 
     private List<Measurement> runNative(final XOManager xoManager) {
-        final GraphDatabaseService graphDatabaseService = xoManager.getDatastoreSession(Neo4jDatastoreSession.class).getGraphDatabaseService();
+        final GraphDatabaseService graphDatabaseService = xoManager.getDatastoreSession(EmbeddedNeo4jDatastoreSession.class).getGraphDatabaseService();
         ApiUnderTest<Node, Relationship> nativeApi = new ApiUnderTest<Node, Relationship>() {
 
             private Transaction transaction;

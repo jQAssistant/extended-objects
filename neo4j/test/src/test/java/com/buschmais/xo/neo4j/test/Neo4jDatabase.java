@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
 
-import com.buschmais.xo.neo4j.embedded.api.Neo4jXOProvider;
+import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider;
 import com.buschmais.xo.neo4j.remote.api.Neo4jRemoteStoreProvider;
 import com.buschmais.xo.test.AbstractXOManagerTest;
 
@@ -17,7 +17,7 @@ public enum Neo4jDatabase implements AbstractXOManagerTest.Database {
     MEMORY("memory:///") {
         @Override
         public Class<?> getProvider() {
-            return Neo4jXOProvider.class;
+            return EmbeddedNeo4jXOProvider.class;
         }
     },
     BOLT("bolt://localhost:5001") {
