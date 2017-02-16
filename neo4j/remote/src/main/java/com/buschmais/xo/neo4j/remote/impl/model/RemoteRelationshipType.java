@@ -34,6 +34,6 @@ public class RemoteRelationshipType implements Neo4jRelationshipType {
 
     @Override
     public String toString() {
-        return "RemoteLabel{" + "name='" + name + '\'' + '}';
+        return "RemoteRelationshipType{" + "name='" + name + '\'' + '}';
     }
 }

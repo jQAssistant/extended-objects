@@ -3,7 +3,6 @@ package com.buschmais.xo.neo4j.embedded.impl.datastore;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.GraphDatabaseService;
 
-import com.buschmais.xo.neo4j.embedded.api.Neo4jDatastoreSession;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
 import com.buschmais.xo.neo4j.spi.AbstractNeo4jDatastore;
@@ -15,8 +14,7 @@ import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 /**
  * Abstract base implementation for embedded graph stores.
  */
-public abstract class AbstractEmbeddedNeo4jDatastore
-        extends AbstractNeo4jDatastore<EmbeddedLabel, EmbeddedRelationshipType, Neo4jDatastoreSession<GraphDatabaseService>> {
+public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedLabel, EmbeddedRelationshipType, EmbeddedNeo4jDatastoreSession> {
 
     protected final GraphDatabaseService graphDatabaseService;
 

@@ -8,13 +8,13 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
-import com.buschmais.xo.neo4j.embedded.api.Neo4jDatastoreSession;
 import com.buschmais.xo.neo4j.embedded.impl.converter.EmbeddedParameterConverter;
 import com.buschmais.xo.neo4j.embedded.impl.converter.EmbeddedValueConverter;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationship;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
+import com.buschmais.xo.neo4j.spi.Neo4jDatastoreSession;
 import com.buschmais.xo.neo4j.spi.helper.Converter;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
@@ -28,18 +28,17 @@ import com.buschmais.xo.spi.session.XOSession;
  * Abstract base implementation of a Neo4j database session based on the
  * {@link GraphDatabaseService} API.
  *
- * @param <GDS>
- *            The type of {@link GraphDatabaseService}.
  */
-public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseService> implements Neo4jDatastoreSession<GDS> {
+public abstract class AbstractNeo4jDatastoreSession
+        implements Neo4jDatastoreSession<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType> {
 
-    private final GDS graphDatabaseService;
+    private final GraphDatabaseService graphDatabaseService;
     private final Neo4jEntityManager entityManager;
     private final Neo4jRelationManager relationManager;
     private final Converter parameterConverter;
     private final Converter valueConverter;
 
-    public AbstractNeo4jDatastoreSession(GDS graphDatabaseService) {
+    public AbstractNeo4jDatastoreSession(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
         this.entityManager = new Neo4jEntityManager(graphDatabaseService);
         this.relationManager = new Neo4jRelationManager(graphDatabaseService);
@@ -62,8 +61,7 @@ public abstract class AbstractNeo4jDatastoreSession<GDS extends GraphDatabaseSer
         return Cypher.class;
     }
 
-    @Override
-    public GDS getGraphDatabaseService() {
+    public GraphDatabaseService getGraphDatabaseService() {
         return graphDatabaseService;
     }
 

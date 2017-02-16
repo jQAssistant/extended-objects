@@ -49,20 +49,6 @@
                 <groupId>org.neo4j.app</groupId>
                 <artifactId>neo4j-server</artifactId>
                 <version>${org.neo4j_version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>asm</groupId>
-                        <artifactId>asm</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-access</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-classic</artifactId>
-                    </exclusion>
-                </exclusions>
                 <scope>test</scope>
             </dependency>
         </dependencies>

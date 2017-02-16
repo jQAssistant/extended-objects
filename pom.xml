@@ -488,6 +488,8 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <failOnViolations>true</failOnViolations>
+                    <severity>info</severity>
                     <reportProperties>
                         <graphml.report.directory>${session.topLevelProject.build.directory}/graphml</graphml.report.directory>
                     </reportProperties>

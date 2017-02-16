@@ -46,7 +46,17 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
     @Override
     public Object getProperty(T entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
         ensureLoaded(entity);
-        return entity.getProperty(metadata.getDatastoreMetadata().getName());
+        Class<?> type = metadata.getAnnotatedMethod().getType();
+        Object value = entity.getProperty(metadata.getDatastoreMetadata().getName());
+        if (value == null) {
+            return null;
+        } else if (value instanceof Number) {
+            Number number = (Number) value;
+            if (int.class.equals(type) || Integer.class.equals(type)) {
+                return number.intValue();
+            }
+        }
+        return value;
     }
 
     @Override

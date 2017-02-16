@@ -1,22 +1,33 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 
 import org.neo4j.driver.v1.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
+import com.buschmais.xo.neo4j.remote.impl.converter.RemoteParameterConverter;
+import com.buschmais.xo.neo4j.remote.impl.converter.RemoteValueConverter;
 import com.buschmais.xo.neo4j.remote.impl.model.*;
+import com.buschmais.xo.neo4j.spi.Neo4jDatastoreSession;
+import com.buschmais.xo.neo4j.spi.helper.Converter;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
-import com.buschmais.xo.spi.datastore.*;
+import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
+import com.buschmais.xo.spi.datastore.DatastoreQuery;
+import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
+import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import com.buschmais.xo.spi.reflection.ClassHelper;
 import com.buschmais.xo.spi.session.XOSession;
 
-public class RemoteDatastoreSession implements
-        DatastoreSession<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, Long, RemoteRelationship, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType, PropertyMetadata> {
+public class RemoteDatastoreSession implements Neo4jDatastoreSession<RemoteNode, RemoteLabel, RemoteRelationship, RemoteRelationshipType> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemoteDatastoreSession.class);
 
     private final Session session;
     private final RemoteDatastoreTransaction transaction;
@@ -24,14 +35,18 @@ public class RemoteDatastoreSession implements
     private final RemoteDatastoreEntityManager entityManager;
     private final RemoteDatastoreRelationManager relationManager;
     private final RemoteDatastoreSessionCache datastoreSessionCache;
+    private final Converter parameterConverter;
+    private final Converter valueConverter;
 
     public RemoteDatastoreSession(Session session) {
         this.session = session;
-        transaction = new RemoteDatastoreTransaction(session);
-        statementExecutor = new StatementExecutor(transaction);
-        datastoreSessionCache = new RemoteDatastoreSessionCache();
-        entityManager = new RemoteDatastoreEntityManager(statementExecutor, datastoreSessionCache);
-        relationManager = new RemoteDatastoreRelationManager(entityManager, statementExecutor, datastoreSessionCache);
+        this.transaction = new RemoteDatastoreTransaction(session);
+        this.statementExecutor = new StatementExecutor(transaction);
+        this.datastoreSessionCache = new RemoteDatastoreSessionCache();
+        this.parameterConverter = new Converter(Arrays.asList(new RemoteParameterConverter()));
+        this.valueConverter = new Converter(Arrays.asList(new RemoteValueConverter(datastoreSessionCache)));
+        this.entityManager = new RemoteDatastoreEntityManager(statementExecutor, datastoreSessionCache);
+        this.relationManager = new RemoteDatastoreRelationManager(entityManager, statementExecutor, datastoreSessionCache);
     }
 
     @Override
@@ -76,6 +91,20 @@ public class RemoteDatastoreSession implements
 
     @Override
     public void close() {
-        session.close();
+        if (session.isOpen()) {
+            session.close();
+        } else {
+            LOGGER.warn("Session is already closed.");
+        }
+    }
+
+    @Override
+    public Object convertValue(Object value) {
+        return valueConverter.convert(value);
+    }
+
+    @Override
+    public Object convertParameter(Object value) {
+        return parameterConverter.convert(value);
     }
 }

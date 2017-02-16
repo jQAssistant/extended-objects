@@ -34,8 +34,4 @@ public class RemoteRelationship extends AbstractRemotePropertyContainer<Relation
         return relationshipType;
     }
 
-    @Override
-    public String toString() {
-        return "RemoteRelationship{" + "id=" + getId() + ", startNode=" + startNode + ", endNode=" + endNode + ", relationshipType=" + relationshipType + '}';
-    }
 }

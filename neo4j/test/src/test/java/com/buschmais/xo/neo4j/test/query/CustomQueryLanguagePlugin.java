@@ -7,14 +7,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.neo4j.graphdb.DynamicLabel;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterator;
-
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.embedded.api.Neo4jDatastoreSession;
+import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.spi.Neo4jDatastore;
+import com.buschmais.xo.neo4j.spi.Neo4jDatastoreSession;
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
@@ -45,13 +42,12 @@ public class CustomQueryLanguagePlugin implements QueryLanguagePlugin<CustomQuer
                     final String label = matcher.group(1);
                     String key = matcher.group(2);
                     String value = matcher.group(3);
-                    final ResourceIterator<Node> iterator = ((Neo4jDatastoreSession<?>) session).getGraphDatabaseService().findNodes(DynamicLabel.label(label),
-                            key, value);
+                    Neo4jDatastoreSession neo4jDatastoreSession = (Neo4jDatastoreSession) session;
+                    String s = String.format("MATCH (n:%s{%s:{%s}}) RETURN n", label, key, key);
+                    Map<String, Object> params = new HashMap<>();
+                    params.put(key, value);
+                    ResultIterator<Map<String,Object>> iterator = neo4jDatastoreSession.createQuery(Cypher.class).execute(s, params);
                     return new ResultIterator<Map<String, Object>>() {
-                        @Override
-                        public void close() {
-                            iterator.close();
-                        }
 
                         @Override
                         public boolean hasNext() {
@@ -60,14 +56,20 @@ public class CustomQueryLanguagePlugin implements QueryLanguagePlugin<CustomQuer
 
                         @Override
                         public Map<String, Object> next() {
+                            Map<String, Object> row = iterator.next();
+                            Object node = row.get("n");
                             Map<String, Object> result = new HashMap<>();
-                            Node node = iterator.next();
-                            result.put(label, ((Neo4jDatastoreSession<?>) session).convertValue(node));
+                            result.put(label, node);
                             return result;
                         }
 
                         @Override
                         public void remove() {
+                        }
+
+                        @Override
+                        public void close() {
+                            iterator.close();
                         }
                     };
                 }

@@ -1,6 +1,5 @@
 package com.buschmais.xo.neo4j.remote.impl.model;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jNode;

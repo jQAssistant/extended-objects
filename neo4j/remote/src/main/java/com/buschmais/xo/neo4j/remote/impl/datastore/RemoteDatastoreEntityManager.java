@@ -37,6 +37,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public Set<RemoteLabel> getEntityDiscriminators(RemoteNode remoteNode) {
+        ensureLoaded(remoteNode);
         return remoteNode.getState().getLabels();
     }
 

@@ -42,7 +42,8 @@ public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(TreeNode.class, TreeNodeRelation.class), Collections.<Class<?>>emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED, TransactionAttribute.NONE);
+        return xoUnits(asList(TreeNode.class, TreeNodeRelation.class), Collections.<Class<?>> emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED,
+                TransactionAttribute.NONE);
     }
 
     private class Measurement {
@@ -196,7 +197,8 @@ public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {
             long stop = System.currentTimeMillis();
 
             Measurement measurement = new Measurement(counter, start, stop);
-            LOGGER.info("counter=" + measurement.getCounter() + ", time=" + measurement.getDuration() + "ms" + ", speed=" + measurement.getSpeed() + " vertices/s");
+            LOGGER.info(
+                    "counter=" + measurement.getCounter() + ", time=" + measurement.getDuration() + "ms" + ", speed=" + measurement.getSpeed() + " vertices/s");
             measurements.add(measurement);
         }
         LOGGER.info("Finished run with API " + apiUnderTest);
@@ -240,20 +242,15 @@ public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {
             long counter = measurement.getCounter();
             long duration = measurement.getDuration();
             double speed = measurement.getSpeed();
-            String format = MessageFormat.format("{0}\t{1}\t{2,number,#.##}",
-                    counter, duration, speed);
+            String format = MessageFormat.format("{0}\t{1}\t{2,number,#.##}", counter, duration, speed);
             System.out.println(format);
             speedSum += speed;
             durationSum += duration;
         }
-        System.out
-                .println("--------------------------------------------------");
-        double durationAvg = (double) durationSum
-                / (double) measurements.size();
-        System.out.println(MessageFormat.format(
-                "average duration={0,number,#.##} ms", durationAvg));
+        System.out.println("--------------------------------------------------");
+        double durationAvg = (double) durationSum / (double) measurements.size();
+        System.out.println(MessageFormat.format("average duration={0,number,#.##} ms", durationAvg));
         double speedAvg = speedSum / measurements.size();
-        System.out.println(MessageFormat.format(
-                "average speed={0,number,#.##} vertices/s", speedAvg));
+        System.out.println(MessageFormat.format("average speed={0,number,#.##} vertices/s", speedAvg));
     }
 }

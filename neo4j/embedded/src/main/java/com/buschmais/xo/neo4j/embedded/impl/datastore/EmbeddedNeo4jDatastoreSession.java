@@ -15,7 +15,7 @@ import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 
-public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession<GraphDatabaseService> {
+public class EmbeddedNeo4jDatastoreSession extends AbstractNeo4jDatastoreSession {
 
     private class EmbeddedNeo4jDatastoreTransaction implements DatastoreTransaction {
 

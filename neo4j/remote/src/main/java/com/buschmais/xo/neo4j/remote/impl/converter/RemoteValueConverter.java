@@ -26,7 +26,7 @@ public class RemoteValueConverter implements TypeConverter {
         if (value instanceof Node) {
             return sessionCache.getNode((Node) value);
         } else if (value instanceof Relationship) {
-            return sessionCache.getRelationshipState((Relationship) value);
+            return sessionCache.getRelationship((Relationship) value);
         }
         throw new XOException("Unsupported value type " + value);
     }

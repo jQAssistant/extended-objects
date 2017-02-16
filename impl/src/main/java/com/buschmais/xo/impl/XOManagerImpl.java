@@ -347,9 +347,13 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
                 .getDatastoreSession().getDatastoreEntityManager();
         Set<EntityDiscriminator> labelsToRemove = new HashSet<>(discriminators);
         labelsToRemove.removeAll(targetDiscriminators);
-        datastoreEntityManager.removeDiscriminators(entity, labelsToRemove);
+        if (!labelsToRemove.isEmpty()) {
+            datastoreEntityManager.removeDiscriminators(entity, labelsToRemove);
+        }
         Set<EntityDiscriminator> labelsToAdd = new HashSet<>(targetDiscriminators);
-        labelsToAdd.removeAll(discriminators);
+        if (!labelsToAdd.isEmpty()) {
+            labelsToAdd.removeAll(discriminators);
+        }
         datastoreEntityManager.addDiscriminators(entity, labelsToAdd);
     }
 

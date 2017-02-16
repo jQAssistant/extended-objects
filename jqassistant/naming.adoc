@@ -1,10 +1,35 @@
 [[naming:Default]]
-[role=group,includesConstraints="naming:AbstractClassNamePrefix,naming:NonAbstractClassNamePrefix"]
+[role=group,includesConstraints="naming:TypeNameMustBeginWithGroupId,naming:TypeNameMustContainArtifactId,naming:AbstractClassNamePrefix,naming:NonAbstractClassNamePrefix"]
 == Naming Rules
 
 This section describes naming rules that apply to the elements of the code base.
 
 === Java Classes
+
+[[naming:TypeNameMustBeginWithGroupId]]
+[source,cypher,role=constraint]
+.All Java types must be located in packages that start with the groupId of the Maven project.
+----
+MATCH
+  (project:Maven:Project)-[:CREATES]->(:Artifact)-[:CONTAINS]->(type:Type)
+WHERE
+  NOT type.fqn starts with project.groupId
+RETURN
+  project as Project, collect(type) as TypeWithWrongName
+----
+
+[[naming:TypeNameMustContainArtifactId]]
+[source,cypher,role=constraint]
+.All Java types must be located in package that contain the artifactId of the Maven Project.
+----
+MATCH
+  (project:Maven:Project)-[:CREATES]->(:Artifact)-[:CONTAINS]->(type:Type)
+WHERE
+  NOT type.fqn contains project.artifactId
+RETURN
+  project as Project, collect(type) as TypeWithWrongName
+----
+
 
 [[naming:AbstractClassNamePrefix]]
 [source,cypher,role=constraint]

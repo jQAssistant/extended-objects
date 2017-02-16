@@ -75,4 +75,8 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
         return (int) (id ^ (id >>> 32));
     }
 
+    @Override
+    public final String toString() {
+        return getClass().getSimpleName() + "{" + "id=" + id + '}';
+    }
 }

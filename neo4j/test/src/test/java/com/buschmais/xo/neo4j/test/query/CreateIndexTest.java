@@ -1,8 +1,10 @@
 package com.buschmais.xo.neo4j.test.query;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeThat;
 import static org.neo4j.graphdb.DynamicLabel.label;
 
 import java.net.URISyntaxException;
@@ -37,6 +39,7 @@ public class CreateIndexTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void createIndex() {
+        assumeThat(getXoManagerFactory().getXOUnit().getUri(), equalTo(Neo4jDatabase.MEMORY.getUri()));
         XOManager xoManager = getXoManager();
         xoManager.currentTransaction().begin();
         GraphDatabaseService graphDatabaseService = xoManager.getDatastoreSession(Neo4jDatastoreSession.class).getGraphDatabaseService();

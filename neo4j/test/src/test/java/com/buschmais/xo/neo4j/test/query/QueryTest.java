@@ -6,7 +6,6 @@ import static com.buschmais.xo.neo4j.test.query.CustomQueryLanguagePlugin.Custom
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeThat;
 
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -84,7 +83,6 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void compositeRowAsMap() {
-        assumeThat(getXoManagerFactory().getXOUnit().getUri().getScheme(), equalTo("memory"));
         XOManager xoManager = getXoManager();
         xoManager.currentTransaction().begin();
         Result<CompositeRowObject> result = xoManager.createQuery("match (a:A) where a.value={value} return a, a.value as value, id(a) as id").withParameter("value", "A1").execute();

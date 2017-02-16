@@ -3,7 +3,7 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 import java.net.URI;
 import java.util.Properties;
 
-import org.neo4j.driver.v1.AuthTokens;
+import org.neo4j.driver.v1.Config;
 import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
 import org.neo4j.driver.v1.Session;
@@ -26,7 +26,9 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
         Properties properties = xoUnit.getProperties();
         String username = (String) properties.get("neo4j.remote.username");
         String password = (String) properties.get("neo4j.remote.password");
-        this.driver = GraphDatabase.driver(uri, AuthTokens.basic(username, password));
+        this.driver = GraphDatabase.driver(uri, Config.build().withEncryptionLevel(Config.EncryptionLevel.NONE).toConfig());
+        // this.driver = GraphDatabase.driver(uri, AuthTokens.basic(username,
+        // password));
     }
 
     @Override

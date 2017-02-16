@@ -1,17 +1,17 @@
 package com.buschmais.xo.test;
 
-import com.buschmais.xo.api.*;
-import com.buschmais.xo.api.bootstrap.XO;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-
-import org.junit.After;
-import org.junit.Before;
+import static com.buschmais.xo.api.Query.Result;
+import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 
 import java.net.URI;
 import java.util.*;
 
-import static com.buschmais.xo.api.Query.Result;
-import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
+import org.junit.After;
+import org.junit.Before;
+
+import com.buschmais.xo.api.*;
+import com.buschmais.xo.api.bootstrap.XO;
+import com.buschmais.xo.api.bootstrap.XOUnit;
 
 /**
  * Abstract base class for parametrized XO tests.
@@ -22,9 +22,13 @@ public abstract class AbstractXOManagerTest {
      * Defines a database under test. Intended to be implemented by enum types.
      */
     public interface Database {
+
         URI getUri();
 
         Class<?> getProvider();
+
+        Map<String, Object> getProperties();
+
     }
 
     private XOUnit xoUnit;

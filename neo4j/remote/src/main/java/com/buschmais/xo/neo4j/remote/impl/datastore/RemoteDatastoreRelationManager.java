@@ -13,6 +13,7 @@ import org.neo4j.driver.v1.types.Relationship;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.model.*;
+import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
@@ -66,7 +67,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
         Record record = statementExecutor.getSingleResult(statement, parameters("start", start.getId(), "end", end.getId(), "r", properties));
         long id = record.get("id").asLong();
         RelationshipState relationshipState = new RelationshipState(properties);
-        return datastoreSessionCache.getRelationship(id, start, remoteRelationshipType, target, relationshipState);
+        return datastoreSessionCache.getRelationship(id, start, remoteRelationshipType, end, relationshipState);
     }
 
     @Override
@@ -77,6 +78,11 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
         if (count != 1) {
             throw new XOException("Could not delete " + remoteRelationship);
         }
+        RemoteNode startNode = remoteRelationship.getStartNode();
+        NodeState state = startNode.getState();
+        if (state != null) {
+            state.getRelationships(RemoteDirection.OUTGOING, remoteRelationship.getType()).remove(remoteRelationship);
+        }
     }
 
     @Override
@@ -86,7 +92,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
 
     @Override
     public RemoteRelationship findRelationById(RelationTypeMetadata<RelationshipMetadata<RemoteRelationshipType>> metadata, Long id) {
-        String statement = String.format("MATCH (start)-[r:%s]->(end) WHERE id(r)={id} RETURN start,r,end", metadata.getDatastoreMetadata().getDiscriminator());
+        String statement = String.format("MATCH (start)-[r:%s]->(end) WHERE id(r)={id} RETURN start,r,end", metadata.getDatastoreMetadata().getDiscriminator().getName());
         Record record = statementExecutor.getSingleResult(statement, parameters("id", id));
         Node start = record.get("start").asNode();
         Relationship relationship = record.get("r").asRelationship();
@@ -129,7 +135,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
 
     @Override
     protected String createIdentifierPattern(String identifier) {
-        return String.format("()-[%s]-()", identifier);
+        return String.format("()-[%s]->()", identifier);
     }
 
     @Override
