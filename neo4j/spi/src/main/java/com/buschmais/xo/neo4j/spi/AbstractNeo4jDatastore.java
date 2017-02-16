@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.spi.datastore;
+package com.buschmais.xo.neo4j.spi;
 
 import java.util.Collections;
 import java.util.Map;
@@ -13,8 +13,6 @@ import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
 import com.buschmais.xo.neo4j.spi.metadata.IndexedPropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
-import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
-import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
@@ -23,7 +21,7 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 
 public abstract class AbstractNeo4jDatastore<L extends Neo4jLabel, R extends Neo4jRelationshipType, DS extends DatastoreSession>
-        implements Datastore<DS, NodeMetadata<L>, L, RelationshipMetadata<R>, R> {
+        implements Neo4jDatastore<L, R, DS> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNeo4jDatastore.class);
 

@@ -8,7 +8,7 @@ import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
-import com.buschmais.xo.neo4j.spi.datastore.AbstractNeo4jRepository;
+import com.buschmais.xo.neo4j.spi.AbstractNeo4jRepository;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.session.XOSession;

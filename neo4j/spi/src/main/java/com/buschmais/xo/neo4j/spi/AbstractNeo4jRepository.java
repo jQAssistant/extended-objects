@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.spi.datastore;
+package com.buschmais.xo.neo4j.spi;
 
 import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.neo4j.api.model.Neo4jLabel;

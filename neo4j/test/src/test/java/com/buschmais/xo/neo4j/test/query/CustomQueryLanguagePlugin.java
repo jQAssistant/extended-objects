@@ -13,8 +13,8 @@ import org.neo4j.graphdb.ResourceIterator;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.embedded.api.Neo4jDatastore;
 import com.buschmais.xo.neo4j.embedded.api.Neo4jDatastoreSession;
+import com.buschmais.xo.neo4j.spi.Neo4jDatastore;
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
