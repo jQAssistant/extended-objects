@@ -10,8 +10,9 @@ import org.slf4j.LoggerFactory;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
+import com.buschmais.xo.neo4j.remote.impl.converter.RemoteEntityConverter;
 import com.buschmais.xo.neo4j.remote.impl.converter.RemoteParameterConverter;
-import com.buschmais.xo.neo4j.remote.impl.converter.RemoteValueConverter;
+import com.buschmais.xo.neo4j.remote.impl.converter.RemotePathConverter;
 import com.buschmais.xo.neo4j.remote.impl.model.*;
 import com.buschmais.xo.neo4j.spi.Neo4jDatastoreSession;
 import com.buschmais.xo.neo4j.spi.helper.Converter;
@@ -44,7 +45,7 @@ public class RemoteDatastoreSession implements Neo4jDatastoreSession<RemoteNode,
         this.statementExecutor = new StatementExecutor(transaction);
         this.datastoreSessionCache = new RemoteDatastoreSessionCache();
         this.parameterConverter = new Converter(Arrays.asList(new RemoteParameterConverter()));
-        this.valueConverter = new Converter(Arrays.asList(new RemoteValueConverter(datastoreSessionCache)));
+        this.valueConverter = new Converter(Arrays.asList(new RemoteEntityConverter(datastoreSessionCache), new RemotePathConverter(datastoreSessionCache)));
         this.entityManager = new RemoteDatastoreEntityManager(statementExecutor, datastoreSessionCache);
         this.relationManager = new RemoteDatastoreRelationManager(entityManager, statementExecutor, datastoreSessionCache);
     }
@@ -72,7 +73,7 @@ public class RemoteDatastoreSession implements Neo4jDatastoreSession<RemoteNode,
     @Override
     public <QL extends Annotation> DatastoreQuery<QL> createQuery(Class<QL> queryLanguage) {
         if (Cypher.class.equals(queryLanguage)) {
-            return (DatastoreQuery<QL>) new RemoteDatastoreCypherQuery(statementExecutor, datastoreSessionCache);
+            return (DatastoreQuery<QL>) new RemoteDatastoreCypherQuery(statementExecutor, parameterConverter, valueConverter);
         }
         throw new XOException("Unsupported query language: " + queryLanguage.getName());
     }

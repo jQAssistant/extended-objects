@@ -8,11 +8,11 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.datastore.RemoteDatastoreSessionCache;
 import com.buschmais.xo.neo4j.spi.helper.TypeConverter;
 
-public class RemoteValueConverter implements TypeConverter {
+public class RemoteEntityConverter implements TypeConverter {
 
     private RemoteDatastoreSessionCache sessionCache;
 
-    public RemoteValueConverter(RemoteDatastoreSessionCache sessionCache) {
+    public RemoteEntityConverter(RemoteDatastoreSessionCache sessionCache) {
         this.sessionCache = sessionCache;
     }
 

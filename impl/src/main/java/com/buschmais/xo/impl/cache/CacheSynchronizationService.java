@@ -1,6 +1,7 @@
 package com.buschmais.xo.impl.cache;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -35,15 +36,18 @@ public class CacheSynchronizationService<Entity, Relation> {
 
     private <T> void flush(TransactionalCache<?> cache, AbstractInstanceManager<?, T> instanceManager, DatastorePropertyManager<T, ?> datastoreManager,
             InstanceListenerService instanceListenerService) {
-        List<T> entities = new ArrayList<>();
-        for (Object instance : cache.writtenInstances()) {
-            T entity = instanceManager.getDatastoreType(instance);
-            entities.add(entity);
-            instanceListenerService.preUpdate(instance);
-            validateInstance(instance);
-            instanceListenerService.postUpdate(instance);
+        Collection<?> writtenInstances = cache.writtenInstances();
+        if (!writtenInstances.isEmpty()) {
+            List<T> entities = new ArrayList<>();
+            for (Object instance : writtenInstances) {
+                T entity = instanceManager.getDatastoreType(instance);
+                entities.add(entity);
+                instanceListenerService.preUpdate(instance);
+                validateInstance(instance);
+                instanceListenerService.postUpdate(instance);
+            }
+            datastoreManager.flush(entities);
         }
-        datastoreManager.flush(entities);
     }
 
     public void clear() {

@@ -9,8 +9,8 @@ import org.neo4j.driver.v1.Values;
 import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.neo4j.api.Neo4jRepository;
+import com.buschmais.xo.neo4j.remote.impl.converter.RemoteEntityConverter;
 import com.buschmais.xo.neo4j.remote.impl.converter.RemoteParameterConverter;
-import com.buschmais.xo.neo4j.remote.impl.converter.RemoteValueConverter;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
 import com.buschmais.xo.neo4j.remote.impl.model.StatementExecutor;
@@ -36,7 +36,7 @@ public class RemoteNeo4jRepositoryImpl extends AbstractNeo4jRepository<RemoteLab
         super(xoSession);
         this.statementExecutor = statementExecutor;
         this.parameterConverter = new Converter(Arrays.asList(new RemoteParameterConverter()));
-        this.valueConverter = new Converter(Arrays.asList(new RemoteValueConverter(sessionCache)));
+        this.valueConverter = new Converter(Arrays.asList(new RemoteEntityConverter(sessionCache)));
     }
 
     @Override

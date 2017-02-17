@@ -1,6 +1,5 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -9,8 +8,6 @@ import org.neo4j.driver.v1.StatementResult;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
-import com.buschmais.xo.neo4j.remote.impl.converter.RemoteParameterConverter;
-import com.buschmais.xo.neo4j.remote.impl.converter.RemoteValueConverter;
 import com.buschmais.xo.neo4j.remote.impl.model.StatementExecutor;
 import com.buschmais.xo.neo4j.spi.helper.Converter;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
@@ -23,10 +20,10 @@ public class RemoteDatastoreCypherQuery implements DatastoreQuery<Cypher> {
 
     private final Converter valueConverter;
 
-    public RemoteDatastoreCypherQuery(StatementExecutor statementExecutor, RemoteDatastoreSessionCache datastoreSessionCache) {
+    public RemoteDatastoreCypherQuery(StatementExecutor statementExecutor, Converter parameterConverter, Converter valueConverter) {
         this.statementExecutor = statementExecutor;
-        parameterConverter = new Converter(Arrays.asList(new RemoteParameterConverter()));
-        valueConverter = new Converter(Arrays.asList(new RemoteValueConverter(datastoreSessionCache)));
+        this.parameterConverter = parameterConverter;
+        this.valueConverter = valueConverter;
     }
 
     @Override
