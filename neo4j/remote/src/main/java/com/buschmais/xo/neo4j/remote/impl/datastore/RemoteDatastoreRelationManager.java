@@ -2,7 +2,6 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import static org.neo4j.driver.v1.Values.parameters;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -188,13 +187,12 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
                     Relationship relationship = record.get("r").asRelationship();
                     Node end = record.get("end").asNode();
                     RemoteRelationship remoteRelationship = datastoreSessionCache.getRelationship(start, relationship, end);
-                    cacheRelationship(remoteRelationship.getStartNode(), RemoteDirection.OUTGOING, remoteRelationship);
-                    cacheRelationship(remoteRelationship.getEndNode(), RemoteDirection.INCOMING, remoteRelationship);
                     relationships.add(remoteRelationship);
                 }
             } finally {
                 statementResult.consume();
             }
+            source.getState().setRelationships(remoteDirection, type, relationships);
         }
         return relationships;
     }
@@ -207,18 +205,6 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
             return RemoteDirection.INCOMING;
         default:
             throw new XOException("Direction not supported " + direction);
-        }
-    }
-
-    private void cacheRelationship(RemoteNode node, RemoteDirection direction, RemoteRelationship relationship) {
-        NodeState state = node.getState();
-        if (state != null) {
-            Set<RemoteRelationship> relationships = state.getRelationships(direction, relationship.getType());
-            if (relationships == null) {
-                relationships = new HashSet<>();
-                state.setRelationships(direction, relationship.getType(), relationships);
-            }
-            relationships.add(relationship);
         }
     }
 
