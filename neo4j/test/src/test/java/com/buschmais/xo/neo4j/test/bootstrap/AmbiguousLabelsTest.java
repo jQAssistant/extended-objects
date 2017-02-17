@@ -1,5 +1,6 @@
 package com.buschmais.xo.neo4j.test.bootstrap;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -7,7 +8,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.test.TestGraphDatabaseFactory;
@@ -27,7 +27,7 @@ public class AmbiguousLabelsTest {
         try (XOManagerFactory xoManagerFactory = createFactory(XOUnit.MappingConfiguration.builder().strictValidation(true).build())) {
             fail("Expecting an " + XOException.class.getName());
         } catch (XOException e) {
-            assertThat(e.getMessage(), CoreMatchers.containsString("'AmbiguousA'"));
+            assertThat(e.getMessage(), containsString("AmbiguousA"));
         }
     }
 

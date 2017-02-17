@@ -1,10 +1,10 @@
 package com.buschmais.xo.spi.metadata.type;
 
+import java.util.Collection;
+
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.MethodMetadata;
 import com.buschmais.xo.spi.reflection.AnnotatedType;
-
-import java.util.Collection;
 
 public abstract class AbstractTypeMetadata implements TypeMetadata {
 
@@ -16,7 +16,8 @@ public abstract class AbstractTypeMetadata implements TypeMetadata {
 
     private final IndexedPropertyMethodMetadata indexedProperty;
 
-    protected AbstractTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, IndexedPropertyMethodMetadata indexedProperty) {
+    protected AbstractTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties,
+            IndexedPropertyMethodMetadata indexedProperty) {
         this.annotatedType = annotatedType;
         this.superTypes = superTypes;
         this.properties = properties;
@@ -38,13 +39,16 @@ public abstract class AbstractTypeMetadata implements TypeMetadata {
         return properties;
     }
 
-
     public IndexedPropertyMethodMetadata getIndexedProperty() {
         return indexedProperty;
     }
 
     @Override
-    public String toString() {
-        return "Type metadata {'" + annotatedType.getName() + "'}";
+    public final String toString() {
+        String name = getClass().getSimpleName();
+        if (annotatedType == null) {
+            return name;
+        }
+        return name + "[" + annotatedType.getName() + "]";
     }
 }
