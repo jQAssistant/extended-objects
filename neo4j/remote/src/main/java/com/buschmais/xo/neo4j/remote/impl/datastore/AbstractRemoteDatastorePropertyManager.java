@@ -85,20 +85,14 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
                 if (match.length() > 0) {
                     match.append(',');
                     where.append(" and ");
+                    set.append(',');
                 }
                 match.append(createIdentifierPattern(identifier));
                 where.append(String.format("id(%s)={%s}", identifier, identifier));
+                String propsIdentifier = "_" + identifier;
                 Map<String, Object> properties = entry.getValue();
-                for (Map.Entry<String, Object> propertyEntry : properties.entrySet()) {
-                    String property = propertyEntry.getKey();
-                    Object value = propertyEntry.getValue();
-                    String parameterName = identifier + '_' + property;
-                    if (set.length() > 0) {
-                        set.append(',');
-                    }
-                    set.append(String.format("%s.%s={%s}", identifier, property, parameterName));
-                    parameters.put(parameterName, value);
-                }
+                set.append(String.format("%s+={%s}", identifier, propsIdentifier));
+                parameters.put(propsIdentifier, properties);
                 i++;
             }
             StringBuilder statement = new StringBuilder().append("MATCH ").append(match).append(" WHERE ").append(where).append(" SET ").append(set)
