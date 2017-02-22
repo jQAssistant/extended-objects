@@ -230,6 +230,11 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
+    public <T> T create(Example<T> example, Class<T> type) {
+        return create(type, example);
+    }
+
+    @Override
     public <T> T create(Class<T> type, Example<T> example) {
         Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type);
         return createByExample(type, new Class<?>[0], exampleEntity).as(type);
@@ -237,12 +242,6 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     public <T> T create(Class<T> type) {
         return createByExample(type, new Class<?>[0], emptyMap()).as(type);
-    }
-
-    @Override
-    public <T> T create(Example<T> example, Class<T> type) {
-        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type);
-        return createByExample(type, new Class<?>[0], exampleEntity).as(type);
     }
 
     /**
@@ -275,6 +274,11 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <S, R, T> R create(Example<R> example, S from, Class<R> relationType, T to) {
+        return create(from, relationType, to, example);
+    }
+
+    @Override
+    public <S, R, T> R create(S from, Class<R> relationType, T to, Example<R> example) {
         Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleRelation = prepareExample(example, relationType);
         return createByExample(from, relationType, to, exampleRelation);
     }

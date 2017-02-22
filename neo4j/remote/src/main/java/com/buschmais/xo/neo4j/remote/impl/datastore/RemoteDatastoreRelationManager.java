@@ -135,13 +135,8 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     }
 
     @Override
-    protected String createIdentifier(int i) {
-        return "r" + i;
-    }
-
-    @Override
-    protected String createIdentifierPattern(String identifier) {
-        return String.format("()-[%s]->()", identifier);
+    protected String createIdentifierPattern() {
+        return "()-[%s]->()";
     }
 
     @Override
@@ -165,11 +160,13 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     }
 
     @Override
-    public void flush(Iterable<RemoteRelationship> entities) {
-        super.flush(entities);
-        for (RemoteRelationship entity : entities) {
-            entity.getState().flush();
+    public void flush(Iterable<RemoteRelationship> relationships) {
+        StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
+        for (RemoteRelationship relationship : relationships) {
+            flush(statementBuilder, relationship);
+            relationship.getState().flush();
         }
+        statementBuilder.execute();
     }
 
     private StateTracker<RemoteRelationship, Set<RemoteRelationship>> getRelationships(RemoteNode source, RemoteRelationshipType type,

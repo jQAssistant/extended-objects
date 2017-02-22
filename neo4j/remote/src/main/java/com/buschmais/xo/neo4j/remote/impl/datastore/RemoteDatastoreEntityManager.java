@@ -3,7 +3,9 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
 import static org.neo4j.driver.v1.Values.parameters;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
@@ -80,15 +82,13 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public void deleteEntity(RemoteNode remoteNode) {
+        StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
         for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : remoteNode.getState().getOutgoingRelationships().values()) {
-            flushRemovedRelationships(tracker.getRemoved());
+            flushRemovedRelationships(statementBuilder, tracker.getRemoved());
         }
-        String statement = "MATCH (n) WHERE id(n)=({id}) DELETE n RETURN count(n) as count";
-        Record record = statementExecutor.getSingleResult(statement, parameters("id", remoteNode.getId()));
-        long count = record.get("count").asLong();
-        if (count != 1) {
-            throw new XOException("Could not delete " + remoteNode);
-        }
+        String identifier = statementBuilder.doMatchWhere("(%s)", remoteNode);
+        statementBuilder.doDelete(identifier);
+        statementBuilder.execute();
     }
 
     @Override
@@ -149,12 +149,9 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         remoteNode.getState().getLabels().removeAll(remoteLabels);
     }
 
-    protected String createIdentifier(int i) {
-        return "n" + i;
-    }
-
-    protected String createIdentifierPattern(String nodeIdentifier) {
-        return String.format("(%s)", nodeIdentifier);
+    @Override
+    protected String createIdentifierPattern() {
+        return "(%s)";
     }
 
     @Override
@@ -184,83 +181,35 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public void flush(Iterable<RemoteNode> entities) {
-        super.flush(entities);
-        Set<RemoteRelationship> addedRelationships = new HashSet<>();
-        Set<RemoteRelationship> removedRelationships = new HashSet<>();
+        StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
         for (RemoteNode entity : entities) {
+            flush(statementBuilder, entity);
             for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : entity.getState().getOutgoingRelationships().values()) {
-                addedRelationships.addAll(tracker.getAdded());
-                removedRelationships.addAll(tracker.getRemoved());
+                flushAddedRelationships(statementBuilder, tracker.getAdded());
+                flushRemovedRelationships(statementBuilder, tracker.getRemoved());
             }
         }
-        flushRemovedRelationships(removedRelationships);
-        flushAddedRelationships(addedRelationships);
+        statementBuilder.execute();
         for (RemoteNode entity : entities) {
-            entity.getState().clear();
+            entity.getState().flush();
         }
-        super.flush(entities);
     }
 
-    private void flushAddedRelationships(Set<RemoteRelationship> addedRelationships) {
+    private void flushAddedRelationships(StatementBuilder statementBuilder, Set<RemoteRelationship> addedRelationships) {
         if (!addedRelationships.isEmpty()) {
-            StringBuilder match = new StringBuilder();
-            StringBuilder where = new StringBuilder();
-            StringBuilder create = new StringBuilder();
-            int i = 0;
-            Map<String, Object> parameters = new HashMap<>();
             for (RemoteRelationship relationship : addedRelationships) {
-                if (match.length() > 0) {
-                    match.append(',');
-                }
-                if (where.length() > 0) {
-                    where.append(" and ");
-                }
-                String startIdentifier = "s" + i;
-                String endIdentifier = "e" + i;
-                match.append(String.format("(%s),(%s)", startIdentifier, endIdentifier));
-                where.append(String.format("id(%s)={%s} and id(%s)={%s}", startIdentifier, startIdentifier, endIdentifier, endIdentifier));
-                create.append(" CREATE ").append(String.format("(%s)-[:%s]->(%s) ", startIdentifier, relationship.getType().getName(), endIdentifier));
-                parameters.put(startIdentifier, relationship.getStartNode().getId());
-                parameters.put(endIdentifier, relationship.getEndNode().getId());
-                i++;
-            }
-            String statement = new StringBuilder().append("MATCH ").append(match).append(" WHERE ").append(where).append(create)
-                    .append("RETURN count(*) as count").toString();
-            Record result = statementExecutor.getSingleResult(statement, parameters);
-            long count = result.get("count").asLong();
-            if (count != 1) {
-                throw new XOException("Cannot create relations.");
+                String startIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getStartNode());
+                String endIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getEndNode());
+                statementBuilder.doCreate(String.format("(%s)-[:%s]->(%s) ", startIdentifier, relationship.getType().getName(), endIdentifier));
             }
         }
     }
 
-    private void flushRemovedRelationships(Set<RemoteRelationship> removedRelationships) {
+    private void flushRemovedRelationships(StatementBuilder statementBuilder, Set<RemoteRelationship> removedRelationships) {
         if (!removedRelationships.isEmpty()) {
-            StringBuilder match = new StringBuilder();
-            StringBuilder where = new StringBuilder();
-            StringBuilder delete = new StringBuilder();
-            int i = 0;
-            Map<String, Object> parameters = new HashMap<>();
             for (RemoteRelationship relationship : removedRelationships) {
-                if (match.length() > 0) {
-                    match.append(',');
-                }
-                if (where.length() > 0) {
-                    where.append(" and ");
-                }
-                String identifier = "r" + i;
-                match.append(String.format("()-[%s]->()", identifier));
-                where.append(String.format("id(%s)={%s}", identifier, identifier));
-                delete.append("DELETE ").append(identifier).append(' ');
-                parameters.put(identifier, relationship.getId());
-                i++;
-            }
-            String statement = new StringBuilder().append("MATCH ").append(match).append(" WHERE ").append(where).append(' ').append(delete)
-                    .append("RETURN count(*) as count").toString();
-            Record result = statementExecutor.getSingleResult(statement, parameters);
-            long count = result.get("count").asLong();
-            if (count != 1) {
-                throw new XOException("Cannot remove relations.");
+                String identifier = statementBuilder.doMatchWhere("()-[%s]->()", relationship);
+                statementBuilder.doDelete(identifier);
             }
         }
     }

@@ -36,7 +36,7 @@ public class StatementExecutor {
     }
 
     public StatementResult execute(String statement, Map<String, Object> parameters) {
-        LOGGER.debug("'" + statement + "': " + parameters);
+        LOGGER.info("'" + statement + "': " + parameters);
         try {
             return transaction.getStatementRunner().run(statement, parameters);
         } catch (Neo4jException e) {

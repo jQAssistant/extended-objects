@@ -3,10 +3,8 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.types.Entity;
 
-import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.model.AbstractRemotePropertyContainer;
 import com.buschmais.xo.neo4j.remote.impl.model.StatementExecutor;
 import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
@@ -60,49 +58,14 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
         return value;
     }
 
-    @Override
-    public void flush(Iterable<T> entities) {
-        Map<T, Map<String, Object>> entityProperties = new HashMap<>();
-        for (T entity : entities) {
-            AbstractPropertyContainerState state = entity.getState();
-            if (state != null) {
-                Map<String, Object> writeCache = state.getWriteCache();
-                if (writeCache != null && !writeCache.isEmpty()) {
-                    entityProperties.put(entity, writeCache);
-                }
-            }
-        }
-        if (!entityProperties.isEmpty()) {
-            StringBuilder match = new StringBuilder();
-            StringBuilder where = new StringBuilder();
-            StringBuilder set = new StringBuilder();
-            int i = 0;
-            Map<String, Object> parameters = new HashMap<>();
-            for (Map.Entry<T, Map<String, Object>> entry : entityProperties.entrySet()) {
-                T entity = entry.getKey();
-                Long id = entity.getId();
-                String identifier = createIdentifier(i);
-                parameters.put(identifier, id);
-                if (match.length() > 0) {
-                    match.append(',');
-                    where.append(" and ");
-                    set.append(',');
-                }
-                match.append(createIdentifierPattern(identifier));
-                where.append(String.format("id(%s)={%s}", identifier, identifier));
-                String propsIdentifier = "_" + identifier;
-                Map<String, Object> properties = entry.getValue();
-                set.append(String.format("%s+={%s}", identifier, propsIdentifier));
-                parameters.put(propsIdentifier, properties);
-                i++;
-            }
-            StringBuilder statement = new StringBuilder().append("MATCH ").append(match).append(" WHERE ").append(where).append(" SET ").append(set)
-                    .append(" RETURN count(*) as entities");
-            Record record = statementExecutor.getSingleResult(statement.toString(), parameters);
-            long nodes = record.get("entities").asLong();
-            if (nodes != 1) {
-                throw new XOException("Cannot flush properties.");
-            }
+    protected void flush(StatementBuilder statementBuilder, T entity) {
+        AbstractPropertyContainerState state = entity.getState();
+        Map<String, Object> writeCache = state.getWriteCache();
+        if (writeCache != null && !writeCache.isEmpty()) {
+            String identifier = statementBuilder.doMatchWhere(createIdentifierPattern(), entity);
+            String propsIdentifier = "_" + identifier;
+            statementBuilder.doSet(String.format("%s+={%s}", identifier, propsIdentifier));
+            statementBuilder.parameter(propsIdentifier, writeCache);
         }
     }
 
@@ -128,9 +91,7 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
         return properties;
     }
 
-    protected abstract String createIdentifier(int i);
-
-    protected abstract String createIdentifierPattern(String identifier);
+    protected abstract String createIdentifierPattern();
 
     protected abstract Entity load(T entity);
 

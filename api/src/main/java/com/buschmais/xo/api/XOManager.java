@@ -117,16 +117,6 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      */
     CompositeObject create(Example<CompositeObject> example, Class<?> type, Class<?>... types);
 
-    /**
-     * Create a new {@link CompositeObject} instance using an example.
-     *
-     * @param type
-     *            The interface the property type shall implement.
-     * @param example
-     *            The example instance.
-     * @return The {@link CompositeObject} instance.
-     */
-    <T> T create(Class<T> type, Example<T> example);
 
     /**
      * Create a new property instance.
@@ -153,6 +143,17 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * @return The property instance.
      */
     <T> T create(Example<T> example, Class<T> type);
+
+    /**
+     * Create a new {@link CompositeObject} instance using an example.
+     *
+     * @param type
+     *            The interface the property type shall implement.
+     * @param example
+     *            The example instance.
+     * @return The {@link CompositeObject} instance.
+     */
+    <T> T create(Class<T> type, Example<T> example);
 
     /**
      * Creates an instance of a typed relation between a source and a target
@@ -195,6 +196,28 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * @return The created relation instance.
      */
     <S, R, T> R create(Example<R> example, S source, Class<R> relationType, T target);
+
+    /**
+     * Creates an instance of a typed relation between a source and a target
+     * instance using an example.
+     *
+     * @param source
+     *            The source instance.
+     * @param relationType
+     *            The relation type.
+     * @param target
+     *            The target instance.
+     * @param <S>
+     *            The source type.
+     * @param <R>
+     *            The relation type.
+     * @param <T>
+     *            The target type.
+     * @param example
+     *            The example instance.
+     * @return The created relation instance.
+     */
+    <S, R, T> R create(S source, Class<R> relationType, T target, Example<R> example);
 
     /**
      * Return a repository instance for the given type.
