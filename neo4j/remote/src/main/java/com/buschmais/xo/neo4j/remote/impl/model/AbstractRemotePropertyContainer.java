@@ -41,17 +41,9 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
         return Collections.unmodifiableMap(state.getReadCache());
     }
 
-    public void load(S state) {
-        this.state = state;
-    }
-
     public void setProperty(String key, Object value) {
         state.getOrCreateWriteCache().put(key, value);
         state.getReadCache().put(key, value);
-    }
-
-    public void clear() {
-        state = null;
     }
 
     public void removeProperty(String name) {

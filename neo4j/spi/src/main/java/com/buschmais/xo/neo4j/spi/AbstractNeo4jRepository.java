@@ -14,9 +14,9 @@ import com.buschmais.xo.spi.session.XOSession;
  */
 public abstract class AbstractNeo4jRepository<Label extends Neo4jLabel> implements Neo4jRepository {
 
-    protected final XOSession<?, ?, NodeMetadata<Label>, Label, ?, ?, ?, ?, PropertyMetadata> xoSession;
+    protected final XOSession<NodeMetadata<Label>, Label, ?, ?> xoSession;
 
-    protected AbstractNeo4jRepository(XOSession<?, ?, NodeMetadata<Label>, Label, ?, ?, ?, ?, PropertyMetadata> xoSession) {
+    protected AbstractNeo4jRepository(XOSession<NodeMetadata<Label>, Label, ?, ?> xoSession) {
         this.xoSession = xoSession;
     }
 

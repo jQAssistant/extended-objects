@@ -11,7 +11,7 @@ import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
 /**
  * Defines functionality to be used by repository implementations.
  */
-public interface XOSession<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata> {
+public interface XOSession<EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> {
 
     /**
      * Converts a value to the datastore representation.

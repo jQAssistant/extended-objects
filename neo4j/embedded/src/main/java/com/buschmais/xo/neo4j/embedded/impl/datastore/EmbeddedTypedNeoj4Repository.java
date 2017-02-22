@@ -5,12 +5,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
-import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
-import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationship;
-import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
-import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
-import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.session.XOSession;
 
 /**
@@ -33,7 +28,7 @@ public class EmbeddedTypedNeoj4Repository<T> extends EmbeddedNeo4jRepository imp
      *            The {@link XOSession}.
      */
     public EmbeddedTypedNeoj4Repository(Class<T> type, GraphDatabaseService graphDatabaseService,
-                                        XOSession<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, Long, EmbeddedRelationship, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType, PropertyMetadata> xoSession) {
+            XOSession<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?> xoSession) {
         super(graphDatabaseService, xoSession);
         this.type = type;
     }

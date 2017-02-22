@@ -20,8 +20,7 @@ public class EmbeddedNeo4jRepository extends AbstractNeo4jRepository<EmbeddedLab
 
     private final GraphDatabaseService graphDatabaseService;
 
-    protected EmbeddedNeo4jRepository(GraphDatabaseService graphDatabaseService,
-            XOSession<?, ?, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?, ?, ?, PropertyMetadata> xoSession) {
+    protected EmbeddedNeo4jRepository(GraphDatabaseService graphDatabaseService, XOSession<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?> xoSession) {
         super(xoSession);
         this.graphDatabaseService = graphDatabaseService;
     }

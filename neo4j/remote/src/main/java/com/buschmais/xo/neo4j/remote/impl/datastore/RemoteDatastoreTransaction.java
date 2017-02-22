@@ -4,6 +4,7 @@ import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementRunner;
 import org.neo4j.driver.v1.Transaction;
 
+import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 
 public class RemoteDatastoreTransaction implements DatastoreTransaction {
@@ -18,6 +19,9 @@ public class RemoteDatastoreTransaction implements DatastoreTransaction {
 
     @Override
     public void begin() {
+        if (transaction != null) {
+            throw new XOException("There is already an existing transaction.");
+        }
         this.transaction = session.beginTransaction();
     }
 
@@ -26,7 +30,7 @@ public class RemoteDatastoreTransaction implements DatastoreTransaction {
         try {
             this.transaction.success();
         } finally {
-            this.transaction.close();
+            close();
         }
     }
 
@@ -35,8 +39,13 @@ public class RemoteDatastoreTransaction implements DatastoreTransaction {
         try {
             this.transaction.failure();
         } finally {
-            this.transaction.close();
+            close();
         }
+    }
+
+    private void close() {
+        this.transaction.close();
+        this.transaction = null;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.buschmais.xo.neo4j.test.validation;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -10,7 +11,6 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -42,7 +42,7 @@ public class ValidationTest extends AbstractNeo4jXOManagerTest {
         Set<ConstraintViolation<?>> constraintViolations = null;
         try {
             xoManager.currentTransaction().commit();
-            Assert.fail("Validation must fail.");
+            fail("Validation must fail.");
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
         }
@@ -73,7 +73,7 @@ public class ValidationTest extends AbstractNeo4jXOManagerTest {
         Set<ConstraintViolation<?>> constraintViolations = null;
         try {
             xoManager.currentTransaction().commit();
-            Assert.fail("Validation must fail.");
+            fail("Validation must fail.");
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
         }

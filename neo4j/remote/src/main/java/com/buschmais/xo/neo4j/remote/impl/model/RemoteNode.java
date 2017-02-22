@@ -8,8 +8,8 @@ import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
 public class RemoteNode extends AbstractRemotePropertyContainer<NodeState>
         implements Neo4jNode<RemoteLabel, RemoteRelationship, RemoteRelationshipType, RemoteDirection> {
 
-    public RemoteNode(long id, NodeState state) {
-        super(id, state);
+    public RemoteNode(long id, NodeState initialState) {
+        super(id, initialState);
     }
 
     @Override

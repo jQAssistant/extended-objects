@@ -44,7 +44,8 @@ public class JsonRelationManager implements DatastoreRelationManager<ObjectNode,
     }
 
     @Override
-    public Iterable<JsonRelation> getRelations(ObjectNode source, RelationTypeMetadata<JsonRelationMetadata> metadata, RelationTypeMetadata.Direction direction) {
+    public Iterable<JsonRelation> getRelations(ObjectNode source, RelationTypeMetadata<JsonRelationMetadata> metadata,
+            RelationTypeMetadata.Direction direction) {
         return null;
     }
 

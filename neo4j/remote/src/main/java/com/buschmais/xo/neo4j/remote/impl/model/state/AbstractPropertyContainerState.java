@@ -5,12 +5,16 @@ import java.util.Map;
 
 public abstract class AbstractPropertyContainerState {
 
-    private Map<String, Object> readCache = new HashMap<>();
+    private Map<String, Object> readCache;
 
     private Map<String, Object> writeCache = null;
 
     protected AbstractPropertyContainerState(Map<String, Object> readCache) {
         this.readCache = readCache;
+    }
+
+    public void load(Map<String, Object> properties) {
+        readCache = new HashMap<>(properties);
     }
 
     public Map<String, Object> getReadCache() {
@@ -29,6 +33,11 @@ public abstract class AbstractPropertyContainerState {
     }
 
     public void flush() {
+        writeCache = null;
+    }
+
+    public void clear() {
+        readCache = null;
         writeCache = null;
     }
 }

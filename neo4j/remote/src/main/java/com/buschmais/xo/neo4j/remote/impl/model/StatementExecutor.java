@@ -5,6 +5,7 @@ import java.util.Map;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.Value;
+import org.neo4j.driver.v1.exceptions.Neo4jException;
 import org.neo4j.driver.v1.exceptions.NoSuchRecordException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +36,12 @@ public class StatementExecutor {
     }
 
     public StatementResult execute(String statement, Map<String, Object> parameters) {
-        LOGGER.debug("Executing '" + statement + "', " + parameters);
-        return transaction.getStatementRunner().run(statement, parameters);
+        LOGGER.debug("'" + statement + "': " + parameters);
+        try {
+            return transaction.getStatementRunner().run(statement, parameters);
+        } catch (Neo4jException e) {
+            throw new XOException("Cannot execute statement '" + statement + "', " + parameters, e);
+        }
     }
 
     private Record getSingleResult(StatementResult result) {

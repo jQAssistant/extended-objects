@@ -11,7 +11,10 @@ This section describes rules that apply to the Maven build system.
 MATCH
   (:Maven:Project)-[:CREATES]->(artifact:Artifact)
 WHERE
-  artifact.type <> "test-jar"
+  NOT artifact.type in [
+    "test-jar",
+    "pom"
+    ]
 SET
   artifact:Main
 RETURN

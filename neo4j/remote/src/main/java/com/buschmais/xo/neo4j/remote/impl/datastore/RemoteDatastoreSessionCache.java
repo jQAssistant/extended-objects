@@ -24,9 +24,9 @@ public class RemoteDatastoreSessionCache {
 
     private Cache<Long, RemoteRelationship> relationshipCache = CacheBuilder.newBuilder().weakValues().build();
 
-    public RemoteNode getNode(long id, NodeState nodeState) {
+    public RemoteNode getNode(long id, NodeState initialState) {
         try {
-            return nodeCache.get(id, () -> new RemoteNode(id, nodeState));
+            return nodeCache.get(id, () -> new RemoteNode(id, initialState));
         } catch (ExecutionException e) {
             throw new XOException("Cannot fetch node");
         }

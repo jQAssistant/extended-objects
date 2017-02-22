@@ -47,7 +47,7 @@ public class RemoteDatastoreSession implements Neo4jDatastoreSession<RemoteNode,
         this.parameterConverter = new Converter(Arrays.asList(new RemoteParameterConverter()));
         this.valueConverter = new Converter(Arrays.asList(new RemoteEntityConverter(datastoreSessionCache), new RemotePathConverter(datastoreSessionCache)));
         this.entityManager = new RemoteDatastoreEntityManager(statementExecutor, datastoreSessionCache);
-        this.relationManager = new RemoteDatastoreRelationManager(entityManager, statementExecutor, datastoreSessionCache);
+        this.relationManager = new RemoteDatastoreRelationManager(statementExecutor, datastoreSessionCache);
     }
 
     @Override

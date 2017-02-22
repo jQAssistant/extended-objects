@@ -1,11 +1,11 @@
 package com.buschmais.xo.spi.metadata.type;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.metadata.method.MethodMetadata;
 import com.buschmais.xo.spi.reflection.AnnotatedType;
-
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Represents metadata for entity types.
@@ -55,5 +55,9 @@ public class RelationTypeMetadata<DatastoreMetadata> extends AbstractDatastoreTy
     @Override
     public boolean isFinal() {
         return true;
+    }
+
+    public boolean isTyped() {
+        return getAnnotatedType() != null;
     }
 }

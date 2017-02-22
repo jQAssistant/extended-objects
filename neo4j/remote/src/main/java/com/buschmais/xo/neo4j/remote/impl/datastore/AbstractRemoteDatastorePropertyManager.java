@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.neo4j.driver.v1.Record;
+import org.neo4j.driver.v1.types.Entity;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.model.AbstractRemotePropertyContainer;
@@ -60,7 +61,7 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
     }
 
     @Override
-    public final void flush(Iterable<T> entities) {
+    public void flush(Iterable<T> entities) {
         Map<T, Map<String, Object>> entityProperties = new HashMap<>();
         for (T entity : entities) {
             AbstractPropertyContainerState state = entity.getState();
@@ -102,23 +103,20 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
             if (nodes != 1) {
                 throw new XOException("Cannot flush properties.");
             }
-            for (T t : entityProperties.keySet()) {
-                t.getState().flush();
-            }
         }
     }
 
     @Override
     public final void clear(Iterable<T> entities) {
         for (T entity : entities) {
-            entity.clear();
+            entity.getState().clear();
         }
     }
 
     protected final void ensureLoaded(T entity) {
-        if (entity.getState() == null) {
-            S state = load(entity);
-            entity.load(state);
+        if (entity.getState().getReadCache() == null) {
+            Entity state = load(entity);
+            entity.getState().load(state.asMap());
         }
     }
 
@@ -134,6 +132,6 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
 
     protected abstract String createIdentifierPattern(String identifier);
 
-    protected abstract S load(T entity);
+    protected abstract Entity load(T entity);
 
 }

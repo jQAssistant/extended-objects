@@ -5,7 +5,6 @@ import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
 import com.buschmais.xo.neo4j.remote.impl.model.StatementExecutor;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
-import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.session.XOSession;
 
 /**
@@ -17,8 +16,8 @@ public class RemoteTypedNeo4jRepositoryImpl<T> extends RemoteNeo4jRepositoryImpl
 
     private final Class<T> type;
 
-    public RemoteTypedNeo4jRepositoryImpl(XOSession<?, ?, NodeMetadata<RemoteLabel>, RemoteLabel, ?, ?, ?, ?, PropertyMetadata> xoSession, Class<T> type,
-            StatementExecutor statementExecutor, RemoteDatastoreSessionCache sessionCache) {
+    public RemoteTypedNeo4jRepositoryImpl(XOSession<NodeMetadata<RemoteLabel>, RemoteLabel, ?, ?> xoSession, Class<T> type, StatementExecutor statementExecutor,
+            RemoteDatastoreSessionCache sessionCache) {
         super(xoSession, statementExecutor, sessionCache);
         this.type = type;
     }

@@ -10,6 +10,7 @@ import java.util.*;
 import javax.validation.ConstraintViolation;
 
 import com.buschmais.xo.api.*;
+import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.impl.proxy.example.ExampleProxyMethodService;
 import com.buschmais.xo.impl.proxy.repository.RepositoryInvocationHandler;
@@ -52,7 +53,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     private final SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext;
 
-    private final XOSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> session;
+    private final XOSession<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> session;
 
     private final Map<Class<?>, Object> repositories = new HashMap<>();
 
@@ -91,8 +92,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
             throw new XOException(type.getName() + " must either be an entity or relation type.");
         } else if (typeMetadata instanceof EntityTypeMetadata) {
             EntityTypeMetadata<EntityMetadata> entityTypeMetadata = (EntityTypeMetadata<EntityMetadata>) typeMetadata;
-            Entity entityById = sessionContext.getDatastoreSession().getDatastoreEntityManager()
-                    .findEntityById(entityTypeMetadata, entityTypeMetadata.getDatastoreMetadata().getDiscriminator(), (EntityId) id);
+            Entity entityById = sessionContext.getDatastoreSession().getDatastoreEntityManager().findEntityById(entityTypeMetadata,
+                    entityTypeMetadata.getDatastoreMetadata().getDiscriminator(), (EntityId) id);
             return sessionContext.getEntityInstanceManager().readInstance(entityById);
         } else if (typeMetadata instanceof RelationTypeMetadata) {
             RelationTypeMetadata<RelationMetadata> relationTypeMetadata = (RelationTypeMetadata<RelationMetadata>) typeMetadata;
@@ -180,8 +181,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         if (entityDiscriminator == null) {
             throw new XOException("Type " + type.getName() + " has no discriminator (i.e. cannot be identified in datastore).");
         }
-        ResultIterator<Entity> iterator = sessionContext.getDatastoreSession().getDatastoreEntityManager()
-                .findEntity(entityTypeMetadata, entityDiscriminator, entity);
+        ResultIterator<Entity> iterator = sessionContext.getDatastoreSession().getDatastoreEntityManager().findEntity(entityTypeMetadata, entityDiscriminator,
+                entity);
         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         ResultIterator<T> resultIterator = new ResultIterator<T>() {
 
@@ -381,24 +382,32 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <T> void delete(T instance) {
+        InstanceListenerService instanceListenerService = sessionContext.getInstanceListenerService();
         InstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
         InstanceManager<RelationId, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = sessionContext
                 .getDatastoreSession();
         if (entityInstanceManager.isInstance(instance)) {
             Entity entity = entityInstanceManager.getDatastoreType(instance);
-            sessionContext.getInstanceListenerService().preDelete(instance);
+            instanceListenerService.preDelete(instance);
             datastoreSession.getDatastoreEntityManager().deleteEntity(entity);
             entityInstanceManager.removeInstance(instance);
             entityInstanceManager.closeInstance(instance);
-            sessionContext.getInstanceListenerService().postDelete(instance);
+            instanceListenerService.postDelete(instance);
         } else if (relationInstanceManager.isInstance(instance)) {
+            DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreRelationManager = datastoreSession
+                    .getDatastoreRelationManager();
             Relation relation = relationInstanceManager.getDatastoreType(instance);
-            sessionContext.getInstanceListenerService().preDelete(instance);
-            datastoreSession.getDatastoreRelationManager().deleteRelation(relation);
+            Entity from = datastoreRelationManager.getFrom(relation);
+            Entity to = datastoreRelationManager.getTo(relation);
+            instanceListenerService.preDelete(instance);
+            datastoreRelationManager.getRelationDiscriminator(relation);
+            datastoreRelationManager.deleteRelation(relation);
             relationInstanceManager.removeInstance(instance);
             relationInstanceManager.closeInstance(instance);
-            sessionContext.getInstanceListenerService().postDelete(instance);
+            entityInstanceManager.updateInstance(from);
+            entityInstanceManager.updateInstance(to);
+            instanceListenerService.postDelete(instance);
         } else {
             throw new XOException(instance + " is not a managed XO instance.");
         }
