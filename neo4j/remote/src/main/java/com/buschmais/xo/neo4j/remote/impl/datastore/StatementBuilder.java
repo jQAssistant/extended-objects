@@ -35,10 +35,10 @@ public class StatementBuilder {
         returnBuilder = new StringBuilder();
     }
 
-    public String doMatchWhere(String matchExpression, AbstractRemotePropertyContainer<?> entity) {
+    public String doMatchWhere(String matchExpression, AbstractRemotePropertyContainer<?> entity, String prefix) {
         String identifier = identifiers.get(entity);
         if (identifier == null) {
-            identifier = "e" + identifiers.size();
+            identifier = prefix + identifiers.size();
             identifiers.put(entity, identifier);
             parameters.put(identifier, entity.getId());
             separate(matchBuilder, ",");

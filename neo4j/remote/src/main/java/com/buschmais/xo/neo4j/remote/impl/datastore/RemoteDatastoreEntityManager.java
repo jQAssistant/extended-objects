@@ -3,6 +3,7 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
 import static org.neo4j.driver.v1.Values.parameters;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -55,8 +56,14 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
             Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
         StringBuilder labels = getLabelExpression(remoteLabels);
         Map<String, Object> properties = getProperties(exampleEntity);
-        String statement = String.format("CREATE (n%s{n}) RETURN id(n) as id", labels.toString());
-        Record record = statementExecutor.getSingleResult(statement, parameters("n", properties));
+        Record record;
+        if (properties.isEmpty()) {
+            String statement = String.format("CREATE (n%s) RETURN id(n) as id", labels.toString());
+            record = statementExecutor.getSingleResult(statement, Collections.emptyMap());
+        } else {
+            String statement = String.format("CREATE (n%s{n}) RETURN id(n) as id", labels.toString());
+            record = statementExecutor.getSingleResult(statement, parameters("n", properties));
+        }
         long id = record.get("id").asLong();
         NodeState nodeState = new NodeState(remoteLabels, properties);
         for (EntityTypeMetadata<NodeMetadata<RemoteLabel>> type : types) {
@@ -86,7 +93,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : remoteNode.getState().getOutgoingRelationships().values()) {
             flushRemovedRelationships(statementBuilder, tracker.getRemoved());
         }
-        String identifier = statementBuilder.doMatchWhere("(%s)", remoteNode);
+        String identifier = statementBuilder.doMatchWhere("(%s)", remoteNode, "n");
         statementBuilder.doDelete(identifier);
         statementBuilder.execute();
     }
@@ -150,8 +157,13 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     }
 
     @Override
-    protected String createIdentifierPattern() {
+    protected String getIdentifierPattern() {
         return "(%s)";
+    }
+
+    @Override
+    protected String getEntityPrefix() {
+        return "n";
     }
 
     @Override
@@ -198,8 +210,8 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     private void flushAddedRelationships(StatementBuilder statementBuilder, Set<RemoteRelationship> addedRelationships) {
         if (!addedRelationships.isEmpty()) {
             for (RemoteRelationship relationship : addedRelationships) {
-                String startIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getStartNode());
-                String endIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getEndNode());
+                String startIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getStartNode(), "n");
+                String endIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getEndNode(), "n");
                 statementBuilder.doCreate(String.format("(%s)-[:%s]->(%s) ", startIdentifier, relationship.getType().getName(), endIdentifier));
             }
         }
@@ -208,7 +220,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     private void flushRemovedRelationships(StatementBuilder statementBuilder, Set<RemoteRelationship> removedRelationships) {
         if (!removedRelationships.isEmpty()) {
             for (RemoteRelationship relationship : removedRelationships) {
-                String identifier = statementBuilder.doMatchWhere("()-[%s]->()", relationship);
+                String identifier = statementBuilder.doMatchWhere("()-[%s]->()", relationship, "r");
                 statementBuilder.doDelete(identifier);
             }
         }

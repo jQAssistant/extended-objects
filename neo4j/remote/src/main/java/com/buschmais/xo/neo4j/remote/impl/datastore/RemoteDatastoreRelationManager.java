@@ -60,13 +60,21 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
             throw new XOException("Unsupported direction " + direction);
         }
         RemoteRelationship relationship;
-        Map<String, Object> properties = getProperties(exampleEntity);
         StateTracker<RemoteRelationship, Set<RemoteRelationship>> outgoingRelationships = getRelationships(start, type, RelationTypeMetadata.Direction.FROM);
         StateTracker<RemoteRelationship, Set<RemoteRelationship>> incomingRelationships = getRelationships(end, type, RelationTypeMetadata.Direction.TO);
         if (metadata.isTyped()) {
-            String statement = String.format(
-                    "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) SET r={r} RETURN id(r) as id", type.getName());
-            Record record = statementExecutor.getSingleResult(statement, parameters("start", start.getId(), "end", end.getId(), "r", properties));
+            Map<String, Object> properties = getProperties(exampleEntity);
+            Record record;
+            if (properties.isEmpty()) {
+                String statement = String.format(
+                        "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) RETURN id(r) as id", type.getName());
+                record = statementExecutor.getSingleResult(statement, parameters("start", start.getId(), "end", end.getId(), "r", Collections.emptyMap()));
+            } else {
+                String statement = String.format(
+                        "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) SET r={r} RETURN id(r) as id",
+                        type.getName());
+                record = statementExecutor.getSingleResult(statement, parameters("start", start.getId(), "end", end.getId(), "r", properties));
+            }
             long id = record.get("id").asLong();
             RelationshipState relationshipState = new RelationshipState(properties);
             relationship = datastoreSessionCache.getRelationship(id, start, type, end, relationshipState);
@@ -135,8 +143,13 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     }
 
     @Override
-    protected String createIdentifierPattern() {
+    protected String getIdentifierPattern() {
         return "()-[%s]->()";
+    }
+
+    @Override
+    protected String getEntityPrefix() {
+        return "r";
     }
 
     @Override

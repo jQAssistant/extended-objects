@@ -62,12 +62,13 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
         AbstractPropertyContainerState state = entity.getState();
         Map<String, Object> writeCache = state.getWriteCache();
         if (writeCache != null && !writeCache.isEmpty()) {
-            String identifier = statementBuilder.doMatchWhere(createIdentifierPattern(), entity);
+            String identifier = statementBuilder.doMatchWhere(getIdentifierPattern(), entity, getEntityPrefix());
             String propsIdentifier = "_" + identifier;
             statementBuilder.doSet(String.format("%s+={%s}", identifier, propsIdentifier));
             statementBuilder.parameter(propsIdentifier, writeCache);
         }
     }
+
 
     @Override
     public final void clear(Iterable<T> entities) {
@@ -91,7 +92,9 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
         return properties;
     }
 
-    protected abstract String createIdentifierPattern();
+    protected abstract String getIdentifierPattern();
+
+    protected abstract String getEntityPrefix();
 
     protected abstract Entity load(T entity);
 
