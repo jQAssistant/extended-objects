@@ -3,10 +3,7 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
 import static org.neo4j.driver.v1.Values.parameters;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
@@ -27,6 +24,7 @@ import com.buschmais.xo.spi.metadata.method.MethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
+import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 
 public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropertyManager<RemoteNode, NodeState>
         implements DatastoreEntityManager<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, PropertyMetadata> {
@@ -66,7 +64,23 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         }
         long id = record.get("id").asLong();
         NodeState nodeState = new NodeState(remoteLabels, properties);
-        for (EntityTypeMetadata<NodeMetadata<RemoteLabel>> type : types) {
+        initializeEntity(types, nodeState);
+        return datastoreSessionCache.getNode(id, nodeState);
+    }
+
+    /**
+     * Initializes all relation properties of the given node state with empty
+     * collections.
+     * 
+     * @param types
+     *            The types.
+     * @param nodeState
+     *            The state of the entity.
+     */
+    private void initializeEntity(Collection<? extends TypeMetadata> types, NodeState nodeState) {
+        for (TypeMetadata type : types) {
+            Collection<TypeMetadata> superTypes = type.getSuperTypes();
+            initializeEntity(superTypes, nodeState);
             for (MethodMetadata<?, ?> methodMetadata : type.getProperties()) {
                 if (methodMetadata instanceof AbstractRelationPropertyMethodMetadata) {
                     AbstractRelationPropertyMethodMetadata<?> relationPropertyMethodMetadata = (AbstractRelationPropertyMethodMetadata) methodMetadata;
@@ -77,14 +91,14 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
                     switch (direction) {
                     case FROM:
                         nodeState.setRelationships(RemoteDirection.OUTGOING, relationshipType, new StateTracker<>(new LinkedHashSet<>()));
+                        break;
                     case TO:
                         nodeState.setRelationships(RemoteDirection.INCOMING, relationshipType, new StateTracker<>(new LinkedHashSet<>()));
+                        break;
                     }
                 }
             }
         }
-
-        return datastoreSessionCache.getNode(id, nodeState);
     }
 
     @Override
