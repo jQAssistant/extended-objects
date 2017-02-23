@@ -29,12 +29,12 @@ public class RemoteNode extends AbstractRemotePropertyContainer<NodeState>
 
     @Override
     public boolean hasLabel(RemoteLabel label) {
-        return getState().getLabels().contains(label);
+        return getState().getLabels().getElements().contains(label);
     }
 
     @Override
     public Set<RemoteLabel> getLabels() {
-        return getState().getLabels();
+        return getState().getLabels().getElements();
     }
 
 }

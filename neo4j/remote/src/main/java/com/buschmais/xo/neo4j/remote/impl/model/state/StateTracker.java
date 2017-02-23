@@ -22,10 +22,22 @@ public class StateTracker<T, C extends Collection<T>> {
         removed.remove(t);
     }
 
+    public void addAll(C added) {
+        for (T t : added) {
+            add(t);
+        }
+    }
+
     public void remove(T t) {
         elements.remove(t);
         removed.add(t);
         added.remove(t);
+    }
+
+    public void removeAll(C removed) {
+        for (T t : removed) {
+            remove(t);
+        }
     }
 
     public Set<T> getAdded() {

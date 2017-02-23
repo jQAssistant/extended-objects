@@ -41,7 +41,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     @Override
     public Set<RemoteLabel> getEntityDiscriminators(RemoteNode remoteNode) {
         ensureLoaded(remoteNode);
-        return remoteNode.getState().getLabels();
+        return remoteNode.getState().getLabels().getElements();
     }
 
     @Override
@@ -150,23 +150,11 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public void addDiscriminators(RemoteNode remoteNode, Set<RemoteLabel> remoteLabels) {
-        String statement = "MATCH (n) WHERE id(n)={id} SET n" + getLabelExpression(remoteLabels) + " RETURN count(*) as count";
-        Record record = statementExecutor.getSingleResult(statement, parameters("id", remoteNode.getId()));
-        long count = record.get("count").asLong();
-        if (count != 1) {
-            throw new XOException("Cannot add labels " + remoteLabels + " to node " + remoteNode);
-        }
         remoteNode.getState().getLabels().addAll(remoteLabels);
     }
 
     @Override
     public void removeDiscriminators(RemoteNode remoteNode, Set<RemoteLabel> remoteLabels) {
-        String statement = "MATCH (n) WHERE id(n)={id} REMOVE n" + getLabelExpression(remoteLabels) + " RETURN count(*) as count";
-        Record record = statementExecutor.getSingleResult(statement, parameters("id", remoteNode.getId()));
-        long count = record.get("count").asLong();
-        if (count != 1) {
-            throw new XOException("Cannot remove labels " + remoteLabels + " from node " + remoteNode);
-        }
         remoteNode.getState().getLabels().removeAll(remoteLabels);
     }
 
@@ -210,6 +198,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
         for (RemoteNode entity : entities) {
             flush(statementBuilder, entity);
+            flushLabels(statementBuilder, entity);
             for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : entity.getState().getOutgoingRelationships().values()) {
                 flushAddedRelationships(statementBuilder, tracker.getAdded());
                 flushRemovedRelationships(statementBuilder, tracker.getRemoved());
@@ -218,6 +207,21 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         statementBuilder.execute();
         for (RemoteNode entity : entities) {
             entity.getState().flush();
+        }
+    }
+
+    private void flushLabels(StatementBuilder statementBuilder, RemoteNode node) {
+        StateTracker<RemoteLabel, Set<RemoteLabel>> labels = node.getState().getLabels();
+        String identifier = statementBuilder.doMatchWhere("(%s)", node, "n");
+        Set<RemoteLabel> added = labels.getAdded();
+        if (!added.isEmpty()) {
+            StringBuilder addedLabelsExpression = getLabelExpression(added);
+            statementBuilder.doSet(String.format("%s%s", identifier, addedLabelsExpression));
+        }
+        Set<RemoteLabel> removed = labels.getRemoved();
+        if (!removed.isEmpty()) {
+            StringBuilder removedLabelsExpression = getLabelExpression(removed);
+            statementBuilder.doRemove(String.format("%s%s", identifier, removedLabelsExpression));
         }
     }
 

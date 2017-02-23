@@ -13,26 +13,19 @@ public class StatementBuilder {
 
     private StatementExecutor statementExecutor;
 
-    private Map<AbstractRemotePropertyContainer<?>, String> identifiers;
-    private Map<String, Object> parameters;
+    private Map<AbstractRemotePropertyContainer<?>, String> identifiers = new HashMap<>();
+    private Map<String, Object> parameters = new HashMap<>();
 
-    private StringBuilder matchBuilder;
-    private StringBuilder whereBuilder;
-    private StringBuilder createBuilder;
-    private StringBuilder setBuilder;
-    private StringBuilder deleteBuilder;
-    private StringBuilder returnBuilder;
+    private StringBuilder matchBuilder = new StringBuilder();
+    private StringBuilder whereBuilder = new StringBuilder();
+    private StringBuilder createBuilder = new StringBuilder();
+    private StringBuilder deleteBuilder = new StringBuilder();
+    private StringBuilder setBuilder = new StringBuilder();
+    private StringBuilder removeBuilder = new StringBuilder();
+    private StringBuilder returnBuilder = new StringBuilder();
 
     public StatementBuilder(StatementExecutor statementExecutor) {
         this.statementExecutor = statementExecutor;
-        identifiers = new HashMap<>();
-        parameters = new HashMap<>();
-        matchBuilder = new StringBuilder();
-        whereBuilder = new StringBuilder();
-        createBuilder = new StringBuilder();
-        setBuilder = new StringBuilder();
-        deleteBuilder = new StringBuilder();
-        returnBuilder = new StringBuilder();
     }
 
     public String doMatchWhere(String matchExpression, AbstractRemotePropertyContainer<?> entity, String prefix) {
@@ -65,6 +58,12 @@ public class StatementBuilder {
         return this;
     }
 
+    public StatementBuilder doRemove(String expression) {
+        separate(removeBuilder, ",");
+        removeBuilder.append(expression);
+        return this;
+    }
+
     public StatementBuilder doReturn(String s) {
         separate(returnBuilder, ",");
         returnBuilder.append(s);
@@ -77,7 +76,7 @@ public class StatementBuilder {
     }
 
     public String build() {
-        StringBuilder statement = new StringBuilder("\n");
+        StringBuilder statement = new StringBuilder();
         if (matchBuilder.length() > 0) {
             statement.append("MATCH ").append(matchBuilder).append(" ");
         }
@@ -92,6 +91,9 @@ public class StatementBuilder {
         }
         if (setBuilder.length() > 0) {
             statement.append("SET ").append(setBuilder).append(" ");
+        }
+        if (removeBuilder.length() > 0) {
+            statement.append("REMOVE ").append(removeBuilder).append(" ");
         }
         if (returnBuilder.length() > 0) {
             statement.append("RETURN ").append(returnBuilder);

@@ -21,8 +21,8 @@ public class NodeState extends AbstractPropertyContainerState {
         this.labels = new StateTracker<>(labels);
     }
 
-    public Set<RemoteLabel> getLabels() {
-        return labels.getElements();
+    public StateTracker<RemoteLabel, Set<RemoteLabel>> getLabels() {
+        return labels;
     }
 
     public Map<RemoteRelationshipType, StateTracker<RemoteRelationship, Set<RemoteRelationship>>> getOutgoingRelationships() {

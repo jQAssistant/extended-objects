@@ -15,9 +15,46 @@ import com.buschmais.xo.neo4j.remote.impl.datastore.RemoteDatastoreTransaction;
 
 public class StatementExecutor {
 
+    enum StatementLogger {
+        TRACE {
+            @Override
+            void log(String message) {
+                LOGGER.trace(message);
+            }
+        },
+        DEBUG {
+            @Override
+            void log(String message) {
+                LOGGER.debug(message);
+            }
+        },
+        INFO {
+            @Override
+            void log(String message) {
+                LOGGER.info(message);
+            }
+        },
+        WARN {
+            @Override
+            void log(String message) {
+                LOGGER.warn(message);
+            }
+        },
+        ERROR {
+            @Override
+            void log(String message) {
+                LOGGER.error(message);
+            }
+        };
+
+        abstract void log(String message);
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(StatementExecutor.class);
 
     private RemoteDatastoreTransaction transaction;
+
+    private StatementLogger statementLogger = StatementLogger.DEBUG;
 
     public StatementExecutor(RemoteDatastoreTransaction transaction) {
         this.transaction = transaction;
@@ -36,7 +73,7 @@ public class StatementExecutor {
     }
 
     public StatementResult execute(String statement, Map<String, Object> parameters) {
-        LOGGER.info("'" + statement + "': " + parameters);
+        statementLogger.log("'" + statement + "': " + parameters);
         try {
             return transaction.getStatementRunner().run(statement, parameters);
         } catch (Neo4jException e) {
