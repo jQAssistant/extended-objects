@@ -195,31 +195,30 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public void flush(Iterable<RemoteNode> entities) {
-        StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
         for (RemoteNode entity : entities) {
+            StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
             flush(statementBuilder, entity);
             flushLabels(statementBuilder, entity);
             for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : entity.getState().getOutgoingRelationships().values()) {
                 flushAddedRelationships(statementBuilder, tracker.getAdded());
                 flushRemovedRelationships(statementBuilder, tracker.getRemoved());
             }
-        }
-        statementBuilder.execute();
-        for (RemoteNode entity : entities) {
+            statementBuilder.execute();
             entity.getState().flush();
         }
     }
 
     private void flushLabels(StatementBuilder statementBuilder, RemoteNode node) {
         StateTracker<RemoteLabel, Set<RemoteLabel>> labels = node.getState().getLabels();
-        String identifier = statementBuilder.doMatchWhere("(%s)", node, "n");
         Set<RemoteLabel> added = labels.getAdded();
         if (!added.isEmpty()) {
+            String identifier = statementBuilder.doMatchWhere("(%s)", node, "n");
             StringBuilder addedLabelsExpression = getLabelExpression(added);
             statementBuilder.doSet(String.format("%s%s", identifier, addedLabelsExpression));
         }
         Set<RemoteLabel> removed = labels.getRemoved();
         if (!removed.isEmpty()) {
+            String identifier = statementBuilder.doMatchWhere("(%s)", node, "n");
             StringBuilder removedLabelsExpression = getLabelExpression(removed);
             statementBuilder.doRemove(String.format("%s%s", identifier, removedLabelsExpression));
         }
