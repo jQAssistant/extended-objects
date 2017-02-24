@@ -4,6 +4,10 @@ import java.util.Map;
 
 public class RelationshipState extends AbstractPropertyContainerState {
 
+    public RelationshipState() {
+        super(null);
+    }
+
     public RelationshipState(Map<String, Object> readCache) {
         super(readCache);
     }

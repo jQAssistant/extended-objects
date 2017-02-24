@@ -3,7 +3,6 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
-import com.buschmais.xo.neo4j.remote.impl.model.StatementExecutor;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.spi.session.XOSession;
 

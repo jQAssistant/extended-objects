@@ -7,7 +7,6 @@ import org.neo4j.driver.v1.Record;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.model.AbstractRemotePropertyContainer;
-import com.buschmais.xo.neo4j.remote.impl.model.StatementExecutor;
 
 public class StatementBuilder {
 
@@ -105,8 +104,8 @@ public class StatementBuilder {
         if (!identifiers.isEmpty()) {
             doReturn("count(*) as count");
             Record record = statementExecutor.getSingleResult(build(), parameters);
-            long nodes = record.get("count").asLong();
-            if (nodes != 1) {
+            long count = record.get("count").asLong();
+            if (count != 1) {
                 throw new XOException("Cannot flush properties.");
             }
         }

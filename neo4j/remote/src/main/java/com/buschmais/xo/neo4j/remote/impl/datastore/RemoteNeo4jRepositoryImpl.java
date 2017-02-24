@@ -13,7 +13,6 @@ import com.buschmais.xo.neo4j.remote.impl.converter.RemoteEntityConverter;
 import com.buschmais.xo.neo4j.remote.impl.converter.RemoteParameterConverter;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
-import com.buschmais.xo.neo4j.remote.impl.model.StatementExecutor;
 import com.buschmais.xo.neo4j.spi.AbstractNeo4jRepository;
 import com.buschmais.xo.neo4j.spi.helper.Converter;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;

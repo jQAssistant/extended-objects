@@ -1,9 +1,10 @@
-package com.buschmais.xo.neo4j.remote.impl.model;
+package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import java.util.Map;
 
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.StatementRunner;
 import org.neo4j.driver.v1.Value;
 import org.neo4j.driver.v1.exceptions.Neo4jException;
 import org.neo4j.driver.v1.exceptions.NoSuchRecordException;
@@ -11,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.remote.impl.datastore.RemoteDatastoreTransaction;
 
 public class StatementExecutor {
 
@@ -65,7 +65,11 @@ public class StatementExecutor {
     }
 
     public Record getSingleResult(String statement, Map<String, Object> parameters) {
-        return getSingleResult(execute(statement, parameters));
+        try {
+            return getSingleResult(execute(statement, parameters));
+        } catch (Neo4jException e) {
+            throw new XOException("Cannot get result for statement '" + statement + "', " + parameters, e);
+        }
     }
 
     public StatementResult execute(String statement, Value parameters) {
@@ -75,7 +79,8 @@ public class StatementExecutor {
     public StatementResult execute(String statement, Map<String, Object> parameters) {
         statementLogger.log("'" + statement + "': " + parameters);
         try {
-            return transaction.getStatementRunner().run(statement, parameters);
+            StatementRunner statementRunner = transaction.getStatementRunner();
+            return statementRunner.run(statement, parameters);
         } catch (Neo4jException e) {
             throw new XOException("Cannot execute statement '" + statement + "', " + parameters, e);
         }

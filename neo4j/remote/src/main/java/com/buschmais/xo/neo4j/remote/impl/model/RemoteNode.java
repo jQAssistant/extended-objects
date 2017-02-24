@@ -2,6 +2,7 @@ package com.buschmais.xo.neo4j.remote.impl.model;
 
 import java.util.Set;
 
+import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
 
@@ -14,17 +15,24 @@ public class RemoteNode extends AbstractRemotePropertyContainer<NodeState>
 
     @Override
     public Iterable<RemoteRelationship> getRelationships(RemoteRelationshipType type, RemoteDirection dir) {
-        return null;
+        NodeState state = getState();
+        switch (dir) {
+        case OUTGOING:
+            return state.getOutgoingRelationships(type).getElements();
+        case INCOMING:
+            return state.getOutgoingRelationships(type).getElements();
+        }
+        throw new XOException("Unsupported direction " + dir);
     }
 
     @Override
     public boolean hasRelationship(RemoteRelationshipType type, RemoteDirection dir) {
-        return false;
+        return getRelationships(type, dir).iterator().hasNext();
     }
 
     @Override
     public RemoteRelationship getSingleRelationship(RemoteRelationshipType type, RemoteDirection dir) {
-        return null;
+        return getRelationships(type, dir).iterator().next();
     }
 
     @Override

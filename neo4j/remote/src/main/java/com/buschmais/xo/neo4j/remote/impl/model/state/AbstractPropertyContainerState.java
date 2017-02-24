@@ -25,6 +25,10 @@ public abstract class AbstractPropertyContainerState {
         return writeCache;
     }
 
+    public boolean isLoaded() {
+        return readCache != null;
+    }
+
     public Map<String, Object> getOrCreateWriteCache() {
         if (writeCache == null) {
             writeCache = new HashMap<>();
@@ -40,4 +44,5 @@ public abstract class AbstractPropertyContainerState {
         readCache = null;
         writeCache = null;
     }
+
 }

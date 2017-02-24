@@ -6,7 +6,6 @@ import java.util.Map;
 import org.neo4j.driver.v1.types.Entity;
 
 import com.buschmais.xo.neo4j.remote.impl.model.AbstractRemotePropertyContainer;
-import com.buschmais.xo.neo4j.remote.impl.model.StatementExecutor;
 import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
@@ -78,7 +77,7 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
     }
 
     protected final void ensureLoaded(T entity) {
-        if (entity.getState().getReadCache() == null) {
+        if (!entity.getState().isLoaded()) {
             Entity state = load(entity);
             entity.getState().load(state.asMap());
         }

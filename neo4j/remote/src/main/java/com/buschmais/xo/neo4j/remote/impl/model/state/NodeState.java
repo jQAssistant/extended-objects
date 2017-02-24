@@ -1,6 +1,7 @@
 package com.buschmais.xo.neo4j.remote.impl.model.state;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,9 +13,13 @@ import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
 
 public class NodeState extends AbstractPropertyContainerState {
 
-    private StateTracker<RemoteLabel, Set<RemoteLabel>> labels;
+    private StateTracker<RemoteLabel, Set<RemoteLabel>> labels = new StateTracker<>(new HashSet<>());
     private Map<RemoteRelationshipType, StateTracker<RemoteRelationship, Set<RemoteRelationship>>> outgoingRelationships = new HashMap<>();
     private Map<RemoteRelationshipType, StateTracker<RemoteRelationship, Set<RemoteRelationship>>> incomingRelationships = new HashMap<>();
+
+    public NodeState() {
+        super(null);
+    }
 
     public NodeState(Set<RemoteLabel> labels, Map<String, Object> readCache) {
         super(readCache);

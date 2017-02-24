@@ -1,10 +1,12 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
+import java.io.File;
 import java.net.URI;
 import java.util.Properties;
 
 import org.neo4j.driver.v1.*;
 
+import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
@@ -13,6 +15,7 @@ import com.buschmais.xo.neo4j.spi.AbstractNeo4jMetadataFactory;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
+import com.google.common.base.CaseFormat;
 
 public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteRelationshipType, RemoteDatastoreSession> {
 
@@ -24,9 +27,24 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
         String username = (String) properties.get("neo4j.remote.username");
         String password = (String) properties.get("neo4j.remote.password");
         String encryptionLevel = (String) properties.get("neo4j.remote.encryptionLevel");
+        String trustStrategy = (String) properties.get("neo4j.remote.trust.strategy");
+        String trustCertificate = (String) properties.get("neo4j.remote.trust.certificate");
         Config.ConfigBuilder configBuilder = Config.build();
         if (encryptionLevel != null) {
-            configBuilder.withEncryptionLevel(Config.EncryptionLevel.valueOf(encryptionLevel.toUpperCase()));
+            configBuilder.withEncryptionLevel(getEnumOption(Config.EncryptionLevel.class, encryptionLevel));
+        }
+        if (trustStrategy != null) {
+            switch (getEnumOption(Config.TrustStrategy.Strategy.class, trustStrategy)) {
+            case TRUST_ALL_CERTIFICATES:
+                configBuilder.withTrustStrategy(Config.TrustStrategy.trustAllCertificates());
+                break;
+            case TRUST_CUSTOM_CA_SIGNED_CERTIFICATES:
+                configBuilder.withTrustStrategy(Config.TrustStrategy.trustCustomCertificateSignedBy(new File(trustCertificate)));
+            case TRUST_SYSTEM_CA_SIGNED_CERTIFICATES:
+                configBuilder.withTrustStrategy(Config.TrustStrategy.trustSystemCertificates());
+            default:
+                throw new XOException("Trust strategy not supported: " + trustStrategy);
+            }
         }
         AuthToken authToken = username != null ? AuthTokens.basic(username, password) : null;
         this.driver = GraphDatabase.driver(uri, authToken, configBuilder.toConfig());
@@ -56,5 +74,10 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
     @Override
     public void close() {
         driver.close();
+    }
+
+    private <E extends Enum<E>> E getEnumOption(Class<E> enumType, String value) {
+        String normalizedValue = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, value);
+        return Enum.valueOf(enumType, normalizedValue);
     }
 }

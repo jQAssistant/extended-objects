@@ -16,6 +16,12 @@ public class StateTracker<T, C extends Collection<T>> {
         this.elements = elements;
     }
 
+    public void load(C elements) {
+        this.elements = elements;
+        this.added.clear();
+        this.removed.clear();
+    }
+
     public void add(T t) {
         elements.add(t);
         added.add(t);
