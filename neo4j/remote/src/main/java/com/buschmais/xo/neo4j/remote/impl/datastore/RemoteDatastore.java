@@ -15,11 +15,14 @@ import com.buschmais.xo.neo4j.spi.AbstractNeo4jMetadataFactory;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
+import com.buschmais.xo.spi.logging.LogStrategy;
 import com.google.common.base.CaseFormat;
 
 public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteRelationshipType, RemoteDatastoreSession> {
 
     private Driver driver;
+
+    private LogStrategy statementLogger = LogStrategy.DEBUG;
 
     public RemoteDatastore(XOUnit xoUnit) {
         URI uri = xoUnit.getUri();
@@ -48,6 +51,10 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
         }
         AuthToken authToken = username != null ? AuthTokens.basic(username, password) : null;
         this.driver = GraphDatabase.driver(uri, authToken, configBuilder.toConfig());
+        String statementLogLevel = (String) properties.get("neo4j.remote.log.statement");
+        if (statementLogLevel != null) {
+            statementLogger = getEnumOption(LogStrategy.class, statementLogLevel);
+        }
     }
 
     @Override
@@ -68,7 +75,7 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
     @Override
     public RemoteDatastoreSession createSession() {
         Session session = driver.session();
-        return new RemoteDatastoreSession(session);
+        return new RemoteDatastoreSession(session, statementLogger);
     }
 
     @Override

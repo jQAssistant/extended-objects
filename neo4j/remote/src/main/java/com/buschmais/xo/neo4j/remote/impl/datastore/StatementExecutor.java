@@ -12,52 +12,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.spi.logging.LogStrategy;
 
 public class StatementExecutor {
-
-    enum StatementLogger {
-        TRACE {
-            @Override
-            void log(String message) {
-                LOGGER.trace(message);
-            }
-        },
-        DEBUG {
-            @Override
-            void log(String message) {
-                LOGGER.debug(message);
-            }
-        },
-        INFO {
-            @Override
-            void log(String message) {
-                LOGGER.info(message);
-            }
-        },
-        WARN {
-            @Override
-            void log(String message) {
-                LOGGER.warn(message);
-            }
-        },
-        ERROR {
-            @Override
-            void log(String message) {
-                LOGGER.error(message);
-            }
-        };
-
-        abstract void log(String message);
-    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatementExecutor.class);
 
     private RemoteDatastoreTransaction transaction;
 
-    private StatementLogger statementLogger = StatementLogger.DEBUG;
+    private LogStrategy statementLogger;
 
-    public StatementExecutor(RemoteDatastoreTransaction transaction) {
+    public StatementExecutor(RemoteDatastoreTransaction transaction, LogStrategy statementLogger) {
         this.transaction = transaction;
+        this.statementLogger = statementLogger;
     }
 
     public Record getSingleResult(String statement, Value parameters) {
@@ -77,7 +44,7 @@ public class StatementExecutor {
     }
 
     public StatementResult execute(String statement, Map<String, Object> parameters) {
-        statementLogger.log("'" + statement + "': " + parameters);
+        statementLogger.log(LOGGER, "'" + statement + "': " + parameters);
         try {
             StatementRunner statementRunner = transaction.getStatementRunner();
             return statementRunner.run(statement, parameters);

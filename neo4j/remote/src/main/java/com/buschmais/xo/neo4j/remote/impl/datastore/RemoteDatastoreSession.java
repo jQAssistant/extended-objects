@@ -13,7 +13,10 @@ import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.remote.impl.converter.RemoteEntityConverter;
 import com.buschmais.xo.neo4j.remote.impl.converter.RemoteParameterConverter;
 import com.buschmais.xo.neo4j.remote.impl.converter.RemotePathConverter;
-import com.buschmais.xo.neo4j.remote.impl.model.*;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationship;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
 import com.buschmais.xo.neo4j.spi.Neo4jDatastoreSession;
 import com.buschmais.xo.neo4j.spi.helper.Converter;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
@@ -23,6 +26,7 @@ import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
+import com.buschmais.xo.spi.logging.LogStrategy;
 import com.buschmais.xo.spi.reflection.ClassHelper;
 import com.buschmais.xo.spi.session.XOSession;
 
@@ -39,10 +43,10 @@ public class RemoteDatastoreSession implements Neo4jDatastoreSession<RemoteNode,
     private final Converter parameterConverter;
     private final Converter valueConverter;
 
-    public RemoteDatastoreSession(Session session) {
+    public RemoteDatastoreSession(Session session, LogStrategy statementLogger) {
         this.session = session;
         this.transaction = new RemoteDatastoreTransaction(session);
-        this.statementExecutor = new StatementExecutor(transaction);
+        this.statementExecutor = new StatementExecutor(transaction, statementLogger);
         this.datastoreSessionCache = new RemoteDatastoreSessionCache();
         this.parameterConverter = new Converter(Arrays.asList(new RemoteParameterConverter()));
         this.valueConverter = new Converter(Arrays.asList(new RemoteEntityConverter(datastoreSessionCache), new RemotePathConverter(datastoreSessionCache)));
