@@ -14,20 +14,34 @@ public class StatementBuilder {
 
     private StatementExecutor statementExecutor;
 
-    private Set<String> identifiers = new HashSet<>();
-    private Map<AbstractRemotePropertyContainer<?>, String> entityIdentifiers = new HashMap<>();
-    private Map<String, Object> parameters = new HashMap<>();
+    private Set<String> identifiers;
+    private Map<AbstractRemotePropertyContainer<?>, String> entityIdentifiers;
+    private Map<String, Object> parameters;
 
-    private StringBuilder matchBuilder = new StringBuilder();
-    private StringBuilder whereBuilder = new StringBuilder();
-    private StringBuilder createBuilder = new StringBuilder();
-    private StringBuilder deleteBuilder = new StringBuilder();
-    private StringBuilder setBuilder = new StringBuilder();
-    private StringBuilder removeBuilder = new StringBuilder();
-    private StringBuilder returnBuilder = new StringBuilder();
+    private StringBuilder matchBuilder;
+    private StringBuilder whereBuilder;
+    private StringBuilder createBuilder;
+    private StringBuilder deleteBuilder;
+    private StringBuilder setBuilder;
+    private StringBuilder removeBuilder;
+    private StringBuilder returnBuilder;
 
     public StatementBuilder(StatementExecutor statementExecutor) {
         this.statementExecutor = statementExecutor;
+        init();
+    }
+
+    public void init() {
+        identifiers = new HashSet<>();
+        entityIdentifiers = new HashMap<>();
+        parameters = new HashMap<>();
+        matchBuilder = new StringBuilder();
+        whereBuilder = new StringBuilder();
+        createBuilder = new StringBuilder();
+        deleteBuilder = new StringBuilder();
+        setBuilder = new StringBuilder();
+        removeBuilder = new StringBuilder();
+        returnBuilder = new StringBuilder();
     }
 
     public String doMatch(String matchExpression, String prefix) {
@@ -119,6 +133,10 @@ public class StatementBuilder {
                 throw new XOException("Cannot flush properties.");
             }
         }
+    }
+
+    public int getCurrentBatchSize() {
+        return identifiers.size();
     }
 
     @Override
