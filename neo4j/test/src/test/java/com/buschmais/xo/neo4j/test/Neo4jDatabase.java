@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider;
-import com.buschmais.xo.neo4j.remote.api.Neo4jRemoteStoreProvider;
+import com.buschmais.xo.neo4j.remote.api.RemoteNeo4jXOProvider;
 import com.buschmais.xo.test.AbstractXOManagerTest;
 
 /**
@@ -23,7 +23,7 @@ public enum Neo4jDatabase implements AbstractXOManagerTest.Database {
     BOLT("bolt://localhost:5001") {
         @Override
         public Class<?> getProvider() {
-            return Neo4jRemoteStoreProvider.class;
+            return RemoteNeo4jXOProvider.class;
         }
     };
     private URI uri;

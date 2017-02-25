@@ -55,7 +55,7 @@ The Neo4j datastore for eXtended Objects is available from Maven Central and can
     ...
 
     <properties>
-        <com.buschmais.xo_version>0.8.0</com.buschmais.xo_version>
+        <com.buschmais.xo_version></com.buschmais.xo_version>
     </properties>
 
     <dependencies>
@@ -113,7 +113,7 @@ API (JPA). The following snippet shows a minimum setups
 <v1:xo version="1.0" xmlns:v1="http://buschmais.com/xo/schema/v1.0">
     <xo-unit name="movies">
         <url>bolt://localhost:7687</url>
-        <provider>com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider</provider>
+        <provider>com.buschmais.xo.neo4j.embedded.api.RemoteNeo4jXOProvider</provider>
         <types>
             <type>com.buschmais.xo.example.movies.composite.Movie</type>
             <type>com.buschmais.xo.example.movies.composite.Person</type>

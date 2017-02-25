@@ -11,4 +11,13 @@
 
     <name>eXtended Objects - Neo4j Binding Documentation</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

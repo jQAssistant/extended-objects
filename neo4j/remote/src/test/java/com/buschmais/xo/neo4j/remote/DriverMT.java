@@ -13,7 +13,7 @@ import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.remote.api.Neo4jRemoteStoreProvider;
+import com.buschmais.xo.neo4j.remote.api.RemoteNeo4jXOProvider;
 
 public class DriverMT {
 
@@ -91,7 +91,7 @@ public class DriverMT {
         Properties properties = new Properties();
         properties.setProperty("neo4j.remote.username", "neo4j");
         properties.setProperty("neo4j.remote.password", "admin");
-        return XOUnit.builder().provider(Neo4jRemoteStoreProvider.class).uri(new URI("bolt://localhost:7687")).properties(properties).type(Person.class)
+        return XOUnit.builder().provider(RemoteNeo4jXOProvider.class).uri(new URI("bolt://localhost:7687")).properties(properties).type(Person.class)
                 .type(Customer.class).type(Address.class).type(PersonRepository.class).build();
     }
 }
