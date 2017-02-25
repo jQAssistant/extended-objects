@@ -55,13 +55,20 @@ The Neo4j datastore for eXtended Objects is available from Maven Central and can
     ...
 
     <properties>
-        <com.buschmais.xo_version>0.3.0</com.buschmais.xo_version>
+        <com.buschmais.xo_version>0.8.0</com.buschmais.xo_version>
     </properties>
 
     <dependencies>
         <dependency>
+            <!-- For using an embedded Neo4j instance -->
             <groupId>com.buschmais.xo</groupId>
-            <artifactId>xo.neo4j</artifactId>
+            <artifactId>xo.neo4j.embedded</artifactId>
+            <version>${com.buschmais.xo_version}</version>
+        </dependency>
+        <dependency>
+            <!-- For using a remote Neo4j instance -->
+            <groupId>com.buschmais.xo</groupId>
+            <artifactId>xo.neo4j.remote</artifactId>
             <version>${com.buschmais.xo_version}</version>
         </dependency>
     </dependencies>
@@ -81,15 +88,15 @@ For a XOManagerFactory to be constructed a so called XO unit must be defined. Th
 
 An XO descriptor is a XML file located as classpath resource under "/META-INF/xo.xml" and defines one or more XO units.
 Each must be uniquely identified by a name. This is similar to the persistence unit approach defined by the Java Persistence
-API (JPA). The following snippet shows a minimum setup:
+API (JPA). The following snippet shows a minimum setups
 
 [source,xml]
-.META-INF/xo.xml
+.META-INF/xo.xml (embedded database)
 ----
 <v1:xo version="1.0" xmlns:v1="http://buschmais.com/xo/schema/v1.0">
     <xo-unit name="movies">
-        <url>file://target/movies</url>
-        <provider>com.buschmais.xo.neo4j.embedded.api.Neo4jXOProvider</provider>
+        <url>file://databases/movies</url>
+        <provider>com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider</provider>
         <types>
             <type>com.buschmais.xo.example.movies.composite.Movie</type>
             <type>com.buschmais.xo.example.movies.composite.Person</type>
@@ -100,12 +107,38 @@ API (JPA). The following snippet shows a minimum setup:
 </v1:xo>
 ----
 
-url::
-  The URL to pass to the Neo4j datastore. The following protocols are currently supported
-  - "file:///C:/neo4j/movies": embedded local database using the specified directory as location for the Neo4j database
-  - "memory:///": non-persistent in-memory database
+[source,xml]
+.META-INF/xo.xml (remote database)
+----
+<v1:xo version="1.0" xmlns:v1="http://buschmais.com/xo/schema/v1.0">
+    <xo-unit name="movies">
+        <url>bolt://localhost:7687</url>
+        <provider>com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider</provider>
+        <types>
+            <type>com.buschmais.xo.example.movies.composite.Movie</type>
+            <type>com.buschmais.xo.example.movies.composite.Person</type>
+            <type>com.buschmais.xo.example.movies.composite.Actor</type>
+            <type>com.buschmais.xo.example.movies.composite.Directory</type>
+        </types>
+        <properties>
+            <property name="neo4j.remote.username" value="neo4j"/>
+            <property name="neo4j.remote.password" value="secret"/>
+        </properties>
+    </xo-unit>
+</v1:xo>
+----
+
+NOTE: Support for remote databases is experimental.
+
 provider::
-  The class name of the datastore provider, for Neo4j com.buschmais.xo.neo4j.embedded.api.Neo4jXOProvider
+  The class name of the datastore provider
+  - `com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider` for embedded Neo4j databases
+  - `com.buschmais.xo.neo4j.remote.api.Neo4jRemoteStoreProvider` for remote Neo4j databases via bolt protocol
+url::
+  The URL to pass to the Neo4j datastore. The following protocols are currently supported:
+  - "file:///C:/neo4j/movies": embedded local database using the specified directory as location for the Neo4j database
+  - "memory:///": embedded non-persistent in-memory database
+  - "bolt://localhost:7687": remote database
 types::
   A list of all persistent interface types representing labels or relations
 
@@ -503,10 +536,10 @@ public interface Person {
 .SetNameMethod.java
 ----
 
-public class SetNameMethod implements ProxyMethod<Node> {
+public class SetNameMethod implements ProxyMethod<EmbeddedNode> {
 
  @Override
-    public Object invoke(Node node, Object instance, Object[] args) {
+    public Object invoke(EmbeddedNode node, Object instance, Object[] args) {
       String firstName = (String) args[0];
       String lastName = (String) args[1];
       String fullName = firstName + " " + lastName;

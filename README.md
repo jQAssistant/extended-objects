@@ -12,7 +12,7 @@ Please refer to the
 
 ## Datastores
 
-* [Neo4j](https://github.com/buschmais/xo/blob/master/neo4j/src/main/asciidoc/index.asciidoc)
+* [Neo4j](https://github.com/buschmais/xo/blob/master/neo4j/doc/src/main/asciidoc/index.asciidoc)
 * [Titan](https://github.com/PureSolTechnologies/extended-objects-titan)
 * [TinkerPop Blueprints](https://github.com/BluWings/xo-tinkerpop-blueprints)
 * [OrientDb](https://github.com/BluWings/xo-orientdb)
