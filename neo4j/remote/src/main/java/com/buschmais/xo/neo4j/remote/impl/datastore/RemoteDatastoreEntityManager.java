@@ -238,8 +238,15 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     private void flushRemovedRelationships(StatementBuilder statementBuilder, Set<RemoteRelationship> removedRelationships) {
         if (!removedRelationships.isEmpty()) {
             for (RemoteRelationship relationship : removedRelationships) {
-                String identifier = statementBuilder.doMatchWhere("()-[%s]->()", relationship, "r");
-                statementBuilder.doDelete(identifier);
+                if (relationship.getId() < 0) {
+                    String startIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getStartNode(), "n");
+                    String endIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getEndNode(), "n");
+                    String identifier = statementBuilder.doMatch("(" + startIdentifier + ")-[%s]" + "->(" + endIdentifier + ")", "r");
+                    statementBuilder.doDelete(identifier);
+                } else {
+                    String identifier = statementBuilder.doMatchWhere("()-[%s]->()", relationship, "r");
+                    statementBuilder.doDelete(identifier);
+                }
             }
         }
     }
