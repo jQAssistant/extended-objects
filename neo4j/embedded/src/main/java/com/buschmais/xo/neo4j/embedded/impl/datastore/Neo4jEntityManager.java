@@ -106,14 +106,14 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
     }
 
     @Override
-    public void addDiscriminators(EmbeddedNode node, Set<EmbeddedLabel> labels) {
+    public void addDiscriminators(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> types, EmbeddedNode node, Set<EmbeddedLabel> labels) {
         for (EmbeddedLabel label : labels) {
             node.addLabel(label);
         }
     }
 
     @Override
-    public void removeDiscriminators(EmbeddedNode node, Set<EmbeddedLabel> labels) {
+    public void removeDiscriminators(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> removedTypes, EmbeddedNode node, Set<EmbeddedLabel> labels) {
         for (EmbeddedLabel label : labels) {
             node.removeLabel(label);
         }

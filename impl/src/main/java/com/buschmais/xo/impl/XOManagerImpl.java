@@ -337,8 +337,22 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = metadataProvider.getTypes(entityDiscriminators);
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
-        Set<EntityDiscriminator> targetEntityDiscriminators = metadataProvider.getEntityDiscriminators(effectiveTargetTypes);
-        migrateEntity(entity, entityDiscriminators, targetEntityDiscriminators);
+        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> addedTypes = new TypeMetadataSet<>();
+        addedTypes.addAll(effectiveTargetTypes);
+        addedTypes.removeAll(types);
+        Set<EntityDiscriminator> addedDiscriminators = metadataProvider.getEntityDiscriminators(addedTypes);
+        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> removedTypes = new TypeMetadataSet<>();
+        removedTypes.addAll(types);
+        removedTypes.removeAll(effectiveTargetTypes);
+        Set<EntityDiscriminator> removedDiscriminators = metadataProvider.getEntityDiscriminators(removedTypes);
+        DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> datastoreEntityManager = sessionContext
+                .getDatastoreSession().getDatastoreEntityManager();
+        if (!removedDiscriminators.isEmpty()) {
+            datastoreEntityManager.removeDiscriminators(removedTypes, entity, removedDiscriminators);
+        }
+        if (!addedDiscriminators.isEmpty()) {
+            datastoreEntityManager.addDiscriminators(addedTypes, entity, addedDiscriminators);
+        }
         entityInstanceManager.removeInstance(instance);
         CompositeObject migratedInstance = entityInstanceManager.updateInstance(entity);
         if (migrationStrategy != null) {
@@ -356,22 +370,6 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     @Override
     public <T, M> M migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType) {
         return migrate(instance, migrationStrategy, targetType, new Class<?>[0]).as(targetType);
-    }
-
-    @Deprecated
-    private void migrateEntity(Entity entity, Set<EntityDiscriminator> discriminators, Set<EntityDiscriminator> targetDiscriminators) {
-        DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> datastoreEntityManager = sessionContext
-                .getDatastoreSession().getDatastoreEntityManager();
-        Set<EntityDiscriminator> labelsToRemove = new HashSet<>(discriminators);
-        labelsToRemove.removeAll(targetDiscriminators);
-        if (!labelsToRemove.isEmpty()) {
-            datastoreEntityManager.removeDiscriminators(entity, labelsToRemove);
-        }
-        Set<EntityDiscriminator> labelsToAdd = new HashSet<>(targetDiscriminators);
-        if (!labelsToAdd.isEmpty()) {
-            labelsToAdd.removeAll(discriminators);
-        }
-        datastoreEntityManager.addDiscriminators(entity, labelsToAdd);
     }
 
     @Override

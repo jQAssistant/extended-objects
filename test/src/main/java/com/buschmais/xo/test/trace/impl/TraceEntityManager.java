@@ -59,13 +59,13 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
     }
 
     @Override
-    public void addDiscriminators(Entity entity, Set<EntityDiscriminator> discriminators) {
-        delegate.addDiscriminators(entity, discriminators);
+    public void addDiscriminators(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Entity entity, Set<EntityDiscriminator> discriminators) {
+        delegate.addDiscriminators(types, entity, discriminators);
     }
 
     @Override
-    public void removeDiscriminators(Entity entity, Set<EntityDiscriminator> discriminators) {
-        delegate.removeDiscriminators(entity, discriminators);
+    public void removeDiscriminators(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> removedTypes, Entity entity, Set<EntityDiscriminator> discriminators) {
+        delegate.removeDiscriminators(removedTypes, entity, discriminators);
     }
 
     public void setProperty(Entity entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata, Object value) {

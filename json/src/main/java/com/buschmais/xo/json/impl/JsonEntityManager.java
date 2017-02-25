@@ -92,11 +92,11 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     }
 
     @Override
-    public void addDiscriminators(ObjectNode jsonNodes, Set<String> strings) {
+    public void addDiscriminators(TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, ObjectNode jsonNodes, Set<String> strings) {
     }
 
     @Override
-    public void removeDiscriminators(ObjectNode jsonNodes, Set<String> strings) {
+    public void removeDiscriminators(TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> removedTypes, ObjectNode jsonNodes, Set<String> strings) {
     }
 
     @Override

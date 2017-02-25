@@ -93,22 +93,22 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
 
     /**
      * Add a set of discriminators to an entity.
-     * 
+     *
+     * @param types
      * @param entity
      *            The entity.
      * @param discriminators
-     *            The set of discriminators
      */
-    void addDiscriminators(Entity entity, Set<EntityDiscriminator> discriminators);
+    void addDiscriminators(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types, Entity entity, Set<EntityDiscriminator> discriminators);
 
     /**
      * Remove a set of discriminators from an entity.
      *
+     * @param removedTypes
      * @param entity
      *            The entity.
      * @param discriminators
-     *            The set of discriminators
      */
-    void removeDiscriminators(Entity entity, Set<EntityDiscriminator> discriminators);
+    void removeDiscriminators(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> removedTypes, Entity entity, Set<EntityDiscriminator> discriminators);
 
 }

@@ -49,31 +49,33 @@ public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends Datastor
 
 	@Override
 	public CompositeObject add(Class<?> newType, Class<?>... newTypes) {
-		Set<EntityDiscriminator> newDiscriminators = getDiscriminators(newType, newTypes);
+        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = getDiscriminators(newType, newTypes);
+        Set<EntityDiscriminator> newDiscriminators = new HashSet<>(metadataProvider.getEntityDiscriminators(types));
 		Entity entity = invalidateInstance(entityInstanceManager);
 		Set<EntityDiscriminator> entityDiscriminators = datastoreEntityManager.getEntityDiscriminators(entity);
 		newDiscriminators.removeAll(entityDiscriminators);
-		datastoreEntityManager.addDiscriminators(entity, newDiscriminators);
+		datastoreEntityManager.addDiscriminators(types, entity, newDiscriminators);
 		return createInstance(entity);
 	}
 
 	@Override
 	public CompositeObject remove(Class<?> obsoleteType, Class<?>... obsoleteTypes) {
-		Set<EntityDiscriminator> obsoleteDiscriminators = getDiscriminators(obsoleteType, obsoleteTypes);
+        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = getDiscriminators(obsoleteType, obsoleteTypes);
+        Set<EntityDiscriminator> obsoleteDiscriminators = new HashSet<>(metadataProvider.getEntityDiscriminators(types));
 		Entity entity = invalidateInstance(entityInstanceManager);
 		Set<EntityDiscriminator> entityDiscriminators = datastoreEntityManager.getEntityDiscriminators(entity);
 		obsoleteDiscriminators.retainAll(entityDiscriminators);
-		datastoreEntityManager.removeDiscriminators(entity, obsoleteDiscriminators);
+		datastoreEntityManager.removeDiscriminators(types, entity, obsoleteDiscriminators);
 		return createInstance(entity);
 	}
 
-	private Set<EntityDiscriminator> getDiscriminators(Class<?> type, Class<?>[] types) {
+	private TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getDiscriminators(Class<?> type, Class<?>[] types) {
 		TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> typeMetadata = new TypeMetadataSet<>();
 		typeMetadata.add(metadataProvider.getEntityMetadata(type));
 		for (Class<?> currentType : types) {
 			typeMetadata.add(metadataProvider.getEntityMetadata(currentType));
 		}
-		return new HashSet<>(metadataProvider.getEntityDiscriminators(typeMetadata));
+		return typeMetadata;
 	}
 
 	private Entity invalidateInstance(AbstractInstanceManager<EntityId, Entity> entityInstanceManager) {

@@ -88,13 +88,19 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
                             .getRelationshipMetadata();
                     RemoteRelationshipType relationshipType = relationshipMetadata.getDatastoreMetadata().getDiscriminator();
                     RelationTypeMetadata.Direction direction = relationPropertyMethodMetadata.getDirection();
+                    RemoteDirection remoteDirection;
                     switch (direction) {
                     case FROM:
-                        nodeState.setRelationships(RemoteDirection.OUTGOING, relationshipType, new StateTracker<>(new LinkedHashSet<>()));
+                        remoteDirection = RemoteDirection.OUTGOING;
                         break;
                     case TO:
-                        nodeState.setRelationships(RemoteDirection.INCOMING, relationshipType, new StateTracker<>(new LinkedHashSet<>()));
+                        remoteDirection = RemoteDirection.INCOMING;
                         break;
+                    default:
+                        throw new XOException("Unsupported direction: " + direction);
+                    }
+                    if (nodeState.getRelationships(remoteDirection, relationshipType) == null) {
+                        nodeState.setRelationships(remoteDirection, relationshipType, new StateTracker<>(new LinkedHashSet<>()));
                     }
                 }
             }
@@ -150,12 +156,15 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     }
 
     @Override
-    public void addDiscriminators(RemoteNode remoteNode, Set<RemoteLabel> remoteLabels) {
-        remoteNode.getState().getLabels().addAll(remoteLabels);
+    public void addDiscriminators(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> types, RemoteNode remoteNode, Set<RemoteLabel> remoteLabels) {
+        NodeState state = remoteNode.getState();
+        state.getLabels().addAll(remoteLabels);
+        initializeEntity(types, state);
     }
 
     @Override
-    public void removeDiscriminators(RemoteNode remoteNode, Set<RemoteLabel> remoteLabels) {
+    public void removeDiscriminators(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> removedTypes, RemoteNode remoteNode,
+            Set<RemoteLabel> remoteLabels) {
         remoteNode.getState().getLabels().removeAll(remoteLabels);
     }
 
