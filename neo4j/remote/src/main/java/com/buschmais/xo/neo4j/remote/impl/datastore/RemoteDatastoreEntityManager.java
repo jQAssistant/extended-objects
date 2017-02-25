@@ -205,17 +205,18 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public void flush(Iterable<RemoteNode> entities) {
+        StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
         for (RemoteNode entity : entities) {
-            StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
             flush(statementBuilder, entity);
             flushLabels(statementBuilder, entity);
+            statementBuilder.autoFlush();
             for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : entity.getState().getOutgoingRelationships().values()) {
                 flushAddedRelationships(statementBuilder, tracker.getAdded());
                 flushRemovedRelationships(statementBuilder, tracker.getRemoved());
             }
-            statementBuilder.execute();
             entity.getState().flush();
         }
+        statementBuilder.execute();
     }
 
     private void flushLabels(StatementBuilder statementBuilder, RemoteNode node) {
@@ -262,10 +263,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         if (!relationships.isEmpty()) {
             for (RemoteRelationship relationship : relationships) {
                 flushAction.execute(relationship);
-                if (statementBuilder.getCurrentBatchSize() > 20) {
-                    statementBuilder.execute();
-                    statementBuilder.init();
-                }
+                statementBuilder.autoFlush();
             }
         }
     }

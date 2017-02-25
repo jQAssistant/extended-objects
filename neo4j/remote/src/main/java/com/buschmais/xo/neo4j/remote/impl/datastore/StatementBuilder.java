@@ -135,8 +135,11 @@ public class StatementBuilder {
         }
     }
 
-    public int getCurrentBatchSize() {
-        return identifiers.size();
+    public void autoFlush() {
+        if (identifiers.size() > 15) {
+            execute();
+            init();
+        }
     }
 
     @Override

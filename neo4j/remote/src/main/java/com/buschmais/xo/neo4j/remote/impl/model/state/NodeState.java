@@ -70,6 +70,7 @@ public class NodeState extends AbstractPropertyContainerState {
     @Override
     public void flush() {
         super.flush();
+        labels.flush();
         for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : outgoingRelationships.values()) {
             tracker.flush();
         }

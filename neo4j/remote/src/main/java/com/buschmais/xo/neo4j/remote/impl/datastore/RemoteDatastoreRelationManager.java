@@ -13,7 +13,10 @@ import org.neo4j.driver.v1.types.Node;
 import org.neo4j.driver.v1.types.Relationship;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.remote.impl.model.*;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteDirection;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationship;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
 import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.StateTracker;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
@@ -174,12 +177,13 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
 
     @Override
     public void flush(Iterable<RemoteRelationship> relationships) {
+        StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
         for (RemoteRelationship relationship : relationships) {
-            StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
             flush(statementBuilder, relationship);
-            statementBuilder.execute();
+            statementBuilder.autoFlush();
             relationship.getState().flush();
         }
+        statementBuilder.execute();
     }
 
     private StateTracker<RemoteRelationship, Set<RemoteRelationship>> getRelationships(RemoteNode source, RemoteRelationshipType type,
