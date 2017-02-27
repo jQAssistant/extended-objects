@@ -94,9 +94,9 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
             outgoingRelationships.add(relationship);
         }
         // Add relation to incoming relationships if they're already loaded
-        StateTracker<RemoteRelationship, Set<RemoteRelationship>> incomingRelationships = source.getState().getRelationships(RemoteDirection.INCOMING, type);
+        StateTracker<RemoteRelationship, Set<RemoteRelationship>> incomingRelationships = end.getState().getRelationships(RemoteDirection.INCOMING, type);
         if (incomingRelationships != null) {
-            incomingRelationships.getElements().add(relationship);
+            incomingRelationships.add(relationship);
         }
         return relationship;
     }
