@@ -80,14 +80,16 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
             RelationshipState relationshipState = new RelationshipState(properties);
             relationship = datastoreSessionCache.getRelationship(id, start, type, end, relationshipState);
             // Add relation to outgoing relationships if they're already loaded
-            StateTracker<RemoteRelationship, Set<RemoteRelationship>> outgoingRelationships = source.getState().getRelationships(RemoteDirection.OUTGOING, type);
+            StateTracker<RemoteRelationship, Set<RemoteRelationship>> outgoingRelationships = source.getState().getRelationships(RemoteDirection.OUTGOING,
+                    type);
             if (outgoingRelationships != null) {
-                outgoingRelationships .getElements().add(relationship);
+                outgoingRelationships.getElements().add(relationship);
             }
         } else {
             long id = idSequence--;
             relationship = datastoreSessionCache.getRelationship(id, start, type, end, new RelationshipState(Collections.emptyMap()));
-            // Always add relation to outgoing relationships to make sure they're flushed
+            // Always flush relation to outgoing relationships to make sure
+            // they're flushed
             StateTracker<RemoteRelationship, Set<RemoteRelationship>> outgoingRelationships = getRelationships(start, type, RemoteDirection.OUTGOING);
             outgoingRelationships.add(relationship);
         }
@@ -187,8 +189,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     public void flush(Iterable<RemoteRelationship> relationships) {
         StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
         for (RemoteRelationship relationship : relationships) {
-            flush(statementBuilder, relationship);
-            statementBuilder.autoFlush();
+            statementBuilder.flush(relationship, remoteRelationship -> flush(statementBuilder, relationship));
             relationship.getState().flush();
         }
         statementBuilder.execute();

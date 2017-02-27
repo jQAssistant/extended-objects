@@ -7,13 +7,7 @@ import javax.validation.ValidatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.buschmais.xo.api.CloseListener;
-import com.buschmais.xo.api.ConcurrencyMode;
-import com.buschmais.xo.api.Transaction;
-import com.buschmais.xo.api.ValidationMode;
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.api.XOManager;
-import com.buschmais.xo.api.XOManagerFactory;
+import com.buschmais.xo.api.*;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.metadata.MetadataProviderImpl;
 import com.buschmais.xo.impl.plugin.PluginRepositoryManager;
@@ -76,10 +70,12 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
      * @return The {@link javax.validation.ValidatorFactory}.
      */
     private ValidatorFactory getValidatorFactory() {
-        try {
-            return Validation.buildDefaultValidatorFactory();
-        } catch (ValidationException e) {
-            LOGGER.debug("No JSR 303 Bean Validation provider available.", e);
+        if (!ValidationMode.NONE.equals(validationMode)) {
+            try {
+                return Validation.buildDefaultValidatorFactory();
+            } catch (ValidationException e) {
+                LOGGER.debug("No JSR 303 Bean Validation provider available.", e);
+            }
         }
         return null;
     }

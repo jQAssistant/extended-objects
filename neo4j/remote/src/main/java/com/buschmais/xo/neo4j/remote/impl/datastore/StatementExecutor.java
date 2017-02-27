@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.spi.logging.LogStrategy;
 
 public class StatementExecutor {
 
@@ -20,11 +19,15 @@ public class StatementExecutor {
 
     private RemoteDatastoreTransaction transaction;
 
-    private LogStrategy statementLogger;
+    private StatementConfig statementConfig;
 
-    public StatementExecutor(RemoteDatastoreTransaction transaction, LogStrategy statementLogger) {
+    public StatementExecutor(RemoteDatastoreTransaction transaction, StatementConfig statementConfig) {
         this.transaction = transaction;
-        this.statementLogger = statementLogger;
+        this.statementConfig = statementConfig;
+    }
+
+    public StatementConfig getStatementConfig() {
+        return statementConfig;
     }
 
     public Record getSingleResult(String statement, Value parameters) {
@@ -44,7 +47,7 @@ public class StatementExecutor {
     }
 
     public StatementResult execute(String statement, Map<String, Object> parameters) {
-        statementLogger.log(LOGGER, "'" + statement + "': " + parameters);
+        statementConfig.getStatementLogger().log(LOGGER, "'" + statement + "': " + parameters);
         try {
             StatementRunner statementRunner = transaction.getStatementRunner();
             return statementRunner.run(statement, parameters);
@@ -62,4 +65,5 @@ public class StatementExecutor {
             result.consume();
         }
     }
+
 }

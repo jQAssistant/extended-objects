@@ -22,11 +22,16 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
 
     private Driver driver;
 
-    private LogStrategy statementLogger = LogStrategy.DEBUG;
+    private StatementConfig statementConfig;
 
     public RemoteDatastore(XOUnit xoUnit) {
         URI uri = xoUnit.getUri();
         Properties properties = xoUnit.getProperties();
+        this.driver = getDriver(uri, properties);
+        this.statementConfig = getStatementConfig(properties);
+    }
+
+    private Driver getDriver(URI uri, Properties properties) {
         String username = (String) properties.get("neo4j.remote.username");
         String password = (String) properties.get("neo4j.remote.password");
         String encryptionLevel = (String) properties.get("neo4j.remote.encryptionLevel");
@@ -50,11 +55,20 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
             }
         }
         AuthToken authToken = username != null ? AuthTokens.basic(username, password) : null;
-        this.driver = GraphDatabase.driver(uri, authToken, configBuilder.toConfig());
-        String statementLogLevel = (String) properties.get("neo4j.remote.log.statement");
+        return GraphDatabase.driver(uri, authToken, configBuilder.toConfig());
+    }
+
+    private StatementConfig getStatementConfig(Properties properties) {
+        StatementConfig.StatementConfigBuilder statementConfigBuilder = StatementConfig.builder();
+        String statementLogLevel = (String) properties.get("neo4j.remote.statement.log");
         if (statementLogLevel != null) {
-            statementLogger = getEnumOption(LogStrategy.class, statementLogLevel);
+            statementConfigBuilder.statementLogger(getEnumOption(LogStrategy.class, statementLogLevel));
         }
+        String autoFlushThreshold = (String) properties.get("neo4j.remote.statement.autoFlushThreshold");
+        if (autoFlushThreshold != null) {
+            statementConfigBuilder.autoFlushThreshold(Integer.valueOf(autoFlushThreshold));
+        }
+        return statementConfigBuilder.build();
     }
 
     @Override
@@ -75,7 +89,7 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
     @Override
     public RemoteDatastoreSession createSession() {
         Session session = driver.session();
-        return new RemoteDatastoreSession(session, statementLogger);
+        return new RemoteDatastoreSession(session, statementConfig);
     }
 
     @Override

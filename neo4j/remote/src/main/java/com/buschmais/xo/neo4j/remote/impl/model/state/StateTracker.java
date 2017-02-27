@@ -24,8 +24,9 @@ public class StateTracker<T, C extends Collection<T>> {
 
     public void add(T t) {
         elements.add(t);
-        added.add(t);
-        removed.remove(t);
+        if (!removed.remove(t)) {
+            added.add(t);
+        }
     }
 
     public void addAll(C added) {
@@ -36,8 +37,9 @@ public class StateTracker<T, C extends Collection<T>> {
 
     public void remove(T t) {
         elements.remove(t);
-        removed.add(t);
-        added.remove(t);
+        if (!added.remove(t)) {
+            removed.add(t);
+        }
     }
 
     public void removeAll(C removed) {
@@ -63,4 +65,8 @@ public class StateTracker<T, C extends Collection<T>> {
         removed.clear();
     }
 
+    @Override
+    public String toString() {
+        return "StateTracker{" + "elements=" + elements + ", added=" + added + ", removed=" + removed + '}';
+    }
 }

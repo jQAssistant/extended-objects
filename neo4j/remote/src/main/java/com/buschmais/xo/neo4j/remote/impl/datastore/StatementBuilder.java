@@ -19,6 +19,7 @@ public class StatementBuilder {
     private Map<String, Object> parameters;
 
     private StringBuilder matchBuilder;
+    private StringBuilder optionalMatchBuilder;
     private StringBuilder whereBuilder;
     private StringBuilder createBuilder;
     private StringBuilder deleteBuilder;
@@ -36,6 +37,7 @@ public class StatementBuilder {
         entityIdentifiers = new HashMap<>();
         parameters = new HashMap<>();
         matchBuilder = new StringBuilder();
+        optionalMatchBuilder = new StringBuilder();
         whereBuilder = new StringBuilder();
         createBuilder = new StringBuilder();
         deleteBuilder = new StringBuilder();
@@ -62,6 +64,13 @@ public class StatementBuilder {
             separate(whereBuilder, " and ");
             whereBuilder.append(String.format("id(%s)={%s}", identifier, identifier));
         }
+        return identifier;
+    }
+
+    public String doOptionalMatch(String optionalMatchExpression, String prefix) {
+        String identifier = createIdentifier(prefix);
+        separate(optionalMatchBuilder, " ");
+        optionalMatchBuilder.append("OPTIONAL MATCH ").append(String.format(optionalMatchExpression, identifier));
         return identifier;
     }
 
@@ -103,6 +112,9 @@ public class StatementBuilder {
         if (matchBuilder.length() > 0) {
             statement.append("MATCH ").append(matchBuilder).append(" ");
         }
+        if (optionalMatchBuilder.length() > 0) {
+            statement.append(optionalMatchBuilder).append(" ");
+        }
         if (whereBuilder.length() > 0) {
             statement.append("WHERE ").append(whereBuilder).append(" ");
         }
@@ -127,18 +139,26 @@ public class StatementBuilder {
     public void execute() {
         if (!identifiers.isEmpty()) {
             doReturn("count(*) as count");
-            Record record = statementExecutor.getSingleResult(build(), parameters);
+            String statement = build();
+            Record record = statementExecutor.getSingleResult(statement, parameters);
             long count = record.get("count").asLong();
             if (count != 1) {
-                throw new XOException("Cannot flush properties.");
+                throw new XOException("Cannot flush statement '" + statement + "': " + parameters + ", count=" + count);
             }
         }
     }
 
-    public void autoFlush() {
-        if (identifiers.size() > 15) {
+    public <T> void flush(T element, FlushAction<T> flushAction) {
+        flushAction.execute(element);
+        if (identifiers.size() >= statementExecutor.getStatementConfig().getAutoFlushThreshold()) {
             execute();
             init();
+        }
+    }
+
+    public <T> void flushAll(Iterable<T> elements, FlushAction<T> flushAction) {
+        for (T element : elements) {
+            flush(element, flushAction);
         }
     }
 
@@ -159,4 +179,9 @@ public class StatementBuilder {
         }
     }
 
+    interface FlushAction<T> {
+
+        void execute(T t);
+
+    }
 }

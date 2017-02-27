@@ -26,7 +26,6 @@ import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
-import com.buschmais.xo.spi.logging.LogStrategy;
 import com.buschmais.xo.spi.reflection.ClassHelper;
 import com.buschmais.xo.spi.session.XOSession;
 
@@ -43,10 +42,10 @@ public class RemoteDatastoreSession implements Neo4jDatastoreSession<RemoteNode,
     private final Converter parameterConverter;
     private final Converter valueConverter;
 
-    public RemoteDatastoreSession(Session session, LogStrategy statementLogger) {
+    public RemoteDatastoreSession(Session session, StatementConfig statementConfig) {
         this.session = session;
         this.transaction = new RemoteDatastoreTransaction(session);
-        this.statementExecutor = new StatementExecutor(transaction, statementLogger);
+        this.statementExecutor = new StatementExecutor(transaction, statementConfig);
         this.datastoreSessionCache = new RemoteDatastoreSessionCache();
         this.parameterConverter = new Converter(Arrays.asList(new RemoteParameterConverter()));
         this.valueConverter = new Converter(Arrays.asList(new RemoteEntityConverter(datastoreSessionCache), new RemotePathConverter(datastoreSessionCache)));

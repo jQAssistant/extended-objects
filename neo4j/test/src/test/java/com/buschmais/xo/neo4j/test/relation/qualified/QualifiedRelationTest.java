@@ -132,6 +132,10 @@ public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
         B b1 = xoManager.create(B.class);
         a.setOneToOne(b1);
         assertThat(executeQuery("MATCH (a:A)-[:OneToOne]->(b:B) RETURN b").getColumn("b"), hasItem(b1));
+        B b2 = xoManager.create(B.class);
+        B b3 = xoManager.create(B.class);
+        a.setOneToOne(b2);
+        a.setOneToOne(b3);
         a.setOneToOne(null);
         assertThat(a.getOneToOne(), equalTo(null));
         xoManager.currentTransaction().commit();

@@ -207,9 +207,10 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     public void flush(Iterable<RemoteNode> entities) {
         StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
         for (RemoteNode entity : entities) {
-            flush(statementBuilder, entity);
-            flushLabels(statementBuilder, entity);
-            statementBuilder.autoFlush();
+            statementBuilder.flush(entity, t -> {
+                flush(statementBuilder, entity);
+                flushLabels(statementBuilder, entity);
+            });
             for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : entity.getState().getOutgoingRelationships().values()) {
                 flushAddedRelationships(statementBuilder, tracker.getAdded());
                 flushRemovedRelationships(statementBuilder, tracker.getRemoved());
@@ -236,16 +237,15 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     }
 
     private void flushAddedRelationships(StatementBuilder statementBuilder, Set<RemoteRelationship> addedRelationships) {
-        FlushAction<RemoteRelationship> flushAction = relationship -> {
+        statementBuilder.flushAll(addedRelationships, relationship -> {
             String startIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getStartNode(), "n");
             String endIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getEndNode(), "n");
             statementBuilder.doCreate(String.format("(%s)-[:%s]->(%s) ", startIdentifier, relationship.getType().getName(), endIdentifier));
-        };
-        flushRelationships(statementBuilder, addedRelationships, flushAction);
+        });
     }
 
     private void flushRemovedRelationships(StatementBuilder statementBuilder, Set<RemoteRelationship> removedRelationships) {
-        FlushAction<RemoteRelationship> flushAction = relationship -> {
+        statementBuilder.flushAll(removedRelationships, relationship -> {
             if (relationship.getId() < 0) {
                 String startIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getStartNode(), "n");
                 String endIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getEndNode(), "n");
@@ -255,22 +255,6 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
                 String identifier = statementBuilder.doMatchWhere("()-[%s]->()", relationship, "r");
                 statementBuilder.doDelete(identifier);
             }
-        };
-        flushRelationships(statementBuilder, removedRelationships, flushAction);
-    }
-
-    private void flushRelationships(StatementBuilder statementBuilder, Set<RemoteRelationship> relationships, FlushAction<RemoteRelationship> flushAction) {
-        if (!relationships.isEmpty()) {
-            for (RemoteRelationship relationship : relationships) {
-                flushAction.execute(relationship);
-                statementBuilder.autoFlush();
-            }
-        }
-    }
-
-    interface FlushAction<T> {
-
-        void execute(T t);
-
+        });
     }
 }
