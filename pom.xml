@@ -63,8 +63,8 @@
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
-        <jqassistant.version>1.2.0</jqassistant.version>
-        <jqassistant.plugin.version>1.2</jqassistant.plugin.version>
+        <jqassistant.version>1.3.0-SNAPSHOT</jqassistant.version>
+        <jqassistant.plugin.version>1.3-SNAPSHOT</jqassistant.plugin.version>
         <org.osgi_version>4.3.1</org.osgi_version>
 
     </properties>
@@ -489,7 +489,7 @@
                 </executions>
                 <configuration>
                     <failOnViolations>true</failOnViolations>
-                    <severity>info</severity>
+                    <severity>minor</severity>
                     <reportProperties>
                         <graphml.report.directory>${session.topLevelProject.build.directory}/graphml</graphml.report.directory>
                     </reportProperties>

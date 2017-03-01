@@ -1,0 +1,186 @@
+[[architecture:Default]]
+[role=group,includesConstraints="architecture:ComponentDependencyViolation,architecture:UnusedComponentDependencyDefinition"]
+== Architectural Rules
+
+This section describes rules regarding the architecture of eXtended Objects.
+
+=== Components
+
+The project is structured into several components which are represented by Maven modules.
+
+==== Framework
+
+The framework consists of the following components:
+
+.XO Framework Components
+[options="header"]
+|====
+| Module  | Description
+| xo.api  | Client API of eXtended Ojects
+| xo.spi  | Service provider interface which is implemented by datastores
+| xo.impl | Implementation of the API using the SPI
+|====
+
+[[architecture:Framework]]
+[source,cypher,role=concept,requiresConcepts="maven:MainArtifact",severity=critical]
+.Adds the label `Framework` and `Component` to the framework artifacts created by Maven.
+----
+MATCH
+   (frameworkComponent:Main:Artifact)
+WHERE
+  frameworkComponent.name in [
+    "xo.api",
+    "xo.spi",
+    "xo.impl"
+  ]
+SET
+  frameworkComponent:Framework:Component
+RETURN
+  frameworkComponent
+----
+
+[[architecture:FrameworkDependencyDefinition]]
+[source,cypher,role=concept,requiresConcepts="architecture:Framework",reportType=graphml]
+.Defines the allowed dependencies between the framework artifacts.
+----
+MATCH
+  (api:Framework:Component{name:"xo.api"}),
+  (spi:Framework:Component{name:"xo.spi"}),
+  (impl:Framework:Component{name:"xo.impl"})
+CREATE
+  (spi)-[d1:DEFINES_DEPENDENCY]->(api),
+  (impl)-[d2:DEFINES_DEPENDENCY]->(api),
+  (impl)-[d3:DEFINES_DEPENDENCY]->(spi)
+RETURN
+  *
+----
+
+==== Neo4j Datastore
+
+.XO Neo4j Datastore Components
+[options="header"]
+|====
+| Module  | Description
+| xo.neo4j.api      | Neo4j specific client API
+| xo.neo4j.spi      | Neo4j specific SPI which provides common abstractions
+| xo.neo4j.embedded | Datastore implementation for embedded Neo4j databases (local directory or in-memory)
+| xo.neo4j.remote   | Datastore implementation for remote Neo4j databases (connection via bolt protocol)
+|====
+
+[[architecture:Neo4jDatastore]]
+[source,cypher,role=concept,requiresConcepts="maven:MainArtifact",severity=critical]
+.Adds the labels `Datastore` and `Component` to the Neo4j datastore components created by Maven.
+----
+MATCH
+   (neo4jComponent:Main:Artifact)
+WHERE
+  neo4jComponent.name in [
+    "xo.neo4j.api",
+    "xo.neo4j.spi",
+    "xo.neo4j.embedded",
+    "xo.neo4j.remote"
+  ]
+SET
+  neo4jComponent:Datastore:Component
+RETURN
+  neo4jComponent
+----
+
+[[architecture:Neo4jDatastoreDependencyDefinition]]
+[source,cypher,role=concept,requiresConcepts="architecture:Framework,architecture:Neo4jDatastore",reportType=graphml]
+.Defines the allowed dependencies of the Neo4j datastore components
+----
+MATCH
+  (api:Framework:Component{name:"xo.api"}),
+  (spi:Framework:Component{name:"xo.spi"}),
+  (neo4jApi:Datastore:Component{name:"xo.neo4j.api"}),
+  (neo4jSpi:Datastore:Component{name:"xo.neo4j.spi"}),
+  (neo4jEmbedded:Datastore:Component{name:"xo.neo4j.embedded"}),
+  (neo4jRemote:Datastore:Component{name:"xo.neo4j.remote"})
+CREATE
+  (neo4jApi)-[d1:DEFINES_DEPENDENCY]->(api),
+  (neo4jApi)-[d2:DEFINES_DEPENDENCY]->(spi),
+  (neo4jSpi)-[d3:DEFINES_DEPENDENCY]->(api),
+  (neo4jSpi)-[d4:DEFINES_DEPENDENCY]->(spi),
+  (neo4jSpi)-[d5:DEFINES_DEPENDENCY]->(neo4jApi),
+  (neo4jEmbedded)-[d6:DEFINES_DEPENDENCY]->(api),
+  (neo4jEmbedded)-[d7:DEFINES_DEPENDENCY]->(spi),
+  (neo4jEmbedded)-[d8:DEFINES_DEPENDENCY]->(neo4jApi),
+  (neo4jEmbedded)-[d9:DEFINES_DEPENDENCY]->(neo4jSpi),
+  (neo4jRemote)-[d10:DEFINES_DEPENDENCY]->(api),
+  (neo4jRemote)-[d11:DEFINES_DEPENDENCY]->(spi),
+  (neo4jRemote)-[d12:DEFINES_DEPENDENCY]->(neo4jApi),
+  (neo4jRemote)-[d13:DEFINES_DEPENDENCY]->(neo4jSpi)
+RETURN
+  *
+----
+
+==== Defined Components And Dependencies
+
+[[architecture:ComponentDependencyDefinition]]
+[source,cypher,role=concept,requiresConcepts="architecture:FrameworkDependencyDefinition,architecture:Neo4jDatastoreDependencyDefinition",reportType=graphml]
+.Returns all defined components and their defined dependencies
+----
+MATCH
+  (component:Component)
+OPTIONAL MATCH
+  (component)-[d:DEFINES_DEPENDENCY]->(:Component)
+RETURN
+  *
+----
+
+[[architecture:ComponentDependencyViolation]]
+[source,cypher,role=constraint,requiresConcepts="architecture:ComponentDependencyDefinition",severity=critical]
+.There must be no dependencies between components that are not explicitly defined
+----
+MATCH
+  (component1:Component)-[:CONTAINS]->(type1:Type),
+  (component2:Component)-[:CONTAINS]->(type2:Type),
+  (type1)-[:DEPENDS_ON]->(type2)
+WHERE
+  component1 <> component2
+  and not (component1)-[:DEFINES_DEPENDENCY]->(component2)
+RETURN
+  component1, type1, component2, collect(type2)
+----
+
+[[architecture:UnusedComponentDependencyDefinition]]
+[source,cypher,role=constraint,requiresConcepts="architecture:ComponentDependencyDefinition",severity=info]
+.There must be no unused dependency definitions between components
+----
+MATCH
+  (component1:Component),
+  (component2:Component),
+  (component1)-[:DEFINES_DEPENDENCY]->(component2)
+WHERE
+  component1 <> component2
+  and not (component1)-[:CONTAINS]->(:Type)-[:DEPENDS_ON]->(:Type)<-[:CONTAINS]-(component2)
+RETURN
+  component1,component2
+----
+
+[[architecture:ComponentDependency.graphml]]
+[source,cypher,role=constraint,requiresConcepts="architecture:ComponentDependencyDefinition",reportType=graphml]
+.Creates a GraphML report about
+----
+MATCH
+  (component1:Component)-[:CONTAINS]->(type1:Type),
+  (component2:Component)-[:CONTAINS]->(type2:Type),
+  (type1)-[d:DEPENDS_ON]->(type2)
+WHERE
+  component1 <> component2
+  and not (component1)-[:DEFINES_DEPENDENCY]->(component2)
+RETURN
+  {
+    role : "graph",
+    parent: component1,
+    nodes: collect(type1),
+    relationships: collect(d)
+  } as Component1,
+  {
+    role : "graph",
+    parent: component2,
+    nodes: collect(type2)
+  } as Component2,
+----
+
