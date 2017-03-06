@@ -109,13 +109,13 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public void deleteEntity(RemoteNode remoteNode) {
-        StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
+        StatementBatchBuilder batchBuilder = new StatementBatchBuilder(statementExecutor);
         for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : remoteNode.getState().getOutgoingRelationships().values()) {
-            flushRemovedRelationships(statementBuilder, tracker.getRemoved());
+            flushRemovedRelationships(batchBuilder, tracker.getRemoved());
         }
-        String identifier = statementBuilder.doMatchWhere("(%s)", remoteNode, "n");
-        statementBuilder.doDelete(identifier);
-        statementBuilder.execute();
+        String statement = String.format("MATCH (n) WHERE id(n)=entry['n']");
+        batchBuilder.add(statement, parameters("n", remoteNode.getId()));
+        batchBuilder.execute();
     }
 
     @Override
@@ -205,56 +205,53 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public void flush(Iterable<RemoteNode> entities) {
-        StatementBuilder statementBuilder = new StatementBuilder(statementExecutor);
+        StatementBatchBuilder batchBuilder = new StatementBatchBuilder(statementExecutor);
         for (RemoteNode entity : entities) {
-            statementBuilder.flush(entity, t -> {
-                flush(statementBuilder, entity);
-                flushLabels(statementBuilder, entity);
-            });
+            flush(batchBuilder, entity, "(n)", "n");
+            flushLabels(batchBuilder, entity);
             for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : entity.getState().getOutgoingRelationships().values()) {
-                flushAddedRelationships(statementBuilder, tracker.getAdded());
-                flushRemovedRelationships(statementBuilder, tracker.getRemoved());
+                flushAddedRelationships(batchBuilder, tracker.getAdded());
+                flushRemovedRelationships(batchBuilder, tracker.getRemoved());
             }
             entity.getState().flush();
         }
-        statementBuilder.execute();
+        batchBuilder.execute();
     }
 
-    private void flushLabels(StatementBuilder statementBuilder, RemoteNode node) {
+    private void flushLabels(StatementBatchBuilder batchBuilder, RemoteNode node) {
         StateTracker<RemoteLabel, Set<RemoteLabel>> labels = node.getState().getLabels();
         Set<RemoteLabel> added = labels.getAdded();
         if (!added.isEmpty()) {
-            String identifier = statementBuilder.doMatchWhere("(%s)", node, "n");
             StringBuilder addedLabelsExpression = getLabelExpression(added);
-            statementBuilder.doSet(String.format("%s%s", identifier, addedLabelsExpression));
+            String statement = "MATCH (n) WHERE id(n)=entry['n'] SET n" + addedLabelsExpression;
+            batchBuilder.add(statement, parameters("n", node.getId()));
         }
         Set<RemoteLabel> removed = labels.getRemoved();
         if (!removed.isEmpty()) {
-            String identifier = statementBuilder.doMatchWhere("(%s)", node, "n");
             StringBuilder removedLabelsExpression = getLabelExpression(removed);
-            statementBuilder.doRemove(String.format("%s%s", identifier, removedLabelsExpression));
+            String statement = "MATCH (n) WHERE id(n)=entry['n'] REMOVE n" + removedLabelsExpression;
+            batchBuilder.add(statement, parameters("n", node.getId()));
         }
     }
 
-    private void flushAddedRelationships(StatementBuilder statementBuilder, Set<RemoteRelationship> addedRelationships) {
-        statementBuilder.flushAll(addedRelationships, relationship -> {
-            String startIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getStartNode(), "n");
-            String endIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getEndNode(), "n");
-            statementBuilder.doCreate(String.format("(%s)-[:%s]->(%s) ", startIdentifier, relationship.getType().getName(), endIdentifier));
-        });
+    private void flushAddedRelationships(StatementBatchBuilder batchBuilder, Set<RemoteRelationship> addedRelationships) {
+        for (RemoteRelationship addedRelationship : addedRelationships) {
+            String statement = "MATCH (start),(end) WHERE id(start)=entry['start'] AND id(end)=entry['end'] CREATE (start)-[:"
+                    + addedRelationship.getType().getName() + "]->(end)";
+            batchBuilder.add(statement, parameters("start", addedRelationship.getStartNode().getId(), "end", addedRelationship.getEndNode().getId()));
+        }
     }
 
-    private void flushRemovedRelationships(StatementBuilder statementBuilder, Set<RemoteRelationship> removedRelationships) {
-        statementBuilder.flushAll(removedRelationships, relationship -> {
-            if (relationship.getId() < 0) {
-                String startIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getStartNode(), "n");
-                String endIdentifier = statementBuilder.doMatchWhere("(%s)", relationship.getEndNode(), "n");
-                String identifier = statementBuilder.doMatch("(" + startIdentifier + ")-[%s]" + "->(" + endIdentifier + ")", "r");
-                statementBuilder.doDelete(identifier);
+    private void flushRemovedRelationships(StatementBatchBuilder batchBuilder, Set<RemoteRelationship> removedRelationships) {
+        for (RemoteRelationship removedRelationship : removedRelationships) {
+            if (removedRelationship.getId() < 0) {
+                String statement = "MATCH (start)-[r:" + removedRelationship.getType().getName()
+                        + "]->(end) WHERE id(start)=entry['start'] AND id(end)=entry['end'] DELETE r";
+                batchBuilder.add(statement, parameters("start", removedRelationship.getStartNode().getId(), "end", removedRelationship.getEndNode().getId()));
             } else {
-                String identifier = statementBuilder.doMatchWhere("()-[%s]->()", relationship, "r");
-                statementBuilder.doDelete(identifier);
+                String statement = "MATCH ()-[r]->() WHERE id(r)=entry['r'] DELETE r";
+                batchBuilder.add(statement, parameters("r", removedRelationship.getId()));
             }
-        });
+        }
     }
 }

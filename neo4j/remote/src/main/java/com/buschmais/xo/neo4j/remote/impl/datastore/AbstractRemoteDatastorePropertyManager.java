@@ -1,5 +1,7 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
+import static org.neo4j.driver.v1.Values.parameters;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,17 +59,14 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
         return value;
     }
 
-    protected void flush(StatementBuilder statementBuilder, T entity) {
+    protected void flush(StatementBatchBuilder batchBuilder, T entity, String pattern, String identifier) {
         AbstractPropertyContainerState state = entity.getState();
         Map<String, Object> writeCache = state.getWriteCache();
         if (writeCache != null && !writeCache.isEmpty()) {
-            String identifier = statementBuilder.doMatchWhere(getIdentifierPattern(), entity, getEntityPrefix());
-            String propsIdentifier = "_" + identifier;
-            statementBuilder.doSet(String.format("%s+={%s}", identifier, propsIdentifier));
-            statementBuilder.parameter(propsIdentifier, writeCache);
+            String statement = "MATCH " + pattern + "WHERE id(" + identifier +")=entry['id'] SET " + identifier + "+=entry['" + identifier + "']";
+            batchBuilder.add(statement, parameters("id", entity.getId(), identifier, writeCache));
         }
     }
-
 
     @Override
     public final void clear(Iterable<T> entities) {
