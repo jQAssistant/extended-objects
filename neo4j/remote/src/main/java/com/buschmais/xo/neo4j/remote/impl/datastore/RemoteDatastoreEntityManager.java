@@ -113,7 +113,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : remoteNode.getState().getOutgoingRelationships().values()) {
             flushRemovedRelationships(batchBuilder, tracker.getRemoved());
         }
-        String statement = String.format("MATCH (n) WHERE id(n)=entry['n']");
+        String statement = "MATCH (n) WHERE id(n)=entry['n'] DELETE n";
         batchBuilder.add(statement, parameters("n", remoteNode.getId()));
         batchBuilder.execute();
     }
@@ -166,16 +166,6 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     public void removeDiscriminators(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> removedTypes, RemoteNode remoteNode,
             Set<RemoteLabel> remoteLabels) {
         remoteNode.getState().getLabels().removeAll(remoteLabels);
-    }
-
-    @Override
-    protected String getIdentifierPattern() {
-        return "(%s)";
-    }
-
-    @Override
-    protected String getEntityPrefix() {
-        return "n";
     }
 
     @Override

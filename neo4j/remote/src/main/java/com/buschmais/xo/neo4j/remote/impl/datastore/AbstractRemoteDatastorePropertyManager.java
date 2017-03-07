@@ -90,10 +90,6 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
         return properties;
     }
 
-    protected abstract String getIdentifierPattern();
-
-    protected abstract String getEntityPrefix();
-
     protected abstract Entity load(T entity);
 
 }

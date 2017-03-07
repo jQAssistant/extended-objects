@@ -155,16 +155,6 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     }
 
     @Override
-    protected String getIdentifierPattern() {
-        return "()-[%s]->()";
-    }
-
-    @Override
-    protected String getEntityPrefix() {
-        return "r";
-    }
-
-    @Override
     protected Relationship load(RemoteRelationship entity) {
         return fetch(entity.getId());
     }
