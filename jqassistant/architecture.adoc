@@ -6,7 +6,15 @@ This section describes rules regarding the architecture of eXtended Objects.
 
 === Components
 
-The project is structured into several components which are represented by Maven modules.
+The project is structured into several components which are represented by Maven modules. There are two main types of
+components:
+
+Framework::
+  The framework represents the datastore agnostic part. It's reponsibility is the implementation of the client API, lifecycle
+  management of instances including caching and triggering actions (CRUD) against the datastore interface (SPI).
+Datastore::
+  A datastore is an implementation against a concrete technology, e.g. a Neo4j graph database. The main responsibility is
+  the execution of the CRUD operations enforced by the datastore interface.
 
 ==== Framework
 
@@ -39,6 +47,8 @@ RETURN
   frameworkComponent
 ----
 
+The dependencies between the framework components are defined as follows:
+
 [[architecture:FrameworkDependencyDefinition]]
 [source,cypher,role=concept,requiresConcepts="architecture:Framework",reportType=graphml]
 .Defines the allowed dependencies between the framework artifacts.
@@ -57,6 +67,8 @@ RETURN
 
 ==== Neo4j Datastore
 
+The Neo4j datastore consists of the following components:
+
 .XO Neo4j Datastore Components
 [options="header"]
 |====
@@ -66,6 +78,8 @@ RETURN
 | xo.neo4j.embedded | Datastore implementation for embedded Neo4j databases (local directory or in-memory)
 | xo.neo4j.remote   | Datastore implementation for remote Neo4j databases (connection via bolt protocol)
 |====
+
+The following dependencies are defined:
 
 [[architecture:Neo4jDatastore]]
 [source,cypher,role=concept,requiresConcepts="maven:MainArtifact",severity=critical]
