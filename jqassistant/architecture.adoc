@@ -9,12 +9,13 @@ This section describes rules regarding the architecture of eXtended Objects.
 The project is structured into several components which are represented by Maven modules. There are two main types of
 components:
 
-Framework::
-  The framework represents the datastore agnostic part. It's reponsibility is the implementation of the client API, lifecycle
-  management of instances including caching and triggering actions (CRUD) against the datastore interface (SPI).
-Datastore::
-  A datastore is an implementation against a concrete technology, e.g. a Neo4j graph database. The main responsibility is
-  the execution of the CRUD operations enforced by the datastore interface.
+==== Framework
+The framework represents the datastore agnostic part. It's reponsibility is the implementation of the client API, lifecycle
+management of instances including caching and triggering actions (CRUD) against the datastore interface (SPI).
+
+==== Datastore
+A datastore is an implementation against a concrete technology, e.g. a Neo4j graph database. The main responsibility is
+the execution of the CRUD operations enforced by the datastore interface.
 
 ==== Framework
 

@@ -80,7 +80,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java8.build.outputDirectory>${project.build.directory}/classes-java8</java8.build.outputDirectory>
         <github.global.server>github</github.global.server>
-        <org_asciidoctor.version>1.5.3</org_asciidoctor.version>
+        <org.asciidoctor.maven_version>1.5.3</org.asciidoctor.maven_version>
+        <org.asciidoctor_version>1.5.4.1</org.asciidoctor_version>
         <org.neo4j_version>3.1.1</org.neo4j_version>
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
@@ -254,7 +255,7 @@
                 <plugin>
                     <groupId>org.asciidoctor</groupId>
                     <artifactId>asciidoctor-maven-plugin</artifactId>
-                    <version>${org_asciidoctor.version}</version>
+                    <version>${org.asciidoctor.maven_version}</version>
                     <configuration>
                         <backend>html5</backend>
                         <attributes>
@@ -271,6 +272,13 @@
                             </goals>
                         </execution>
                     </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.asciidoctor</groupId>
+                            <artifactId>asciidoctorj</artifactId>
+                            <version>${org.asciidoctor_version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -285,7 +293,7 @@
                         <dependency>
                             <groupId>org.asciidoctor</groupId>
                             <artifactId>asciidoctor-maven-plugin</artifactId>
-                            <version>${org_asciidoctor.version}</version>
+                            <version>${org.asciidoctor_version}</version>
                         </dependency>
                     </dependencies>
                     <configuration>
