@@ -2,14 +2,14 @@
 
 == Build
 
-The following rule groups are executed during a build:
+The following rules are executed during a build:
 
 [[default]]
-[role=group,includesGroups="naming:Default,maven:Default,architecture:Default"]
+[role=group,includesGroups="architecture:Default",naming:Default,maven:Default]
+- <<architecture:Default>>
 - <<naming:Default>>
 - <<maven:Default>>
-- <<architecture:Default>>
 
+include::architecture.adoc[]
 include::naming.adoc[]
 include::maven.adoc[]
-include::architecture.adoc[]

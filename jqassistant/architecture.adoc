@@ -12,7 +12,7 @@ components: <<Framework>> and <<Datastore>>.
 [[Framework]]
 ==== Framework
 
-The framework represents the datastore agnostic part. It's reponsibility is the implementation of the client API, lifecycle
+The framework represents the datastore agnostic part. Its reponsibility is the implementation of the client API, lifecycle
 management of instances including caching and triggering actions (CRUD) against the datastore interface (SPI).
 
 The framework consists of the following components:
@@ -20,10 +20,23 @@ The framework consists of the following components:
 .XO Framework Components
 [options="header"]
 |====
-| Module  | Description
-| xo.api  | Client API of eXtended Ojects
-| xo.spi  | Service provider interface which is implemented by datastores
-| xo.impl | Implementation of the API using the SPI
+| Component | Description
+| xo.api    | Client API of eXtended Ojects which is used by applications.
+| xo.spi    | Service provider interface (SPI) which is implemented by datastores
+| xo.impl   | Implementation of the API using the SPI
+|====
+
+The components are split up into different artifacts and built with Maven as JAR files.
+Applications or datastore implementations are encouraged to use only the required dependencies in
+appropriate scopes:
+
+.XO Framework Components
+[options="header"]
+|====
+| Component | Application Dependency | Datastore Dependency
+| xo.api    | compile                | compile (implicitly available via xo.spi)
+| xo.spi    |                        | compile
+| xo.impl   | runtime                |
 |====
 
 [[architecture:Framework]]
@@ -66,7 +79,7 @@ RETURN
 ==== Datastore
 
 A datastore is an implementation against a concrete technology, e.g. a Neo4j graph database. The main responsibility is
-the execution of the CRUD operations enforced by the datastore interface.
+the execution of CRUD operations which are enforced by the datastore interface defined by the SPI.
 
 ===== Neo4j Datastore
 
@@ -81,8 +94,6 @@ The Neo4j datastore consists of the following components:
 | xo.neo4j.embedded | Datastore implementation for embedded Neo4j databases (local directory or in-memory)
 | xo.neo4j.remote   | Datastore implementation for remote Neo4j databases (connection via bolt protocol)
 |====
-
-The following dependencies are defined:
 
 [[architecture:Neo4jDatastore]]
 [source,cypher,role=concept,requiresConcepts="maven:MainArtifact",severity=critical]
@@ -102,6 +113,8 @@ SET
 RETURN
   neo4jComponent
 ----
+
+The following dependencies are defined for the Neo4j datastore:
 
 [[architecture:Neo4jDatastoreDependencyDefinition]]
 [source,cypher,role=concept,requiresConcepts="architecture:Framework,architecture:Neo4jDatastore",reportType=graphml]
@@ -175,3 +188,4 @@ WHERE
 RETURN
   component1,component2
 ----
+
