@@ -537,6 +537,15 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <sourceDirectory>${project.basedir}/jqassistant</sourceDirectory>
+                    <sourceDocumentName>index.adoc</sourceDocumentName>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

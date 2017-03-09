@@ -60,6 +60,7 @@
         <module>embedded</module>
         <module>remote</module>
         <module>test</module>
+        <module>doc</module>
     </modules>
 
 </project>

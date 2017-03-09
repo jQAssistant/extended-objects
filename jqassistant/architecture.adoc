@@ -7,17 +7,13 @@ This section describes rules regarding the architecture of eXtended Objects.
 === Components
 
 The project is structured into several components which are represented by Maven modules. There are two main types of
-components:
+components: <<Framework>> and <<Datastore>>.
 
+[[Framework]]
 ==== Framework
+
 The framework represents the datastore agnostic part. It's reponsibility is the implementation of the client API, lifecycle
 management of instances including caching and triggering actions (CRUD) against the datastore interface (SPI).
-
-==== Datastore
-A datastore is an implementation against a concrete technology, e.g. a Neo4j graph database. The main responsibility is
-the execution of the CRUD operations enforced by the datastore interface.
-
-==== Framework
 
 The framework consists of the following components:
 
@@ -66,7 +62,13 @@ RETURN
   *
 ----
 
-==== Neo4j Datastore
+[[Datastore]]
+==== Datastore
+
+A datastore is an implementation against a concrete technology, e.g. a Neo4j graph database. The main responsibility is
+the execution of the CRUD operations enforced by the datastore interface.
+
+===== Neo4j Datastore
 
 The Neo4j datastore consists of the following components:
 
@@ -130,7 +132,7 @@ RETURN
   *
 ----
 
-==== Defined Components And Dependencies
+==== Component Dependencies
 
 [[architecture:ComponentDependencyDefinition]]
 [source,cypher,role=concept,requiresConcepts="architecture:FrameworkDependencyDefinition,architecture:Neo4jDatastoreDependencyDefinition",reportType=graphml]
@@ -173,29 +175,3 @@ WHERE
 RETURN
   component1,component2
 ----
-
-[[architecture:ComponentDependency.graphml]]
-[source,cypher,role=constraint,requiresConcepts="architecture:ComponentDependencyDefinition",reportType=graphml]
-.Creates a GraphML report about
-----
-MATCH
-  (component1:Component)-[:CONTAINS]->(type1:Type),
-  (component2:Component)-[:CONTAINS]->(type2:Type),
-  (type1)-[d:DEPENDS_ON]->(type2)
-WHERE
-  component1 <> component2
-  and not (component1)-[:DEFINES_DEPENDENCY]->(component2)
-RETURN
-  {
-    role : "graph",
-    parent: component1,
-    nodes: collect(type1),
-    relationships: collect(d)
-  } as Component1,
-  {
-    role : "graph",
-    parent: component2,
-    nodes: collect(type2)
-  } as Component2,
-----
-
