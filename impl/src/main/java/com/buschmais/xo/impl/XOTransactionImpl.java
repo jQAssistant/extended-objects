@@ -1,9 +1,12 @@
 package com.buschmais.xo.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+
+import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOTransaction;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
-
-import java.util.*;
 
 public class XOTransactionImpl implements XOTransaction {
 
@@ -12,17 +15,23 @@ public class XOTransactionImpl implements XOTransaction {
     private final Collection<Synchronization> defaultSynchronizations = new LinkedList<>();
     private final Collection<Synchronization> synchronizations = new LinkedList<>();
 
+    private boolean rollbackOnly;
+
     public XOTransactionImpl(DatastoreTransaction datastoreTransaction) {
         this.datastoreTransaction = datastoreTransaction;
     }
 
     @Override
-    public void begin() {
+    public XOTransaction begin() {
         datastoreTransaction.begin();
+        return this;
     }
 
     @Override
     public void commit() {
+        if (rollbackOnly) {
+            throw new XOException("Transaction is marked as rollback only.");
+        }
         beforeCompletion();
         boolean committed = false;
         try {
@@ -39,12 +48,23 @@ public class XOTransactionImpl implements XOTransaction {
             datastoreTransaction.rollback();
         } finally {
             afterCompletion(false);
+            rollbackOnly = false;
         }
     }
 
     @Override
     public boolean isActive() {
         return datastoreTransaction.isActive();
+    }
+
+    @Override
+    public void setRollbackOnly() {
+        rollbackOnly = true;
+    }
+
+    @Override
+    public boolean isRollbackOnly() {
+        return rollbackOnly;
     }
 
     @Override
@@ -62,21 +82,11 @@ public class XOTransactionImpl implements XOTransaction {
     }
 
     private void beforeCompletion() {
-        executeSynchronizations(new SynchronizationOperation() {
-            @Override
-            public void run(Synchronization synchronization) {
-                synchronization.beforeCompletion();
-            }
-        });
+        executeSynchronizations(synchronization -> synchronization.beforeCompletion());
     }
 
     private void afterCompletion(final boolean committed) {
-        executeSynchronizations(new SynchronizationOperation() {
-            @Override
-            public void run(Synchronization synchronization) {
-                synchronization.afterCompletion(committed);
-            }
-        });
+        executeSynchronizations(synchronization -> synchronization.afterCompletion(committed));
         synchronizations.clear();
     }
 
@@ -86,6 +96,15 @@ public class XOTransactionImpl implements XOTransaction {
         }
         for (Synchronization synchronization : new ArrayList<>(synchronizations)) {
             operation.run(synchronization);
+        }
+    }
+
+    @Override
+    public void close() {
+        if (rollbackOnly) {
+            rollback();
+        } else {
+            commit();
         }
     }
 
