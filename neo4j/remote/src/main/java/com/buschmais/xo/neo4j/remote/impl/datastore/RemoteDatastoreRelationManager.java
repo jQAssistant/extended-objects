@@ -62,9 +62,9 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
         default:
             throw new XOException("Unsupported direction " + direction);
         }
+        Map<String, Object> properties = getProperties(exampleEntity);
         RemoteRelationship relationship;
         if (metadata.isTyped()) {
-            Map<String, Object> properties = getProperties(exampleEntity);
             Record record;
             if (properties.isEmpty()) {
                 String statement = String.format(
@@ -87,7 +87,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
             }
         } else {
             long id = idSequence--;
-            relationship = datastoreSessionCache.getRelationship(id, start, type, end, new RelationshipState(Collections.emptyMap()));
+            relationship = datastoreSessionCache.getRelationship(id, start, type, end, new RelationshipState(properties));
             // Always flush relation to outgoing relationships to make sure
             // they're flushed
             StateTracker<RemoteRelationship, Set<RemoteRelationship>> outgoingRelationships = getRelationships(start, type, RemoteDirection.OUTGOING);

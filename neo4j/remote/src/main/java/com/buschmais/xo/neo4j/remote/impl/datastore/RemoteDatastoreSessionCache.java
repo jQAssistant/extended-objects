@@ -23,6 +23,10 @@ public class RemoteDatastoreSessionCache {
 
     private Cache<Long, RemoteRelationship> relationshipCache = CacheBuilder.newBuilder().weakValues().build();
 
+    public RemoteRelationship getRelationship(Long id) {
+        return relationshipCache.getIfPresent(id);
+    }
+
     public RemoteNode getNode(long id) {
         return getNode(id, new NodeState());
     }
@@ -83,4 +87,5 @@ public class RemoteDatastoreSessionCache {
         }
         return remoteRelationship;
     }
+
 }

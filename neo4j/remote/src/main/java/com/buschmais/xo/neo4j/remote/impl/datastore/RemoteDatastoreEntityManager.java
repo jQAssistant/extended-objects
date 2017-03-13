@@ -13,6 +13,7 @@ import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.model.*;
 import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
+import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.StateTracker;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
@@ -113,7 +114,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : remoteNode.getState().getOutgoingRelationships().values()) {
             flushRemovedRelationships(batchBuilder, tracker.getRemoved());
         }
-        String statement = "MATCH (n) WHERE id(n)=entry['n'] DELETE n";
+        String statement = "MATCH (n) WHERE id(n)=entry['n'] DELETE n RETURN collect(id(n))";
         batchBuilder.add(statement, parameters("n", remoteNode.getId()));
         batchBuilder.execute();
     }
@@ -213,22 +214,47 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         Set<RemoteLabel> added = labels.getAdded();
         if (!added.isEmpty()) {
             StringBuilder addedLabelsExpression = getLabelExpression(added);
-            String statement = "MATCH (n) WHERE id(n)=entry['n'] SET n" + addedLabelsExpression;
+            String statement = "MATCH (n) WHERE id(n)=entry['n'] SET n" + addedLabelsExpression + " RETURN collect(id(n))";
             batchBuilder.add(statement, parameters("n", node.getId()));
         }
         Set<RemoteLabel> removed = labels.getRemoved();
         if (!removed.isEmpty()) {
             StringBuilder removedLabelsExpression = getLabelExpression(removed);
-            String statement = "MATCH (n) WHERE id(n)=entry['n'] REMOVE n" + removedLabelsExpression;
+            String statement = "MATCH (n) WHERE id(n)=entry['n'] REMOVE n" + removedLabelsExpression + " RETURN collect(id(n))";
             batchBuilder.add(statement, parameters("n", node.getId()));
         }
     }
 
     private void flushAddedRelationships(StatementBatchBuilder batchBuilder, Set<RemoteRelationship> addedRelationships) {
         for (RemoteRelationship addedRelationship : addedRelationships) {
-            String statement = "MATCH (start),(end) WHERE id(start)=entry['start'] AND id(end)=entry['end'] CREATE (start)-[:"
-                    + addedRelationship.getType().getName() + "]->(end)";
-            batchBuilder.add(statement, parameters("start", addedRelationship.getStartNode().getId(), "end", addedRelationship.getEndNode().getId()));
+            String statement = "MATCH (start),(end) WHERE id(start)=entry['start'] AND id(end)=entry['end'] CREATE (start)-[r:"
+                    + addedRelationship.getType().getName() + "]->(end) SET r=entry['r'] RETURN collect({oldId:entry['id'], newId:id(r)}) as relations";
+            batchBuilder.add(statement, parameters("start", addedRelationship.getStartNode().getId(), "id", addedRelationship.getId(), "r",
+                    addedRelationship.getProperties(), "end", addedRelationship.getEndNode().getId()), result -> {
+                        List<Object> relations = result.get("relations").asList();
+                        for (Object relation : relations) {
+                            Map<String, Object> r = (Map<String, Object>) relation;
+                            Long oldId = (Long) r.get("oldId");
+                            Long newId = (Long) r.get("newId");
+                            RemoteRelationship oldRelationship = datastoreSessionCache.getRelationship(oldId);
+                            RemoteNode startNode = oldRelationship.getStartNode();
+                            RemoteNode endNode = oldRelationship.getEndNode();
+                            RemoteRelationshipType type = oldRelationship.getType();
+                            RelationshipState state = oldRelationship.getState();
+                            RemoteRelationship newRelationship = datastoreSessionCache.getRelationship(newId, startNode, type, endNode, state);
+                            replaceRelationship(startNode, oldRelationship, newRelationship, RemoteDirection.OUTGOING);
+                            replaceRelationship(endNode, oldRelationship, newRelationship, RemoteDirection.INCOMING);
+                        }
+                    });
+        }
+    }
+
+    private void replaceRelationship(RemoteNode node, RemoteRelationship oldRelationship, RemoteRelationship newRelationship, RemoteDirection direction) {
+        StateTracker<RemoteRelationship, Set<RemoteRelationship>> relationships = node.getState().getRelationships(direction, oldRelationship.getType());
+        if (relationships != null) {
+            Set<RemoteRelationship> oldIncomingRelationships = relationships.getElements();
+            oldIncomingRelationships.remove(oldRelationship);
+            oldIncomingRelationships.add(newRelationship);
         }
     }
 
@@ -236,10 +262,10 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         for (RemoteRelationship removedRelationship : removedRelationships) {
             if (removedRelationship.getId() < 0) {
                 String statement = "MATCH (start)-[r:" + removedRelationship.getType().getName()
-                        + "]->(end) WHERE id(start)=entry['start'] AND id(end)=entry['end'] DELETE r";
+                        + "]->(end) WHERE id(start)=entry['start'] AND id(end)=entry['end'] DELETE r RETURN collect(id(r))";
                 batchBuilder.add(statement, parameters("start", removedRelationship.getStartNode().getId(), "end", removedRelationship.getEndNode().getId()));
             } else {
-                String statement = "MATCH ()-[r]->() WHERE id(r)=entry['r'] DELETE r";
+                String statement = "MATCH ()-[r]->() WHERE id(r)=entry['r'] DELETE r RETURN collect(id(r))";
                 batchBuilder.add(statement, parameters("r", removedRelationship.getId()));
             }
         }

@@ -63,7 +63,8 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
         AbstractPropertyContainerState state = entity.getState();
         Map<String, Object> writeCache = state.getWriteCache();
         if (writeCache != null && !writeCache.isEmpty()) {
-            String statement = "MATCH " + pattern + "WHERE id(" + identifier +")=entry['id'] SET " + identifier + "+=entry['" + identifier + "']";
+            String statement = "MATCH " + pattern + "WHERE id(" + identifier + ")=entry['id'] SET " + identifier + "+=entry['" + identifier
+                    + "'] RETURN collect(id(" + identifier + "))";
             batchBuilder.add(statement, parameters("id", entity.getId(), identifier, writeCache));
         }
     }
@@ -83,7 +84,7 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
     }
 
     protected Map<String, Object> getProperties(Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
-        Map<String, Object> properties = new HashMap<>();
+        Map<String, Object> properties = new HashMap<>(exampleEntity.size());
         for (Map.Entry<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entry : exampleEntity.entrySet()) {
             properties.put(entry.getKey().getDatastoreMetadata().getName(), entry.getValue());
         }
