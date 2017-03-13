@@ -51,30 +51,7 @@ The Neo4j datastore for eXtended Objects is available from Maven Central and can
 [source,xml]
 .pom.xml
 ----
-<project ...>
-    ...
-
-    <properties>
-        <com.buschmais.xo_version></com.buschmais.xo_version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <!-- For using an embedded Neo4j instance -->
-            <groupId>com.buschmais.xo</groupId>
-            <artifactId>xo.neo4j.embedded</artifactId>
-            <version>${com.buschmais.xo_version}</version>
-        </dependency>
-        <dependency>
-            <!-- For using a remote Neo4j instance -->
-            <groupId>com.buschmais.xo</groupId>
-            <artifactId>xo.neo4j.remote</artifactId>
-            <version>${com.buschmais.xo_version}</version>
-        </dependency>
-    </dependencies>
-
-    ...
-</project>
+include::{basedir}/pom.xml[tags=Dependencies,indent=0]
 ----
 
 == Bootstrapping
@@ -84,7 +61,7 @@ For a XOManagerFactory to be constructed a so called XO unit must be defined. Th
 - Using a descriptor META-INF/xo.xml
 - By using an instance of the class "com.buschmais.xo.XOUnit"
 
-=== XML Descriptor
+=== XOUnit via XML
 
 An XO descriptor is a XML file located as classpath resource under "/META-INF/xo.xml" and defines one or more XO units.
 Each must be uniquely identified by a name. This is similar to the persistence unit approach defined by the Java Persistence
@@ -93,39 +70,13 @@ API (JPA). The following snippet shows a minimum setups
 [source,xml]
 .META-INF/xo.xml (embedded database)
 ----
-<v1:xo version="1.0" xmlns:v1="http://buschmais.com/xo/schema/v1.0">
-    <xo-unit name="movies">
-        <url>file://databases/movies</url>
-        <provider>com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider</provider>
-        <types>
-            <type>com.buschmais.xo.example.movies.composite.Movie</type>
-            <type>com.buschmais.xo.example.movies.composite.Person</type>
-            <type>com.buschmais.xo.example.movies.composite.Actor</type>
-            <type>com.buschmais.xo.example.movies.composite.Directory</type>
-        </types>
-    </xo-unit>
-</v1:xo>
+include::{basedir}/src/test/resources/embedded/META-INF/xo.xml[]
 ----
 
 [source,xml]
 .META-INF/xo.xml (remote database)
 ----
-<v1:xo version="1.0" xmlns:v1="http://buschmais.com/xo/schema/v1.0">
-    <xo-unit name="movies">
-        <url>bolt://localhost:7687</url>
-        <provider>com.buschmais.xo.neo4j.embedded.api.RemoteNeo4jXOProvider</provider>
-        <types>
-            <type>com.buschmais.xo.example.movies.composite.Movie</type>
-            <type>com.buschmais.xo.example.movies.composite.Person</type>
-            <type>com.buschmais.xo.example.movies.composite.Actor</type>
-            <type>com.buschmais.xo.example.movies.composite.Directory</type>
-        </types>
-        <properties>
-            <property name="neo4j.remote.username" value="neo4j"/>
-            <property name="neo4j.remote.password" value="secret"/>
-        </properties>
-    </xo-unit>
-</v1:xo>
+include::{basedir}/src/test/resources/remote/META-INF/xo.xml[]
 ----
 
 NOTE: Support for remote databases is experimental.
@@ -145,40 +96,17 @@ types::
 An XOManagerFactory instance can now be obtained as demonstrated in the following snippet:
 
 [source,java]
-.Main.java
 ----
-public class Main {
-
-  public static void main(String[] args) {
-    XOManagerFactory xmf = XO.createXOManagerFactory("movies");
-    ...
-    xmf.close();
-  }
-
-}
+include::{srcBaseDir}/bootstrap/BootstrapTest.java[tags=BootstrapXml,indent=0]
 ----
 
-=== XOUnit And XOUnitBuilder
+=== XOUnit via XOUnitBuilder
 
 It is also possible to create a XOManagerFactory using an instance of the class 'com.buschmais.xo.api.XOUnit':
 
 [source,java]
-.Main.java
 ----
-public class Main {
-
-  public static void main(String[] args) {
-    XOUnit xoUnit = XOUnitBuilder.create(
-      "file://target/movies", // datastore url
-       Neo4jXOProvider.class, // datastore provider
-       Movie.class, Person.class, Actor.class, Directory.class // persistent interface types
-    ).create();
-    XOManagerFactory xmf = XO.createXOManagerFactory(xoUnit);
-    ...
-    xmf.close();
-  }
-
-}
+include::{srcBaseDir}/bootstrap/BootstrapTest.java[tags=BootstrapJava,indent=0]
 ----
 
 Note: The class XOUnitBuilder provides a fluent interface for the parameters which may be specified for an XO unit.
@@ -205,13 +133,7 @@ which is annotated with @Label.
 [source,java]
 .Person.java
 ----
-@Label
-public interface Person {
-
-String getName();
-void String setName(String name);
-
-}
+include::{srcBaseDir}/label/Person.java[tags=Class,indent=0]
 ----
 
 The name of the label defaults to the name of the interface, in this case 'Person'. A specific value can be enforced by adding a
@@ -224,14 +146,7 @@ following example demonstrates explicit mappings for a label and a property:
 [source,java]
 .Person.java
 ----
-@Label("MyPerson")
-public interface Person {
-
-  @Property("myName")
-  String getName();
-  void String setName(String name);
-
-}
+include::{srcBaseDir}/label/explicit/Person.java[tags=Class,indent=0]
 ----
 
 The mapping of relations will be covered later.
@@ -243,9 +158,7 @@ A labeled type can extend from one or more labeled types.
 [source,java]
 .Actor.java
 ----
-@Label
-public interface Actor extends Person {
-}
+include::{srcBaseDir}/label/Actor.java[tags=Class,indent=0]
 ----
 
 In this case a node created using the type Actor would be labeled with both 'Person' and 'Actor'. This way of combining types is referred to
@@ -261,20 +174,13 @@ property name of the labeled type Person is extracted to a template type:
 [source,java]
 .Named.java
 ----
-public interface Named {
-
-  String getName();
-  void setName(String name);
-
-}
+include::{srcBaseDir}/template/Named.java[tags=Class,indent=0]
 ----
 
 [source,java]
 .Person.java
 ----
-@Label
-public interface Person extends Named {
-}
+include::{srcBaseDir}/template/Person.java[tags=Class,indent=0]
 ----
 
 === Relations
@@ -285,24 +191,13 @@ references another labeled type or a collection thereof.
 [source,java]
 .Movie.java
 ----
-@Label
-public interface Movie {
-
-  String getTitle();
-  void setTitle();
-
-}
+include::{srcBaseDir}/relation/unidirectional/Movie.java[tags=Class,indent=0]
 ----
 
 [source,java]
 .Actor.java
 ----
-@Label
-public interface Actor extends Person {
-
-  List<Movie> getActedIn();
-
-}
+include::{srcBaseDir}/relation/unidirectional/Actor.java[tags=Class,indent=0]
 ----
 
 If no further mapping information is provided an outgoing unidirectional relation using the fully capitalized name of
@@ -312,14 +207,7 @@ using one of the annotations @Outgoing or @Incoming the direction of the relatio
 [source,java]
 .Actor.java
 ----
-@Label
-public interface Actor extends Person {
-
-  @Relation("ACTED_IN")
-  @Outgoing
-  List<Movie> getActedIn();
-
-}
+include::{srcBaseDir}/relation/unidirectional/explicit/Actor.java[tags=Class,indent=0]
 ----
 
 Note on multi-valued relations (i.e. collections):
@@ -345,138 +233,72 @@ point:
 [source,java]
 .ActedIn.java
 ----
-@Relation
-@Retention(RUNTIME)
-public @interface ActedIn {
-}
+include::{srcBaseDir}/relation/qualified/ActedIn.java[tags=Class,indent=0]
 ----
 
 
 [source,java]
 .Actor.java
 ----
-@Label
-public interface Actor extends Person {
-
-  @ActedIn
-  @Outgoing
-  List<Movie> getActedIn();
-
-}
+include::{srcBaseDir}/relation/qualified/Actor.java[tags=Class,indent=0]
 ----
 
 
 [source,java]
 .Movie.java
 ----
-@Label
-public interface Movie {
-
-  String getTitle();
-  void setTitle();
-
-  @ActedIn
-  @Incoming
-  List<Actors> getActors();
-
-}
+include::{srcBaseDir}/relation/qualified/Movie.java[tags=Class,indent=0]
 ----
-
 
 ==== Typed Relations With Properties
 
-If a relation between two nodes shall have properties a dedicated type must be declared. It must contain two properties
-returning the types of referenced types which are annotated with @Incoming and @Outgoing:
+If a relation between two nodes shall have properties a dedicated type must be declared and registered in the XOUnit.
+It must contain two properties returning the types of referenced types which are annotated with @Incoming and @Outgoing:
 
 [source,java]
 .Directed.java
 ----
-@Relation
-public interface Directed {
-
-  @Outgoing
-  Director getDirector();
-
-  @Incoming
-  Movie getMovie();
-
-  Calendar getFrom();
-  void setFrom(Calendar from);
-
-  Calendar getUntil();
-  void setUntil(Calender until);
-
-}
+include::{srcBaseDir}/relation/typed/Directed.java[tags=Class,indent=0]
 ----
 
 [source,java]
 .Director.java
 ----
-@Label
-public interface Director extends Person {
-
-  List<Directed> getDirected();
-
-}
+include::{srcBaseDir}/relation/typed/Director.java[tags=Class,indent=0]
 ----
-
 
 [source,java]
 .Movie.java
 ----
-@Label
-public interface Movie {
-
-  String getTitle();
-  void setTitle();
-
-  List<Directed> getDirected();
-
-  ...
-}
+include::{srcBaseDir}/relation/typed/Movie.java[tags=Class,indent=0]
 ----
+
+The relation is created explicitly:
+
+[source,java]
+----
+include::{srcBaseDir}/relation/typed/TypedRelationTest.java[tags=Create,indent=0]
+----
+
 
 Note: If the typed relation references the same labeled type at both ends then the according properties of the latter
 must also be annotated with @Outgoing and @Incoming:
 
 [source,java]
-.Directed.java
+.References.java
 ----
-@Relation
-public interface References {
-
-  @Outgoing
-  Movie getReferencing();
-
-  @Incoming
-  Movie getReferenced();
-
-  int getMinute();
-  void setMinute(int minute);
-
-  int getSecond()
-  void setSecond(int second);
-}
+include::{srcBaseDir}/relation/self/References.java[tags=Class,indent=0]
 ----
 
 [source,java]
 .Movie.java
 ----
-@Label
-public interface Movie {
-
-  @Outgoing
-  List<References> getReferenced();
-
-  @Incoming
-  List<References> getReferencedBy();
-
-  ...
-}
+include::{srcBaseDir}/relation/self/Movie.java[tags=Class,indent=0]
 ----
 
 Typed relations may also be constructed using <<TemplateTypes>>, i.e. types which define commonly used Properties.
 
+[[DynamicProperty]]
 ==== Dynamic Properties
 
 Labeled types or relation types may also define methods which execute a query on invocation and return the result:
@@ -484,19 +306,7 @@ Labeled types or relation types may also define methods which execute a query on
 [source,java]
 .Movie.java
 ----
-@Label
-public interface Movie {
-
-  @ResultOf
-  @Cypher("match (m:Movie) where m.title={title} return m");
-  Result<Movie> getMoviesByTitle(@Parameter("title") String title);
-
-  @ResultOf
-  @Cypher("match (a:Actor)-[:ACTED_IN]->(m:Movie) where id(m)={this} return count(a)");
-  Long getActorCount();
-
-  ...
-}
+include::{srcBaseDir}/dynamicproperty/Movie.java[tags=Class,indent=0]
 ----
 
 ==== Transient Properties
@@ -506,46 +316,58 @@ Properties of entities or relations can be declared as transient, i.e. they may 
 [source,java]
 .Person.java
 ----
-@Label
-public interface Person {
-
-  @Transient
-  String getName();
-  void setName(String name);
-
-}
+include::{srcBaseDir}/transientproperty/Person.java[tags=Class,indent=0]
 ----
 
 ==== User defined methods
 
-It can be useful to provide a custom implementation of a method which has direct access to the underlying datatypes. This can be achieved using '@ImplementedBy'.
+It can be useful to provide a custom implementation of a method which has direct access to the underlying datatypes.
+This can be achieved using '@ImplementedBy', the following example uses an embedded Neo4j instance:
 
 [source,java]
 .Person.java
 ----
-@Label
-public interface Person {
-
-  @ImplementedBy(SetNameMethod.class)
-  String setName(String firstName, String lastName);
-
-}
+include::{srcBaseDir}/implementedby/Person.java[tags=Class,indent=0]
 ----
 
-[source,java]
-.SetNameMethod.java
+== Repositories
+
+eXtended Objects supports the concepts of repositories. Similar to nodes and relationships they are also represented
+by Java interfaces and must be registered in the XOUnit. They allow the definition of <<DynamicProperty,dynamic properties>>:
+
+[[source,java]]
+.PersonRepository.java
+----
+include::{srcBaseDir}/repository/PersonRepository.java[tags=Class,indent=0]
 ----
 
-public class SetNameMethod implements ProxyMethod<EmbeddedNode> {
+A repository instance can be obtained from the XOManager:
 
- @Override
-    public Object invoke(EmbeddedNode node, Object instance, Object[] args) {
-      String firstName = (String) args[0];
-      String lastName = (String) args[1];
-      String fullName = firstName + " " + lastName;
-      node.setProperty("name", fullName);
-      return fullName;
-    }
+[[source,java]]
+----
+include::{srcBaseDir}/repository/RepositoryTest.java[tags=Repository,indent=0]
+----
 
-}
+There is a predefined repository type that allows finding instances by labels.
+The following class declares an indexed property `name` for the label `Person`:
+
+[[source,java]]
+.Person.java
+----
+include::{srcBaseDir}/repository/Person.java[tags=Class,indent=0]
+----
+
+It is possible to define a repository which inherits from `TypedNeo4jRepository` and pass `Person` as type argument:
+
+[[source,java]]
+.TypedPersonRepository.java
+----
+include::{srcBaseDir}/repository/TypedPersonRepository.java[tags=Class,indent=0]
+----
+
+This allows using the provided `find` method:
+
+[[source,java]]
+----
+include::{srcBaseDir}/repository/RepositoryTest.java[tags=Repository,indent=0]
 ----

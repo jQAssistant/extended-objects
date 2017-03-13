@@ -7,17 +7,77 @@
         <version>0.8.0-SNAPSHOT</version>
     </parent>
     <artifactId>xo.neo4j.doc</artifactId>
-    <packaging>pom</packaging>
 
     <name>eXtended Objects - Neo4j Binding Documentation</name>
+
+    <properties>
+        <com.buschmais.xo_version>${project.version}</com.buschmais.xo_version>
+    </properties>
+
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
+                <configuration>
+                    <attributes>
+                        <basedir>${project.basedir}</basedir>
+                        <srcBaseDir>${project.basedir}/src/test/java/com/buschmais/xo/neo4j/doc/</srcBaseDir>
+                    </attributes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <!-- tag::Dependencies[] -->
+        <dependency>
+            <!-- For using an embedded Neo4j instance -->
+            <groupId>com.buschmais.xo</groupId>
+            <artifactId>xo.neo4j.embedded</artifactId>
+            <version>${com.buschmais.xo_version}</version>
+        </dependency>
+        <dependency>
+            <!-- For using a remote Neo4j instance -->
+            <groupId>com.buschmais.xo</groupId>
+            <artifactId>xo.neo4j.remote</artifactId>
+            <version>${com.buschmais.xo_version}</version>
+        </dependency>
+        <dependency>
+            <!-- The XO API -->
+            <groupId>com.buschmais.xo</groupId>
+            <artifactId>xo.api</artifactId>
+            <version>${com.buschmais.xo_version}</version>
+        </dependency>
+        <dependency>
+            <!-- The XO runtime implementation -->
+            <groupId>com.buschmais.xo</groupId>
+            <artifactId>xo.impl</artifactId>
+            <version>${com.buschmais.xo_version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <!-- An SLF4j binding -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-kernel</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-io</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <!-- end::Dependencies[] -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -115,6 +115,7 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      *            Additional interfaces the entity type shall implement.
      * @return The {@link CompositeObject} instance.
      */
+    @Deprecated
     CompositeObject create(Example<CompositeObject> example, Class<?> type, Class<?>... types);
 
 
@@ -142,6 +143,7 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      *            The interface the property type shall implement.
      * @return The property instance.
      */
+    @Deprecated
     <T> T create(Example<T> example, Class<T> type);
 
     /**
@@ -195,6 +197,7 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      *            The target type.
      * @return The created relation instance.
      */
+    @Deprecated
     <S, R, T> R create(Example<R> example, S source, Class<R> relationType, T target);
 
     /**
