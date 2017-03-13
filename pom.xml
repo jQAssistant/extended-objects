@@ -82,7 +82,7 @@
         <github.global.server>github</github.global.server>
         <org.asciidoctor.maven_version>1.5.3</org.asciidoctor.maven_version>
         <org.asciidoctor_version>1.5.4.1</org.asciidoctor_version>
-        <org.neo4j_version>3.1.1</org.neo4j_version>
+        <org.neo4j_version>3.1.2</org.neo4j_version>
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
@@ -96,13 +96,13 @@
         <profile>
             <id>Neo4j_2.x</id>
             <properties>
-                <org.neo4j_version>2.3.8</org.neo4j_version>
+                <org.neo4j_version>2.3.9</org.neo4j_version>
             </properties>
         </profile>
         <profile>
             <id>Neo4j_3.2.x</id>
             <properties>
-                <org.neo4j_version>3.2.0-alpha02</org.neo4j_version>
+                <org.neo4j_version>3.2.0-alpha06</org.neo4j_version>
             </properties>
         </profile>
         <profile>

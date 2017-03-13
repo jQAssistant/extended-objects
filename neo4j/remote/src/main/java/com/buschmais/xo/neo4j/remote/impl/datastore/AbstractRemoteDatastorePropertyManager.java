@@ -84,7 +84,7 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
     }
 
     protected Map<String, Object> getProperties(Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
-        Map<String, Object> properties = new HashMap<>();
+        Map<String, Object> properties = new HashMap<>(exampleEntity.size());
         for (Map.Entry<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entry : exampleEntity.entrySet()) {
             properties.put(entry.getKey().getDatastoreMetadata().getName(), entry.getValue());
         }

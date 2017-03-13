@@ -228,9 +228,9 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     private void flushAddedRelationships(StatementBatchBuilder batchBuilder, Set<RemoteRelationship> addedRelationships) {
         for (RemoteRelationship addedRelationship : addedRelationships) {
             String statement = "MATCH (start),(end) WHERE id(start)=entry['start'] AND id(end)=entry['end'] CREATE (start)-[r:"
-                    + addedRelationship.getType().getName() + "]->(end) RETURN collect({oldId:entry['id'], newId:id(r)}) as relations";
-            batchBuilder.add(statement, parameters("start", addedRelationship.getStartNode().getId(), "id", addedRelationship.getId(), "end",
-                    addedRelationship.getEndNode().getId()), result -> {
+                    + addedRelationship.getType().getName() + "]->(end) SET r=entry['r'] RETURN collect({oldId:entry['id'], newId:id(r)}) as relations";
+            batchBuilder.add(statement, parameters("start", addedRelationship.getStartNode().getId(), "id", addedRelationship.getId(), "r",
+                    addedRelationship.getProperties(), "end", addedRelationship.getEndNode().getId()), result -> {
                         List<Object> relations = result.get("relations").asList();
                         for (Object relation : relations) {
                             Map<String, Object> r = (Map<String, Object>) relation;
