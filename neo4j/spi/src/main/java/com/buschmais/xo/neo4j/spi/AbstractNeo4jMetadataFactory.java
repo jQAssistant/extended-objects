@@ -76,12 +76,13 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
     @Override
     public RelationshipMetadata<R> createRelationMetadata(AnnotatedElement<?> annotatedElement, Map<Class<?>, TypeMetadata> metadataByType) {
         Relation relationAnnotation;
-        boolean batchable = false;
+        boolean batchable;
         if (annotatedElement instanceof PropertyMethod) {
             relationAnnotation = ((PropertyMethod) annotatedElement).getAnnotationOfProperty(Relation.class);
+            batchable = true;
         } else {
             relationAnnotation = annotatedElement.getAnnotation(Relation.class);
-            batchable = isBatchable(annotatedElement);
+            batchable = ((AnnotatedType) annotatedElement).getAnnotatedElement().isAnnotation() || isBatchable(annotatedElement);
         }
         String name = null;
         if (relationAnnotation != null) {
