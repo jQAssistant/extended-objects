@@ -11,9 +11,6 @@ public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContai
 
     protected T delegate;
 
-    private Map<String, Object> readCache = null;
-    private Map<String, Object> writeCache = null;
-
     public AbstractEmbeddedPropertyContainer(long id, T delegate) {
         this.id = id;
         this.delegate = delegate;
@@ -30,33 +27,21 @@ public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContai
 
     @Override
     public boolean hasProperty(String key) {
-        if (getReadCache().containsKey(key)) {
-            return true;
-        }
         return delegate.hasProperty(key);
     }
 
     @Override
     public Object getProperty(String key) {
-        Map<String, Object> readCache = getReadCache();
-        if (readCache.containsKey(key)) {
-            return readCache.get(key);
-        }
-        Object value = delegate.getProperty(key);
-        readCache.put(key, value);
-        return value;
+        return delegate.getProperty(key);
     };
 
     @Override
     public void setProperty(String key, Object value) {
-        getWriteCache().put(key, value);
-        getReadCache().put(key, value);
+        delegate.setProperty(key, value);
     }
 
     @Override
     public Object removeProperty(String key) {
-        getWriteCache().remove(key);
-        getReadCache().remove(key);
         return delegate.removeProperty(key);
     }
 
@@ -70,31 +55,9 @@ public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContai
     }
 
     public void flush() {
-        if (writeCache != null) {
-            for (Map.Entry<String, Object> entry : writeCache.entrySet()) {
-                delegate.setProperty(entry.getKey(), entry.getValue());
-            }
-        }
-        writeCache = null;
     }
 
     public void clear() {
-        readCache = null;
-        writeCache = null;
-    }
-
-    private Map<String, Object> getReadCache() {
-        if (readCache == null) {
-            readCache = new HashMap<>();
-        }
-        return readCache;
-    }
-
-    private Map<String, Object> getWriteCache() {
-        if (writeCache == null) {
-            writeCache = new HashMap<>();
-        }
-        return writeCache;
     }
 
     @Override
@@ -111,7 +74,7 @@ public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContai
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return (int) id;
     }
 
     @Override
