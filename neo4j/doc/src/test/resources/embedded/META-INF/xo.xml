@@ -1,6 +1,6 @@
 <v1:xo version="1.0" xmlns:v1="http://buschmais.com/xo/schema/v1.0">
     <xo-unit name="movies">
-        <url>file://databases/movies</url>
+        <url>file:databases/movies</url>
         <provider>com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider</provider>
         <types>
             <type>com.buschmais.xo.neo4j.doc.bootstrap.Person</type>

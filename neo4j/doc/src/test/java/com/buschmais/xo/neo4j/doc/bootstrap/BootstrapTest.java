@@ -77,7 +77,7 @@ public class BootstrapTest {
     @Test
     public void bootstrapJava() throws URISyntaxException {
         // tag::BootstrapJava[]
-        XOUnit xoUnit = XOUnit.builder().provider(EmbeddedNeo4jXOProvider.class).uri(new URI("file://databases/movies")).type(Person.class).type(Actor.class)
+        XOUnit xoUnit = XOUnit.builder().provider(EmbeddedNeo4jXOProvider.class).uri(new URI("file:databases/movies")).type(Person.class).type(Actor.class)
                 .build();
         XOManagerFactory movies = XO.createXOManagerFactory(xoUnit);
         XOManager xoManager = movies.createXOManager();

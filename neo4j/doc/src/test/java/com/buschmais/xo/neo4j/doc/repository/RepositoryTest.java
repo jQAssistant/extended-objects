@@ -14,7 +14,7 @@ public class RepositoryTest extends AbstractDocumentationTest {
 
     @Override
     protected void configure(XOUnit.XOUnitBuilder builder) {
-        builder.type(Person.class).type(TypedPersonRepository.class);
+        builder.type(Person.class).type(PersonRepository.class).type(TypedPersonRepository.class);
     }
 
     @Test
@@ -31,7 +31,6 @@ public class RepositoryTest extends AbstractDocumentationTest {
         xoManager.currentTransaction().commit();
         // end::Repository[]
     }
-
 
     @Test
     public void typedRepository() throws URISyntaxException, IOException {
