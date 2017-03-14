@@ -3,11 +3,12 @@ package com.buschmais.xo.neo4j.spi.metadata;
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 
-public class RelationshipMetadata<T extends Neo4jRelationshipType> implements DatastoreRelationMetadata<T> {
+public class RelationshipMetadata<T extends Neo4jRelationshipType> extends AbstractPropertyContainerMetadata implements DatastoreRelationMetadata<T> {
 
     private final T relationshipType;
 
-    public RelationshipMetadata(T relationshipType) {
+    public RelationshipMetadata(T relationshipType, boolean batchable) {
+        super(batchable);
         this.relationshipType = relationshipType;
     }
 

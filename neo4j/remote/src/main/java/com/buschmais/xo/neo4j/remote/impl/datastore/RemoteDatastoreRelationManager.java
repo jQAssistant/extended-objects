@@ -47,7 +47,8 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     @Override
     public RemoteRelationship createRelation(RemoteNode source, RelationTypeMetadata<RelationshipMetadata<RemoteRelationshipType>> metadata,
             RelationTypeMetadata.Direction direction, RemoteNode target, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
-        RemoteRelationshipType type = metadata.getDatastoreMetadata().getDiscriminator();
+        RelationshipMetadata<RemoteRelationshipType> datastoreMetadata = metadata.getDatastoreMetadata();
+        RemoteRelationshipType type = datastoreMetadata.getDiscriminator();
         RemoteNode start;
         RemoteNode end;
         switch (direction) {
@@ -64,7 +65,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
         }
         Map<String, Object> properties = getProperties(exampleEntity);
         RemoteRelationship relationship;
-        if (metadata.isTyped()) {
+        if (!datastoreMetadata.isBatchable()) {
             Record record;
             if (properties.isEmpty()) {
                 String statement = String.format(

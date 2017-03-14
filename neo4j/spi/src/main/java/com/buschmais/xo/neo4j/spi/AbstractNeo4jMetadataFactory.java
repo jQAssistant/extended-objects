@@ -2,10 +2,7 @@ package com.buschmais.xo.neo4j.spi;
 
 import java.util.Map;
 
-import com.buschmais.xo.neo4j.api.annotation.Indexed;
-import com.buschmais.xo.neo4j.api.annotation.Label;
-import com.buschmais.xo.neo4j.api.annotation.Property;
-import com.buschmais.xo.neo4j.api.annotation.Relation;
+import com.buschmais.xo.neo4j.api.annotation.*;
 import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
 import com.buschmais.xo.neo4j.spi.metadata.IndexedPropertyMetadata;
@@ -44,9 +41,8 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
                 indexedProperty = typeMetadata.getIndexedProperty();
             }
         }
-        return new NodeMetadata<L>(label, indexedProperty);
+        return new NodeMetadata<L>(label, indexedProperty, isBatchable(annotatedType));
     }
-
 
 
     @Override
@@ -80,10 +76,12 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
     @Override
     public RelationshipMetadata<R> createRelationMetadata(AnnotatedElement<?> annotatedElement, Map<Class<?>, TypeMetadata> metadataByType) {
         Relation relationAnnotation;
+        boolean batchable = false;
         if (annotatedElement instanceof PropertyMethod) {
             relationAnnotation = ((PropertyMethod) annotatedElement).getAnnotationOfProperty(Relation.class);
         } else {
             relationAnnotation = annotatedElement.getAnnotation(Relation.class);
+            batchable = isBatchable(annotatedElement);
         }
         String name = null;
         if (relationAnnotation != null) {
@@ -95,7 +93,12 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
         if (name == null) {
             name = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, annotatedElement.getName());
         }
-        return new RelationshipMetadata<R>(createRelationshipType(name));
+        return new RelationshipMetadata<R>(createRelationshipType(name), batchable);
+    }
+
+    private boolean isBatchable(AnnotatedElement<?> annotatedElement) {
+        Batchable batchable = annotatedElement.getAnnotation(Batchable.class);
+        return batchable != null ? batchable.value() : false;
     }
 
     protected abstract R createRelationshipType(String name);

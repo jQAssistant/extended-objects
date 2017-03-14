@@ -57,10 +57,10 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         Map<String, Object> properties = getProperties(exampleEntity);
         Record record;
         if (properties.isEmpty()) {
-            String statement = String.format("CREATE (n%s) RETURN id(n) as id", labels.toString());
+            String statement = "CREATE (n" + labels.toString() + ") RETURN id(n) as id";
             record = statementExecutor.getSingleResult(statement, Collections.emptyMap());
         } else {
-            String statement = String.format("CREATE (n%s{n}) RETURN id(n) as id", labels.toString());
+            String statement = "CREATE (n" + labels.toString() + "{n}) RETURN id(n) as id";
             record = statementExecutor.getSingleResult(statement, parameters("n", properties));
         }
         long id = record.get("id").asLong();
@@ -72,7 +72,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     /**
      * Initializes all relation properties of the given node state with empty
      * collections.
-     * 
+     *
      * @param types
      *            The types.
      * @param nodeState
@@ -181,7 +181,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     /**
      * Creates an expression for adding labels, e.g. ":Person:Customer".
-     * 
+     *
      * @param remoteLabels
      *            The labels.
      * @return The expression.
