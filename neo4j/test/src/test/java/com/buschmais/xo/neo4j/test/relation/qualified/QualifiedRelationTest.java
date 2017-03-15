@@ -6,6 +6,7 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -158,7 +159,15 @@ public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
         xoManager.currentTransaction().begin();
         List<Long> count = executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN count(b) as count").getColumn("count");
         assertThat(count.get(0), equalTo(details));
-        // TODO remove
+        List<B> bs = new ArrayList<>(a.getOneToMany());
+        for (B b : bs) {
+            assertThat(b.getManyToOne(), equalTo(a));
+            b.setManyToOne(null);
+        }
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
+        assertThat(a.getOneToMany().isEmpty(), equalTo(true));
+        xoManager.currentTransaction().commit();
     }
 
 }

@@ -19,6 +19,8 @@ public interface B {
     @QualifiedOneToMany
     A getManyToOne();
 
+    void setManyToOne(A a);
+
     @Incoming
     @QualifiedManyToMany
     List<A> getManyToMany();

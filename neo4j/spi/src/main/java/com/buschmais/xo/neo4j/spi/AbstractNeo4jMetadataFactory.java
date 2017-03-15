@@ -2,6 +2,7 @@ package com.buschmais.xo.neo4j.spi;
 
 import java.util.Map;
 
+import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.annotation.*;
 import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
@@ -80,9 +81,12 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
         if (annotatedElement instanceof PropertyMethod) {
             relationAnnotation = ((PropertyMethod) annotatedElement).getAnnotationOfProperty(Relation.class);
             batchable = true;
+        } else if (annotatedElement instanceof AnnotatedType){
+            AnnotatedType annotatedType = (AnnotatedType) annotatedElement;
+            relationAnnotation = annotatedType.getAnnotation(Relation.class);
+            batchable = annotatedType.getAnnotatedElement().isAnnotation() || isBatchable(annotatedElement);
         } else {
-            relationAnnotation = annotatedElement.getAnnotation(Relation.class);
-            batchable = ((AnnotatedType) annotatedElement).getAnnotatedElement().isAnnotation() || isBatchable(annotatedElement);
+            throw new XOException("Annotated element is not supported: " + annotatedElement);
         }
         String name = null;
         if (relationAnnotation != null) {

@@ -108,7 +108,10 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
         RemoteNode startNode = remoteRelationship.getStartNode();
         RemoteNode endNode = remoteRelationship.getEndNode();
         getRelationships(startNode, type, RemoteDirection.OUTGOING).remove(remoteRelationship);
-        getRelationships(endNode, type, RemoteDirection.INCOMING).remove(remoteRelationship);
+        StateTracker<RemoteRelationship, Set<RemoteRelationship>> incomingRelationships = endNode.getState().getRelationships(RemoteDirection.INCOMING, type);
+        if (incomingRelationships != null) {
+            incomingRelationships.remove(remoteRelationship);
+        }
     }
 
     @Override
