@@ -17,8 +17,8 @@ management of instances including caching and triggering actions (CRUD) against 
 
 The framework consists of the following components:
 
-.XO Framework Components
 [options="header"]
+.XO Framework Components
 |====
 | Component | Description
 | xo.api    | Client API of eXtended Ojects which is used by applications.
@@ -30,8 +30,8 @@ The components are split up into different artifacts and built with Maven as JAR
 Applications or datastore implementations are encouraged to use only the required dependencies in
 appropriate scopes:
 
-.XO Framework Components
 [options="header"]
+.XO Framework Components
 |====
 | Component | Application Dependency | Datastore Dependency
 | xo.api    | compile                | compile (implicitly available via xo.spi)
