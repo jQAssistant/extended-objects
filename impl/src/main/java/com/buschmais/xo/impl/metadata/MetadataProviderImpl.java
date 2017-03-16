@@ -258,7 +258,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     private EntityTypeMetadata<EntityMetadata> createEntityTypeMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes,
             Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
         IndexedPropertyMethodMetadata indexedProperty = getIndexedPropertyMethodMetadata(methodMetadataOfType);
-        EntityMetadata datastoreEntityMetadata = metadataFactory.createEntityMetadata(annotatedType, metadataByType);
+        EntityMetadata datastoreEntityMetadata = metadataFactory.createEntityMetadata(annotatedType, superTypes, metadataByType);
         boolean abstractType = annotatedType.isAnnotationPresent(Abstract.class);
         boolean finalType = annotatedType.isAnnotationPresent(Final.class);
         return new EntityTypeMetadata<>(annotatedType, superTypes, methodMetadataOfType, abstractType, finalType, indexedProperty, datastoreEntityMetadata);

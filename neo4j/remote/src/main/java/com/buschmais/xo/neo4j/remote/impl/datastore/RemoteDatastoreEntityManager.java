@@ -30,6 +30,8 @@ import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropertyManager<RemoteNode, NodeState>
         implements DatastoreEntityManager<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, PropertyMetadata> {
 
+    private long idSequence = -1;
+
     public RemoteDatastoreEntityManager(StatementExecutor statementExecutor, RemoteDatastoreSessionCache datastoreSessionCache) {
         super(statementExecutor, datastoreSessionCache);
     }
@@ -53,20 +55,44 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     @Override
     public RemoteNode createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> types, Set<RemoteLabel> remoteLabels,
             Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
-        StringBuilder labels = getLabelExpression(remoteLabels);
         Map<String, Object> properties = getProperties(exampleEntity);
-        Record record;
-        if (properties.isEmpty()) {
-            String statement = "CREATE (n" + labels.toString() + ") RETURN id(n) as id";
-            record = statementExecutor.getSingleResult(statement, Collections.emptyMap());
-        } else {
-            String statement = "CREATE (n" + labels.toString() + "{n}) RETURN id(n) as id";
-            record = statementExecutor.getSingleResult(statement, parameters("n", properties));
-        }
-        long id = record.get("id").asLong();
         NodeState nodeState = new NodeState(remoteLabels, properties);
         initializeEntity(types, nodeState);
-        return datastoreSessionCache.getNode(id, nodeState);
+        RemoteNode remoteNode;
+        if (isBatchable(types)) {
+            long id = idSequence--;
+            remoteNode = datastoreSessionCache.getNode(id, nodeState);
+        } else {
+            StringBuilder labels = getLabelExpression(remoteLabels);
+            Record record;
+            if (properties.isEmpty()) {
+                String statement = "CREATE (n" + labels.toString() + ") RETURN id(n) as id";
+                record = statementExecutor.getSingleResult(statement, Collections.emptyMap());
+            } else {
+                String statement = "CREATE (n" + labels.toString() + "{n}) RETURN id(n) as id";
+                record = statementExecutor.getSingleResult(statement, parameters("n", properties));
+            }
+            long id = record.get("id").asLong();
+            remoteNode = datastoreSessionCache.getNode(id, nodeState);
+        }
+        return remoteNode;
+    }
+
+    /**
+     * Determine if at least one type is marked as
+     * {@link com.buschmais.xo.neo4j.api.annotation.Batchable}.
+     *
+     * @param types
+     *            The types.
+     * @return <code>true</code> if batching may be used.
+     */
+    private boolean isBatchable(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> types) {
+        for (EntityTypeMetadata<NodeMetadata<RemoteLabel>> type : types) {
+            if (type.getDatastoreMetadata().isBatchable()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -198,6 +224,12 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     public void flush(Iterable<RemoteNode> entities) {
         StatementBatchBuilder batchBuilder = new StatementBatchBuilder(statementExecutor);
         for (RemoteNode entity : entities) {
+            if (entity.getId() < 1) {
+                flushAddedEntity(batchBuilder, entity);
+            }
+        }
+        batchBuilder.execute();
+        for (RemoteNode entity : entities) {
             flush(batchBuilder, entity, "(n)", "n");
             flushLabels(batchBuilder, entity);
             for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : entity.getState().getOutgoingRelationships().values()) {
@@ -207,6 +239,23 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
             entity.getState().flush();
         }
         batchBuilder.execute();
+    }
+
+    private void flushAddedEntity(StatementBatchBuilder batchBuilder, RemoteNode entity) {
+        Map<String, Object> properties = entity.getProperties();
+        StringBuilder labelExpression = getLabelExpression(entity.getLabels());
+        String statement = "CREATE (n" + labelExpression.toString() + ") SET n=entry['n'] RETURN collect({oldId:entry['id'], newId:id(n)}) as nodes";
+        batchBuilder.add(statement, parameters("id", entity.getId(), "n", properties), result -> {
+            List<Object> nodes = result.get("nodes").asList();
+            for (Object node : nodes) {
+                Map<String, Object> r = (Map<String, Object>) node;
+                Long oldId = (Long) r.get("oldId");
+                Long newId = (Long) r.get("newId");
+                RemoteNode oldNode = datastoreSessionCache.getNode(oldId);
+                NodeState state = oldNode.getState();
+                RemoteNode newNode = datastoreSessionCache.getNode(newId, state);
+            }
+        });
     }
 
     private void flushLabels(StatementBatchBuilder batchBuilder, RemoteNode node) {

@@ -1,5 +1,6 @@
 package com.buschmais.xo.neo4j.spi;
 
+import java.util.List;
 import java.util.Map;
 
 import com.buschmais.xo.api.XOException;
@@ -23,10 +24,11 @@ import com.google.common.base.CaseFormat;
  * {@link com.buschmais.xo.spi.datastore.DatastoreMetadataFactory}
  * implementation for Neo4j datastores.
  */
-public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R extends Neo4jRelationshipType> implements DatastoreMetadataFactory<NodeMetadata<L>, L, RelationshipMetadata<R>, R> {
+public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R extends Neo4jRelationshipType>
+        implements DatastoreMetadataFactory<NodeMetadata<L>, L, RelationshipMetadata<R>, R> {
 
     @Override
-    public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
+    public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes, Map<Class<?>, TypeMetadata> metadataByType) {
         Label labelAnnotation = annotatedType.getAnnotation(Label.class);
         L label = null;
         IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedProperty = null;
@@ -42,9 +44,9 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
                 indexedProperty = typeMetadata.getIndexedProperty();
             }
         }
-        return new NodeMetadata<L>(label, indexedProperty, isBatchable(annotatedType));
+        boolean batchable = isBatchable(annotatedType);
+        return new NodeMetadata<L>(label, indexedProperty, batchable);
     }
-
 
     @Override
     public <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(AnnotatedMethod annotatedMethod) {
@@ -81,7 +83,7 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
         if (annotatedElement instanceof PropertyMethod) {
             relationAnnotation = ((PropertyMethod) annotatedElement).getAnnotationOfProperty(Relation.class);
             batchable = true;
-        } else if (annotatedElement instanceof AnnotatedType){
+        } else if (annotatedElement instanceof AnnotatedType) {
             AnnotatedType annotatedType = (AnnotatedType) annotatedElement;
             relationAnnotation = annotatedType.getAnnotation(Relation.class);
             batchable = annotatedType.getAnnotatedElement().isAnnotation() || isBatchable(annotatedElement);

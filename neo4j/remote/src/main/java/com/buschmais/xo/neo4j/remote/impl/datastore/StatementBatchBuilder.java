@@ -3,7 +3,7 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 import static org.neo4j.driver.v1.Values.parameters;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +44,7 @@ public class StatementBatchBuilder {
 
     private StatementExecutor statementExecutor;
 
-    private Map<String, BatchEntry> batches = new HashMap<>();
+    private Map<String, BatchEntry> batches = new LinkedHashMap<>();
 
     public StatementBatchBuilder(StatementExecutor statementExecutor) {
         this.statementExecutor = statementExecutor;

@@ -1,5 +1,8 @@
 package com.buschmais.xo.json.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
@@ -9,12 +12,10 @@ import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 import com.buschmais.xo.spi.reflection.AnnotatedType;
 import com.buschmais.xo.spi.reflection.PropertyMethod;
 
-import java.util.Map;
-
 public class JsonMetadataFactory implements DatastoreMetadataFactory<JsonNodeMetadata, String, JsonRelationMetadata, String> {
 
     @Override
-    public JsonNodeMetadata createEntityMetadata(AnnotatedType annotatedType, Map<Class<?>, TypeMetadata> metadataByType) {
+    public JsonNodeMetadata createEntityMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes, Map<Class<?>, TypeMetadata> metadataByType) {
         return new JsonNodeMetadata(annotatedType.getAnnotatedElement().getName());
     }
 
