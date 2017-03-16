@@ -10,7 +10,7 @@ import java.util.Map;
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.Value;
 
-public class StatementBatchBuilder {
+public class StatementBatchBuilder implements AutoCloseable {
 
     private static class BatchEntry {
 
@@ -63,7 +63,8 @@ public class StatementBatchBuilder {
         batch.add(parameters);
     }
 
-    public void execute() {
+    @Override
+    public void close() {
         for (Map.Entry<String, BatchEntry> entry : batches.entrySet()) {
             String statement = entry.getKey();
             BatchEntry batchEntry = entry.getValue();

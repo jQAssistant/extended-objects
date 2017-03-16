@@ -39,10 +39,24 @@ public class BatchableTest extends AbstractNeo4jXOManagerTest {
         A a = xoManager.create(A.class);
         a.setName("A");
         assertThat(xoManager.getId(a), lessThan(0l));
+        B b = xoManager.create(B.class);
+        b.setName("B");
+        assertThat(xoManager.getId(b), lessThan(0l));
+        A2B a2b = xoManager.create(a, A2B.class, b);
+        assertThat(xoManager.getId(a2b), lessThan(0l));
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         a = xoManager.find(A.class, "A").getSingleResult();
         assertThat(xoManager.getId(a), greaterThanOrEqualTo(0l));
+
+        a2b = a.getA2B();
+        assertThat(xoManager.getId(a2b), greaterThanOrEqualTo(0l));
+
+        b = xoManager.find(B.class, "B").getSingleResult();
+        assertThat(xoManager.getId(b), greaterThanOrEqualTo(0l));
+
+        assertThat(b.getA2B(), is(a2b));
+
         xoManager.currentTransaction().commit();
     }
 

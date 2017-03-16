@@ -181,12 +181,12 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
 
     @Override
     public void flush(Iterable<RemoteRelationship> relationships) {
-        StatementBatchBuilder batchBuilder = new StatementBatchBuilder(statementExecutor);
-        for (RemoteRelationship relationship : relationships) {
-            flush(batchBuilder, relationship, "()-[r]->()", "r");
-            relationship.getState().flush();
+        try (StatementBatchBuilder batchBuilder = new StatementBatchBuilder(statementExecutor)) {
+            for (RemoteRelationship relationship : relationships) {
+                flush(batchBuilder, relationship, "()-[r]->()", "r");
+                relationship.getState().flush();
+            }
         }
-        batchBuilder.execute();
     }
 
     private StateTracker<RemoteRelationship, Set<RemoteRelationship>> getRelationships(RemoteNode source, RemoteRelationshipType type,

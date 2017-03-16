@@ -38,6 +38,10 @@ public class NodeState extends AbstractPropertyContainerState {
         return outgoingRelationships.get(type);
     }
 
+    public Map<RemoteRelationshipType, StateTracker<RemoteRelationship, Set<RemoteRelationship>>> getIncomingRelationships() {
+        return incomingRelationships;
+    }
+
     public StateTracker<RemoteRelationship, Set<RemoteRelationship>> getIncomingRelationships(RemoteRelationshipType type) {
         return incomingRelationships.get(type);
     }

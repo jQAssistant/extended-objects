@@ -136,13 +136,13 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public void deleteEntity(RemoteNode remoteNode) {
-        StatementBatchBuilder batchBuilder = new StatementBatchBuilder(statementExecutor);
-        for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : remoteNode.getState().getOutgoingRelationships().values()) {
-            flushRemovedRelationships(batchBuilder, tracker.getRemoved());
+        try (StatementBatchBuilder batchBuilder = new StatementBatchBuilder(statementExecutor)) {
+            for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : remoteNode.getState().getOutgoingRelationships().values()) {
+                flushRemovedRelationships(batchBuilder, tracker.getRemoved());
+            }
+            String statement = "MATCH (n) WHERE id(n)=entry['n'] DELETE n RETURN collect(id(n))";
+            batchBuilder.add(statement, parameters("n", remoteNode.getId()));
         }
-        String statement = "MATCH (n) WHERE id(n)=entry['n'] DELETE n RETURN collect(id(n))";
-        batchBuilder.add(statement, parameters("n", remoteNode.getId()));
-        batchBuilder.execute();
     }
 
     @Override
@@ -222,23 +222,26 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public void flush(Iterable<RemoteNode> entities) {
-        StatementBatchBuilder batchBuilder = new StatementBatchBuilder(statementExecutor);
-        for (RemoteNode entity : entities) {
-            if (entity.getId() < 1) {
-                flushAddedEntity(batchBuilder, entity);
+        try (StatementBatchBuilder batchBuilder = new StatementBatchBuilder(statementExecutor)) {
+            for (RemoteNode entity : entities) {
+                if (entity.getId() < 0) {
+                    flushAddedEntity(batchBuilder, entity);
+                }
             }
         }
-        batchBuilder.execute();
-        for (RemoteNode entity : entities) {
-            flush(batchBuilder, entity, "(n)", "n");
-            flushLabels(batchBuilder, entity);
-            for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : entity.getState().getOutgoingRelationships().values()) {
-                flushAddedRelationships(batchBuilder, tracker.getAdded());
-                flushRemovedRelationships(batchBuilder, tracker.getRemoved());
+        try (StatementBatchBuilder batchBuilder = new StatementBatchBuilder(statementExecutor)) {
+            for (RemoteNode entity : entities) {
+                if (entity.getId() >= 0) {
+                    flush(batchBuilder, entity, "(n)", "n");
+                    flushLabels(batchBuilder, entity);
+                }
+                for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : entity.getState().getOutgoingRelationships().values()) {
+                    flushAddedRelationships(batchBuilder, tracker.getAdded());
+                    flushRemovedRelationships(batchBuilder, tracker.getRemoved());
+                }
+                entity.getState().flush();
             }
-            entity.getState().flush();
         }
-        batchBuilder.execute();
     }
 
     private void flushAddedEntity(StatementBatchBuilder batchBuilder, RemoteNode entity) {
@@ -254,6 +257,16 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
                 RemoteNode oldNode = datastoreSessionCache.getNode(oldId);
                 NodeState state = oldNode.getState();
                 RemoteNode newNode = datastoreSessionCache.getNode(newId, state);
+                for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> stateTracker : state.getOutgoingRelationships().values()) {
+                    for (RemoteRelationship oldRelationship : stateTracker.getElements()) {
+                        oldRelationship.setStartNode(newNode);
+                    }
+                }
+                for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> stateTracker : state.getIncomingRelationships().values()) {
+                    for (RemoteRelationship oldRelationship : stateTracker.getElements()) {
+                        oldRelationship.setEndNode(newNode);
+                    }
+                }
             }
         });
     }
