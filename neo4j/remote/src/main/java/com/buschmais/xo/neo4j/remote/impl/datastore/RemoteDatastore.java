@@ -20,6 +20,25 @@ import com.google.common.base.CaseFormat;
 
 public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteRelationshipType, RemoteDatastoreSession> {
 
+    /**
+     * Defines the properties supported by this datastore.
+     */
+    enum Property {
+
+        USERNAME("username"), PASSWORD("password"), ENCRYPTION_LEVEL("encryptionLevel"), TRUST_STRATEGY("trust.strategy"), TRUST_CERTIFICATE(
+                "trust.certificate"), STATEMENT_LOG("statement.log");
+
+        private String name;
+
+        Property(String name) {
+            this.name = "neo4j.remote." + name;
+        }
+
+        String get(Properties properties) {
+            return properties.getProperty(name);
+        }
+    }
+
     private Driver driver;
 
     private StatementConfig statementConfig;
@@ -32,11 +51,11 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
     }
 
     private Driver getDriver(URI uri, Properties properties) {
-        String username = (String) properties.get("neo4j.remote.username");
-        String password = (String) properties.get("neo4j.remote.password");
-        String encryptionLevel = (String) properties.get("neo4j.remote.encryptionLevel");
-        String trustStrategy = (String) properties.get("neo4j.remote.trust.strategy");
-        String trustCertificate = (String) properties.get("neo4j.remote.trust.certificate");
+        String username = Property.USERNAME.get(properties);
+        String password = Property.PASSWORD.get(properties);
+        String encryptionLevel = Property.ENCRYPTION_LEVEL.get(properties);
+        String trustStrategy = Property.TRUST_STRATEGY.get(properties);
+        String trustCertificate = Property.TRUST_CERTIFICATE.get(properties);
         Config.ConfigBuilder configBuilder = Config.build();
         if (encryptionLevel != null) {
             configBuilder.withEncryptionLevel(getEnumOption(Config.EncryptionLevel.class, encryptionLevel));
@@ -60,7 +79,7 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
 
     private StatementConfig getStatementConfig(Properties properties) {
         StatementConfig.StatementConfigBuilder statementConfigBuilder = StatementConfig.builder();
-        String statementLogLevel = (String) properties.get("neo4j.remote.statement.log");
+        String statementLogLevel = Property.STATEMENT_LOG.get(properties);
         if (statementLogLevel != null) {
             statementConfigBuilder.statementLogger(getEnumOption(LogStrategy.class, statementLogLevel));
         }
