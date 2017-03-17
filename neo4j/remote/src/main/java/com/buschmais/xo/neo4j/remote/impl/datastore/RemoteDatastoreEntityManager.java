@@ -267,6 +267,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
                         oldRelationship.setEndNode(newNode);
                     }
                 }
+                oldNode.updateId(newId);
             }
         });
     }
@@ -306,6 +307,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
                             RemoteRelationship newRelationship = datastoreSessionCache.getRelationship(newId, startNode, type, endNode, state);
                             replaceRelationship(startNode, oldRelationship, newRelationship, RemoteDirection.OUTGOING);
                             replaceRelationship(endNode, oldRelationship, newRelationship, RemoteDirection.INCOMING);
+                            oldRelationship.updateId(newId);
                         }
                     });
         }

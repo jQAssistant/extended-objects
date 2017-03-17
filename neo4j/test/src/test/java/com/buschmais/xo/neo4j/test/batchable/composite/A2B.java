@@ -9,6 +9,9 @@ import com.buschmais.xo.neo4j.api.annotation.Relation.Outgoing;
 @Batchable
 public interface A2B {
 
+    int getValue();
+    void setValue(int value);
+
     @Outgoing
     A getA();
 

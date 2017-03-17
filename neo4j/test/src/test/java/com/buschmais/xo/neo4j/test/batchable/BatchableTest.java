@@ -37,26 +37,31 @@ public class BatchableTest extends AbstractNeo4jXOManagerTest {
         XOManager xoManager = getXoManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
-        a.setName("A");
+        a.setName("A1");
         assertThat(xoManager.getId(a), lessThan(0l));
         B b = xoManager.create(B.class);
         b.setName("B");
         assertThat(xoManager.getId(b), lessThan(0l));
         A2B a2b = xoManager.create(a, A2B.class, b);
+        a2b.setValue(1);
         assertThat(xoManager.getId(a2b), lessThan(0l));
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        a = xoManager.find(A.class, "A").getSingleResult();
         assertThat(xoManager.getId(a), greaterThanOrEqualTo(0l));
-
-        a2b = a.getA2B();
         assertThat(xoManager.getId(a2b), greaterThanOrEqualTo(0l));
-
-        b = xoManager.find(B.class, "B").getSingleResult();
         assertThat(xoManager.getId(b), greaterThanOrEqualTo(0l));
-
+        assertThat(a.getName(),equalTo("A1"));
+        assertThat(b.getName(), equalTo("B"));
+        assertThat(a2b.getValue(), equalTo(1));
+        a.setName("A2");
+        a2b.setValue(2);
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
+        a = xoManager.find(A.class, "A2").getSingleResult();
+        a2b = a.getA2B();
+        assertThat(a2b.getValue(), equalTo(2));
+        b = xoManager.find(B.class, "B").getSingleResult();
         assertThat(b.getA2B(), is(a2b));
-
         xoManager.currentTransaction().commit();
     }
 

@@ -3,6 +3,7 @@ package com.buschmais.xo.neo4j.remote.impl.model;
 import java.util.Collections;
 import java.util.Map;
 
+import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.model.Neo4jPropertyContainer;
 import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
 
@@ -20,6 +21,14 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
     @Override
     public long getId() {
         return id;
+    }
+
+    public void updateId(Long id) {
+        if (this.id < 0) {
+            this.id = id;
+        } else {
+            throw new XOException("Cannot update persistent id of " + this);
+        }
     }
 
     public S getState() {
@@ -71,4 +80,5 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
     public final String toString() {
         return getClass().getSimpleName() + "{" + "id=" + id + '}';
     }
+
 }
