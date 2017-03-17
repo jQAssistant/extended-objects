@@ -21,6 +21,4 @@ public class StatementConfig {
 
     private LogStrategy statementLogger = LogStrategy.NONE;
 
-    private int autoFlushThreshold = 1;
-
 }

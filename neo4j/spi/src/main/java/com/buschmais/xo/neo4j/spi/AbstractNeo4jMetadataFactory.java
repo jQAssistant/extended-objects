@@ -105,7 +105,7 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
 
     private boolean isBatchable(AnnotatedElement<?> annotatedElement) {
         Batchable batchable = annotatedElement.getAnnotation(Batchable.class);
-        return batchable != null ? batchable.value() : false;
+        return batchable != null ? batchable.value() : true;
     }
 
     protected abstract R createRelationshipType(String name);
