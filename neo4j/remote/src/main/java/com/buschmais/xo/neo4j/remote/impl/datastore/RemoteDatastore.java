@@ -64,10 +64,6 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
         if (statementLogLevel != null) {
             statementConfigBuilder.statementLogger(getEnumOption(LogStrategy.class, statementLogLevel));
         }
-        String autoFlushThreshold = (String) properties.get("neo4j.remote.statement.autoFlushThreshold");
-        if (autoFlushThreshold != null) {
-            statementConfigBuilder.autoFlushThreshold(Integer.valueOf(autoFlushThreshold));
-        }
         return statementConfigBuilder.build();
     }
 

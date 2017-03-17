@@ -6,7 +6,7 @@ import com.buschmais.xo.neo4j.api.annotation.Relation.Incoming;
 import com.buschmais.xo.neo4j.api.annotation.Relation.Outgoing;
 
 @Relation
-@Batchable
+@Batchable(true)
 public interface A2B {
 
     int getValue();

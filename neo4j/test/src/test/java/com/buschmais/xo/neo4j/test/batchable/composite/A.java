@@ -5,7 +5,7 @@ import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 
 @Label("A")
-@Batchable
+@Batchable(true)
 public interface A {
 
     @Indexed
