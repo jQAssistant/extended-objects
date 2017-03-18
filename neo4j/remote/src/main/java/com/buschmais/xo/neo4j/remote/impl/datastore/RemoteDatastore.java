@@ -1,13 +1,18 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
+import static java.util.Arrays.asList;
+
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.neo4j.driver.v1.*;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.remote.api.RemoteNeo4jXOProvider;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
 import com.buschmais.xo.neo4j.spi.AbstractNeo4jDatastore;
@@ -15,29 +20,10 @@ import com.buschmais.xo.neo4j.spi.AbstractNeo4jMetadataFactory;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
-import com.buschmais.xo.spi.logging.LogStrategy;
+import com.buschmais.xo.spi.logging.LogLevel;
 import com.google.common.base.CaseFormat;
 
 public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteRelationshipType, RemoteDatastoreSession> {
-
-    /**
-     * Defines the properties supported by this datastore.
-     */
-    enum Property {
-
-        USERNAME("username"), PASSWORD("password"), ENCRYPTION_LEVEL("encryptionLevel"), TRUST_STRATEGY("trust.strategy"), TRUST_CERTIFICATE(
-                "trust.certificate"), STATEMENT_LOG("statement.log");
-
-        private String name;
-
-        Property(String name) {
-            this.name = "neo4j.remote." + name;
-        }
-
-        String get(Properties properties) {
-            return properties.getProperty(name);
-        }
-    }
 
     private Driver driver;
 
@@ -51,11 +37,11 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
     }
 
     private Driver getDriver(URI uri, Properties properties) {
-        String username = Property.USERNAME.get(properties);
-        String password = Property.PASSWORD.get(properties);
-        String encryptionLevel = Property.ENCRYPTION_LEVEL.get(properties);
-        String trustStrategy = Property.TRUST_STRATEGY.get(properties);
-        String trustCertificate = Property.TRUST_CERTIFICATE.get(properties);
+        String username = RemoteNeo4jXOProvider.Property.USERNAME.get(properties);
+        String password = RemoteNeo4jXOProvider.Property.PASSWORD.get(properties);
+        String encryptionLevel = RemoteNeo4jXOProvider.Property.ENCRYPTION_LEVEL.get(properties);
+        String trustStrategy = RemoteNeo4jXOProvider.Property.TRUST_STRATEGY.get(properties);
+        String trustCertificate = RemoteNeo4jXOProvider.Property.TRUST_CERTIFICATE.get(properties);
         Config.ConfigBuilder configBuilder = Config.build();
         if (encryptionLevel != null) {
             configBuilder.withEncryptionLevel(getEnumOption(Config.EncryptionLevel.class, encryptionLevel));
@@ -79,9 +65,9 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
 
     private StatementConfig getStatementConfig(Properties properties) {
         StatementConfig.StatementConfigBuilder statementConfigBuilder = StatementConfig.builder();
-        String statementLogLevel = Property.STATEMENT_LOG.get(properties);
+        String statementLogLevel = RemoteNeo4jXOProvider.Property.STATEMENT_LOG_LEVEL.get(properties);
         if (statementLogLevel != null) {
-            statementConfigBuilder.statementLogger(getEnumOption(LogStrategy.class, statementLogLevel));
+            statementConfigBuilder.logLevel(getEnumOption(LogLevel.class, statementLogLevel));
         }
         return statementConfigBuilder.build();
     }
@@ -114,6 +100,14 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
 
     private <E extends Enum<E>> E getEnumOption(Class<E> enumType, String value) {
         String normalizedValue = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, value);
-        return Enum.valueOf(enumType, normalizedValue);
+        try {
+            return Enum.valueOf(enumType, normalizedValue);
+        } catch (IllegalArgumentException e) {
+            List<String> allowedValues = new ArrayList<>();
+            for (E allowedValue : asList(enumType.getEnumConstants())) {
+                allowedValues.add(CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, allowedValue.name()));
+            }
+            throw new XOException("Unknown value '" + value + "', allowed values are " + allowedValues);
+        }
     }
 }

@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import com.buschmais.xo.spi.logging.LogStrategy;
+import com.buschmais.xo.spi.logging.LogLevel;
 
 import lombok.*;
 
@@ -15,10 +15,10 @@ public class StatementConfig {
 
     private static final StatementConfig PROTOTYPE = new StatementConfig();
 
-    public static StatementConfig.StatementConfigBuilder builder() {
+    public static final StatementConfig.StatementConfigBuilder builder() {
         return PROTOTYPE.toBuilder();
     }
 
-    private LogStrategy statementLogger = LogStrategy.NONE;
+    private LogLevel logLevel = LogLevel.NONE;
 
 }

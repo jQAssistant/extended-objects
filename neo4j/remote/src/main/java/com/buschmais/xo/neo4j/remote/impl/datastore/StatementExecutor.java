@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.spi.logging.LogStrategy;
+import com.buschmais.xo.spi.logging.LogLevel;
 
 public class StatementExecutor {
 
@@ -44,8 +44,8 @@ public class StatementExecutor {
     }
 
     public StatementResult execute(String statement, Map<String, Object> parameters) {
-        LogStrategy statementLogger = statementConfig.getStatementLogger();
-        if (!LogStrategy.NONE.equals(statementLogger)) {
+        LogLevel statementLogger = statementConfig.getLogLevel();
+        if (!LogLevel.NONE.equals(statementLogger)) {
             statementLogger.log(LOGGER, "'" + statement + "': " + parameters);
         }
         try {

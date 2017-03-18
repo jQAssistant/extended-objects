@@ -33,7 +33,7 @@ public enum Neo4jDatabase implements AbstractXOManagerTest.Database {
         @Override
         public Properties getProperties() {
             Properties properties = new Properties();
-            properties.put("neo4j.remote.statement.log", "info");
+            properties.put("neo4j.remote.statement.log.level", "info");
             return properties;
         }
 

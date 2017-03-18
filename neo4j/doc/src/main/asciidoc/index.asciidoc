@@ -84,14 +84,14 @@ NOTE: Support for remote databases is experimental.
 provider::
   The class name of the datastore provider
   - `com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider` for embedded Neo4j databases
-  - `com.buschmais.xo.neo4j.remote.api.Neo4jRemoteStoreProvider` for remote Neo4j databases via bolt protocol
+  - `com.buschmais.xo.neo4j.remote.api.RemoteNeo4jXOProvider` for remote Neo4j databases via bolt protocol
 url::
   The URL to pass to the Neo4j datastore. The following protocols are currently supported:
   - "file:///C:/neo4j/movies": embedded local database using the specified directory as location for the Neo4j database
   - "memory:///": embedded non-persistent in-memory database
   - "bolt://localhost:7687": remote database
 types::
-  A list of all persistent interface types representing labels or relations
+  A list of all persistent types representing labels, relations or repositories
 
 An XOManagerFactory instance can now be obtained as demonstrated in the following snippet:
 

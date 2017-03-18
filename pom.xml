@@ -83,7 +83,9 @@
         <org.asciidoctor.maven_version>1.5.3</org.asciidoctor.maven_version>
         <org.asciidoctor_version>1.5.4.1</org.asciidoctor_version>
         <org.asciidoctorj.pdf_version>1.5.0-alpha.14</org.asciidoctorj.pdf_version>
+        <org.jruby_version>1.7.25</org.jruby_version>
         <org.neo4j_version>3.1.2</org.neo4j_version>
+        <org.slf4j_version>1.7.21</org.slf4j_version>
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
@@ -191,7 +193,7 @@
                 <plugin>
                     <groupId>org.projectlombok</groupId>
                     <artifactId>lombok-maven-plugin</artifactId>
-                    <version>1.16.10.0</version>
+                    <version>1.16.12.0</version>
                     <executions>
                         <execution>
                             <phase>generate-sources</phase>
@@ -258,6 +260,7 @@
                     <artifactId>asciidoctor-maven-plugin</artifactId>
                     <version>${org.asciidoctor.maven_version}</version>
                     <configuration>
+                        <sourceHighlighter>coderay</sourceHighlighter>
                         <attributes>
                             <toc>auto</toc>
                             <toclevels>3</toclevels>
@@ -281,7 +284,7 @@
                                 <goal>process-asciidoc</goal>
                             </goals>
                             <configuration>
-                                <backend>html5</backend>
+                                <backend>pdf</backend>
                             </configuration>
                         </execution>
                     </executions>
@@ -295,6 +298,11 @@
                             <groupId>org.asciidoctor</groupId>
                             <artifactId>asciidoctorj-pdf</artifactId>
                             <version>${org.asciidoctorj.pdf_version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.jruby</groupId>
+                            <artifactId>jruby-complete</artifactId>
+                            <version>${org.jruby_version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -618,7 +626,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.5</version>
+                <version>${org.slf4j_version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -628,7 +636,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.16.10</version>
+                <version>1.16.12</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -640,13 +648,13 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
-                <version>1.7.5</version>
+                <version>${org.slf4j_version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>4.12</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

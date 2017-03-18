@@ -1,7 +1,7 @@
 <v1:xo version="1.0" xmlns:v1="http://buschmais.com/xo/schema/v1.0">
     <xo-unit name="movies">
         <url>bolt://localhost:7687</url>
-        <provider>com.buschmais.xo.neo4j.embedded.api.RemoteNeo4jXOProvider</provider>
+        <provider>com.buschmais.xo.neo4j.remote.api.RemoteNeo4jXOProvider</provider>
         <types>
             <type>com.buschmais.xo.neo4j.doc.bootstrap.Person</type>
             <type>com.buschmais.xo.neo4j.doc.bootstrap.Actor</type>
@@ -9,6 +9,12 @@
         <properties>
             <property name="neo4j.remote.username" value="neo4j"/>
             <property name="neo4j.remote.password" value="secret"/>
+            <!--
+            <property name="neo4j.remote.encryptionLevel" value="required"/>
+            <property name="neo4j.remote.trust.strategy" value="trustCustomCaSignedCertificates"/>
+            <property name="neo4j.remote.trust.certificate" value="my.crt"/>
+            <property name="neo4j.remote.statement.log.level" value="info"/>
+            -->
         </properties>
     </xo-unit>
 </v1:xo>

@@ -3,9 +3,9 @@ package com.buschmais.xo.spi.logging;
 import org.slf4j.Logger;
 
 /**
- * Defines log strategies.
+ * Defines a log level.
  */
-public enum LogStrategy {
+public enum LogLevel {
 
     NONE {
         @Override
