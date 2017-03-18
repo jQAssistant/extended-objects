@@ -1,5 +1,8 @@
 package com.buschmais.xo.json.api;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.json.impl.JsonDatastoreSession;
@@ -8,9 +11,6 @@ import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
 import com.buschmais.xo.json.impl.metadata.JsonRelationMetadata;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import com.buschmais.xo.spi.datastore.Datastore;
-
-import java.net.MalformedURLException;
-import java.net.URI;
 
 public class JsonFileStoreProvider implements XODatastoreProvider {
 
@@ -25,5 +25,10 @@ public class JsonFileStoreProvider implements XODatastoreProvider {
         } catch (MalformedURLException e) {
             throw new XOException("Cannot convert URI '" + uri.toString() + "' to URL.", e);
         }
+    }
+
+    @Override
+    public Class<? extends Enum<? extends ConfigurationProperty>> getConfigurationProperties() {
+        return null;
     }
 }

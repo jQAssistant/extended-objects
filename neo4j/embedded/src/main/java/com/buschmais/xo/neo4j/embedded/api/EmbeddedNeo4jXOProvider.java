@@ -44,4 +44,9 @@ public class EmbeddedNeo4jXOProvider implements XODatastoreProvider {
         return DatastoreFactory.class.getPackage().getName() + "." + protocol + "DatastoreFactory";
     }
 
+    @Override
+    public Class<? extends Enum<? extends ConfigurationProperty>> getConfigurationProperties() {
+        return null;
+    }
+
 }

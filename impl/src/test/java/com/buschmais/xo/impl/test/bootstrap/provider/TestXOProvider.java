@@ -10,4 +10,9 @@ public class TestXOProvider implements XODatastoreProvider {
     public Datastore<?, ?, ?, ?, ?> createDatastore(XOUnit xoUnit) {
         return new TestXODatastore(xoUnit);
     }
+
+    @Override
+    public Class<? extends Enum<? extends ConfigurationProperty>> getConfigurationProperties() {
+        return null;
+    }
 }

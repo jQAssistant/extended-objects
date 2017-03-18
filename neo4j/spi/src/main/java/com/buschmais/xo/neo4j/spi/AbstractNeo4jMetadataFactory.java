@@ -100,16 +100,17 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
         if (name == null) {
             name = CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, annotatedElement.getName());
         }
-        return new RelationshipMetadata<R>(createRelationshipType(name), batchable);
+        return new RelationshipMetadata<>(createRelationshipType(name), batchable);
     }
 
     private boolean isBatchable(AnnotatedElement<?> annotatedElement) {
         Batchable batchable = annotatedElement.getAnnotation(Batchable.class);
-        return batchable != null ? batchable.value() : true;
+        return batchable != null ? batchable.value() : isBatchableDefault();
     }
 
     protected abstract R createRelationshipType(String name);
 
     protected abstract L createLabel(String name);
 
+    protected abstract boolean isBatchableDefault();
 }

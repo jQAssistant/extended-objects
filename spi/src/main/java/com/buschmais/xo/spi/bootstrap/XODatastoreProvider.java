@@ -9,4 +9,24 @@ public interface XODatastoreProvider<EntityMetadata extends DatastoreEntityMetad
 
     Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> createDatastore(XOUnit xoUnit);
 
+    Class<? extends Enum<? extends ConfigurationProperty>> getConfigurationProperties();
+
+    interface ConfigurationProperty {
+
+        /**
+         * Return the property key.
+         *
+         * @return The proeperty key.
+         */
+        String getKey();
+
+        /**
+         * Return the target type of the value.
+         *
+         * @return The target type.
+         */
+        Class<?> getType();
+
+    }
+
 }

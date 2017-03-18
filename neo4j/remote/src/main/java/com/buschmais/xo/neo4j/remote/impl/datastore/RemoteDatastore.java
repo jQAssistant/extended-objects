@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.neo4j.driver.v1.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
@@ -24,6 +26,8 @@ import com.buschmais.xo.spi.logging.LogLevel;
 import com.google.common.base.CaseFormat;
 
 public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteRelationshipType, RemoteDatastoreSession> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemoteDatastore.class);
 
     private Driver driver;
 
@@ -69,7 +73,13 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
         if (statementLogLevel != null) {
             statementConfigBuilder.logLevel(getEnumOption(LogLevel.class, statementLogLevel));
         }
-        return statementConfigBuilder.build();
+        String batchableDefault = RemoteNeo4jXOProvider.Property.STATEMENT_BATCHABLE_DEFAULT.get(properties);
+        if (batchableDefault != null) {
+            statementConfigBuilder.batchableDefault(Boolean.valueOf(batchableDefault));
+        }
+        StatementConfig statementConfig = statementConfigBuilder.build();
+        LOGGER.debug("Using statement configuration " + statementConfig);
+        return statementConfig;
     }
 
     @Override
@@ -83,6 +93,11 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
             @Override
             protected RemoteLabel createLabel(String name) {
                 return new RemoteLabel(name);
+            }
+
+            @Override
+            protected boolean isBatchableDefault() {
+                return statementConfig.isBatchableDefault();
             }
         };
     }

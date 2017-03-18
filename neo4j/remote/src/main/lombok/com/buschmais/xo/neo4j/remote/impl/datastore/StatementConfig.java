@@ -21,4 +21,5 @@ public class StatementConfig {
 
     private LogLevel logLevel = LogLevel.NONE;
 
+    private boolean batchableDefault = true;
 }

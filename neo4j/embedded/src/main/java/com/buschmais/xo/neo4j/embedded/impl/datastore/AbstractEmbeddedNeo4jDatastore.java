@@ -20,7 +20,7 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
 
     /**
      * Constructor.
-     * 
+     *
      * @param graphDatabaseService
      *            The graph database service.
      */
@@ -36,8 +36,14 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
                 return new EmbeddedLabel(value);
             }
 
+
             protected EmbeddedRelationshipType createRelationshipType(String name) {
                 return new EmbeddedRelationshipType(DynamicRelationshipType.withName(name));
+            }
+
+            @Override
+            protected boolean isBatchableDefault() {
+                return false;
             }
         };
     }

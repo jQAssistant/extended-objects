@@ -1,5 +1,8 @@
 package com.buschmais.xo.test.trace.api;
 
+import java.util.Arrays;
+import java.util.Properties;
+
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
@@ -8,12 +11,9 @@ import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 import com.buschmais.xo.spi.reflection.ClassHelper;
-import com.buschmais.xo.test.trace.impl.TraceMonitor;
 import com.buschmais.xo.test.trace.impl.TraceDatastore;
+import com.buschmais.xo.test.trace.impl.TraceMonitor;
 import com.buschmais.xo.test.trace.impl.TraceMonitorInterceptor;
-
-import java.util.Arrays;
-import java.util.Properties;
 
 /**
  * {@link XODatastoreProvider} implementation allowing tracing on delegates.
@@ -36,4 +36,9 @@ public class TraceDatastoreProvider<EntityMetadata extends DatastoreEntityMetada
         InterceptorFactory interceptorFactory = new InterceptorFactory(Arrays.asList(new TraceMonitorInterceptor(traceMonitor)));
         return new TraceDatastore<>(interceptorFactory.addInterceptor(delegateDatastore, Datastore.class), interceptorFactory, traceMonitor);
     }
- }
+
+    @Override
+    public Class<? extends Enum<? extends ConfigurationProperty>> getConfigurationProperties() {
+        return null;
+    }
+}
