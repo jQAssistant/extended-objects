@@ -226,15 +226,14 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
             for (RemoteNode entity : entities) {
                 if (entity.getId() < 0) {
                     flushAddedEntity(batchBuilder, entity);
+                } else {
+                    flush(batchBuilder, entity, "(n)", "n");
+                    flushLabels(batchBuilder, entity);
                 }
             }
         }
         try (StatementBatchBuilder batchBuilder = new StatementBatchBuilder(statementExecutor)) {
             for (RemoteNode entity : entities) {
-                if (entity.getId() >= 0) {
-                    flush(batchBuilder, entity, "(n)", "n");
-                    flushLabels(batchBuilder, entity);
-                }
                 for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : entity.getState().getOutgoingRelationships().values()) {
                     flushAddedRelationships(batchBuilder, tracker.getAdded());
                     flushRemovedRelationships(batchBuilder, tracker.getRemoved());
