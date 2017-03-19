@@ -3,8 +3,6 @@ Dirk Mahler <dirk.mahler@buschmais.com>
 
 This document describes the Neo4j datastore for http://github.com/buschmais/extended-objects[eXtended Objects].
 
-:numbered!:
-[abstract]
 == Introduction
 
 As a graph database Neo4j provides very powerful capabilities to store and query highly interconnected data structures
