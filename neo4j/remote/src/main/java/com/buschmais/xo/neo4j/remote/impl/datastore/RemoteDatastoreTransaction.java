@@ -27,6 +27,7 @@ public class RemoteDatastoreTransaction implements DatastoreTransaction {
 
     @Override
     public void commit() {
+        assertTransaction();
         try {
             this.transaction.success();
         } finally {
@@ -36,6 +37,7 @@ public class RemoteDatastoreTransaction implements DatastoreTransaction {
 
     @Override
     public void rollback() {
+        assertTransaction();
         try {
             this.transaction.failure();
         } finally {
@@ -44,8 +46,15 @@ public class RemoteDatastoreTransaction implements DatastoreTransaction {
     }
 
     private void close() {
+        assertTransaction();
         this.transaction.close();
         this.transaction = null;
+    }
+
+    private void assertTransaction() {
+        if (transaction == null) {
+            throw new XOException("There is no existing transaction.");
+        }
     }
 
     @Override
