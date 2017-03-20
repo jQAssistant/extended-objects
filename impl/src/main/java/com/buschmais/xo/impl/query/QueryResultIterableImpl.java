@@ -1,5 +1,9 @@
 package com.buschmais.xo.impl.query;
 
+import java.util.*;
+import java.util.Map.Entry;
+
+import com.buschmais.xo.api.CompositeType;
 import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
@@ -7,12 +11,7 @@ import com.buschmais.xo.impl.AbstractResultIterable;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.query.RowInvocationHandler;
 import com.buschmais.xo.impl.proxy.query.RowProxyMethodService;
-import com.buschmais.xo.api.CompositeType;
 import com.buschmais.xo.spi.metadata.CompositeTypeBuilder;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
 
 class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterable<T> implements Query.Result<T> {
 
@@ -97,12 +96,12 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
                 }
                 return decodedCollection;
             }
-            
+
             private Map<Object, Object> decodeMap(Map<?, ?> map, Map<Object, Object> decodedMap) {
             	for(Entry<?, ?> entry : map.entrySet()){
             		decodedMap.put(decodeValue(entry.getKey()), decodeValue(entry.getValue()));
             	}
-            	
+
                 return decodedMap;
             }
 
@@ -115,7 +114,7 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         iterator.close();
     }
 }
