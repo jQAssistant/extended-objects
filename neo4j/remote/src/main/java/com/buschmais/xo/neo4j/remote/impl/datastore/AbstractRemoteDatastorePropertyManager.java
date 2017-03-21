@@ -63,7 +63,7 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
         AbstractPropertyContainerState state = entity.getState();
         Map<String, Object> writeCache = state.getWriteCache();
         if (writeCache != null && !writeCache.isEmpty()) {
-            String statement = "MATCH " + pattern + "WHERE id(" + identifier + ")=entry['id'] SET " + identifier + "+=entry['" + identifier
+            String statement = "MATCH " + pattern + " WHERE id(" + identifier + ")=entry['id'] SET " + identifier + "+=entry['" + identifier
                     + "'] RETURN collect(id(" + identifier + "))";
             batchBuilder.add(statement, parameters("id", entity.getId(), identifier, writeCache));
         }

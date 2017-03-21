@@ -52,12 +52,6 @@ public class RemoteDatastoreSessionCache {
         }
     }
 
-    public RemoteRelationship replaceRelationship(long id, RemoteNode startNode, RemoteRelationshipType type, RemoteNode endNode, RelationshipState state) {
-        RemoteRelationship remoteRelationship = new RemoteRelationship(id, state, startNode, type, endNode);
-        relationshipCache.put(id, remoteRelationship);
-        return remoteRelationship;
-    }
-
     public RemoteNode getNode(Node node) {
         RemoteNode remoteNode = getNode(node.id());
         NodeState nodeState = remoteNode.getState();
@@ -94,4 +88,13 @@ public class RemoteDatastoreSessionCache {
         return remoteRelationship;
     }
 
+    public void update(long id, RemoteNode remoteNode) {
+        remoteNode.updateId(id);
+        nodeCache.put(id, remoteNode);
+    }
+
+    public void update(long id, RemoteRelationship remoteRelationship) {
+        remoteRelationship.updateId(id);
+        relationshipCache.put(id, remoteRelationship);
+    }
 }

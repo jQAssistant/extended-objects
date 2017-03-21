@@ -13,7 +13,6 @@ import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.model.*;
 import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
-import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.StateTracker;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
@@ -254,19 +253,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
                 Long oldId = (Long) r.get("oldId");
                 Long newId = (Long) r.get("newId");
                 RemoteNode oldNode = datastoreSessionCache.getNode(oldId);
-                NodeState state = oldNode.getState();
-                RemoteNode newNode = datastoreSessionCache.getNode(newId, state);
-                for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> stateTracker : state.getOutgoingRelationships().values()) {
-                    for (RemoteRelationship oldRelationship : stateTracker.getElements()) {
-                        oldRelationship.setStartNode(newNode);
-                    }
-                }
-                for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> stateTracker : state.getIncomingRelationships().values()) {
-                    for (RemoteRelationship oldRelationship : stateTracker.getElements()) {
-                        oldRelationship.setEndNode(newNode);
-                    }
-                }
-                oldNode.updateId(newId);
+                datastoreSessionCache.update(newId, oldNode);
             }
         });
     }
@@ -299,25 +286,9 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
                             Long oldId = (Long) r.get("oldId");
                             Long newId = (Long) r.get("newId");
                             RemoteRelationship oldRelationship = datastoreSessionCache.getRelationship(oldId);
-                            RemoteNode startNode = oldRelationship.getStartNode();
-                            RemoteNode endNode = oldRelationship.getEndNode();
-                            RemoteRelationshipType type = oldRelationship.getType();
-                            RelationshipState state = oldRelationship.getState();
-                            RemoteRelationship newRelationship = datastoreSessionCache.getRelationship(newId, startNode, type, endNode, state);
-                            replaceRelationship(startNode, oldRelationship, newRelationship, RemoteDirection.OUTGOING);
-                            replaceRelationship(endNode, oldRelationship, newRelationship, RemoteDirection.INCOMING);
-                            oldRelationship.updateId(newId);
+                            datastoreSessionCache.update(newId, oldRelationship);
                         }
                     });
-        }
-    }
-
-    private void replaceRelationship(RemoteNode node, RemoteRelationship oldRelationship, RemoteRelationship newRelationship, RemoteDirection direction) {
-        StateTracker<RemoteRelationship, Set<RemoteRelationship>> relationships = node.getState().getRelationships(direction, oldRelationship.getType());
-        if (relationships != null) {
-            Set<RemoteRelationship> oldIncomingRelationships = relationships.getElements();
-            oldIncomingRelationships.remove(oldRelationship);
-            oldIncomingRelationships.add(newRelationship);
         }
     }
 

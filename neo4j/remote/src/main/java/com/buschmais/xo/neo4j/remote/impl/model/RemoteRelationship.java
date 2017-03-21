@@ -24,17 +24,9 @@ public class RemoteRelationship extends AbstractRemotePropertyContainer<Relation
         return startNode;
     }
 
-    public void setStartNode(RemoteNode startNode) {
-        this.startNode = startNode;
-    }
-
     @Override
     public RemoteNode getEndNode() {
         return endNode;
-    }
-
-    public void setEndNode(RemoteNode endNode) {
-        this.endNode = endNode;
     }
 
     @Override
