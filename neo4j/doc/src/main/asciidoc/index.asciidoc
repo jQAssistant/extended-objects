@@ -98,7 +98,7 @@ An XOManagerFactory instance can now be obtained as demonstrated in the followin
 include::{srcBaseDir}/bootstrap/BootstrapTest.java[tags=BootstrapXml,indent=0]
 ----
 
-=== XOUnit via XOUnitBuilder
+=== XOUnit via Builder
 
 It is also possible to create a XOManagerFactory using an instance of the class 'com.buschmais.xo.api.XOUnit':
 
@@ -107,7 +107,7 @@ It is also possible to create a XOManagerFactory using an instance of the class 
 include::{srcBaseDir}/bootstrap/BootstrapTest.java[tags=BootstrapJava,indent=0]
 ----
 
-Note: The class XOUnitBuilder provides a fluent interface for the parameters which may be specified for an XO unit.
+Note: The class XOUnit builder provides a fluent interface for the parameters which may be specified for an XO unit.
 
 == Mapping Persistent Types
 

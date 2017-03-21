@@ -43,19 +43,22 @@ public interface Query<T> {
      *
      * @param <T> The type of the elements contained in the result.
      */
-    public interface Result<T> extends ResultIterable<T>, Closeable {
+    interface Result<T> extends ResultIterable<T>, Closeable {
+
+        @Override
+        void close();
 
         /**
          * Defines the interface which is implemented by all instances contained in a {@link ResultIterable} and which allows access to a column in a row.
          */
-        public interface CompositeRowObject extends CompositeObject {
+        interface CompositeRowObject extends CompositeObject {
 
             /**
              * Return the names of the columns in this row.
              *
              * @return The column names.
              */
-            public List<String> getColumns();
+            List<String> getColumns();
 
             /**
              * Return the value of column in row.
