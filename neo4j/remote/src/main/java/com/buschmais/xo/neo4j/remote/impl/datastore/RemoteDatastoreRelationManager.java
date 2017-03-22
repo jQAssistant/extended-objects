@@ -174,7 +174,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
                 .getElements();
         if (relationships.size() > 1) {
             throw new XOException("Found more than one relationship for node=" + source + ", type=" + metadata.getDatastoreMetadata().getDiscriminator()
-                    + ", direction=" + direction);
+                    + ", direction=" + direction + ", relationships=" + relationships);
         }
         return relationships;
     }

@@ -8,10 +8,8 @@ import org.neo4j.driver.v1.types.Node;
 import org.neo4j.driver.v1.types.Relationship;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationship;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
+import com.buschmais.xo.neo4j.remote.impl.model.*;
+import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
 import com.google.common.cache.Cache;
@@ -89,12 +87,17 @@ public class RemoteDatastoreSessionCache {
     }
 
     public void update(long id, RemoteNode remoteNode) {
-        remoteNode.updateId(id);
-        nodeCache.put(id, remoteNode);
+        update(id, remoteNode, nodeCache);
     }
 
     public void update(long id, RemoteRelationship remoteRelationship) {
-        remoteRelationship.updateId(id);
-        relationshipCache.put(id, remoteRelationship);
+        update(id, remoteRelationship, relationshipCache);
+    }
+
+    private <C extends AbstractRemotePropertyContainer<S>, S extends AbstractPropertyContainerState> void update(long id, C propertyContainer,
+            Cache<Long, C> cache) {
+        cache.invalidate(propertyContainer.getId());
+        propertyContainer.updateId(id);
+        cache.put(id, propertyContainer);
     }
 }

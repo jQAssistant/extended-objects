@@ -30,6 +30,8 @@ public class XOUnit {
 
     @Getter
     @Builder
+    @NoArgsConstructor(access = PRIVATE)
+    @AllArgsConstructor(access = PRIVATE)
     @ToString
     public static class MappingConfiguration {
 

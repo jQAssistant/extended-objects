@@ -9,9 +9,11 @@ import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerS
 
 public abstract class AbstractRemotePropertyContainer<S extends AbstractPropertyContainerState> implements Neo4jPropertyContainer {
 
-    private long id;
+    private final int hashCode = System.identityHashCode(this);
 
-    private S state;
+    private final S state;
+
+    private long id;
 
     protected AbstractRemotePropertyContainer(long id, S state) {
         this.id = id;
@@ -61,19 +63,12 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
 
     @Override
     public final boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        AbstractRemotePropertyContainer that = (AbstractRemotePropertyContainer) o;
-
-        return id == that.id;
+        return this == o;
     }
 
     @Override
     public final int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return hashCode;
     }
 
     @Override
