@@ -58,7 +58,6 @@ public class AutoFlushTest extends AbstractNeo4jXOManagerTest {
     public void overwriteAutoFlush() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
-        AutoFlushRepository autoFlushRepository = xoManager.getRepository(AutoFlushRepository.class);
         A a = xoManager.create(A.class);
         a.setName("1");
         assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a").execute().getSingleResult().get("a", A.class), equalTo(a));
