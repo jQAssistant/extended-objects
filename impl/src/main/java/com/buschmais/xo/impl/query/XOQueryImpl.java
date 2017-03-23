@@ -8,7 +8,7 @@ import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOTransaction;
-import com.buschmais.xo.spi.session.InstanceManager;
+import com.buschmais.xo.api.annotation.AutoFlush;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.plugin.QueryLanguagePluginRepository;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
@@ -17,10 +17,11 @@ import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.plugin.QueryLanguagePlugin;
+import com.buschmais.xo.spi.session.InstanceManager;
 
 /**
  * Implementation of a {@link com.buschmais.xo.api.Query}.
- * 
+ *
  * @param <T>
  *            The result type.
  * @param <QL>
@@ -35,6 +36,7 @@ import com.buschmais.xo.spi.plugin.QueryLanguagePlugin;
 public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> implements Query<T> {
 
     private Class<? extends Annotation> queryLanguage = null;
+    private Boolean autoFlush = null;
     private final QE expression;
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
     private final QueryLanguagePluginRepository queryLanguagePluginManager;
@@ -101,8 +103,13 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     }
 
     @Override
+    public Query<T> autoFlush(boolean autoFlush) {
+        this.autoFlush = autoFlush;
+        return this;
+    }
+
+    @Override
     public Result<T> execute() {
-        sessionContext.getCacheSynchronizationService().flush();
         DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> datastoreSession = sessionContext
                 .getDatastoreSession();
         if (queryLanguage == null) {
@@ -118,28 +125,42 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         Map<String, Object> effectiveParameters = parameters != null ? parameters : Collections.emptyMap();
         ResultIterator<Map<String, Object>> iterator;
         if (expression instanceof String) {
+            flush(null);
             iterator = query.execute((String) expression, effectiveParameters);
         } else if (expression instanceof AnnotatedElement) {
-            AnnotatedElement typeExpression = (AnnotatedElement) expression;
-            QL queryAnnotation = sessionContext.getMetadataProvider().getQuery(typeExpression);
+            AnnotatedElement annotatedElement = (AnnotatedElement) expression;
+            QL queryAnnotation = sessionContext.getMetadataProvider().getQuery(annotatedElement);
             if (queryAnnotation == null) {
-                throw new XOException("Cannot find query annotation on element " + expression.toString());
+                throw new XOException("Cannot find query autoFlush on element " + expression.toString());
             }
+            flush(annotatedElement);
             iterator = query.execute(queryAnnotation, effectiveParameters);
         } else {
             throw new XOException("Expression type is not supported: " + expression);
         }
         SortedSet<Class<?>> resultTypes = getResultTypes();
         XOTransaction xoTransaction = sessionContext.getXOTransaction();
-        return sessionContext.getInterceptorFactory().addInterceptor(
-                new QueryResultIterableImpl(sessionContext, xoTransaction != null ? new TransactionalResultIterator<>(iterator, xoTransaction) : iterator,
-                        resultTypes), Result.class);
+        return sessionContext.getInterceptorFactory().addInterceptor(new QueryResultIterableImpl(sessionContext,
+                xoTransaction != null ? new TransactionalResultIterator<>(iterator, xoTransaction) : iterator, resultTypes), Result.class);
+    }
+
+    private void flush(AnnotatedElement annotatedElement) {
+        boolean flush;
+        if (this.autoFlush != null) {
+            flush = this.autoFlush;
+        } else {
+            AutoFlush autoFlushAnnotation = annotatedElement != null ? annotatedElement.getAnnotation(AutoFlush.class) : null;
+            flush = autoFlushAnnotation != null ? autoFlushAnnotation.value() : true;
+        }
+        if (flush) {
+            sessionContext.getCacheSynchronizationService().flush();
+        }
     }
 
     /**
      * Converts the given parameter value to instances which can be passed to
      * the datastore.
-     * 
+     *
      * @param value
      *            The value.
      * @return The converted value.

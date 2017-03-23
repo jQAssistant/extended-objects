@@ -8,17 +8,27 @@ import java.util.Map;
 /**
  * Defines a query using a fluent API.
  *
- * @param <T> The return type of the query.
+ * @param <T>
+ *            The return type of the query.
  */
 public interface Query<T> {
 
+    /**
+     * Specify the query language.
+     *
+     * @param queryLanguage
+     *            The annotation class representing the query language.
+     * @return The query.
+     */
     Query<T> using(Class<? extends Annotation> queryLanguage);
 
     /**
      * Bind a parameter value to the query.
      *
-     * @param name  The parameter name.
-     * @param value The parameter value.
+     * @param name
+     *            The parameter name.
+     * @param value
+     *            The parameter value.
      * @return The query.
      */
     Query<T> withParameter(String name, Object value);
@@ -26,10 +36,21 @@ public interface Query<T> {
     /**
      * Bind a map of parameter values to the query.
      *
-     * @param parameters The map of parameters consisting of names as keys and their values.
+     * @param parameters
+     *            The map of parameters consisting of names as keys and their
+     *            values.
      * @return The query.
      */
     Query<T> withParameters(Map<String, Object> parameters);
+
+    /**
+     * Set the auto flush behavior.
+     *
+     * @param autoFlush
+     *            if <code>true</code> any modified instances will be flushed to
+     *            the datastore before executing the query.
+     */
+    Query<T> autoFlush(boolean autoFlush);
 
     /**
      * Execute the query.
@@ -41,7 +62,8 @@ public interface Query<T> {
     /**
      * Defines the result of a query.
      *
-     * @param <T> The type of the elements contained in the result.
+     * @param <T>
+     *            The type of the elements contained in the result.
      */
     interface Result<T> extends ResultIterable<T>, Closeable {
 
@@ -49,7 +71,9 @@ public interface Query<T> {
         void close();
 
         /**
-         * Defines the interface which is implemented by all instances contained in a {@link ResultIterable} and which allows access to a column in a row.
+         * Defines the interface which is implemented by all instances contained
+         * in a {@link ResultIterable} and which allows access to a column in a
+         * row.
          */
         interface CompositeRowObject extends CompositeObject {
 
@@ -63,9 +87,12 @@ public interface Query<T> {
             /**
              * Return the value of column in row.
              *
-             * @param name The column name.
-             * @param type The type to be returned.
-             * @param <C>  The generic type to be returned.
+             * @param name
+             *            The column name.
+             * @param type
+             *            The type to be returned.
+             * @param <C>
+             *            The generic type to be returned.
              * @return The value.
              */
             <C> C get(String name, Class<C> type);

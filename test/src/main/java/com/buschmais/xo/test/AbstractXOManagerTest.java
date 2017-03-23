@@ -187,8 +187,13 @@ public abstract class AbstractXOManagerTest {
      *
      * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
      */
-    protected XOManagerFactory getXoManagerFactory() {
+    protected XOManagerFactory getXOManagerFactory() {
         return xoManagerFactory;
+    }
+
+    @Deprecated
+    protected XOManagerFactory getXoManagerFactory() {
+        return getXOManagerFactory();
     }
 
     /**
@@ -196,11 +201,16 @@ public abstract class AbstractXOManagerTest {
      *
      * @return The current {@link com.buschmais.xo.api.XOManager}.
      */
-    protected XOManager getXoManager() {
+    protected XOManager getXOManager() {
         if (xoManager == null) {
             xoManager = getXoManagerFactory().createXOManager();
         }
         return xoManager;
+    }
+
+    @Deprecated
+    protected XOManager getXoManager() {
+        return getXOManager();
     }
 
     /**
