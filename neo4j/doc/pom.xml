@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.buschmais.xo</groupId>
         <artifactId>xo.neo4j</artifactId>
-        <version>0.10.0-SNAPSHOT</version>
+        <version>0.8.1</version>
     </parent>
     <artifactId>xo.neo4j.doc</artifactId>
 
@@ -30,25 +30,25 @@
             <!-- For using an embedded Neo4j instance -->
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.neo4j.embedded</artifactId>
-            <version>0.10.0-SNAPSHOT</version>
+            <version>0.8.1</version>
         </dependency>
         <dependency>
             <!-- For using a remote Neo4j instance -->
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.neo4j.remote</artifactId>
-            <version>0.10.0-SNAPSHOT</version>
+            <version>0.8.1</version>
         </dependency>
         <dependency>
             <!-- The XO API -->
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.api</artifactId>
-            <version>0.10.0-SNAPSHOT</version>
+            <version>0.8.1</version>
         </dependency>
         <dependency>
             <!-- The XO runtime implementation -->
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.impl</artifactId>
-            <version>0.10.0-SNAPSHOT</version>
+            <version>0.8.1</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
