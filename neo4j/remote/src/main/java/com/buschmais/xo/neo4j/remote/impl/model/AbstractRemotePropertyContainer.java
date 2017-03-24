@@ -7,9 +7,14 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.model.Neo4jPropertyContainer;
 import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
 
+/**
+ * Abstract base class for property containers.
+ *
+ * @param <S> The state type.
+ *
+ * This class and all deriving classes must not override {@link #equals(Object)} and {@link #hashCode()}.
+ */
 public abstract class AbstractRemotePropertyContainer<S extends AbstractPropertyContainerState> implements Neo4jPropertyContainer {
-
-    private final int hashCode = System.identityHashCode(this);
 
     private final S state;
 
@@ -59,16 +64,6 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
 
     public void removeProperty(String name) {
         setProperty(name, null);
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        return this == o;
-    }
-
-    @Override
-    public final int hashCode() {
-        return hashCode;
     }
 
     @Override
