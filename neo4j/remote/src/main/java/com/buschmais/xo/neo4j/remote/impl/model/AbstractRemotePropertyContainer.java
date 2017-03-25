@@ -18,11 +18,14 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
 
     private final S state;
 
+    private final int hashCode;
+
     private long id;
 
     protected AbstractRemotePropertyContainer(long id, S state) {
         this.id = id;
         this.state = state;
+        this.hashCode = super.hashCode();
     }
 
     @Override
@@ -64,6 +67,16 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
 
     public void removeProperty(String name) {
         setProperty(name, null);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return this == other;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.hashCode;
     }
 
     @Override

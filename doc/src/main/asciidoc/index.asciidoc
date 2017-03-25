@@ -3,9 +3,7 @@ Dirk Mahler <dirk.mahler@buschmais.com>
 
 This document describes the core concepts of eXtended Objects.
 
-:numbered!:
-[abstract]
-= Introduction
+== Introduction
 
 Modeling data objects for datastores (i.e. databases) in various domains often requires common properties
 (e.g. lastChangedBy, created, name, etc.) to be present in several data types. This is commonly solved by defining
@@ -22,8 +20,8 @@ relational or graph databases, document stores etc. but allows using them. Datas
 provided by implementing the SPI (Service Provider Interface), the reference implementation is based on the
 graph database Neo4j.
 
-= Core Concepts
-== Static vs. Dynamic Composition
+== Core Concepts
+=== Static vs. Dynamic Composition
 
 A simple example shall be used to explain the difference between both concepts of composition:
 
@@ -162,33 +160,7 @@ public class TempleOfDoom {
 }
 ----
 
-=== XO Bootstrapping in OSGi environments
-
-[source,java]
-.Activator.java
-----
-public class Activator implements BundleActivator {
-
-  public void start(BundleContext context) throws Exception {
-
-    // performs a lookup in the OSGi service registry
-    XOManagerFactory xmf = XOSGi.createXOManagerFactory("movies");
-
-    XOManager xm = xmf.createXOManager();
-    xm.currentTransaction.begin();
-    Actor harrison = xm.create(Actor.class);
-    harrison.setName("Harrison Ford");
-
-    //
-
-    xm.currentTransaction.commit();
-    xmf.close();
-  }
-}
-----
-
-
-== Entity Migration At Runtime
+=== Entity Migration At Runtime
 
 There may be situations where an existing data object needs to be migrated to also represent other types. Using the
 above example the fact that the director also acted in the movie might have been discovered after the data object
@@ -225,7 +197,7 @@ public class TempleOfDoom {
 }
 ----
 
-= API Overview
+== API Overview
 
 eXtended Objects provides an API which re-uses concepts of other frameworks and standards like JPA or JDO:
 
@@ -244,20 +216,43 @@ XOTransaction::
 Query::
   A user defined query which may be executed against the datastore.
 
-= Available Datastore Implementations
+== XO Bootstrapping in OSGi environments
 
-== Neo4j
+[source,java]
+.Activator.java
+----
+public class Activator implements BundleActivator {
+
+  public void start(BundleContext context) throws Exception {
+
+    // performs a lookup in the OSGi service registry
+    XOManagerFactory xmf = XOSGi.createXOManagerFactory("movies");
+
+    XOManager xm = xmf.createXOManager();
+    xm.currentTransaction.begin();
+    Actor harrison = xm.create(Actor.class);
+    harrison.setName("Harrison Ford");
+
+    xm.currentTransaction.commit();
+    xmf.close();
+  }
+}
+----
+
+== Available Datastore Implementations
+
+=== Neo4j
 https://github.com/buschmais/extended-objects (part of the core distribution)
 
-== Titan Datastore
+=== Titan Datastore
 
 https://github.com/PureSolTechnologies/extended-objects-titan
 
-== TinkerPop Blueprints Datastore
+=== TinkerPop Blueprints Datastore
 
 https://github.com/BluWings/xo-tinkerpop-blueprints
 
-== OrientDb Datastore
+=== OrientDb Datastore
 
 https://github.com/BluWings/xo-orientdb
 
