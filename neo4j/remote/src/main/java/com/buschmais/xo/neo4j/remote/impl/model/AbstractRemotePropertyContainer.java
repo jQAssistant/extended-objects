@@ -10,9 +10,12 @@ import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerS
 /**
  * Abstract base class for property containers.
  *
- * @param <S> The state type.
+ * NOTE: This class and all deriving classes must not override
+ * {@link #equals(Object)} and {@link #hashCode()}, equality is defined by
+ * reference.
  *
- * This class and all deriving classes must not override {@link #equals(Object)} and {@link #hashCode()}.
+ * @param <S>
+ *            The state type.
  */
 public abstract class AbstractRemotePropertyContainer<S extends AbstractPropertyContainerState> implements Neo4jPropertyContainer {
 
