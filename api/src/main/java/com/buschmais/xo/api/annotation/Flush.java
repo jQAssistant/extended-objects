@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD })
-public @interface AutoFlush {
+public @interface Flush {
 
     boolean value();
 

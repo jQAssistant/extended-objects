@@ -8,7 +8,7 @@ import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOTransaction;
-import com.buschmais.xo.api.annotation.AutoFlush;
+import com.buschmais.xo.api.annotation.Flush;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.plugin.QueryLanguagePluginRepository;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
@@ -36,7 +36,7 @@ import com.buschmais.xo.spi.session.InstanceManager;
 public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> implements Query<T> {
 
     private Class<? extends Annotation> queryLanguage = null;
-    private Boolean autoFlush = null;
+    private Boolean flush = null;
     private final QE expression;
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
     private final QueryLanguagePluginRepository queryLanguagePluginManager;
@@ -103,8 +103,8 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     }
 
     @Override
-    public Query<T> autoFlush(boolean autoFlush) {
-        this.autoFlush = autoFlush;
+    public Query<T> flush(boolean flush) {
+        this.flush = flush;
         return this;
     }
 
@@ -131,7 +131,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
             AnnotatedElement annotatedElement = (AnnotatedElement) expression;
             QL queryAnnotation = sessionContext.getMetadataProvider().getQuery(annotatedElement);
             if (queryAnnotation == null) {
-                throw new XOException("Cannot find query autoFlush on element " + expression.toString());
+                throw new XOException("Cannot find query annotation on element " + expression.toString());
             }
             flush(annotatedElement);
             iterator = query.execute(queryAnnotation, effectiveParameters);
@@ -145,14 +145,14 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     }
 
     private void flush(AnnotatedElement annotatedElement) {
-        boolean flush;
-        if (this.autoFlush != null) {
-            flush = this.autoFlush;
+        boolean doFlush;
+        if (this.flush != null) {
+            doFlush = this.flush;
         } else {
-            AutoFlush autoFlushAnnotation = annotatedElement != null ? annotatedElement.getAnnotation(AutoFlush.class) : null;
-            flush = autoFlushAnnotation != null ? autoFlushAnnotation.value() : true;
+            Flush autoFlushAnnotation = annotatedElement != null ? annotatedElement.getAnnotation(Flush.class) : null;
+            doFlush = autoFlushAnnotation != null ? autoFlushAnnotation.value() : true;
         }
-        if (flush) {
+        if (doFlush) {
             sessionContext.getCacheSynchronizationService().flush();
         }
     }

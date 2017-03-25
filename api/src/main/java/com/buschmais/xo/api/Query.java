@@ -44,13 +44,13 @@ public interface Query<T> {
     Query<T> withParameters(Map<String, Object> parameters);
 
     /**
-     * Set the auto flush behavior.
+     * Set the flush behavior.
      *
-     * @param autoFlush
+     * @param flush
      *            if <code>true</code> any modified instances will be flushed to
      *            the datastore before executing the query.
      */
-    Query<T> autoFlush(boolean autoFlush);
+    Query<T> flush(boolean flush);
 
     /**
      * Execute the query.

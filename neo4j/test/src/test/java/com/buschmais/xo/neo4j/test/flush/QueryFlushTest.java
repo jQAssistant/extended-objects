@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.test.autoflush;
+package com.buschmais.xo.neo4j.test.flush;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -17,52 +17,52 @@ import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.Neo4jDatabase;
-import com.buschmais.xo.neo4j.test.autoflush.composite.A;
-import com.buschmais.xo.neo4j.test.autoflush.composite.AutoFlushRepository;
-import com.buschmais.xo.neo4j.test.autoflush.composite.FindByNameQuery;
+import com.buschmais.xo.neo4j.test.flush.composite.A;
+import com.buschmais.xo.neo4j.test.flush.composite.FindByNameQuery;
+import com.buschmais.xo.neo4j.test.flush.composite.FlushRepository;
 
 @RunWith(Parameterized.class)
-public class AutoFlushTest extends AbstractNeo4jXOManagerTest {
+public class QueryFlushTest extends AbstractNeo4jXOManagerTest {
 
     @Parameters
     public static Collection<Object[]> getXOUnits() {
-        return xoUnits(singletonList(Neo4jDatabase.BOLT), asList(A.class, AutoFlushRepository.class));
+        return xoUnits(singletonList(Neo4jDatabase.BOLT), asList(A.class, FlushRepository.class));
     }
 
-    public AutoFlushTest(XOUnit xoUnit) {
+    public QueryFlushTest(XOUnit xoUnit) {
         super(xoUnit);
     }
 
     @Test
-    public void autoFlush() {
+    public void flush() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
-        AutoFlushRepository autoFlushRepository = xoManager.getRepository(AutoFlushRepository.class);
+        FlushRepository repository = xoManager.getRepository(FlushRepository.class);
         A a = xoManager.create(A.class);
         a.setName("1");
         assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a").execute().getSingleResult().get("a", A.class), equalTo(a));
         a.setName("2");
         assertThat(xoManager.createQuery(FindByNameQuery.class).withParameter("name", "1").execute().hasResult(), equalTo(true));
-        assertThat(autoFlushRepository.findByName("1"), equalTo(a));
+        assertThat(repository.findByName("1"), equalTo(a));
         assertThat(a.findByName("1"), equalTo(a));
-        assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a").autoFlush(false).execute().hasResult(), equalTo(true));
+        assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a").flush(false).execute().hasResult(), equalTo(true));
         xoManager.flush();
         assertThat(xoManager.createQuery(FindByNameQuery.class).withParameter("name", "1").execute().hasResult(), equalTo(false));
-        assertThat(autoFlushRepository.findByName("1"), nullValue());
+        assertThat(repository.findByName("1"), nullValue());
         assertThat(a.findByName("1"), nullValue());
-        assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a").autoFlush(false).execute().hasResult(), equalTo(false));
+        assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a").flush(false).execute().hasResult(), equalTo(false));
         xoManager.currentTransaction().commit();
     }
 
     @Test
-    public void overwriteAutoFlush() {
+    public void overwriteFlush() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setName("1");
         assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a").execute().getSingleResult().get("a", A.class), equalTo(a));
         a.setName("2");
-        assertThat(xoManager.createQuery(FindByNameQuery.class).autoFlush(true).withParameter("name", "2").execute().hasResult(), equalTo(true));
+        assertThat(xoManager.createQuery(FindByNameQuery.class).flush(true).withParameter("name", "2").execute().hasResult(), equalTo(true));
         xoManager.currentTransaction().commit();
     }
 
