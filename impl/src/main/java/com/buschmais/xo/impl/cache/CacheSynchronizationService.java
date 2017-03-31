@@ -47,6 +47,7 @@ public class CacheSynchronizationService<Entity, Relation> {
                 instanceListenerService.postUpdate(instance);
             }
             datastoreManager.flush(entities);
+            cache.flush();
         }
     }
 
@@ -63,6 +64,7 @@ public class CacheSynchronizationService<Entity, Relation> {
             entities.add(entity);
         }
         datastoreManager.clear(entities);
+        cache.clear();
     }
 
     private void validateInstance(Object instance) {

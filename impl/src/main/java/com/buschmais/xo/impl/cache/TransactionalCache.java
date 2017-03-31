@@ -5,7 +5,8 @@ import java.util.Collection;
 /**
  * Transactional cache whcih handles read and write access to instances.
  *
- * @param <Id> The datastore id type.
+ * @param <Id>
+ *            The datastore id type.
  */
 public class TransactionalCache<Id> {
 
@@ -31,8 +32,7 @@ public class TransactionalCache<Id> {
      * The access mode indicating how an instance has been accessed.
      */
     public enum Mode {
-        READ,
-        WRITE
+        READ, WRITE
     }
 
     /**
@@ -56,9 +56,12 @@ public class TransactionalCache<Id> {
     /**
      * Put an instance into the cache.
      *
-     * @param id    The id.
-     * @param value The instance.
-     * @param mode  The mode.
+     * @param id
+     *            The id.
+     * @param value
+     *            The instance.
+     * @param mode
+     *            The mode.
      */
     public void put(Id id, Object value, Mode mode) {
         if (Mode.WRITE.equals(mode)) {
@@ -70,9 +73,12 @@ public class TransactionalCache<Id> {
     /**
      * Lookup an instance in the cache identified by its id.
      *
-     * @param id   The id.
-     * @param mode The mode.
-     * @return The corresponding instance or <code>null</code> if no instance is available.
+     * @param id
+     *            The id.
+     * @param mode
+     *            The mode.
+     * @return The corresponding instance or <code>null</code> if no instance is
+     *         available.
      */
     public Object get(Id id, Mode mode) {
         Object value = writeCache.get(id);
@@ -88,7 +94,8 @@ public class TransactionalCache<Id> {
     /**
      * Removes an instance from the cache.
      *
-     * @param id The id.
+     * @param id
+     *            The id.
      */
     public void remove(Id id) {
         readCache.remove(new CacheKey(id));
@@ -96,11 +103,18 @@ public class TransactionalCache<Id> {
     }
 
     /**
+     * Flush the cache, i.e. remove all entries which are written.
+     */
+    public void flush() {
+        writeCache.clear();
+    }
+
+    /**
      * Clear the cache.
-     * <p>Note: Affects only the write.</p>
      */
     public void clear() {
         writeCache.clear();
+        readCache.clear();
     }
 
     /**

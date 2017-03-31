@@ -6,8 +6,8 @@ import com.buschmais.xo.impl.cache.TransactionalCache;
 import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.impl.proxy.ProxyMethodService;
-import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
+import com.buschmais.xo.spi.session.InstanceManager;
 
 /**
  * Abstract base implementation of an instance manager.
@@ -188,7 +188,6 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
         for (Object instance : cache.readInstances()) {
             closeInstance(instance);
         }
-        cache.clear();
     }
 
     /**
