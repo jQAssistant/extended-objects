@@ -8,7 +8,4 @@ public class ReferenceCache<Id> extends AbstractCache<Id, Object> {
         super(CacheBuilder.newBuilder().build());
     }
 
-    @Override
-    public void afterCompletion(boolean success) {
-    }
 }

@@ -8,7 +8,4 @@ public class WeakReferenceCache<Id> extends AbstractCache<Id, Object> {
         super(CacheBuilder.newBuilder().weakValues().build());
     }
 
-    @Override
-    public void afterCompletion(boolean success) {
-    }
 }

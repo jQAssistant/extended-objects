@@ -38,7 +38,7 @@ public class CacheSynchronizationService<Entity, Relation> {
             InstanceListenerService instanceListenerService) {
         Collection<?> writtenInstances = cache.writtenInstances();
         if (!writtenInstances.isEmpty()) {
-            List<T> entities = new ArrayList<>();
+            List<T> entities = new ArrayList<>(writtenInstances.size());
             for (Object instance : writtenInstances) {
                 T entity = instanceManager.getDatastoreType(instance);
                 entities.add(entity);
@@ -58,10 +58,13 @@ public class CacheSynchronizationService<Entity, Relation> {
     }
 
     private <T> void clear(TransactionalCache<?> cache, AbstractInstanceManager<?, T> instanceManager, DatastorePropertyManager<T, ?> datastoreManager) {
-        List<T> entities = new ArrayList<>();
-        for (Object instance : cache.writtenInstances()) {
+        Collection<?> instances = cache.readInstances();
+        List<T> entities = new ArrayList<>(instances.size());
+        for (Object instance : instances) {
             T entity = instanceManager.getDatastoreType(instance);
-            entities.add(entity);
+            if (entity != null) {
+                entities.add(entity);
+            }
         }
         datastoreManager.clear(entities);
         cache.clear();

@@ -20,5 +20,4 @@ public interface Cache<K, V> {
 
     void clear();
 
-    void afterCompletion(boolean success);
 }

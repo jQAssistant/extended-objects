@@ -113,8 +113,6 @@ public class TransactionalCache<Id> {
      * Clear the cache.
      */
     public void clear() {
-        writeCache.clear();
-        readCache.clear();
     }
 
     /**
