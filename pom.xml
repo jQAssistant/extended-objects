@@ -570,6 +570,7 @@
                 <configuration>
                     <failOnViolations>true</failOnViolations>
                     <severity>major</severity>
+                    <useExecutionRootAsProjectRoot>true</useExecutionRootAsProjectRoot>
                     <reportProperties>
                         <graphml.report.directory>${session.topLevelProject.build.directory}/graphml</graphml.report.directory>
                     </reportProperties>
