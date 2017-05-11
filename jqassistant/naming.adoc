@@ -46,7 +46,7 @@ RETURN
 
 [[naming:NonAbstractClassNamePrefix]]
 [source,cypher,role=constraint,requiresConcepts="java:InnerType"]
-.Non-abstract classes must have a name that does start with the prefix `Abstract`.
+.Non-abstract classes must have a name that does not start with the prefix `Abstract`.
 ----
 MATCH
   (c:Type:Class)
