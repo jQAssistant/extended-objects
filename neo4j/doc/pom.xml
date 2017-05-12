@@ -63,13 +63,13 @@
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-kernel</artifactId>
             <type>test-jar</type>
-            <version>3.1.2</version>
+            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-io</artifactId>
             <type>test-jar</type>
-            <version>3.1.2</version>
+            <version>3.2.0</version>
         </dependency>
         <!-- end::Dependencies[] -->
         <dependency>
