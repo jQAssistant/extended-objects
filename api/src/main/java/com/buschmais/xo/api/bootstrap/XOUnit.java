@@ -10,6 +10,7 @@ import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.ValidationMode;
 
 import lombok.*;
+import lombok.Builder.Default;
 
 /**
  * Represents a XO unit, i.e. a configuration for a
@@ -21,12 +22,6 @@ import lombok.*;
 @AllArgsConstructor(access = PRIVATE)
 @ToString
 public class XOUnit {
-
-    private static final XOUnit PROTOTYPE = new XOUnit();
-
-    public static XOUnitBuilder builder() {
-        return PROTOTYPE.toBuilder();
-    }
 
     @Getter
     @Builder
@@ -41,6 +36,7 @@ public class XOUnit {
          * by an {@link com.buschmais.xo.api.XOException} at startup, otherwise
          * a warning.
          */
+        @Default
         private boolean strictValidation = false;
 
     }
@@ -48,11 +44,13 @@ public class XOUnit {
     /**
      * The name which is used to uniquely identify the XO unit.
      */
+    @Default
     private String name = "default";
 
     /*
      * A human readable description (optional).
      */
+    @Default
     private String description = "The default XO unit.";
 
     /*
@@ -80,26 +78,31 @@ public class XOUnit {
     /**
      * The {@link com.buschmais.xo.api.ValidationMode} to use.
      */
+    @Default
     private ValidationMode validationMode = ValidationMode.AUTO;
 
     /**
      * The {@link com.buschmais.xo.api.ConcurrencyMode} to use.
      */
+    @Default
     private ConcurrencyMode concurrencyMode = ConcurrencyMode.SINGLETHREADED;
 
     /**
      * The {@link TransactionAttribute} to use.
      */
+    @Default
     private TransactionAttribute defaultTransactionAttribute = TransactionAttribute.NONE;
 
     /**
      * Additional properties to be passed to the provider.
      */
+    @Default
     private Properties properties = new Properties();
 
     /**
      * The mapping configuration.
      */
+    @Default
     private MappingConfiguration mappingConfiguration = MappingConfiguration.builder().build();
 
     /**

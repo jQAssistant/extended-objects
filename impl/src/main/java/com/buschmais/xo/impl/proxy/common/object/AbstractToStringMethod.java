@@ -1,5 +1,7 @@
 package com.buschmais.xo.impl.proxy.common.object;
 
+import java.util.Map;
+
 import com.buschmais.xo.api.proxy.ProxyMethod;
 
 public abstract class AbstractToStringMethod<T> implements ProxyMethod<T> {
@@ -13,10 +15,16 @@ public abstract class AbstractToStringMethod<T> implements ProxyMethod<T> {
             }
             stringBuffer.append(type.getSimpleName());
         }
-        stringBuffer.append(", id=");
-        stringBuffer.append(getId(datastoreType));
+        String id = getId(datastoreType);
+        if (id != null) {
+            stringBuffer.append(", id=");
+            stringBuffer.append(id);
+        }
+        stringBuffer.append(getProperties(datastoreType));
         return stringBuffer.toString();
     }
+
+    protected abstract Map<String,Object> getProperties(T datastoreType);
 
     protected abstract String getId(T datastoreType);
 
