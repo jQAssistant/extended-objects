@@ -1,9 +1,8 @@
 package com.buschmais.xo.neo4j.test.relation.typed.composite;
 
-import static com.buschmais.xo.neo4j.api.annotation.Relation.Incoming;
-import static com.buschmais.xo.neo4j.api.annotation.Relation.Outgoing;
-
 import com.buschmais.xo.neo4j.api.annotation.Relation;
+import com.buschmais.xo.neo4j.api.annotation.Relation.From;
+import com.buschmais.xo.neo4j.api.annotation.Relation.To;
 
 @Relation
 public interface TreeNodeRelation {
@@ -12,9 +11,9 @@ public interface TreeNodeRelation {
 
     void setVersion(int version);
 
-    @Incoming
+    @To
     TreeNode getChild();
 
-    @Outgoing
+    @From
     TreeNode getParent();
 }

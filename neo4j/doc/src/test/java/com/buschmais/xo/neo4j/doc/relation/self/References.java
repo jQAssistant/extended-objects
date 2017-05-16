@@ -1,17 +1,17 @@
 package com.buschmais.xo.neo4j.doc.relation.self;
 
 import com.buschmais.xo.neo4j.api.annotation.Relation;
-import com.buschmais.xo.neo4j.api.annotation.Relation.Incoming;
-import com.buschmais.xo.neo4j.api.annotation.Relation.Outgoing;
+import com.buschmais.xo.neo4j.api.annotation.Relation.From;
+import com.buschmais.xo.neo4j.api.annotation.Relation.To;
 
 // tag::Class[]
 @Relation
 public interface References {
 
-    @Outgoing
+    @From
     Movie getReferencing();
 
-    @Incoming
+    @To
     Movie getReferenced();
 
     int getMinute();

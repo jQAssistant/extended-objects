@@ -251,7 +251,7 @@ include::{srcBaseDir}/relation/qualified/Movie.java[tags=Class,indent=0]
 ==== Typed Relations With Properties
 
 If a relation between two nodes shall have properties a dedicated type must be declared and registered in the XOUnit.
-It must contain two properties returning the types of referenced types which are annotated with @Incoming and @Outgoing:
+It must contain two properties returning the types of referenced types which are annotated with @From and @To:
 
 [source,java]
 .Directed.java
@@ -280,7 +280,7 @@ include::{srcBaseDir}/relation/typed/TypedRelationTest.java[tags=Create,indent=0
 
 
 Note: If the typed relation references the same labeled type at both ends then the according properties of the latter
-must also be annotated with @Outgoing and @Incoming:
+must be annotated with @Outgoing and @Incoming:
 
 [source,java]
 .References.java

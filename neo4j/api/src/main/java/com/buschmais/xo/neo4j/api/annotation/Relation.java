@@ -34,20 +34,39 @@ public @interface Relation {
     String value() default DEFAULT_VALUE;
 
     /**
-     * Marks a property as incoming relationship.
-     */
-    @ToDefinition
-    @Retention(RUNTIME)
-    @Target({METHOD})
-    public @interface Incoming {
-    }
-
-    /**
      * Marks a property as outgoing relationship.
      */
     @FromDefinition
     @Retention(RUNTIME)
     @Target({METHOD})
-    public @interface Outgoing {
+    @interface Outgoing {
     }
+
+    /**
+     * Marks a property as incoming relationship.
+     */
+    @ToDefinition
+    @Retention(RUNTIME)
+    @Target({METHOD})
+    @interface Incoming {
+    }
+
+    /**
+     * Marks a property as from relationship.
+     */
+    @FromDefinition
+    @Retention(RUNTIME)
+    @Target({METHOD})
+    @interface From {
+    }
+
+    /**
+     * Marks a property as to relationship.
+     */
+    @ToDefinition
+    @Retention(RUNTIME)
+    @Target({METHOD})
+    @interface To {
+    }
+
 }
