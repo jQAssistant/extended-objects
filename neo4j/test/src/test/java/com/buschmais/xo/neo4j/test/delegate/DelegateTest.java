@@ -38,7 +38,7 @@ public class DelegateTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void entity() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Neo4jNode<Neo4jLabel, ?, ?, ?> node = ((CompositeObject) xoManager.create(A.class)).getDelegate();
         Iterable<Neo4jLabel> labels = node.getLabels();
@@ -53,7 +53,7 @@ public class DelegateTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void relation() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b = xoManager.create(B.class);
@@ -67,7 +67,7 @@ public class DelegateTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void row() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) return a").execute();

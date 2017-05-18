@@ -33,7 +33,7 @@ public class RelationImplementedByTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void nonPropertyMethod() {
-        XOManager xoManager = getXoManagerFactory().createXOManager();
+        XOManager xoManager = getXOManagerFactory().createXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b = xoManager.create(B.class);
@@ -47,8 +47,8 @@ public class RelationImplementedByTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void propertyMethods() {
-        assumeThat(getXoManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
-        XOManager xoManager = getXoManagerFactory().createXOManager();
+        assumeThat(getXOManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
+        XOManager xoManager = getXOManagerFactory().createXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b = xoManager.create(B.class);
@@ -62,7 +62,7 @@ public class RelationImplementedByTest extends AbstractNeo4jXOManagerTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void unsupportedOperation() {
-        XOManager xoManager = getXoManagerFactory().createXOManager();
+        XOManager xoManager = getXOManagerFactory().createXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b = xoManager.create(B.class);

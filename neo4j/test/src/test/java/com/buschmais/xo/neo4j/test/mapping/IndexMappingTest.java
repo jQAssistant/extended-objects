@@ -30,7 +30,7 @@ public class IndexMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void indexedProperty() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a1 = xoManager.create(A.class);
         a1.setIndex("1");
@@ -46,7 +46,7 @@ public class IndexMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void useIndexOf() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a1 = xoManager.create(D.class);
         a1.setIndex("1");

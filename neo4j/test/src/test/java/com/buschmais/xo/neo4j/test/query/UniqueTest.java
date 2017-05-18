@@ -34,7 +34,7 @@ public class UniqueTest extends AbstractNeo4jXOManagerTest {
 
     @Test(expected = ConstraintViolationException.class)
     public void denyDuplicates() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         B a1 = xoManager.create(B.class);
         a1.setValue("A1");
@@ -47,7 +47,7 @@ public class UniqueTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void index() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         B a1 = xoManager.create(B.class);
         a1.setValue("A1");

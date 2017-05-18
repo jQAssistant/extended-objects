@@ -31,7 +31,7 @@ public class ReferencePropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void referenceProperty() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b1 = xoManager.create(B.class);
@@ -53,7 +53,7 @@ public class ReferencePropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void mappedReferenceProperty() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b = xoManager.create(B.class);

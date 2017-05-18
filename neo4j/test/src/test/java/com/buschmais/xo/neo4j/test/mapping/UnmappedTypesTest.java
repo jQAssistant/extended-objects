@@ -33,7 +33,7 @@ public class UnmappedTypesTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void query() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<CompositeRowObject> result = xoManager.createQuery("CREATE (x:X)-[y:Y]->(z:Z) RETURN x, y, z").execute();
         CompositeRowObject compositeRowObject = result.getSingleResult();

@@ -38,8 +38,8 @@ public class CreateIndexTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void createIndex() {
-        assumeThat(getXoManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
-        XOManager xoManager = getXoManager();
+        assumeThat(getXOManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         GraphDatabaseService graphDatabaseService = xoManager.getDatastoreSession(EmbeddedNeo4jDatastoreSession.class).getGraphDatabaseService();
         assertThat(findIndex(graphDatabaseService, label("A"), "value"), notNullValue());

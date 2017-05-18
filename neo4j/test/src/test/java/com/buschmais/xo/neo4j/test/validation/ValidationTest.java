@@ -36,7 +36,7 @@ public class ValidationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void validationOnCommitAfterInsert() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         Set<ConstraintViolation<?>> constraintViolations = null;
@@ -55,7 +55,7 @@ public class ValidationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void validationOnCommitAfterQuery() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         B b = xoManager.create(B.class);
         for (int i = 0; i < 2; i++) {
@@ -65,7 +65,7 @@ public class ValidationTest extends AbstractNeo4jXOManagerTest {
         }
         xoManager.currentTransaction().commit();
         closeXOmanager();
-        xoManager = getXoManager();
+        xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         for (A miller : xoManager.find(A.class, "Miller")) {
             miller.setName(null);
@@ -83,7 +83,7 @@ public class ValidationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void validationAfterPreUpdate() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         B b = xoManager.create(B.class);
         A a = xoManager.create(A.class);

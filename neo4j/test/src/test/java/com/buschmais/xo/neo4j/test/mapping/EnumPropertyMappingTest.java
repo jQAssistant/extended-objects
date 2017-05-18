@@ -31,7 +31,7 @@ public class EnumPropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void enumerationLabel() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setEnumeration(Enumeration.FIRST);
@@ -53,7 +53,7 @@ public class EnumPropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void enumerationProperty() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setMappedEnumeration(Enumeration.FIRST);

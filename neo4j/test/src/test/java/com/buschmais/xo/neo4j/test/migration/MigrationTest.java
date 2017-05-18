@@ -35,7 +35,7 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void downCast() {
-        XOManager xoManager = getXoManagerFactory().createXOManager();
+        XOManager xoManager = getXOManagerFactory().createXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setValue("Value");
@@ -50,7 +50,7 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void compositeObject() {
-        XOManager xoManager = getXoManagerFactory().createXOManager();
+        XOManager xoManager = getXOManagerFactory().createXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setValue("Value");
@@ -64,7 +64,7 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void migrationHandler() {
-        XOManager xoManager = getXoManagerFactory().createXOManager();
+        XOManager xoManager = getXOManagerFactory().createXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setValue("Value");
@@ -78,7 +78,7 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void compositeObjectMigrationHandler() {
-        XOManager xoManager = getXoManagerFactory().createXOManager();
+        XOManager xoManager = getXOManagerFactory().createXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setValue("Value");
@@ -92,7 +92,7 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void addType() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setValue("Value");
@@ -108,7 +108,7 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void removeType() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
 		CompositeObject compositeObject = xoManager.create(A.class, C.class);
 		assertThat(compositeObject, instanceOf(A.class));

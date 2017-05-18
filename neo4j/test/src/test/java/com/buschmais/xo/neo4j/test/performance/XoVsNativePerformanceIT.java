@@ -75,7 +75,7 @@ public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {
 
     @Before
     public void initialize() {
-        try (XOManager xoManager = getXoManagerFactory().createXOManager()) {
+        try (XOManager xoManager = getXOManagerFactory().createXOManager()) {
             EmbeddedNeo4jDatastoreSession datastoreSession = xoManager.getDatastoreSession(EmbeddedNeo4jDatastoreSession.class);
             GraphDatabaseService graphDatabaseService = datastoreSession.getGraphDatabaseService();
             Transaction transaction = graphDatabaseService.beginTx();
@@ -92,7 +92,7 @@ public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void test() {
-        try (XOManager xoManager = getXoManagerFactory().createXOManager()) {
+        try (XOManager xoManager = getXOManagerFactory().createXOManager()) {
             nativeMeasurements = runNative(xoManager);
             xoMeasurements = runXO(xoManager);
             printResults();

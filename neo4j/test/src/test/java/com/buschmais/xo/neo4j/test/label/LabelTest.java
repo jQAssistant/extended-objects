@@ -30,7 +30,7 @@ public class LabelTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void implicitLabel() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         ImplicitLabel implicitLabel = xoManager.create(ImplicitLabel.class);
         assertThat(executeQuery("MATCH (n:ImplicitLabel) RETURN n").getColumn("n"), hasItem(implicitLabel));
@@ -40,7 +40,7 @@ public class LabelTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void explicitLabel() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         ExplicitLabel explicitLabel = xoManager.create(ExplicitLabel.class);
         assertThat(executeQuery("MATCH (n:EXPLICIT_LABEL) RETURN n").getColumn("n"), hasItem(explicitLabel));

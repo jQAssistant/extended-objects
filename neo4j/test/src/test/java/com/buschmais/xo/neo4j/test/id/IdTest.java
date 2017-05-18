@@ -34,7 +34,7 @@ public class IdTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void id() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b = xoManager.create(B.class);

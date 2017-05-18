@@ -29,7 +29,7 @@ public class IndexedDemoTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void test() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Person person1 = xoManager.create(Person.class);
         person1.setName("Peter");

@@ -30,7 +30,7 @@ public class TransientPropertyTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void transientProperty() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setValue("persistent value");
@@ -41,7 +41,7 @@ public class TransientPropertyTest extends AbstractNeo4jXOManagerTest {
         assertThat(a.getTransientValue(),equalTo("transient value"));
         xoManager.currentTransaction().commit();
         closeXOmanager();
-        xoManager = getXoManager();
+        xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A result = xoManager.find(A.class, "persistent value").getSingleResult();
         assertThat(result.getValue(), equalTo("persistent value"));

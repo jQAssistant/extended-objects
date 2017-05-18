@@ -34,7 +34,7 @@ public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void oneToOne() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b1 = xoManager.create(B.class);
@@ -63,7 +63,7 @@ public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void oneToMany() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b1 = xoManager.create(B.class);
@@ -95,7 +95,7 @@ public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void manyToMany() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a1 = xoManager.create(A.class);
         A a2 = xoManager.create(A.class);
@@ -127,7 +127,7 @@ public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void oneToOneNewDeleted() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b1 = xoManager.create(B.class);
@@ -147,7 +147,7 @@ public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void oneToManyWithManyRelations() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         long details = 1000;

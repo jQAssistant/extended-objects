@@ -34,7 +34,7 @@ public class ModifierTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void abstractModifier() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         try {
             xoManager.create(AbstractType.class);
@@ -49,7 +49,7 @@ public class ModifierTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void finalModifier() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         FinalType finalType = xoManager.create(FinalType.class);
         assertThat(finalType, instanceOf(FinalType.class));

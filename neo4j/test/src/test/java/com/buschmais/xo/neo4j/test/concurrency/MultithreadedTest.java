@@ -36,8 +36,8 @@ public class MultithreadedTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void instance() throws ExecutionException, InterruptedException {
-        assumeThat(getXoManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
-        XOManager xoManager = getXoManager();
+        assumeThat(getXOManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         xoManager.currentTransaction().commit();

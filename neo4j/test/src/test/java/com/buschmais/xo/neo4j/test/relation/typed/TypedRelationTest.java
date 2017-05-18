@@ -31,7 +31,7 @@ public class TypedRelationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void oneToOne() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b1 = xoManager.create(B.class);
@@ -61,7 +61,7 @@ public class TypedRelationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void oneToMany() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b1 = xoManager.create(B.class);
@@ -108,7 +108,7 @@ public class TypedRelationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void manyToMany() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b1 = xoManager.create(B.class);

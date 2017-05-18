@@ -27,7 +27,7 @@ public class GenericTypeTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void composite() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         BoundType b = xoManager.create(BoundType.class);
         b.setValue("value");

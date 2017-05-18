@@ -35,7 +35,7 @@ public class ValidationModeNoneTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void validationOnCommitAfterInsert() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         xoManager.currentTransaction().commit();

@@ -33,7 +33,7 @@ public class CollectionPropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void setProperty() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b = xoManager.create(B.class);
@@ -50,7 +50,7 @@ public class CollectionPropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void mappedSetProperty() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b = xoManager.create(B.class);
@@ -65,7 +65,7 @@ public class CollectionPropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void listProperty() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b = xoManager.create(B.class);
@@ -83,7 +83,7 @@ public class CollectionPropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void listPropertyByIndex() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b1 = xoManager.create(B.class);
@@ -101,7 +101,7 @@ public class CollectionPropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void mappedListProperty() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b = xoManager.create(B.class);

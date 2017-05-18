@@ -38,7 +38,7 @@ public class EntityResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Before
     public void createData() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         e = xoManager.create(E.class);
         f1 = xoManager.create(F.class);
@@ -52,7 +52,7 @@ public class EntityResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void resultUsingExplicitQuery() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<E.ByValue> byValue = e.getResultByValueUsingExplicitQuery("F1");
         assertThat(byValue.getSingleResult().getF(), equalTo(f1));
@@ -61,7 +61,7 @@ public class EntityResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void resultUsingReturnType() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<E.ByValue> byValue = e.getResultByValueUsingReturnType("F1");
         assertThat(byValue.getSingleResult().getF(), equalTo(f1));
@@ -70,7 +70,7 @@ public class EntityResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void byValueUsingExplicitQuery() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         E.ByValue byValue = e.getByValueUsingExplicitQuery("F1");
         assertThat(byValue.getF(), equalTo(f1));
@@ -79,7 +79,7 @@ public class EntityResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void byValueUsingReturnType() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         E.ByValue byValue = e.getByValueUsingReturnType("F1");
         assertThat(byValue.getF(), equalTo(f1));
@@ -90,7 +90,7 @@ public class EntityResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void byValueUsingImplicitThis() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         E.ByValueUsingImplicitThis byValue = e.getByValueUsingImplicitThis("F1");
         assertThat(byValue.getF(), equalTo(f1));
@@ -99,7 +99,7 @@ public class EntityResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void resultUsingCypher() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<F> result = e.getResultUsingCypher("F1");
         assertThat(result, hasItems(equalTo(f1)));
@@ -110,7 +110,7 @@ public class EntityResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void singleResultUsingCypher() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         F result = e.getSingleResultUsingCypher("F1");
         assertThat(result, equalTo(f1));
@@ -121,7 +121,7 @@ public class EntityResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void voidResultUsingCypher() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         e.voidResultUsingCypher("F1");
         assertThat(xoManager.createQuery("match (e:E) return e", E.class).execute().getSingleResult(), equalTo(e));

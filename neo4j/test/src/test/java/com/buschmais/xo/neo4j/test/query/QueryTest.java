@@ -43,7 +43,7 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
 
     @Before
     public void createData() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         a1 = xoManager.create(A.class);
         a1.setValue("A1");
@@ -56,7 +56,7 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void typedQuery() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<InstanceByValue> result = xoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
         A a = result.getSingleResult().getA();
@@ -66,7 +66,7 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void compositeRow() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         CompositeRowObject result = xoManager.createQuery("match (a:A) where a.value={value} return a, count(a) as count", ResultPart1.class, ResultPart2.class).withParameter("value", "A1").execute().getSingleResult();
         A a = result.as(ResultPart1.class).getA();
@@ -83,7 +83,7 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void compositeRowAsMap() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<CompositeRowObject> result = xoManager.createQuery("match (a:A) where a.value={value} return a, a.value as value, id(a) as id").withParameter("value", "A1").execute();
         CompositeRowObject singleResult = result.getSingleResult();
@@ -102,7 +102,7 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void instanceParameter() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where id(a)={instance} return a").withParameter("instance", a1).execute();
         A a = row.getSingleResult().get("a", A.class);
@@ -112,7 +112,7 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void instanceParameterCollection() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where a.value in {values} return a").withParameter("values", Arrays.asList("A1")).execute();
         A a = row.getSingleResult().get("a", A.class);
@@ -122,9 +122,9 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void optionalMatch() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> row = getXoManager().createQuery("OPTIONAL MATCH (a:A) WHERE a.name = 'X' return a").execute();
+        Result<CompositeRowObject> row = getXOManager().createQuery("OPTIONAL MATCH (a:A) WHERE a.name = 'X' return a").execute();
         A a = row.getSingleResult().get("a", A.class);
         assertThat(a, equalTo(null));
         xoManager.currentTransaction().commit();
@@ -132,9 +132,9 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void customQueryLanguage() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> row = getXoManager().createQuery("A:value=A1").using(CustomQueryLanguage.class).execute();
+        Result<CompositeRowObject> row = getXOManager().createQuery("A:value=A1").using(CustomQueryLanguage.class).execute();
         A a = row.getSingleResult().get("A", A.class);
         assertThat(a, equalTo(a1));
         xoManager.currentTransaction().commit();

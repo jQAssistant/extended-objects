@@ -30,7 +30,7 @@ public class PrimitivePropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void primitiveProperty() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setString("value");
@@ -50,7 +50,7 @@ public class PrimitivePropertyMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void mappedPrimitiveProperty() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setMappedString("mappedValue");

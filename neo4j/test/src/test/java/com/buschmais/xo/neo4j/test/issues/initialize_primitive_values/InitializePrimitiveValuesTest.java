@@ -33,7 +33,7 @@ public class InitializePrimitiveValuesTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void test() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         xoManager.currentTransaction().commit();

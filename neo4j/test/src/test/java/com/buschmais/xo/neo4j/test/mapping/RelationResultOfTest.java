@@ -41,7 +41,7 @@ public class RelationResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Before
     public void createData() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         e = xoManager.create(E.class);
         f1 = xoManager.create(F.class);
@@ -55,7 +55,7 @@ public class RelationResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void resultUsingExplicitQuery() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<E2F.ByValue> byValue = e2f1.getResultByValueUsingExplicitQuery("E2F1");
         assertThat(byValue.getSingleResult().getF(), equalTo(f1));
@@ -64,7 +64,7 @@ public class RelationResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void resultUsingReturnType() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<E2F.ByValue> byValue = e2f1.getResultByValueUsingReturnType("E2F1");
         assertThat(byValue.getSingleResult().getF(), equalTo(f1));
@@ -73,7 +73,7 @@ public class RelationResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void byValueUsingExplicitQuery() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         E2F.ByValue byValue = e2f1.getByValueUsingExplicitQuery("E2F1");
         assertThat(byValue.getF(), equalTo(f1));
@@ -82,7 +82,7 @@ public class RelationResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void byValueUsingReturnType() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         E2F.ByValue byValue = e2f1.getByValueUsingReturnType("E2F1");
         assertThat(byValue.getF(), equalTo(f1));
@@ -93,7 +93,7 @@ public class RelationResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void byValueUsingImplicitThis() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         E2F.ByValueUsingImplicitThis byValue = e2f1.getByValueUsingImplicitThis("E2F1");
         assertThat(byValue.getF(), equalTo(f1));
@@ -102,7 +102,7 @@ public class RelationResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void resultUsingCypher() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<F> result = e2f1.getResultUsingCypher("E2F1");
         assertThat(result, hasItems(equalTo(f1)));
@@ -113,7 +113,7 @@ public class RelationResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void singleResultUsingCypher() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         F result = e2f1.getSingleResultUsingCypher("E2F1");
         assertThat(result, equalTo(f1));
@@ -124,7 +124,7 @@ public class RelationResultOfTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void voidResultUsingCypher() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         e2f1.voidResultUsingCypher("E2F1");
         assertThat(xoManager.createQuery("match ()-[e2f:E2F]->() where e2f.result='true' return e2f", E2F.class).execute().getSingleResult(), equalTo(e2f1));

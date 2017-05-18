@@ -31,7 +31,7 @@ public class QueryDemoTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void test() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Group group = xoManager.create(Group.class);
         Person person1 = xoManager.create(Person.class);

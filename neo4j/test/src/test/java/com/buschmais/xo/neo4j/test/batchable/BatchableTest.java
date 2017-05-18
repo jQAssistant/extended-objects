@@ -33,8 +33,8 @@ public class BatchableTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void batchable() throws ExecutionException, InterruptedException {
-        assumeThat(getXoManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.BOLT.getProvider()));
-        XOManager xoManager = getXoManager();
+        assumeThat(getXOManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.BOLT.getProvider()));
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setName("A1");

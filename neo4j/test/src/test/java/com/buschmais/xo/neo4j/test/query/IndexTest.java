@@ -31,7 +31,7 @@ public class IndexTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void index() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a1 = xoManager.create(A.class);
         a1.setValue("A1");

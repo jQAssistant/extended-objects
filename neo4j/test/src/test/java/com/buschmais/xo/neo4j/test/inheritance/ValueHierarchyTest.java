@@ -31,7 +31,7 @@ public class ValueHierarchyTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void valueHierarchy() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         ObjectDescriptor master = xoManager.create(ObjectDescriptor.class);
         ObjectDescriptor detail = xoManager.create(ObjectDescriptor.class);

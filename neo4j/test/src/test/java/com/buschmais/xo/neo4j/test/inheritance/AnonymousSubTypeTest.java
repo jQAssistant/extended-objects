@@ -30,13 +30,13 @@ public class AnonymousSubTypeTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void anonymousSubType() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         D b = xoManager.create(D.class);
         b.setIndex("1");
         xoManager.currentTransaction().commit();
         closeXOmanager();
-        xoManager = getXoManager();
+        xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.find(A.class, "1").iterator().next();
         assertThat(a.getIndex(), equalTo("1"));

@@ -34,7 +34,7 @@ public class NotAProxyTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void test() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         C c = xoManager.create(C.class);

@@ -30,7 +30,7 @@ public class AnonymousSuperTypeTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void anonymousSuperType() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         B b = xoManager.create(B.class);
         b.setIndex("1");

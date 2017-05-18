@@ -33,7 +33,7 @@ public class NonRegisteredTypeTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void entity() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         try {
             xoManager.create(A.class);
@@ -46,7 +46,7 @@ public class NonRegisteredTypeTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void relation() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         B b1 = xoManager.create(B.class);
         B b2 = xoManager.create(B.class);

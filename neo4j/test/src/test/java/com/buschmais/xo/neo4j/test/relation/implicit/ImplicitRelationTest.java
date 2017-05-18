@@ -31,7 +31,7 @@ public class ImplicitRelationTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void oneToOne() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b1 = xoManager.create(B.class);

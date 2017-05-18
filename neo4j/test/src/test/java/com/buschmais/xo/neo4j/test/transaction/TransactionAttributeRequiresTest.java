@@ -40,13 +40,13 @@ public class TransactionAttributeRequiresTest extends AbstractNeo4jXOManagerTest
 
     @Test
     public void withoutTransactionContext() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         assertThat(xoManager.currentTransaction().isActive(), equalTo(false));
         A a = createA(xoManager);
         assertThat(a.getValue(), equalTo("value1"));
         assertThat(xoManager.find(A.class, "value1").getSingleResult(), equalTo(a));
         closeXOmanager();
-        xoManager = getXoManager();
+        xoManager = getXOManager();
         a = xoManager.createQuery(A.ByValue.class).withParameter("value", "value1").execute().getSingleResult().getA();
         assertThat(a.getValue(), equalTo("value1"));
         assertThat(a.getByValue("value1").getA(), equalTo(a));
@@ -64,7 +64,7 @@ public class TransactionAttributeRequiresTest extends AbstractNeo4jXOManagerTest
 
     @Test
     public void withTransactionContext() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = createA(xoManager);
         xoManager.currentTransaction().commit();
@@ -83,7 +83,7 @@ public class TransactionAttributeRequiresTest extends AbstractNeo4jXOManagerTest
 
     @Test
     public void commitOnException() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = createA(xoManager);
         xoManager.currentTransaction().commit();
@@ -99,7 +99,7 @@ public class TransactionAttributeRequiresTest extends AbstractNeo4jXOManagerTest
 
     @Test
     public void rollbackOnRuntimeException() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = createA(xoManager);
         xoManager.currentTransaction().commit();

@@ -33,7 +33,7 @@ public class ByExampleTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void createByExample() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         // java 7: anonymous inner class
         A a1 = xoManager.create(new Example<A>() {
@@ -74,7 +74,7 @@ public class ByExampleTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void findCompositeByExample() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         // java 7: anonymous inner class
         CompositeObject compositeObject1 = xoManager.<CompositeObject>create(new Example<CompositeObject>() {

@@ -47,7 +47,7 @@ public class InstanceListenerTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void staticInstanceListener() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         B b = xoManager.create(B.class);
@@ -64,7 +64,7 @@ public class InstanceListenerTest extends AbstractNeo4jXOManagerTest {
         assertThat(StaticInstanceListener.getPostUpdate(), IsCollectionContaining.<Object>hasItems(a, b, a2b));
         xoManager.currentTransaction().commit();
         closeXOmanager();
-        xoManager = getXoManager();
+        xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         a = xoManager.createQuery("match (a:A) return a", A.class).execute().getSingleResult();
         assertThat(StaticInstanceListener.getPostLoad(), IsCollectionContaining.<Object>hasItems(a));
@@ -90,7 +90,7 @@ public class InstanceListenerTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void aggregatedLifecycleEvents() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         // @PostCreate
@@ -100,7 +100,7 @@ public class InstanceListenerTest extends AbstractNeo4jXOManagerTest {
         // @PreUpdate and @PostUpdate
         assertThat(StaticInstanceListener.getAggregated().size(), equalTo(3));
         closeXOmanager();
-        xoManager = getXoManager();
+        xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         a = xoManager.createQuery("match (a:A) return a", A.class).execute().getSingleResult();
         // @PostLoad
@@ -113,7 +113,7 @@ public class InstanceListenerTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void typedInstanceListener() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         TypedInstanceListener typedInstanceListener = new TypedInstanceListener();
         xoManager.registerInstanceListener(typedInstanceListener);
         xoManager.currentTransaction().begin();

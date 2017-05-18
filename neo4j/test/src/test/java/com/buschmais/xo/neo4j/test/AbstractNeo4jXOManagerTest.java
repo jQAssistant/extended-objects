@@ -37,7 +37,7 @@ public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
     }
 
     protected void dropDatabase() {
-        XOManager manager = getXoManager();
+        XOManager manager = getXOManager();
         manager.currentTransaction().begin();
         manager.createQuery("MATCH (n) DETACH DELETE n").execute();
         manager.currentTransaction().commit();

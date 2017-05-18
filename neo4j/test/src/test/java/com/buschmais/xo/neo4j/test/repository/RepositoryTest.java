@@ -40,7 +40,7 @@ public class RepositoryTest extends AbstractNeo4jXOManagerTest {
      */
     @Test
     public void customRepository() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setName("A1");
@@ -55,7 +55,7 @@ public class RepositoryTest extends AbstractNeo4jXOManagerTest {
      */
     @Test
     public void customNeo4jRepository() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setName("A1");
@@ -71,7 +71,7 @@ public class RepositoryTest extends AbstractNeo4jXOManagerTest {
      */
     @Test
     public void customTypedNeo4jRepository() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setName("A1");
@@ -86,7 +86,7 @@ public class RepositoryTest extends AbstractNeo4jXOManagerTest {
      */
     @Test
     public void neo4jRepository() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setName("A1");

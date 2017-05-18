@@ -31,7 +31,7 @@ public class BidirectionalMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void oneToOne() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         G g1 = xoManager.create(G.class);
         H h = xoManager.create(H.class);
@@ -52,7 +52,7 @@ public class BidirectionalMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void oneToMany() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         G g1 = xoManager.create(G.class);
         H h = xoManager.create(H.class);
@@ -73,7 +73,7 @@ public class BidirectionalMappingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void ManyToMany() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         G g1 = xoManager.create(G.class);
         H h = xoManager.create(H.class);

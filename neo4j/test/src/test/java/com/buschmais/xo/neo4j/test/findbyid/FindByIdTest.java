@@ -31,7 +31,7 @@ public class FindByIdTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void entity() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a1 = xoManager.create(A.class);
         A a2 = xoManager.create(A.class);
@@ -46,7 +46,7 @@ public class FindByIdTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void relation() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a1 = xoManager.create(A.class);
         B b1 = xoManager.create(B.class);

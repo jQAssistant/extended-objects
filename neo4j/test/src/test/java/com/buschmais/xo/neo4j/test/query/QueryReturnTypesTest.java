@@ -35,7 +35,7 @@ public class QueryReturnTypesTest extends AbstractNeo4jXOManagerTest {
 
     @Before
     public void createData() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         a = xoManager.create(A.class);
         a.setValue("A");
@@ -44,7 +44,7 @@ public class QueryReturnTypesTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void cypherWithPrimitiveReturnType() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<String> result = xoManager.createQuery("match (a:A) return a.value", String.class).execute();
         assertThat(result.getSingleResult(), equalTo("A"));
@@ -53,16 +53,16 @@ public class QueryReturnTypesTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void cypherWithEntityReturnType() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<A> result = xoManager.createQuery("match (a:A) return a", A.class).execute();
         assertThat(result.getSingleResult(), equalTo(a));
         xoManager.currentTransaction().commit();
     }
-    
+
     @Test
     public void cypherWithJsonReturnType() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<Map> result = xoManager.createQuery("match (a:A) return {node: a}", Map.class).execute();
         assertThat(result.getSingleResult().get("node"), equalTo(a));
@@ -71,7 +71,7 @@ public class QueryReturnTypesTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void typedQuery() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<InstanceByValue> result = xoManager.createQuery(InstanceByValue.class).withParameter("value", "A").execute();
         assertThat(result.getSingleResult().getA(), equalTo(a));

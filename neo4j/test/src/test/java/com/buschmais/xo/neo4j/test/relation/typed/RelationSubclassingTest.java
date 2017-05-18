@@ -29,7 +29,7 @@ public class RelationSubclassingTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void testRelationSubclassing() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         C c = xoManager.create(C.class);
         D d1 = xoManager.create(D.class);

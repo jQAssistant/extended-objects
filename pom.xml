@@ -89,8 +89,7 @@
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
-        <jqassistant.version>1.2.0</jqassistant.version>
-        <jqassistant.plugin.version>1.2</jqassistant.plugin.version>
+        <jqassistant.version>1.3.0</jqassistant.version>
         <org.osgi_version>4.3.1</org.osgi_version>
 
     </properties>
@@ -99,7 +98,7 @@
         <profile>
             <id>Neo4j_2.x</id>
             <properties>
-                <org.neo4j_version>2.3.9</org.neo4j_version>
+                <org.neo4j_version>2.3.10</org.neo4j_version>
             </properties>
         </profile>
         <profile>
@@ -525,22 +524,16 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <failOnViolations>true</failOnViolations>
-                    <severity>major</severity>
+                    <failOnSeverity>CRITICAL</failOnSeverity>
                     <reportProperties>
                         <graphml.report.directory>${session.topLevelProject.build.directory}/graphml</graphml.report.directory>
                     </reportProperties>
                 </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>com.buschmais.jqassistant.plugin</groupId>
-                        <artifactId>graphml</artifactId>
-                        <version>${jqassistant.plugin.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.buschmais.jqassistant.plugin</groupId>
-                        <artifactId>osgi</artifactId>
-                        <version>${jqassistant.plugin.version}</version>
+                        <groupId>de.kontext-e.jqassistant.plugin</groupId>
+                        <artifactId>jqassistant.plugin.git</artifactId>
+                        <version>1.2.0</version>
                     </dependency>
                 </dependencies>
             </plugin>

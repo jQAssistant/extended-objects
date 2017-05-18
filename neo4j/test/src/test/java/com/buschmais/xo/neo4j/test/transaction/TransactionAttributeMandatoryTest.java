@@ -34,7 +34,7 @@ public class TransactionAttributeMandatoryTest extends AbstractNeo4jXOManagerTes
 
     @Test
     public void withoutTransactionContext() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setValue("value1");

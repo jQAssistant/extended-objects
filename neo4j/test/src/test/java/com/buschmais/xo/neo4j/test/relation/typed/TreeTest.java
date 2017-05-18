@@ -31,7 +31,7 @@ public class TreeTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void tree() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         TreeNode parent = xoManager.create(TreeNode.class);
         parent.setName("parent");

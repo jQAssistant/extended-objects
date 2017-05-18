@@ -33,7 +33,7 @@ public class EntityImplementedByTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void nonPropertyMethod() {
-        XOManager xoManager = getXoManagerFactory().createXOManager();
+        XOManager xoManager = getXOManagerFactory().createXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setValue(1);
@@ -45,8 +45,8 @@ public class EntityImplementedByTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void propertyMethods() {
-        assumeThat(getXoManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
-        XOManager xoManager = getXoManagerFactory().createXOManager();
+        assumeThat(getXOManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
+        XOManager xoManager = getXOManagerFactory().createXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setCustomValue("VALUE");
@@ -58,7 +58,7 @@ public class EntityImplementedByTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void compareTo() {
-        XOManager xoManager = getXoManagerFactory().createXOManager();
+        XOManager xoManager = getXOManagerFactory().createXOManager();
         xoManager.currentTransaction().begin();
         A a1 = xoManager.create(A.class);
         a1.setValue(100);
@@ -73,7 +73,7 @@ public class EntityImplementedByTest extends AbstractNeo4jXOManagerTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void unsupportedOperation() {
-        XOManager xoManager = getXoManagerFactory().createXOManager();
+        XOManager xoManager = getXOManagerFactory().createXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         xoManager.currentTransaction().commit();

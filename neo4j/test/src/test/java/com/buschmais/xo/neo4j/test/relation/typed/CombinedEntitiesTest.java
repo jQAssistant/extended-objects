@@ -32,7 +32,7 @@ public class CombinedEntitiesTest extends AbstractNeo4jXOManagerTest {
 
     @Test
     public void testRelationSubclassing() {
-        XOManager xoManager = getXoManager();
+        XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         E e = xoManager.create(E.class);
         F f = xoManager.create(F.class);
