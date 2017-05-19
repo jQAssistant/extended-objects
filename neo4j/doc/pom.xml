@@ -21,6 +21,14 @@
                     </attributes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- use a working directory in the build directory as the XO Unit configuration test create a database directory -->
+                    <workingDirectory>${project.build.directory}/work</workingDirectory>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
