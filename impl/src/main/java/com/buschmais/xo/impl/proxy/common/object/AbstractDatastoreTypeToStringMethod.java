@@ -25,7 +25,9 @@ public abstract class AbstractDatastoreTypeToStringMethod<T> extends AbstractToS
             if (methodMetadata instanceof PrimitivePropertyMethodMetadata) {
                 PrimitivePropertyMethodMetadata propertyMethodMetadata = (PrimitivePropertyMethodMetadata) methodMetadata;
                 Object value = getProperty(datastoreType, propertyMethodMetadata);
-                properties.put(propertyMethodMetadata.getAnnotatedMethod().getName(), value);
+                if (value != null) {
+                    properties.put(propertyMethodMetadata.getAnnotatedMethod().getName(), value);
+                }
             }
         }
         for (TypeMetadata superType : type.getSuperTypes()) {
