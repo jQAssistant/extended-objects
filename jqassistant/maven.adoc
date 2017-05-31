@@ -6,7 +6,6 @@ This section describes rules that apply to the Maven build system.
 
 [[maven:MainArtifact]]
 [source,cypher,role=concept]
-// classpath:Resolve is required due to https://github.com/buschmais/jqa-maven-plugin/issues/7
 .Adds a label `Main` to all non test artifacts created by a Maven project.
 ----
 MATCH
