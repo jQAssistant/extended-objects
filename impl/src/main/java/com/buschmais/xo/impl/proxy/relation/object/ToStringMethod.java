@@ -10,27 +10,28 @@ public class ToStringMethod<Entity, EntityMetadata extends DatastoreEntityMetada
 
     private final SessionContext<?, Entity, EntityMetadata, EntityDiscriminator, ?, Relation, RelationMetadata, RelationDiscriminator, ?> sessionContext;
 
+    private final DatastoreEntityManager<?, Entity, EntityMetadata, EntityDiscriminator, ?> datastoreEntityManager;
+    private final DatastoreRelationManager<Entity, ?, Relation, RelationMetadata, RelationDiscriminator, ?> datastoreRelationManager;
+
     public ToStringMethod(
             SessionContext<?, Entity, EntityMetadata, EntityDiscriminator, ?, Relation, RelationMetadata, RelationDiscriminator, ?> sessionContext) {
         this.sessionContext = sessionContext;
+        this.datastoreEntityManager = sessionContext.getDatastoreSession().getDatastoreEntityManager();
+        this.datastoreRelationManager = sessionContext.getDatastoreSession().getDatastoreRelationManager();
     }
 
     @Override
     protected String getId(Relation datastoreType) {
-        return sessionContext.getDatastoreSession().getDatastoreRelationManager().getRelationId(datastoreType).toString();
+        return datastoreRelationManager.getRelationId(datastoreType).toString();
     }
 
     @Override
     protected Object getProperty(Relation datastoreType, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
-        return sessionContext.getDatastoreSession().getDatastoreRelationManager().getProperty(datastoreType, propertyMethodMetadata);
+        return datastoreRelationManager.getProperty(datastoreType, propertyMethodMetadata);
     }
 
     @Override
     protected TypeMetadataSet<?> getTypes(Relation datastoreType) {
-        DatastoreRelationManager<Entity, ?, Relation, RelationMetadata, RelationDiscriminator, ?> datastoreRelationManager = sessionContext
-                .getDatastoreSession().getDatastoreRelationManager();
-        DatastoreEntityManager<?, Entity, EntityMetadata, EntityDiscriminator, ?> datastoreEntityManager = sessionContext.getDatastoreSession()
-                .getDatastoreEntityManager();
         Entity from = datastoreRelationManager.getFrom(datastoreType);
         Entity to = datastoreRelationManager.getTo(datastoreType);
         return sessionContext.getMetadataProvider().getRelationTypes(datastoreEntityManager.getEntityDiscriminators(from),
