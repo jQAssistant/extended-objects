@@ -84,7 +84,7 @@
         <org.asciidoctor_version>1.5.4.1</org.asciidoctor_version>
         <org.asciidoctorj.pdf_version>1.5.0-alpha.14</org.asciidoctorj.pdf_version>
         <org.jruby_version>1.7.25</org.jruby_version>
-        <org.neo4j_version>3.2.0</org.neo4j_version>
+        <org.neo4j_version>3.2.1</org.neo4j_version>
         <org.slf4j_version>1.7.25</org.slf4j_version>
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
