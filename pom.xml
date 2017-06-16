@@ -98,7 +98,7 @@
         <profile>
             <id>Neo4j_2.x</id>
             <properties>
-                <org.neo4j_version>2.3.10</org.neo4j_version>
+                <org.neo4j_version>2.3.11</org.neo4j_version>
             </properties>
         </profile>
         <profile>
