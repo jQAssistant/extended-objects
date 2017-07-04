@@ -1,11 +1,11 @@
 package com.buschmais.xo.impl.transaction;
 
-import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.api.XOTransaction;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.buschmais.xo.api.ResultIterator;
+import com.buschmais.xo.api.XOTransaction;
 
 public class TransactionalResultIterator<E> implements ResultIterator<E>, XOTransaction.Synchronization {
 
@@ -15,7 +15,7 @@ public class TransactionalResultIterator<E> implements ResultIterator<E>, XOTran
     public TransactionalResultIterator(ResultIterator<E> delegateIterator, XOTransaction xoTransaction) {
         this.xoTransaction = xoTransaction;
         this.delegateIterator = delegateIterator;
-        if (xoTransaction != null) {
+        if (isTransactional()) {
             xoTransaction.registerSynchronization(this);
         }
     }
@@ -79,9 +79,13 @@ public class TransactionalResultIterator<E> implements ResultIterator<E>, XOTran
     }
 
     private void unregisterSynchronization() {
-        if (this.xoTransaction != null) {
+        if (isTransactional()) {
             this.xoTransaction.unregisterSynchronization(this);
             this.xoTransaction = null;
         }
+    }
+
+    private boolean isTransactional() {
+        return this.xoTransaction != null && this.xoTransaction.isActive();
     }
 }
