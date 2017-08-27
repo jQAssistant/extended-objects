@@ -7,10 +7,8 @@ import static com.buschmais.xo.spi.annotation.RelationDefinition.ToDefinition;
 import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -29,6 +27,7 @@ import com.buschmais.xo.spi.datastore.*;
 import com.buschmais.xo.spi.metadata.method.*;
 import com.buschmais.xo.spi.metadata.type.*;
 import com.buschmais.xo.spi.reflection.*;
+import com.buschmais.xo.spi.reflection.AnnotatedType;
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -426,6 +425,14 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             } else if (typeArgument instanceof ParameterizedType) {
                 ParameterizedType parameterizedTypeArgument = (ParameterizedType) typeArgument;
                 elementType = (Class<?>) parameterizedTypeArgument.getRawType();
+            } else if (typeArgument instanceof TypeVariable<?>) {
+                TypeVariable<?> typeVariable = (TypeVariable<?>) typeArgument;
+                Type[] bounds = typeVariable.getBounds();
+                if (bounds.length != 1) {
+                    throw new XOException("Cannot determine boundary of " + typeVariable.getName() + " of collection property "
+                            + propertyMethod.getAnnotatedElement().toGenericString());
+                }
+                elementType = (Class<?>) bounds[0];
             } else {
                 throw new XOException("Cannot determine argument type of collection property " + propertyMethod.getAnnotatedElement().toGenericString());
             }
