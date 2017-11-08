@@ -80,11 +80,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java8.build.outputDirectory>${project.build.directory}/classes-java8</java8.build.outputDirectory>
         <github.global.server>github</github.global.server>
-        <org.asciidoctor.maven_version>1.5.5</org.asciidoctor.maven_version>
-        <org.asciidoctor_version>1.5.4.1</org.asciidoctor_version>
+        <org.asciidoctor.maven_version>1.5.6</org.asciidoctor.maven_version>
+        <org.asciidoctor_version>1.5.6</org.asciidoctor_version>
         <org.asciidoctorj.pdf_version>1.5.0-alpha.14</org.asciidoctorj.pdf_version>
-        <org.jruby_version>1.7.25</org.jruby_version>
-        <org.neo4j_version>3.2.1</org.neo4j_version>
+        <org.jruby_version>1.7.27</org.jruby_version>
+        <org.neo4j_version>3.3.0</org.neo4j_version>
         <org.slf4j_version>1.7.25</org.slf4j_version>
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
@@ -257,27 +257,12 @@
                                 <backend>html5</backend>
                             </configuration>
                         </execution>
-                        <execution>
-                            <id>pdf</id>
-                            <phase>generate-resources</phase>
-                            <goals>
-                                <goal>process-asciidoc</goal>
-                            </goals>
-                            <configuration>
-                                <backend>pdf</backend>
-                            </configuration>
-                        </execution>
                     </executions>
                     <dependencies>
                         <dependency>
                             <groupId>org.asciidoctor</groupId>
                             <artifactId>asciidoctorj</artifactId>
                             <version>${org.asciidoctor_version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.asciidoctor</groupId>
-                            <artifactId>asciidoctorj-pdf</artifactId>
-                            <version>${org.asciidoctorj.pdf_version}</version>
                         </dependency>
                         <dependency>
                             <groupId>org.jruby</groupId>
@@ -527,13 +512,21 @@
                     <failOnSeverity>CRITICAL</failOnSeverity>
                     <reportProperties>
                         <graphml.report.directory>${session.topLevelProject.build.directory}/graphml</graphml.report.directory>
+                        <asciidoc.report.directory>${session.topLevelProject.build.directory}/html</asciidoc.report.directory>
+                        <asciidoc.report.rule.directory>${session.topLevelProject.basedir}/jqassistant</asciidoc.report.rule.directory>
+                        <asciidoc.report.file.include>index.adoc</asciidoc.report.file.include>
                     </reportProperties>
                 </configuration>
                 <dependencies>
                     <dependency>
+                        <groupId>org.jqassistant.contrib.plugin</groupId>
+                        <artifactId>jqassistant-asciidoc-report-plugin</artifactId>
+                        <version>1.0.0</version>
+                    </dependency>
+                    <dependency>
                         <groupId>de.kontext-e.jqassistant.plugin</groupId>
                         <artifactId>jqassistant.plugin.git</artifactId>
-                        <version>1.2.0</version>
+                        <version>1.3.1</version>
                     </dependency>
                 </dependencies>
             </plugin>
