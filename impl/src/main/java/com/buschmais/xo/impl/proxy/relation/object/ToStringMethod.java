@@ -3,7 +3,6 @@ package com.buschmais.xo.impl.proxy.relation.object;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.common.object.AbstractDatastoreTypeToStringMethod;
 import com.buschmais.xo.spi.datastore.*;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 
 public class ToStringMethod<Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator>
         extends AbstractDatastoreTypeToStringMethod<Relation> {
@@ -26,15 +25,15 @@ public class ToStringMethod<Entity, EntityMetadata extends DatastoreEntityMetada
     }
 
     @Override
-    protected Object getProperty(Relation datastoreType, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
-        return datastoreRelationManager.getProperty(datastoreType, propertyMethodMetadata);
-    }
-
-    @Override
     protected TypeMetadataSet<?> getTypes(Relation datastoreType) {
         Entity from = datastoreRelationManager.getFrom(datastoreType);
         Entity to = datastoreRelationManager.getTo(datastoreType);
         return sessionContext.getMetadataProvider().getRelationTypes(datastoreEntityManager.getEntityDiscriminators(from),
                 datastoreRelationManager.getRelationDiscriminator(datastoreType), datastoreEntityManager.getEntityDiscriminators(to));
+    }
+
+    @Override
+    protected DatastorePropertyManager<Relation, ?> getDatastorePropertyManager() {
+        return datastoreRelationManager;
     }
 }

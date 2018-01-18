@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.MethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
@@ -35,8 +36,14 @@ public abstract class AbstractDatastoreTypeToStringMethod<T> extends AbstractToS
         }
     }
 
+    private final Object getProperty(T datastoreType, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
+        DatastorePropertyManager<T, ?> datastorePropertyManager = getDatastorePropertyManager();
+        return datastorePropertyManager.hasProperty(datastoreType, propertyMethodMetadata)
+                ? datastorePropertyManager.getProperty(datastoreType, propertyMethodMetadata)
+                : null;
+    }
+
     protected abstract TypeMetadataSet<?> getTypes(T datastoreType);
 
-    protected abstract Object getProperty(T datastoreType, PrimitivePropertyMethodMetadata propertyMethodMetadata);
-
+    protected abstract DatastorePropertyManager<T, ?> getDatastorePropertyManager();
 }
