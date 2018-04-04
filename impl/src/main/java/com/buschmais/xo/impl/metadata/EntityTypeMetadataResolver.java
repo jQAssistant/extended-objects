@@ -1,24 +1,22 @@
 package com.buschmais.xo.impl.metadata;
 
-import java.util.*;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * Allows resolving types from entity discriminators as provided by the
  * datastores.
  *
- * @param <Discriminator>
- *            The discriminator type of the datastore (e.g. Neo4j labels or
- *            strings for JSON stores).
+ * @param <Discriminator> The discriminator type of the datastore (e.g. Neo4j labels or
+ *                        strings for JSON stores).
  */
 public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> {
 
@@ -30,8 +28,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
     /**
      * Constructor.
      *
-     * @param metadataByType
-     *            A map of all types with their metadata.
+     * @param metadataByType A map of all types with their metadata.
      */
     public EntityTypeMetadataResolver(Map<Class<?>, TypeMetadata> metadataByType, XOUnit.MappingConfiguration mappingConfiguration) {
         LOGGER.debug("Type metadata = '{}'", metadataByType);
@@ -63,14 +60,19 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
             }
         }
         LOGGER.debug("Type metadata by discriminators: '{}'", typeMetadataByDiscriminator);
+        List<String> messages = new ArrayList<>();
         for (Map.Entry<Set<Discriminator>, Set<EntityTypeMetadata<EntityMetadata>>> entry : entityMetadataByDiscriminators.entrySet()) {
             if (entry.getValue().size() > 1) {
                 String message = String.format("%s use the same set of discriminators %s.", entry.getValue(), entry.getKey());
-                if (mappingConfiguration.isStrictValidation()) {
-                    throw new XOException(message);
-                } else {
-                    LOGGER.warn(message);
-                }
+                messages.add(message);
+
+            }
+        }
+        if (!messages.isEmpty() && mappingConfiguration.isStrictValidation()) {
+            throw new XOException("Mapping problems detected: " + messages);
+        } else {
+            for (String message : messages) {
+                LOGGER.warn(message);
             }
         }
     }
@@ -79,8 +81,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * Determine the set of discriminators for one type, i.e. the discriminator
      * of the type itself and of all it's super types.
      *
-     * @param typeMetadata
-     *            The type.
+     * @param typeMetadata The type.
      * @return The set of discriminators.
      */
     private Set<Discriminator> getAggregatedDiscriminators(EntityTypeMetadata<EntityMetadata> typeMetadata) {
@@ -105,8 +106,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * Return a {@link com.buschmais.xo.spi.datastore.TypeMetadataSet}
      * containing all types matching to the given entity discriminators.
      *
-     * @param discriminators
-     *            The discriminators.
+     * @param discriminators The discriminators.
      * @return The {@link com.buschmais.xo.spi.datastore.TypeMetadataSet}.
      */
     public TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getTypes(Set<Discriminator> discriminators) {
@@ -128,6 +128,6 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
 
     public Set<Discriminator> getDiscriminators(EntityTypeMetadata<EntityMetadata> entityTypeMetadata) {
         Set<Discriminator> discriminators = aggregatedDiscriminators.get(entityTypeMetadata);
-        return discriminators != null ? discriminators : Collections.<Discriminator> emptySet();
+        return discriminators != null ? discriminators : Collections.<Discriminator>emptySet();
     }
 }
