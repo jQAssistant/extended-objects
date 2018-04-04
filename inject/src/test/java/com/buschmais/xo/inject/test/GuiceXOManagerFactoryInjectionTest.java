@@ -1,23 +1,27 @@
 package com.buschmais.xo.inject.test;
 
-import static com.google.inject.Guice.createInjector;
-import static org.junit.Assert.assertEquals;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.junit.Test;
-
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.inject.GuiceModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import static com.google.inject.Guice.createInjector;
+import static org.junit.Assert.assertEquals;
 
 public class GuiceXOManagerFactoryInjectionTest {
 
-    private Injector injector = createInjector(
+    private static Injector injector;
+
+    @BeforeClass
+    public static void setUp() {
+        injector = createInjector(
             new GuiceModule("default") {
                 @Provides
                 @Singleton
@@ -26,7 +30,8 @@ public class GuiceXOManagerFactoryInjectionTest {
                     return XO.createXOManagerFactory("guice");
                 }
             }
-    );
+        );
+    }
 
     @Test
     public void testInjectedFieldXOManager() {
