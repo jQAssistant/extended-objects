@@ -1,17 +1,16 @@
 package com.buschmais.xo.neo4j.embedded.api;
 
-import static org.junit.Assert.assertEquals;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastore;
+import org.junit.Test;
 
 import java.net.URI;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastore;
+public class EmbeddedNeo4jXOProviderTest {
 
-public class Neo4jXOProviderTest {
-
-    private final Neo4jXOProvider provider = new Neo4jXOProvider();
+    private final EmbeddedNeo4jXOProvider provider = new EmbeddedNeo4jXOProvider();
 
     @Test
     public void lookupTests() throws Exception {

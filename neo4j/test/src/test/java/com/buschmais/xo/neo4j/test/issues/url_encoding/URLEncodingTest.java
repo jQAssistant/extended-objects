@@ -1,20 +1,19 @@
 package com.buschmais.xo.neo4j.test.issues.url_encoding;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.io.File;
-import java.net.URISyntaxException;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.api.bootstrap.XOUnitBuilder;
-import com.buschmais.xo.neo4j.embedded.api.Neo4jXOProvider;
+import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.net.URISyntaxException;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * https://github.com/buschmais/extended-objects/issues/129
@@ -44,7 +43,7 @@ public class URLEncodingTest {
     @Test
     public void testEncodedDatabasePathContainingSpaces() throws Exception {
         String encodedPath = dbPath.toURI().toURL().toExternalForm();
-        XOUnit xoUnit = XOUnitBuilder.create(encodedPath, Neo4jXOProvider.class).create();
+        XOUnit xoUnit = XOUnitBuilder.create(encodedPath, EmbeddedNeo4jXOProvider.class).create();
         XOManagerFactory xoManagerFactory = XO.createXOManagerFactory(xoUnit);
         XOManager xoManager = xoManagerFactory.createXOManager();
 
@@ -53,7 +52,7 @@ public class URLEncodingTest {
 
     @Test(expected = URISyntaxException.class)
     public void testDatabasePathContainingSpaces() throws Exception {
-        XOUnitBuilder.create(DATABASE_URI_CONTAINING_SPACES, Neo4jXOProvider.class).create();
+        XOUnitBuilder.create(DATABASE_URI_CONTAINING_SPACES, EmbeddedNeo4jXOProvider.class).create();
     }
 
     private boolean deleteRecursively(File file) {
