@@ -1,31 +1,19 @@
 package com.buschmais.xo.impl.bootstrap.osgi;
 
-import static com.buschmais.xo.api.bootstrap.XOUnitParameter.CONCURRENCY_MODE;
-import static com.buschmais.xo.api.bootstrap.XOUnitParameter.DESCRIPTION;
-import static com.buschmais.xo.api.bootstrap.XOUnitParameter.INSTANCE_LISTENERS;
-import static com.buschmais.xo.api.bootstrap.XOUnitParameter.NAME;
-import static com.buschmais.xo.api.bootstrap.XOUnitParameter.PROPERTIES;
-import static com.buschmais.xo.api.bootstrap.XOUnitParameter.PROVIDER;
-import static com.buschmais.xo.api.bootstrap.XOUnitParameter.TRANSACTION_ATTRIBUTE;
-import static com.buschmais.xo.api.bootstrap.XOUnitParameter.TYPES;
-import static com.buschmais.xo.api.bootstrap.XOUnitParameter.URL;
-import static com.buschmais.xo.api.bootstrap.XOUnitParameter.VALIDATION_MODE;
-
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Properties;
-
-import org.osgi.service.cm.ConfigurationException;
-
+import com.buschmais.xo.api.ConcurrencyMode;
+import com.buschmais.xo.api.Transaction;
+import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.api.bootstrap.XOUnitBuilder;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import com.buschmais.xo.spi.reflection.ClassHelper;
+import org.osgi.service.cm.ConfigurationException;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static com.buschmais.xo.api.bootstrap.XOUnitParameter.*;
 
 public final class XOUnitConverter {
 
@@ -51,9 +39,9 @@ public final class XOUnitConverter {
         }
         Class<? extends XODatastoreProvider> provider = ClassHelper.getType(providerName);
 
-        XOUnitBuilder builder;
+        XOUnit.XOUnitBuilder builder;
         try {
-            builder = XOUnitBuilder.create(url, provider, types.toArray(new Class[] {}));
+            builder = XOUnit.builder().uri(new URI(url)).provider(provider).types(types);
         } catch (URISyntaxException e) {
             throw new ConfigurationException(URL.getKey(), "Could not convert '" + url + "' to url", e);
         }
@@ -70,20 +58,20 @@ public final class XOUnitConverter {
         Collection<String> listenerNames = (Collection<String>) properties.get(INSTANCE_LISTENERS.getKey());
         if (listenerNames != null) {
             Collection<Class<?>> instanceListeners = ClassHelper.getTypes(listenerNames);
-            builder.instanceListenerTypes(instanceListeners.toArray(new Class[] {}));
+            builder.instanceListeners(instanceListeners);
         }
 
         // optional: concurrency
         String concurrencyMode = (String) properties.get(CONCURRENCY_MODE.getKey());
-        builder.concurrencyMode(concurrencyMode);
+        builder.concurrencyMode(ConcurrencyMode.valueOf(concurrencyMode));
 
         // optional: validation
         String validationMode = (String) properties.get(VALIDATION_MODE.getKey());
-        builder.validationMode(validationMode);
+        builder.validationMode(ValidationMode.valueOf(validationMode));
 
         // optional: transaction
         String transactionMode = (String) properties.get(TRANSACTION_ATTRIBUTE.getKey());
-        builder.transactionAttribute(transactionMode);
+        builder.defaultTransactionAttribute(Transaction.TransactionAttribute.valueOf(transactionMode));
 
         // optional: properties
         Collection<Object> entries = (Collection<Object>) properties.get(PROPERTIES.getKey());
@@ -93,7 +81,7 @@ public final class XOUnitConverter {
             builder.properties(providerProps);
         }
 
-        return builder.create();
+        return builder.build();
     }
 
     public static Properties fromXOUnit(final XOUnit xoUnit) {

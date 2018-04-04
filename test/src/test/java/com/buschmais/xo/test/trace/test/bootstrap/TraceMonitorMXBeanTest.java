@@ -4,10 +4,10 @@ import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.api.bootstrap.XOUnitBuilder;
 import com.buschmais.xo.json.api.JsonFileStoreProvider;
 import com.buschmais.xo.test.trace.api.TraceDatastoreProvider;
 import com.buschmais.xo.test.trace.test.bootstrap.composite.A;
+import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +17,9 @@ import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Properties;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.notNullValue;
@@ -39,7 +41,9 @@ public class TraceMonitorMXBeanTest {
 
     @Test
     public void methodStatistics() throws URISyntaxException, IOException, JMException {
-        XOUnit xoUnit = XOUnitBuilder.create("file:target/json/store", TraceDatastoreProvider.class, A.class).property("com.buschmais.xo.test.trace.api.DelegateProvider", JsonFileStoreProvider.class.getName()).create();
+        Properties properties = new Properties();
+        properties.setProperty("com.buschmais.xo.test.trace.api.DelegateProvider", JsonFileStoreProvider.class.getName());
+        XOUnit xoUnit= XOUnit.builder().uri(new URI("file:target/json/store")).provider(TraceDatastoreProvider.class).types(ImmutableList.of(A.class)).properties(properties).build();
         XOManagerFactory xoManagerFactory = XO.createXOManagerFactory(xoUnit);
         assertThat(mbeanServer.getMBeanInfo(objectName), notNullValue());
         XOManager xoManager = xoManagerFactory.createXOManager();

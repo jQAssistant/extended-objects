@@ -25,6 +25,6 @@ public class EmbeddedNeo4jXOProviderTest {
     }
 
     private XOUnit unit(String uri) throws Exception {
-        return new XOUnit(null, null, new URI(uri), null, new Class<?>[0], null, null, null, null, null);
+        return XOUnit.builder().uri(new URI(uri)).build();
     }
 }
