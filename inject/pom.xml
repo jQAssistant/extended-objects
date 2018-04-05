@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.buschmais.xo</groupId>
         <artifactId>xo.parent</artifactId>
-        <version>0.9.0-SNAPSHOT</version>
+        <version>0.9.0</version>
     </parent>
     <artifactId>xo.inject</artifactId>
 
