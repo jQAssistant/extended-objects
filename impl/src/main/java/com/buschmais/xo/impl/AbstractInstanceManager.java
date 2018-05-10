@@ -110,10 +110,10 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     private void validateTypes(TypeMetadataSet<?> types) {
         int size = types.size();
         if (size == 1) {
-            if (types.containsAbstractType()) {
+            if (types.isAbstract()) {
                 throw new XOException("Cannot create an instance of a single abstract type " + types);
             }
-        } else if (types.containsFinalType()) {
+        } else if (types.isFinal()) {
             throw new XOException("Cannot create an instance overriding a final type " + types);
         }
     }
