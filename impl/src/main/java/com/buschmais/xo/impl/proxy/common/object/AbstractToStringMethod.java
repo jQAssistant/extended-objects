@@ -17,7 +17,7 @@ public abstract class AbstractToStringMethod<T> implements ProxyMethod<T> {
         }
         String id = getId(datastoreType);
         if (id != null) {
-            stringBuffer.append(", id=");
+            stringBuffer.append(":");
             stringBuffer.append(id);
         }
         stringBuffer.append(getProperties(datastoreType));
