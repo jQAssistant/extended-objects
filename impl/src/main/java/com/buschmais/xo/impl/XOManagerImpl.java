@@ -358,7 +358,6 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         if (migrationStrategy != null) {
             migrationStrategy.migrate(instance, migratedInstance.as(targetType));
         }
-        entityInstanceManager.closeInstance(instance);
         return migratedInstance;
     }
 

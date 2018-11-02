@@ -51,7 +51,7 @@ public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends Datastor
 	public CompositeObject add(Class<?> newType, Class<?>... newTypes) {
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = getDiscriminators(newType, newTypes);
         Set<EntityDiscriminator> newDiscriminators = new HashSet<>(metadataProvider.getEntityDiscriminators(types));
-		Entity entity = invalidateInstance(entityInstanceManager);
+		Entity entity = removeInstance(entityInstanceManager);
 		Set<EntityDiscriminator> entityDiscriminators = datastoreEntityManager.getEntityDiscriminators(entity);
 		newDiscriminators.removeAll(entityDiscriminators);
 		datastoreEntityManager.addDiscriminators(types, entity, newDiscriminators);
@@ -62,7 +62,7 @@ public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends Datastor
 	public CompositeObject remove(Class<?> obsoleteType, Class<?>... obsoleteTypes) {
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = getDiscriminators(obsoleteType, obsoleteTypes);
         Set<EntityDiscriminator> obsoleteDiscriminators = new HashSet<>(metadataProvider.getEntityDiscriminators(types));
-		Entity entity = invalidateInstance(entityInstanceManager);
+		Entity entity = removeInstance(entityInstanceManager);
 		Set<EntityDiscriminator> entityDiscriminators = datastoreEntityManager.getEntityDiscriminators(entity);
 		obsoleteDiscriminators.retainAll(entityDiscriminators);
 		datastoreEntityManager.removeDiscriminators(types, entity, obsoleteDiscriminators);
@@ -78,10 +78,9 @@ public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends Datastor
 		return typeMetadata;
 	}
 
-	private Entity invalidateInstance(AbstractInstanceManager<EntityId, Entity> entityInstanceManager) {
+	private Entity removeInstance(AbstractInstanceManager<EntityId, Entity> entityInstanceManager) {
 		Entity entity = entityInstanceManager.getDatastoreType(instance);
 		entityInstanceManager.removeInstance(instance);
-		entityInstanceManager.closeInstance(instance);
 		return entity;
 	}
 

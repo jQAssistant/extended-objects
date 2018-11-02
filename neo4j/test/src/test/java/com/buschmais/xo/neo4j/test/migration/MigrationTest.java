@@ -43,6 +43,7 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
         xoManager.currentTransaction().begin();
         B b = xoManager.migrate(a, B.class);
         assertThat(a == b, equalTo(false));
+        assertThat(a.getValue(), equalTo("Value"));
         assertThat(b.getValue(), equalTo("Value"));
         xoManager.currentTransaction().commit();
         xoManager.close();
@@ -101,6 +102,7 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
 		CompositeObject compositeObject = xoManager.migrate(a).add(C.class);
 		assertThat(compositeObject, instanceOf(A.class));
 		assertThat(compositeObject, instanceOf(C.class));
+        assertThat(a.getValue(), equalTo("Value"));
 		assertThat(compositeObject.as(A.class).getValue(), equalTo("Value"));
         xoManager.currentTransaction().commit();
         xoManager.close();
@@ -117,6 +119,7 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
 		A a = xoManager.migrate(compositeObject).remove(C.class).as(A.class);
 		assertThat(a, instanceOf(A.class));
 		assertThat(a, not(instanceOf(C.class)));
+        assertThat(compositeObject.getId(), equalTo(((CompositeObject)a).getId()));
         assertThat(a.getValue(), equalTo("Value"));
         xoManager.currentTransaction().commit();
         xoManager.close();
