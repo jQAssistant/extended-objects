@@ -32,7 +32,7 @@ public class OSGiTestCase implements ConfigurationFactory {
                 mavenBundle("org.slf4j", "slf4j-api", "1.7.2"), //
                 mavenBundle("ch.qos.logback", "logback-core", "1.0.6"), //
                 mavenBundle("ch.qos.logback", "logback-classic", "1.0.6"), //
-                mavenBundle("com.google.guava", "guava", "15.0"));
+                mavenBundle("com.google.guava", "guava", "23.0"));
         return OptionUtils.combine(xoBundles, CoreOptions.junitBundles());
     }
 
