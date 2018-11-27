@@ -59,19 +59,9 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
         </dependency>
-
-        <!-- TODO fix version-dependencies to neo4j using the parent pom-->
         <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-kernel</artifactId>
-            <classifier>tests</classifier>
-            <version>${org.neo4j_version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-io</artifactId>
-            <classifier>tests</classifier>
+            <groupId>org.neo4j.community</groupId>
+            <artifactId>it-test-support</artifactId>
             <version>${org.neo4j_version}</version>
             <scope>test</scope>
         </dependency>

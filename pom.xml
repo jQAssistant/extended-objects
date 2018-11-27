@@ -83,7 +83,7 @@
         <org.asciidoctor_version>1.5.8</org.asciidoctor_version>
         <org.asciidoctorj.pdf_version>1.5.0-alpha.16</org.asciidoctorj.pdf_version>
         <org.jruby_version>9.1.17.0</org.jruby_version>
-        <org.neo4j_version>3.4.10</org.neo4j_version>
+        <org.neo4j_version>3.5.0</org.neo4j_version>
         <org.slf4j_version>1.7.25</org.slf4j_version>
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
@@ -94,12 +94,6 @@
     </properties>
 
     <profiles>
-        <profile>
-            <id>Neo4j_2.x</id>
-            <properties>
-                <org.neo4j_version>2.3.12</org.neo4j_version>
-            </properties>
-        </profile>
         <profile>
             <id>release</id>
             <activation>

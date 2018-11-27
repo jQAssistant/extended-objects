@@ -23,16 +23,8 @@
             <artifactId>xo.test</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-kernel</artifactId>
-            <type>test-jar</type>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-io</artifactId>
-            <type>test-jar</type>
-            <optional>true</optional>
+            <groupId>org.neo4j.community</groupId>
+            <artifactId>it-test-support</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
