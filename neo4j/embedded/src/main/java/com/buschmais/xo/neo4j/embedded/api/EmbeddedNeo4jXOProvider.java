@@ -4,7 +4,7 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import com.buschmais.xo.spi.datastore.Datastore;
-import org.apache.commons.lang.WordUtils;
+import com.google.common.base.CaseFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public class EmbeddedNeo4jXOProvider implements XODatastoreProvider {
     }
 
     private String getFactoryClassName(URI uri) {
-        String protocol = WordUtils.capitalize(uri.getScheme());
+        String protocol = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL,  uri.getScheme());
         return DatastoreFactory.class.getPackage().getName() + "." + protocol + "DatastoreFactory";
     }
 
