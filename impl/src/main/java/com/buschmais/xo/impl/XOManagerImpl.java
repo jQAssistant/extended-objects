@@ -220,13 +220,13 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public CompositeObject create(Class<?> type, Class<?>... types) {
-        return createByExample(type, types, emptyMap());
+        return createByExample(emptyMap(), type, types);
     }
 
     @Override
     public CompositeObject create(Example<CompositeObject> example, Class<?> type, Class<?>... types) {
         Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type);
-        return createByExample(type, types, exampleEntity);
+        return createByExample(exampleEntity, type, types);
     }
 
     @Override
@@ -237,25 +237,25 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     @Override
     public <T> T create(Class<T> type, Example<T> example) {
         Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type);
-        return createByExample(type, new Class<?>[0], exampleEntity).as(type);
+        return createByExample(exampleEntity, type).as(type);
     }
 
     public <T> T create(Class<T> type) {
-        return createByExample(type, new Class<?>[0], emptyMap()).as(type);
+        return createByExample(emptyMap(), type).as(type);
     }
 
     /**
      * Create a new {@link CompositeObject} instance using an example.
      *
+     * @param exampleEntity
+     *            The example instance.
      * @param type
      *            The interface the property type shall implement.
      * @param types
      *            Additional interfaces the entity type shall implement.
-     * @param exampleEntity
-     *            The example instance.
      * @return The {@link CompositeObject} instance.
      */
-    private CompositeObject createByExample(Class<?> type, Class<?>[] types, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
+    private CompositeObject createByExample(Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity, Class<?> type, Class<?>... types) {
         TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = getEffectiveTypes(type, types);
         Set<EntityDiscriminator> entityDiscriminators = sessionContext.getMetadataProvider().getEntityDiscriminators(effectiveTypes);
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = sessionContext
