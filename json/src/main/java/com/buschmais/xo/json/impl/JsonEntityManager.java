@@ -138,7 +138,7 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     }
 
     @Override
-    public void clear(Iterable<ObjectNode> entities) {
+    public void clear(ObjectNode entity) {
     }
 
     /**

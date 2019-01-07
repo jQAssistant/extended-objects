@@ -120,10 +120,8 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
     }
 
     @Override
-    public void clear(Iterable<EmbeddedNode> nodes) {
-        for (EmbeddedNode node : nodes) {
-            node.clear();
-        }
+    public void clear(EmbeddedNode node) {
+        node.clear();
     }
 
     @Override

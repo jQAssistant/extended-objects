@@ -125,9 +125,7 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedR
     }
 
     @Override
-    public void clear(Iterable<EmbeddedRelationship> relationships) {
-        for (EmbeddedRelationship relationship : relationships) {
-            relationship.clear();
-        }
+    public void clear(EmbeddedRelationship relationship) {
+        relationship.clear();
     }
 }

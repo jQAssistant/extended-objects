@@ -3,7 +3,7 @@ package com.buschmais.xo.impl.cache;
 import java.util.Collection;
 
 /**
- * Transactional cache whcih handles read and write access to instances.
+ * Transactional cache which handles read and write access to instances.
  *
  * @param <Id>
  *            The datastore id type.
@@ -113,6 +113,8 @@ public class TransactionalCache<Id> {
      * Clear the cache.
      */
     public void clear() {
+        writeCache.clear();
+        readCache.clear();
     }
 
     /**

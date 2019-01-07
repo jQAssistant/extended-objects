@@ -59,14 +59,12 @@ public class CacheSynchronizationService<Entity, Relation> {
 
     private <T> void clear(TransactionalCache<?> cache, AbstractInstanceManager<?, T> instanceManager, DatastorePropertyManager<T, ?> datastoreManager) {
         Collection<?> instances = cache.readInstances();
-        List<T> entities = new ArrayList<>(instances.size());
         for (Object instance : instances) {
             T entity = instanceManager.getDatastoreType(instance);
             if (entity != null) {
-                entities.add(entity);
+                datastoreManager.clear(entity);
             }
         }
-        datastoreManager.clear(entities);
         cache.clear();
     }
 

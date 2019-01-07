@@ -70,10 +70,8 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
     }
 
     @Override
-    public final void clear(Iterable<T> entities) {
-        for (T entity : entities) {
-            entity.getState().clear();
-        }
+    public final void clear(T entity) {
+        entity.getState().clear();
     }
 
     protected final void ensureLoaded(T entity) {

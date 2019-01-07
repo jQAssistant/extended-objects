@@ -448,6 +448,11 @@ public interface XOManager extends AutoCloseable, CloseSupport {
     void flush();
 
     /**
+     * Clear caches, including pending changes.
+     */
+    void clear();
+
+    /**
      * Register an instance listener containing life cycle methods (e.g.
      * annotated with {@link com.buschmais.xo.api.annotation.PostCreate}.
      *

@@ -58,10 +58,10 @@ public interface DatastorePropertyManager<Element, PropertyMetadata> {
     void flush(Iterable<Element> entities);
 
     /**
-     * Clear any tracked state for the given entities.
+     * Clear any tracked state for the given entity.
      * 
-     * @param entities
-     *            The entities.
+     * @param entity
+     *            The entity.
      */
-    void clear(Iterable<Element> entities);
+    void clear(Element entity);
 }

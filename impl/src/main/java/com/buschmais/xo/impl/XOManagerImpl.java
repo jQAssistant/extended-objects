@@ -466,6 +466,11 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
+    public void clear() {
+        sessionContext.getCacheSynchronizationService().clear();
+    }
+
+    @Override
     public <I> void registerInstanceListener(I instanceListener) {
         sessionContext.getInstanceListenerService().registerInstanceListener(instanceListener);
     }

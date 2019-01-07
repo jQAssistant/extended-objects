@@ -109,7 +109,7 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
     }
 
     @Override
-    public void clear(Iterable<Relation> relations) {
-        delegate.clear(relations);
+    public void clear(Relation relation) {
+        delegate.clear(relation);
     }
 }

@@ -92,6 +92,6 @@ public class JsonRelationManager implements DatastoreRelationManager<ObjectNode,
     }
 
     @Override
-    public void clear(Iterable<JsonRelation> entities) {
+    public void clear(JsonRelation relation) {
     }
 }
