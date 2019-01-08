@@ -105,21 +105,6 @@ public interface XOManager extends AutoCloseable, CloseSupport {
     CompositeObject create(Class<?> type, Class<?>... types);
 
     /**
-     * Create a new {@link CompositeObject} instance using an example.
-     *
-     * @param example
-     *            The example instance.
-     * @param type
-     *            The interface the property type shall implement.
-     * @param types
-     *            Additional interfaces the entity type shall implement.
-     * @return The {@link CompositeObject} instance.
-     */
-    @Deprecated
-    CompositeObject create(Example<CompositeObject> example, Class<?> type, Class<?>... types);
-
-
-    /**
      * Create a new property instance.
      *
      * @param <T>
@@ -132,30 +117,17 @@ public interface XOManager extends AutoCloseable, CloseSupport {
     <T> T create(Class<T> type);
 
     /**
-     * Create a new property instance using an example.
-     *
-     * @param example
-     *            The example instance.
-     * @param <T>
-     *            The expected return type. Note that it must be assignable to
-     *            at least one of the interfaces specified for the types.
-     * @param type
-     *            The interface the property type shall implement.
-     * @return The property instance.
-     */
-    @Deprecated
-    <T> T create(Example<T> example, Class<T> type);
-
-    /**
      * Create a new {@link CompositeObject} instance using an example.
      *
      * @param type
      *            The interface the property type shall implement.
      * @param example
      *            The example instance.
+     * @param types
+     *            Additional interfaces the entity type shall implement.
      * @return The {@link CompositeObject} instance.
      */
-    <T> T create(Class<T> type, Example<T> example);
+    <T> T create(Class<T> type, Example<T> example, Class<?>... types);
 
     /**
      * Creates an instance of a typed relation between a source and a target
@@ -176,29 +148,6 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * @return The created relation instance.
      */
     <S, R, T> R create(S source, Class<R> relationType, T target);
-
-    /**
-     * Creates an instance of a typed relation between a source and a target
-     * instance using an example.
-     *
-     * @param example
-     *            The example instance.
-     * @param source
-     *            The source instance.
-     * @param relationType
-     *            The relation type.
-     * @param target
-     *            The target instance.
-     * @param <S>
-     *            The source type.
-     * @param <R>
-     *            The relation type.
-     * @param <T>
-     *            The target type.
-     * @return The created relation instance.
-     */
-    @Deprecated
-    <S, R, T> R create(Example<R> example, S source, Class<R> relationType, T target);
 
     /**
      * Creates an instance of a typed relation between a source and a target

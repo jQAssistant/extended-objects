@@ -154,7 +154,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
             exampleProxyMethodServices.put(type, proxyMethodService);
         }
         InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(exampleEntity, proxyMethodService);
-        List<Class<?>> effectiveTypes = new ArrayList<>();
+        List<Class<?>> effectiveTypes = new ArrayList<>(types.length + 1);
         effectiveTypes.add(type);
         effectiveTypes.addAll(Arrays.asList(types));
         CompositeType compositeType = CompositeTypeBuilder.create(CompositeObject.class, type, types);
@@ -224,20 +224,9 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
-    public CompositeObject create(Example<CompositeObject> example, Class<?> type, Class<?>... types) {
+    public <T> T create(Class<T> type, Example<T> example, Class<?>... types) {
         Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type);
-        return createByExample(exampleEntity, type, types);
-    }
-
-    @Override
-    public <T> T create(Example<T> example, Class<T> type) {
-        return create(type, example);
-    }
-
-    @Override
-    public <T> T create(Class<T> type, Example<T> example) {
-        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type);
-        return createByExample(exampleEntity, type).as(type);
+        return createByExample(exampleEntity, type, types).as(type);
     }
 
     public <T> T create(Class<T> type) {
@@ -270,11 +259,6 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     @Override
     public <S, R, T> R create(S from, Class<R> relationType, T to) {
         return createByExample(from, relationType, to, Collections.emptyMap());
-    }
-
-    @Override
-    public <S, R, T> R create(Example<R> example, S from, Class<R> relationType, T to) {
-        return create(from, relationType, to, example);
     }
 
     @Override
