@@ -328,57 +328,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
-    public <T, M> CompositeObject migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType, Class<?>... targetTypes) {
-        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        Entity entity = entityInstanceManager.getDatastoreType(instance);
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = sessionContext
-                .getDatastoreSession();
-        Set<EntityDiscriminator> entityDiscriminators = datastoreSession.getDatastoreEntityManager().getEntityDiscriminators(entity);
-        MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
-        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types = metadataProvider.getTypes(entityDiscriminators);
-        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTargetTypes = getEffectiveTypes(targetType, targetTypes);
-        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> addedTypes = new TypeMetadataSet<>();
-        addedTypes.addAll(effectiveTargetTypes);
-        addedTypes.removeAll(types);
-        Set<EntityDiscriminator> addedDiscriminators = metadataProvider.getEntityDiscriminators(addedTypes);
-        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> removedTypes = new TypeMetadataSet<>();
-        removedTypes.addAll(types);
-        removedTypes.removeAll(effectiveTargetTypes);
-        Set<EntityDiscriminator> removedDiscriminators = metadataProvider.getEntityDiscriminators(removedTypes);
-        DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> datastoreEntityManager = sessionContext
-                .getDatastoreSession().getDatastoreEntityManager();
-        if (!removedDiscriminators.isEmpty()) {
-            datastoreEntityManager.removeDiscriminators(removedTypes, entity, removedDiscriminators);
-        }
-        if (!addedDiscriminators.isEmpty()) {
-            datastoreEntityManager.addDiscriminators(addedTypes, entity, addedDiscriminators);
-        }
-        entityInstanceManager.removeInstance(instance);
-        CompositeObject migratedInstance = entityInstanceManager.updateInstance(entity);
-        if (migrationStrategy != null) {
-            migrationStrategy.migrate(instance, migratedInstance.as(targetType));
-        }
-        return migratedInstance;
-    }
-
-    @Override
-    public <T, M> CompositeObject migrate(T instance, Class<M> targetType, Class<?>... targetTypes) {
-        return migrate(instance, null, targetType, targetTypes);
-    }
-
-    @Override
-    public <T, M> M migrate(T instance, MigrationStrategy<T, M> migrationStrategy, Class<M> targetType) {
-        return migrate(instance, migrationStrategy, targetType, new Class<?>[0]).as(targetType);
-    }
-
-    @Override
     public <T> XOMigrator<T> migrate(T instance) {
         return sessionContext.getInterceptorFactory().addInterceptor(new XOMigratorImpl<>(instance, sessionContext));
-    }
-
-    @Override
-    public <T, M> M migrate(T instance, Class<M> targetType) {
-        return sessionContext.getInterceptorFactory().addInterceptor(migrate(instance, null, targetType));
     }
 
     @Override

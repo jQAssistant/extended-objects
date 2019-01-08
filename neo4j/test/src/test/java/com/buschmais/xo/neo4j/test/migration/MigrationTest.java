@@ -1,17 +1,5 @@
 package com.buschmais.xo.neo4j.test.migration;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-
-import java.net.URISyntaxException;
-import java.util.Collection;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
@@ -20,6 +8,16 @@ import com.buschmais.xo.neo4j.test.migration.composite.A;
 import com.buschmais.xo.neo4j.test.migration.composite.B;
 import com.buschmais.xo.neo4j.test.migration.composite.C;
 import com.buschmais.xo.neo4j.test.migration.composite.D;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import java.util.Collection;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 public class MigrationTest extends AbstractNeo4jXOManagerTest {
@@ -29,7 +27,7 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+    public static Collection<Object[]> getXOUnits() {
         return xoUnits(A.class, B.class, C.class, D.class);
     }
 
@@ -41,7 +39,7 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
         a.setValue("Value");
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        B b = xoManager.migrate(a, B.class);
+        B b = xoManager.migrate(a).add(B.class).as(B.class);
         assertThat(a == b, equalTo(false));
         assertThat(a.getValue(), equalTo("Value"));
         assertThat(b.getValue(), equalTo("Value"));
@@ -57,36 +55,8 @@ public class MigrationTest extends AbstractNeo4jXOManagerTest {
         a.setValue("Value");
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        B b = xoManager.migrate(a, B.class, D.class).as(B.class);
+        B b = xoManager.migrate(a).add(B.class, D.class).as(B.class);
         assertThat(b.getValue(), equalTo("Value"));
-        xoManager.currentTransaction().commit();
-        xoManager.close();
-    }
-
-    @Test
-    public void migrationHandler() {
-        XOManager xoManager = getXOManagerFactory().createXOManager();
-        xoManager.currentTransaction().begin();
-        A a = xoManager.create(A.class);
-        a.setValue("Value");
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
-		C c = xoManager.migrate(a, (instance, target) -> target.setName(instance.getValue()), C.class);
-        assertThat(c.getName(), equalTo("Value"));
-        xoManager.currentTransaction().commit();
-        xoManager.close();
-    }
-
-    @Test
-    public void compositeObjectMigrationHandler() {
-        XOManager xoManager = getXOManagerFactory().createXOManager();
-        xoManager.currentTransaction().begin();
-        A a = xoManager.create(A.class);
-        a.setValue("Value");
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
-		C c = xoManager.migrate(a, (instance, target) -> target.setName(instance.getValue()), C.class, D.class).as(C.class);
-        assertThat(c.getName(), equalTo("Value"));
         xoManager.currentTransaction().commit();
         xoManager.close();
     }
