@@ -10,14 +10,14 @@ import java.util.Collection;
  */
 public abstract class AbstractCache<Key, Value> implements Cache<Key, Value> {
 
-    private final com.google.common.cache.Cache<Key, Value> cache;
+    private final com.github.benmanes.caffeine.cache.Cache<Key, Value> cache;
 
     /**
      * Constructor.
      *
      * @param cache The map to use as cache.
      */
-    protected AbstractCache(com.google.common.cache.Cache<Key, Value> cache) {
+    protected AbstractCache(com.github.benmanes.caffeine.cache.Cache<Key, Value> cache) {
         this.cache = cache;
     }
 

@@ -9,8 +9,8 @@ import com.buschmais.xo.api.CompositeType;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 /**
  * The factory provides methods for creating dynamic proxies and unwrapping the
@@ -20,7 +20,7 @@ public class ProxyFactory {
 
     private final InterceptorFactory interceptorFactory;
     private final ClassLoader classLoader;
-    private final Cache<CompositeType, Constructor<?>> classCache = CacheBuilder.newBuilder().maximumSize(512).build();
+    private final Cache<CompositeType, Constructor<?>> classCache = Caffeine.newBuilder().maximumSize(512).build();
 
     /**
      * Constructor.

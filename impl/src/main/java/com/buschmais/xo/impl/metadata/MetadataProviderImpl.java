@@ -11,6 +11,8 @@ import java.lang.reflect.*;
 import java.lang.reflect.AnnotatedElement;
 import java.util.*;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +31,6 @@ import com.buschmais.xo.spi.metadata.type.*;
 import com.buschmais.xo.spi.reflection.*;
 import com.buschmais.xo.spi.reflection.AnnotatedType;
 import com.google.common.base.Optional;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * Implementation of the {@link MetadataProvider}.
@@ -54,7 +54,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     private final RelationTypeMetadataResolver<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> relationTypeMetadataResolver;
     private final Map<Class<?>, Collection<AnnotatedMethod>> annotatedMethods;
     private final Map<Class<?>, TypeMetadata> metadataByType = new LinkedHashMap<>();
-    private final Cache<AnnotatedElement, com.google.common.base.Optional<Annotation>> queryTypes = CacheBuilder.newBuilder().build();
+    private final Cache<AnnotatedElement, Optional<Annotation>> queryTypes = Caffeine.newBuilder().build();
 
     /**
      * Constructor.

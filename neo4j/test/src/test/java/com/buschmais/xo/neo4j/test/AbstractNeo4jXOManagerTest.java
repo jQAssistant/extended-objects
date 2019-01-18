@@ -19,7 +19,7 @@ public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
 
     // This rule starts a Neo4j instance
     @ClassRule
-    public static Neo4jRule neo4j = new Neo4jRule().withConfig("dbms.connector.bolt.listen_address","localhost:5001");
+    public static Neo4jRule neo4j = new Neo4jRule().withConfig("dbms.connector.bolt.listen_address","localhost:6001");
 
     protected AbstractNeo4jXOManagerTest(XOUnit xoUnit) {
         super(xoUnit);

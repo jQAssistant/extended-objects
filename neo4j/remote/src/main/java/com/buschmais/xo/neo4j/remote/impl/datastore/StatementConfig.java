@@ -19,7 +19,9 @@ public class StatementConfig {
         return PROTOTYPE.toBuilder();
     }
 
+    @Builder.Default
     private LogLevel logLevel = LogLevel.NONE;
 
+    @Builder.Default
     private boolean batchableDefault = true;
 }

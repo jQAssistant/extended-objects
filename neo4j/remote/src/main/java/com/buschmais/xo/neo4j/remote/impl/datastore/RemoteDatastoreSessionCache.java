@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.neo4j.driver.v1.types.Node;
 import org.neo4j.driver.v1.types.Relationship;
 
@@ -12,14 +14,12 @@ import com.buschmais.xo.neo4j.remote.impl.model.*;
 import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 public class RemoteDatastoreSessionCache {
 
-    private Cache<Long, RemoteNode> nodeCache = CacheBuilder.newBuilder().weakValues().build();
+    private Cache<Long, RemoteNode> nodeCache = Caffeine.newBuilder().weakValues().build();
 
-    private Cache<Long, RemoteRelationship> relationshipCache = CacheBuilder.newBuilder().weakValues().build();
+    private Cache<Long, RemoteRelationship> relationshipCache = Caffeine.newBuilder().weakValues().build();
 
     public RemoteRelationship getRelationship(Long id) {
         return relationshipCache.getIfPresent(id);
@@ -30,11 +30,7 @@ public class RemoteDatastoreSessionCache {
     }
 
     public RemoteNode getNode(long id, NodeState nodeState) {
-        try {
-            return nodeCache.get(id, () -> new RemoteNode(id, nodeState));
-        } catch (ExecutionException e) {
-            throw new XOException("Cannot fetch node");
-        }
+        return nodeCache.get(id, key -> new RemoteNode(key, nodeState));
     }
 
     public RemoteRelationship getRelationship(long id, RemoteNode source, RemoteRelationshipType type, RemoteNode target) {
@@ -42,12 +38,8 @@ public class RemoteDatastoreSessionCache {
     }
 
     public RemoteRelationship getRelationship(long id, RemoteNode source, RemoteRelationshipType type, RemoteNode target, RelationshipState relationshipState) {
-        try {
-            RemoteRelationship remoteRelationship = relationshipCache.get(id, () -> new RemoteRelationship(id, relationshipState, source, type, target));
-            return remoteRelationship;
-        } catch (ExecutionException e) {
-            throw new XOException("Cannot fetch node");
-        }
+        RemoteRelationship remoteRelationship = relationshipCache.get(id, key -> new RemoteRelationship(key, relationshipState, source, type, target));
+        return remoteRelationship;
     }
 
     public RemoteNode getNode(Node node) {

@@ -1,19 +1,23 @@
 package com.buschmais.xo.impl.metadata;
 
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Allows resolving types from entity discriminators as provided by the
@@ -32,7 +36,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
     private final Map<EntityTypeMetadata<EntityMetadata>, Set<EntityTypeMetadata<EntityMetadata>>> aggregatedSuperTypes = new HashMap<>();
     private final Map<EntityTypeMetadata<EntityMetadata>, Set<EntityTypeMetadata<EntityMetadata>>> aggregatedSubTypes = new HashMap<>();
 
-    private final Cache<Set<Discriminator>, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>>> cache = CacheBuilder.newBuilder().build();
+    private final Cache<Set<Discriminator>, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>>> cache = Caffeine.newBuilder().build();
 
     /**
      * Constructor.
@@ -163,30 +167,26 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * @return The {@link com.buschmais.xo.spi.datastore.TypeMetadataSet}.
      */
     public TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getTypes(Set<Discriminator> discriminators) {
-        try {
-            return cache.get(discriminators, () -> {
-                TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> result = new TypeMetadataSet<>();
-                for (Discriminator discriminator : discriminators) {
-                    Set<EntityTypeMetadata<EntityMetadata>> candidates = typeMetadataByDiscriminator.get(discriminator);
-                    if (candidates != null) {
-                        for (EntityTypeMetadata<EntityMetadata> candidate : candidates) {
-                            Set<EntityTypeMetadata<EntityMetadata>> candidateSubTypes = aggregatedSubTypes.get(candidate);
-                            if (candidateSubTypes == null || !result.containsAny(candidateSubTypes)) {
-                                Set<Discriminator> entityDiscriminators = aggregatedDiscriminators.get(candidate);
-                                if (discriminators.size() >= entityDiscriminators.size() && discriminators.containsAll(entityDiscriminators)) {
-                                    result.add(candidate);
-                                    result.removeAll(aggregatedSuperTypes.get(candidate));
-                                }
+        return cache.get(discriminators, key -> {
+            TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> result = new TypeMetadataSet<>();
+            for (Discriminator discriminator : key) {
+                Set<EntityTypeMetadata<EntityMetadata>> candidates = typeMetadataByDiscriminator.get(discriminator);
+                if (candidates != null) {
+                    for (EntityTypeMetadata<EntityMetadata> candidate : candidates) {
+                        Set<EntityTypeMetadata<EntityMetadata>> candidateSubTypes = aggregatedSubTypes.get(candidate);
+                        if (candidateSubTypes == null || !result.containsAny(candidateSubTypes)) {
+                            Set<Discriminator> entityDiscriminators = aggregatedDiscriminators.get(candidate);
+                            if (key.size() >= entityDiscriminators.size() && key.containsAll(entityDiscriminators)) {
+                                result.add(candidate);
+                                result.removeAll(aggregatedSuperTypes.get(candidate));
                             }
                         }
                     }
                 }
-                return result;
-            });
-        } catch (ExecutionException e) {
-            throw new XOException("Cannot resolve types for discriminators " + discriminators);
-        }
-    };
+            }
+            return result;
+        });
+    }
 
     public Set<Discriminator> getDiscriminators(EntityTypeMetadata<EntityMetadata> entityTypeMetadata) {
         Set<Discriminator> discriminators = aggregatedDiscriminators.get(entityTypeMetadata);

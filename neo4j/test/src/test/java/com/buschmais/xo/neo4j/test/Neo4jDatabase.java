@@ -24,7 +24,7 @@ public enum Neo4jDatabase implements AbstractXOManagerTest.Database {
             return new Properties();
         }
     },
-    BOLT("bolt://localhost:5001") {
+    BOLT("bolt://localhost:6001") {
         @Override
         public Class<?> getProvider() {
             return RemoteNeo4jXOProvider.class;
