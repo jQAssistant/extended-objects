@@ -1,12 +1,14 @@
 package com.buschmais.xo.spi.session;
 
+import com.buschmais.xo.spi.datastore.TypeMetadataSet;
+
 /**
  * Created by Dirk Mahler on 29.10.2014.
  */
 public interface InstanceManager<DatastoreId, DatastoreType> {
     <T> T readInstance(DatastoreType datastoreType);
 
-    <T> T createInstance(DatastoreType datastoreType);
+    <T> T createInstance(DatastoreType datastoreType, TypeMetadataSet<?> types);
 
     <T> T updateInstance(DatastoreType datastoreType);
 

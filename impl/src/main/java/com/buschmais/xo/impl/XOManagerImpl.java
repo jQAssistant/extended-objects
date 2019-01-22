@@ -251,7 +251,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
                 .getDatastoreSession();
         Entity entity = datastoreSession.getDatastoreEntityManager().createEntity(effectiveTypes, entityDiscriminators, exampleEntity);
         AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        CompositeObject instance = entityInstanceManager.createInstance(entity);
+        CompositeObject instance = entityInstanceManager.createInstance(entity, effectiveTypes);
         sessionContext.getInstanceListenerService().postCreate(instance);
         return instance;
     }

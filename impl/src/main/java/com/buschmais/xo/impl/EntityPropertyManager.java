@@ -8,6 +8,7 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
+import com.buschmais.xo.spi.datastore.TypeMetadataSet;
 import com.buschmais.xo.spi.metadata.method.*;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 
@@ -47,7 +48,9 @@ public class EntityPropertyManager<Entity, Relation, PropertyMetadata> extends A
         if (target != null) {
             Entity targetEntity = entityInstanceManager.getDatastoreType(target);
             Relation relation = createRelation(sourceEntity, fromProperty, targetEntity, toProperty, example);
-            return sessionContext.getRelationInstanceManager().createInstance(relation);
+            AbstractInstanceManager<?, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
+            TypeMetadataSet<?> metadata = relationInstanceManager.getTypes(relation);
+            return relationInstanceManager.createInstance(relation, metadata);
         }
         return null;
     }

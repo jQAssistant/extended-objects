@@ -62,13 +62,14 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
      *
      * @param datastoreType
      *            The datastore type.
+     * @param types
+     *            The {@link TypeMetadataSet}.
      * @param <T>
      *            The instance type.
      * @return The instance.
      */
-    @Override
-    public <T> T createInstance(DatastoreType datastoreType) {
-        return getInstance(datastoreType, TransactionalCache.Mode.WRITE);
+    public <T> T createInstance(DatastoreType datastoreType, TypeMetadataSet<?> types) {
+        return newInstance(getDatastoreId(datastoreType), datastoreType, types, TransactionalCache.Mode.WRITE);
     }
 
     @Override
@@ -89,16 +90,30 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
         DatastoreId id = getDatastoreId(datastoreType);
         Object instance = cache.get(id, cacheMode);
         if (instance == null) {
-            InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(datastoreType, getProxyMethodService());
             TypeMetadataSet<?> types = getTypes(datastoreType);
-            validateTypes(types);
-            instance = proxyFactory.createInstance(invocationHandler, types.getCompositeType());
-            cache.put(id, instance, cacheMode);
+            instance = newInstance(id, datastoreType, types, cacheMode);
             if (TransactionalCache.Mode.READ.equals(cacheMode)) {
                 instanceListenerService.postLoad(instance);
             }
         }
         return (T) instance;
+    }
+
+    /**
+     * Create a proxy instance which corresponds to the given datastore type.
+     *
+     * @param datastoreType
+     *            The datastore type.
+     * @param <T>
+     *            The instance type.
+     * @return The instance.
+     */
+    private <T> T newInstance(DatastoreId id, DatastoreType datastoreType, TypeMetadataSet<?> types, TransactionalCache.Mode cacheMode) {
+        validateTypes(types);
+        InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(datastoreType, getProxyMethodService());
+        T instance = proxyFactory.createInstance(invocationHandler, types.getCompositeType());
+        cache.put(id, instance, cacheMode);
+        return instance;
     }
 
     /**

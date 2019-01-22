@@ -85,7 +85,8 @@ public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends Datastor
 	}
 
 	private CompositeObject createInstance(Entity entity) {
-		instance = entityInstanceManager.createInstance(entity);
+        TypeMetadataSet<?> metadata = entityInstanceManager.getTypes(entity);
+        instance = entityInstanceManager.createInstance(entity, metadata);
 		return CompositeObject.class.cast(instance);
 	}
 
