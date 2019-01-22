@@ -1,6 +1,7 @@
 package com.buschmais.xo.spi.metadata.type;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.MethodMetadata;
@@ -41,6 +42,19 @@ public abstract class AbstractTypeMetadata implements TypeMetadata {
 
     public IndexedPropertyMethodMetadata getIndexedProperty() {
         return indexedProperty;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractTypeMetadata that = (AbstractTypeMetadata) o;
+        return annotatedType.equals(that.annotatedType);
+    }
+
+    @Override
+    public final int hashCode() {
+        return annotatedType.hashCode();
     }
 
     @Override

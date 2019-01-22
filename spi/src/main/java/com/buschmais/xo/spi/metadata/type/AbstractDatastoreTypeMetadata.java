@@ -15,8 +15,6 @@ public abstract class AbstractDatastoreTypeMetadata<DatastoreMetadata> extends A
 
     private final DatastoreMetadata datastoreMetadata;
 
-    private int hashCode = System.identityHashCode(this);
-
     protected AbstractDatastoreTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties, IndexedPropertyMethodMetadata indexedProperty, DatastoreMetadata datastoreMetadata) {
         super(annotatedType, superTypes, properties, indexedProperty);
         this.datastoreMetadata = datastoreMetadata;
@@ -25,15 +23,5 @@ public abstract class AbstractDatastoreTypeMetadata<DatastoreMetadata> extends A
     @Override
     public DatastoreMetadata getDatastoreMetadata() {
         return datastoreMetadata;
-    }
-
-    @Override
-    public final int hashCode() {
-        return this.hashCode;
-    }
-
-    @Override
-    public final boolean equals(Object obj) {
-        return obj == this;
     }
 }
