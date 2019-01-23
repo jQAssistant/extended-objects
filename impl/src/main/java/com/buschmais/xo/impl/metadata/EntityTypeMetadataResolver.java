@@ -36,7 +36,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
     private final Map<EntityTypeMetadata<EntityMetadata>, Set<EntityTypeMetadata<EntityMetadata>>> aggregatedSuperTypes = new HashMap<>();
     private final Map<EntityTypeMetadata<EntityMetadata>, Set<EntityTypeMetadata<EntityMetadata>>> aggregatedSubTypes = new HashMap<>();
 
-    private final Cache<Set<Discriminator>, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>>> cache = Caffeine.newBuilder().build();
+    private final Cache<Set<Discriminator>, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>>> cache = Caffeine.newBuilder().maximumSize(64).build();
 
     /**
      * Constructor.
@@ -168,6 +168,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      */
     public TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getTypes(Set<Discriminator> discriminators) {
         return cache.get(discriminators, key -> {
+            LOGGER.info("Cache miss for discriminators {}.", key);
             TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> result = new TypeMetadataSet<>();
             for (Discriminator discriminator : key) {
                 Set<EntityTypeMetadata<EntityMetadata>> candidates = typeMetadataByDiscriminator.get(discriminator);
