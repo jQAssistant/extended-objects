@@ -1,16 +1,16 @@
 package com.buschmais.xo.impl;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
-import com.buschmais.xo.spi.datastore.TypeMetadataSet;
+import com.buschmais.xo.spi.datastore.DynamicType;
 import com.buschmais.xo.spi.metadata.method.*;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 
 public class EntityPropertyManager<Entity, Relation, PropertyMetadata> extends AbstractPropertyManager<Entity> {
 
@@ -49,7 +49,7 @@ public class EntityPropertyManager<Entity, Relation, PropertyMetadata> extends A
             Entity targetEntity = entityInstanceManager.getDatastoreType(target);
             Relation relation = createRelation(sourceEntity, fromProperty, targetEntity, toProperty, example);
             AbstractInstanceManager<?, Relation> relationInstanceManager = sessionContext.getRelationInstanceManager();
-            TypeMetadataSet<?> metadata = relationInstanceManager.getTypes(relation);
+            DynamicType<?> metadata = relationInstanceManager.getTypes(relation);
             return relationInstanceManager.createInstance(relation, metadata);
         }
         return null;

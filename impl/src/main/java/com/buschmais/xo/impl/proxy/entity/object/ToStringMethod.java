@@ -1,14 +1,14 @@
 package com.buschmais.xo.impl.proxy.entity.object;
 
-import java.util.Set;
-
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.common.object.AbstractDatastoreTypeToStringMethod;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.xo.spi.datastore.TypeMetadataSet;
+import com.buschmais.xo.spi.datastore.DynamicType;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
+
+import java.util.Set;
 
 public class ToStringMethod<Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator>
         extends AbstractDatastoreTypeToStringMethod<Entity> {
@@ -27,7 +27,7 @@ public class ToStringMethod<Entity, EntityMetadata extends DatastoreEntityMetada
         return datastoreEntityManager.getEntityId(datastoreType).toString();
     }
 
-    protected TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getTypes(Entity entity) {
+    protected DynamicType<EntityTypeMetadata<EntityMetadata>> getDynamicType(Entity entity) {
         Set<EntityDiscriminator> discriminators = datastoreEntityManager.getEntityDiscriminators(entity);
         return sessionContext.getMetadataProvider().getTypes(discriminators);
     }

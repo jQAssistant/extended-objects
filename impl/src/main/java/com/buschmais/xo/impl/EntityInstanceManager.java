@@ -1,11 +1,11 @@
 package com.buschmais.xo.impl;
 
-import java.util.Set;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.impl.proxy.ProxyMethodService;
 import com.buschmais.xo.impl.proxy.entity.EntityProxyMethodService;
-import com.buschmais.xo.spi.datastore.TypeMetadataSet;
+import com.buschmais.xo.spi.datastore.DynamicType;
+
+import java.util.Set;
 
 public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extends AbstractInstanceManager<EntityId, Entity> {
 
@@ -32,7 +32,7 @@ public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extend
     }
 
     @Override
-    protected TypeMetadataSet<?> getTypes(Entity entity) {
+    protected DynamicType<?> getTypes(Entity entity) {
         Set<EntityDiscriminator> discriminators = sessionContext.getDatastoreSession().getDatastoreEntityManager().getEntityDiscriminators(entity);
         return sessionContext.getMetadataProvider().getTypes(discriminators);
     }

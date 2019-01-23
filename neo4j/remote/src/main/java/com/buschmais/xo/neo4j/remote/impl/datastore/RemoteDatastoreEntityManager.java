@@ -1,14 +1,5 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
-import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
-import static org.neo4j.driver.v1.Values.parameters;
-
-import java.util.*;
-
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.StatementResult;
-import org.neo4j.driver.v1.types.Node;
-
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.model.*;
@@ -18,13 +9,21 @@ import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
-import com.buschmais.xo.spi.datastore.TypeMetadataSet;
+import com.buschmais.xo.spi.datastore.DynamicType;
 import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.MethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
+import org.neo4j.driver.v1.Record;
+import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.types.Node;
+
+import java.util.*;
+
+import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
+import static org.neo4j.driver.v1.Values.parameters;
 
 public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropertyManager<RemoteNode, NodeState>
         implements DatastoreEntityManager<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, PropertyMetadata> {
@@ -52,13 +51,13 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     }
 
     @Override
-    public RemoteNode createEntity(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> types, Set<RemoteLabel> remoteLabels,
-            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
+    public RemoteNode createEntity(DynamicType<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> dynamicType, Set<RemoteLabel> remoteLabels,
+                                   Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
         Map<String, Object> properties = getProperties(exampleEntity);
         NodeState nodeState = new NodeState(remoteLabels, properties);
-        initializeEntity(types, nodeState);
+        initializeEntity(dynamicType.getMetadata(), nodeState);
         RemoteNode remoteNode;
-        if (isBatchable(types)) {
+        if (isBatchable(dynamicType)) {
             long id = idSequence--;
             remoteNode = datastoreSessionCache.getNode(id, nodeState);
         } else {
@@ -81,12 +80,12 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
      * Determine if at least one type is marked as
      * {@link com.buschmais.xo.neo4j.api.annotation.Batchable}.
      *
-     * @param types
+     * @param dynamicType
      *            The types.
      * @return <code>true</code> if batching may be used.
      */
-    private boolean isBatchable(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> types) {
-        for (EntityTypeMetadata<NodeMetadata<RemoteLabel>> type : types) {
+    private boolean isBatchable(DynamicType<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> dynamicType) {
+        for (EntityTypeMetadata<NodeMetadata<RemoteLabel>> type : dynamicType.getMetadata()) {
             if (type.getDatastoreMetadata().isBatchable()) {
                 return true;
             }
@@ -182,15 +181,15 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     }
 
     @Override
-    public void addDiscriminators(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> types, RemoteNode remoteNode, Set<RemoteLabel> remoteLabels) {
+    public void addDiscriminators(DynamicType<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> dynamicType, RemoteNode remoteNode, Set<RemoteLabel> remoteLabels) {
         NodeState state = remoteNode.getState();
         state.getLabels().addAll(remoteLabels);
-        initializeEntity(types, state);
+        initializeEntity(dynamicType.getMetadata(), state);
     }
 
     @Override
-    public void removeDiscriminators(TypeMetadataSet<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> removedTypes, RemoteNode remoteNode,
-            Set<RemoteLabel> remoteLabels) {
+    public void removeDiscriminators(DynamicType<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> removedTypes, RemoteNode remoteNode,
+                                     Set<RemoteLabel> remoteLabels) {
         remoteNode.getState().getLabels().removeAll(remoteLabels);
     }
 

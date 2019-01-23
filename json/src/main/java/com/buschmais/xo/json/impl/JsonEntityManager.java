@@ -1,5 +1,18 @@
 package com.buschmais.xo.json.impl;
 
+import com.buschmais.xo.api.ResultIterator;
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
+import com.buschmais.xo.json.impl.metadata.JsonPropertyMetadata;
+import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
+import com.buschmais.xo.spi.datastore.DynamicType;
+import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,20 +20,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
-
-import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.json.impl.metadata.JsonNodeMetadata;
-import com.buschmais.xo.json.impl.metadata.JsonPropertyMetadata;
-import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
-import com.buschmais.xo.spi.datastore.TypeMetadataSet;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
 public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNode, JsonNodeMetadata, String, JsonPropertyMetadata> {
 
@@ -57,7 +56,7 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     }
 
     @Override
-    public ObjectNode createEntity(TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators,Map<PrimitivePropertyMethodMetadata<JsonPropertyMetadata>, Object> exampleEntity) {
+    public ObjectNode createEntity(DynamicType<EntityTypeMetadata<JsonNodeMetadata>> types, Set<String> discriminators, Map<PrimitivePropertyMethodMetadata<JsonPropertyMetadata>, Object> exampleEntity) {
         ObjectNode rootNode = mapper.createObjectNode();
         ArrayNode typesNode = mapper.createArrayNode();
         for (String typeName : discriminators) {
@@ -92,11 +91,11 @@ public class JsonEntityManager implements DatastoreEntityManager<UUID, ObjectNod
     }
 
     @Override
-    public void addDiscriminators(TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> types, ObjectNode jsonNodes, Set<String> strings) {
+    public void addDiscriminators(DynamicType<EntityTypeMetadata<JsonNodeMetadata>> types, ObjectNode jsonNodes, Set<String> strings) {
     }
 
     @Override
-    public void removeDiscriminators(TypeMetadataSet<EntityTypeMetadata<JsonNodeMetadata>> removedTypes, ObjectNode jsonNodes, Set<String> strings) {
+    public void removeDiscriminators(DynamicType<EntityTypeMetadata<JsonNodeMetadata>> removedTypes, ObjectNode jsonNodes, Set<String> strings) {
     }
 
     @Override

@@ -25,7 +25,7 @@ public class ToStringMethod<Entity, EntityMetadata extends DatastoreEntityMetada
     }
 
     @Override
-    protected TypeMetadataSet<?> getTypes(Relation datastoreType) {
+    protected DynamicType<?> getDynamicType(Relation datastoreType) {
         Entity from = datastoreRelationManager.getFrom(datastoreType);
         Entity to = datastoreRelationManager.getTo(datastoreType);
         return sessionContext.getMetadataProvider().getRelationTypes(datastoreEntityManager.getEntityDiscriminators(from),

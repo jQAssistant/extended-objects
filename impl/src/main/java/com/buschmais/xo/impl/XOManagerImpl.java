@@ -1,14 +1,5 @@
 package com.buschmais.xo.impl;
 
-import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.FROM;
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.TO;
-import static java.util.Collections.emptyMap;
-
-import java.util.*;
-
-import javax.validation.ConstraintViolation;
-
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
@@ -25,6 +16,14 @@ import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.*;
 import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.spi.session.XOSession;
+
+import javax.validation.ConstraintViolation;
+import java.util.*;
+
+import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
+import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.FROM;
+import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.TO;
+import static java.util.Collections.emptyMap;
 
 /**
  * Generic implementation of a {@link com.buschmais.xo.api.XOManager}.
@@ -245,7 +244,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
      * @return The {@link CompositeObject} instance.
      */
     private CompositeObject createByExample(Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity, Class<?> type, Class<?>... types) {
-        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = getEffectiveTypes(type, types);
+        DynamicType<EntityTypeMetadata<EntityMetadata>> effectiveTypes = sessionContext.getMetadataProvider().getEffectiveTypes(type, types);
         Set<EntityDiscriminator> entityDiscriminators = sessionContext.getMetadataProvider().getEntityDiscriminators(effectiveTypes);
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = sessionContext
                 .getDatastoreSession();
@@ -428,13 +427,4 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         closeSupport.fireOnAfterClose();
     }
 
-    private TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getEffectiveTypes(Class<?> type, Class<?>... types) {
-        MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider = sessionContext.getMetadataProvider();
-        TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> effectiveTypes = new TypeMetadataSet<>();
-        effectiveTypes.add(metadataProvider.getEntityMetadata(type));
-        for (Class<?> otherType : types) {
-            effectiveTypes.add(metadataProvider.getEntityMetadata(otherType));
-        }
-        return effectiveTypes;
-    }
 }

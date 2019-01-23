@@ -1,21 +1,5 @@
 package com.buschmais.xo.impl.metadata;
 
-import static com.buschmais.xo.api.Query.Result;
-import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
-import static com.buschmais.xo.spi.annotation.RelationDefinition.FromDefinition;
-import static com.buschmais.xo.spi.annotation.RelationDefinition.ToDefinition;
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.lang.reflect.AnnotatedElement;
-import java.util.*;
-
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.annotation.*;
@@ -28,24 +12,35 @@ import com.buschmais.xo.spi.annotation.RelationDefinition;
 import com.buschmais.xo.spi.datastore.*;
 import com.buschmais.xo.spi.metadata.method.*;
 import com.buschmais.xo.spi.metadata.type.*;
-import com.buschmais.xo.spi.reflection.*;
 import com.buschmais.xo.spi.reflection.AnnotatedType;
+import com.buschmais.xo.spi.reflection.*;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.base.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.*;
+import java.util.*;
+
+import static com.buschmais.xo.api.Query.Result;
+import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
+import static com.buschmais.xo.spi.annotation.RelationDefinition.FromDefinition;
+import static com.buschmais.xo.spi.annotation.RelationDefinition.ToDefinition;
+import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
 
 /**
  * Implementation of the {@link MetadataProvider}.
  *
- * @param <EntityMetadata>
- *            The type of datastore specific entity metadata.
- * @param <EntityDiscriminator>
- *            The type of datastore specific entity type discriminators.
- * @param <RelationMetadata>
- *            The type of datastore specific relation metadata.
- * @param <RelationDiscriminator>
- *            The type of datastore specific relationtype discriminators.
+ * @param <EntityMetadata>        The type of datastore specific entity metadata.
+ * @param <EntityDiscriminator>   The type of datastore specific entity type discriminators.
+ * @param <RelationMetadata>      The type of datastore specific relation metadata.
+ * @param <RelationDiscriminator> The type of datastore specific relationtype discriminators.
  */
 public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator>
-        implements MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
+    implements MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeMetadata.class);
 
@@ -59,16 +54,13 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Constructor.
      *
-     * @param types
-     *            All classes as provided by the XO unit.
-     * @param datastore
-     *            The datastore.
-     * @param mappingConfiguration
-     *            The mapping configuration.
+     * @param types                All classes as provided by the XO unit.
+     * @param datastore            The datastore.
+     * @param mappingConfiguration The mapping configuration.
      */
     public MetadataProviderImpl(Collection<Class<?>> types,
-            Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore,
-            XOUnit.MappingConfiguration mappingConfiguration) {
+                                Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore,
+                                XOUnit.MappingConfiguration mappingConfiguration) {
         this.metadataFactory = datastore.getMetadataFactory();
         DependencyResolver.DependencyProvider<Class<?>> classDependencyProvider = dependent -> new HashSet<>(Arrays.asList(dependent.getInterfaces()));
         List<Class<?>> allClasses = DependencyResolver.newInstance(types, classDependencyProvider).resolve();
@@ -85,25 +77,25 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         }
         entityTypeMetadataResolver = new EntityTypeMetadataResolver<>(metadataByType, mappingConfiguration);
         relationTypeMetadataResolver = new RelationTypeMetadataResolver<>(metadataByType, entityTypeMetadataResolver);
-        metadataByType.put(CompositeObject.class, new SimpleTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.<TypeMetadata> emptyList(),
-                Collections.<MethodMetadata<?, ?>> emptyList(), null));
+        metadataByType.put(CompositeObject.class, new SimpleTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.<TypeMetadata>emptyList(),
+            Collections.<MethodMetadata<?, ?>>emptyList(), null));
     }
 
     @Override
-    public TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getTypes(Set<EntityDiscriminator> entityDiscriminators) {
-        return entityTypeMetadataResolver.getTypes(entityDiscriminators);
+    public DynamicType<EntityTypeMetadata<EntityMetadata>> getTypes(Set<EntityDiscriminator> entityDiscriminators) {
+        return entityTypeMetadataResolver.getDynamicType(entityDiscriminators);
     }
 
     @Override
-    public TypeMetadataSet<RelationTypeMetadata<RelationMetadata>> getRelationTypes(Set<EntityDiscriminator> sourceDiscriminators,
-            RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators) {
+    public DynamicType<RelationTypeMetadata<RelationMetadata>> getRelationTypes(Set<EntityDiscriminator> sourceDiscriminators,
+                                                                                RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators) {
         return relationTypeMetadataResolver.getRelationTypes(sourceDiscriminators, discriminator, targetDiscriminators);
     }
 
     @Override
-    public Set<EntityDiscriminator> getEntityDiscriminators(TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> types) {
+    public Set<EntityDiscriminator> getEntityDiscriminators(DynamicType<EntityTypeMetadata<EntityMetadata>> dynamicType) {
         Set<EntityDiscriminator> entityDiscriminators = new HashSet<>();
-        for (EntityTypeMetadata<EntityMetadata> entityTypeMetadata : types) {
+        for (EntityTypeMetadata<EntityMetadata> entityTypeMetadata : dynamicType.getMetadata()) {
             Set<EntityDiscriminator> discriminatorsOfType = entityTypeMetadataResolver.getDiscriminators(entityTypeMetadata);
             entityDiscriminators.addAll(discriminatorsOfType);
         }
@@ -145,14 +137,24 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         return relationTypeMetadataResolver.getRelationPropertyMethodMetadata(entityType, getRelationMetadata(relationType), direction);
     }
 
+    @Override
+    public DynamicType<EntityTypeMetadata<EntityMetadata>> getEffectiveTypes(Class<?> type, Class<?>... types) {
+        Set<EntityTypeMetadata<EntityMetadata>> metadataSet = new HashSet<>();
+        EntityTypeMetadata<EntityMetadata> entityMetadata = getEntityMetadata(type);
+        metadataSet.add(entityMetadata);
+        for (Class<?> otherType : types) {
+            metadataSet.add(getEntityMetadata(otherType));
+        }
+        return new DynamicType<>(metadataSet);
+    }
+
     /**
      * Return the {@link TypeMetadata} for a given type.
      * <p>
      * The metadata will be created if it does not exist yet.
      * </p>
      *
-     * @param type
-     *            The type.
+     * @param type The type.
      * @return The {@link TypeMetadata}.
      */
     private TypeMetadata getOrCreateTypeMetadata(Class<?> type) {
@@ -169,8 +171,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Create the {@link TypeMetadata} for the given {@link AnnotatedType}.
      *
-     * @param annotatedType
-     *            The {@link AnnotatedType}.
+     * @param annotatedType The {@link AnnotatedType}.
      * @return The corresponding metadata.
      */
     private TypeMetadata createTypeMetadata(AnnotatedType annotatedType) {
@@ -198,10 +199,9 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Determines if an {@link AnnotatedType} represents an entity type.
      *
-     * @param annotatedType
-     *            The {@link AnnotatedType}.
+     * @param annotatedType The {@link AnnotatedType}.
      * @return <code>true</code> if the annotated type represents an entity
-     *         type.
+     * type.
      */
     private boolean isEntityType(AnnotatedType annotatedType) {
         return isOfDefinitionType(annotatedType, EntityDefinition.class);
@@ -210,8 +210,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Determines if an {@link AnnotatedType} represents a relation type.
      *
-     * @param annotatedType
-     *            The {@link AnnotatedType}.
+     * @param annotatedType The {@link AnnotatedType}.
      * @return <code>true</code> if the annotated type represents relation type.
      */
     private boolean isRelationType(AnnotatedType annotatedType) {
@@ -222,10 +221,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      * Determines if an {@link AnnotatedType} represents a specific type
      * identified by a meta annotation.
      *
-     * @param annotatedType
-     *            The {@link AnnotatedType}.
-     * @param definitionType
-     *            The meta annotation.
+     * @param annotatedType  The {@link AnnotatedType}.
+     * @param definitionType The meta annotation.
      * @return <code>true</code> if the annotated type represents relation type.
      */
     private boolean isOfDefinitionType(AnnotatedType annotatedType, Class<? extends Annotation> definitionType) {
@@ -245,17 +242,14 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      * Create a {@link EntityTypeMetadata} instance for the given
      * {@link AnnotatedType}.
      *
-     * @param annotatedType
-     *            The {@link AnnotatedType}.
-     * @param superTypes
-     *            The metadata collection of the super types.
-     * @param methodMetadataOfType
-     *            The method metadata of the type.
+     * @param annotatedType        The {@link AnnotatedType}.
+     * @param superTypes           The metadata collection of the super types.
+     * @param methodMetadataOfType The method metadata of the type.
      * @return The {@link EntityTypeMetadata} instance representing the
-     *         annotated type.
+     * annotated type.
      */
     private EntityTypeMetadata<EntityMetadata> createEntityTypeMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes,
-            Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
+                                                                        Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
         IndexedPropertyMethodMetadata indexedProperty = getIndexedPropertyMethodMetadata(methodMetadataOfType);
         EntityMetadata datastoreEntityMetadata = metadataFactory.createEntityMetadata(annotatedType, superTypes, metadataByType);
         boolean abstractType = annotatedType.isAnnotationPresent(Abstract.class);
@@ -267,17 +261,14 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      * Get or create a {@link RelationTypeMetadata} instance for the given
      * {@link AnnotatedType}.
      *
-     * @param annotatedType
-     *            The {@link AnnotatedType}.
-     * @param superTypes
-     *            The metadata collection of the super types.
-     * @param methodMetadataOfType
-     *            The method metadata of the type.
+     * @param annotatedType        The {@link AnnotatedType}.
+     * @param superTypes           The metadata collection of the super types.
+     * @param methodMetadataOfType The method metadata of the type.
      * @return The {@link RelationTypeMetadata} instance representing the
-     *         annotated type.
+     * annotated type.
      */
     private RelationTypeMetadata<RelationMetadata> createRelationTypeMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes,
-            Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
+                                                                              Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
         Class<?> fromType = null;
         Class<?> toType = null;
         Collection<MethodMetadata<?, ?>> current = methodMetadataOfType;
@@ -291,14 +282,14 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                     EntityReferencePropertyMethodMetadata<?> propertyMethodMetadata = (EntityReferencePropertyMethodMetadata<?>) methodMetadata;
                     Class<?> type = propertyMethodMetadata.getAnnotatedMethod().getType();
                     switch (propertyMethodMetadata.getDirection()) {
-                    case FROM:
-                        fromType = type;
-                        break;
-                    case TO:
-                        toType = type;
-                        break;
-                    default:
-                        throw propertyMethodMetadata.getDirection().createNotSupportedException();
+                        case FROM:
+                            fromType = type;
+                            break;
+                        case TO:
+                            toType = type;
+                            break;
+                        default:
+                            throw propertyMethodMetadata.getDirection().createNotSupportedException();
                     }
                 }
             }
@@ -312,17 +303,17 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         } while (current != null && (fromType == null || toType == null));
         if (fromType == null || toType == null) {
             throw new XOException(
-                    "Relation type '" + annotatedType.getAnnotatedElement().getName() + "' does not define target entity properties for both directions.");
+                "Relation type '" + annotatedType.getAnnotatedElement().getName() + "' does not define target entity properties for both directions.");
         }
         RelationMetadata relationMetadata = metadataFactory.createRelationMetadata(annotatedType, metadataByType);
         RelationTypeMetadata<RelationMetadata> relationTypeMetadata = new RelationTypeMetadata<>(annotatedType, superTypes, methodMetadataOfType, fromType,
-                toType, relationMetadata);
+            toType, relationMetadata);
         metadataByType.put(annotatedType.getAnnotatedElement(), relationTypeMetadata);
         return relationTypeMetadata;
     }
 
     private RepositoryTypeMetadata createRepositoryTypeMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes,
-            Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
+                                                                Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
         RepositoryTypeMetadata repositoryTypeMetadata = new RepositoryTypeMetadata(annotatedType, superTypes, methodMetadataOfType);
         metadataByType.put(annotatedType.getAnnotatedElement(), repositoryTypeMetadata);
         return repositoryTypeMetadata;
@@ -332,8 +323,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      * Returns a list of {@link TypeMetadata} representing the super types of
      * the given annotated type.
      *
-     * @param annotatedType
-     *            The {@link AnnotatedType}.
+     * @param annotatedType The {@link AnnotatedType}.
      * @return The list of {@link TypeMetadata} representing the super types.
      */
     private List<TypeMetadata> getSuperTypeMetadata(AnnotatedType annotatedType) {
@@ -347,8 +337,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Determine the indexed property from a list of method metadata.
      *
-     * @param methodMetadataOfType
-     *            The list of method metadata.
+     * @param methodMetadataOfType The list of method metadata.
      * @return The {@link IndexedPropertyMethodMetadata}.
      */
     private IndexedPropertyMethodMetadata<?> getIndexedPropertyMethodMetadata(Collection<MethodMetadata<?, ?>> methodMetadataOfType) {
@@ -360,7 +349,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                     throw new XOException("Only primitive properties are allowed to be used for indexing.");
                 }
                 return new IndexedPropertyMethodMetadata<>((PropertyMethod) annotatedMethod, (PrimitivePropertyMethodMetadata) methodMetadata,
-                        metadataFactory.createIndexedPropertyMetadata((PropertyMethod) annotatedMethod));
+                    metadataFactory.createIndexedPropertyMetadata((PropertyMethod) annotatedMethod));
             }
         }
         return null;
@@ -370,8 +359,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      * Return the collection of method metadata from the given collection of
      * annotated methods.
      *
-     * @param annotatedMethods
-     *            The collection of annotated methods.
+     * @param annotatedMethods The collection of annotated methods.
      * @return The collection of method metadata.
      */
     private Collection<MethodMetadata<?, ?>> getMethodMetadataOfType(AnnotatedType annotatedType, Collection<AnnotatedMethod> annotatedMethods) {
@@ -384,7 +372,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             ResultOf resultOf = annotatedMethod.getAnnotation(ResultOf.class);
             if (implementedBy != null) {
                 methodMetadata = new ImplementedByMethodMetadata<>(annotatedMethod, implementedBy.value(),
-                        metadataFactory.createImplementedByMetadata(annotatedMethod));
+                    metadataFactory.createImplementedByMetadata(annotatedMethod));
             } else if (resultOf != null) {
                 methodMetadata = createResultOfMetadata(annotatedMethod, resultOf);
             } else if (annotatedMethod instanceof PropertyMethod) {
@@ -406,10 +394,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Create the {@link MethodMetadata} for a property method.
      *
-     * @param annotatedType
-     *            The annotated type containing the property.
-     * @param propertyMethod
-     *            The property method.
+     * @param annotatedType  The annotated type containing the property.
+     * @param propertyMethod The property method.
      * @return The {@link MethodMetadata}.
      */
     private MethodMetadata<?, ?> createPropertyMethodMetadata(AnnotatedType annotatedType, PropertyMethod propertyMethod) {
@@ -430,7 +416,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 Type[] bounds = typeVariable.getBounds();
                 if (bounds.length != 1) {
                     throw new XOException("Cannot determine boundary of " + typeVariable.getName() + " of collection property "
-                            + propertyMethod.getAnnotatedElement().toGenericString());
+                        + propertyMethod.getAnnotatedElement().toGenericString());
                 }
                 elementType = (Class<?>) bounds[0];
             } else {
@@ -442,13 +428,13 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 com.buschmais.xo.spi.reflection.AnnotatedElement<?> relationElement = getRelationDefinitionElement(propertyMethod);
                 RelationTypeMetadata relationshipType = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(relationElement, metadataByType));
                 methodMetadata = new EntityCollectionPropertyMethodMetadata<>(propertyMethod, relationshipType, relationDirection,
-                        metadataFactory.createCollectionPropertyMetadata(propertyMethod));
+                    metadataFactory.createCollectionPropertyMetadata(propertyMethod));
             } else if (isRelationType(annotatedTypeArgument)) {
                 TypeMetadata relationTypeMetadata = getOrCreateTypeMetadata(elementType);
                 RelationTypeMetadata<RelationMetadata> relationMetadata = (RelationTypeMetadata) relationTypeMetadata;
                 Direction relationDirection = getRelationDirection(annotatedType, propertyMethod, relationTypeMetadata, relationMetadata);
                 methodMetadata = new RelationCollectionPropertyMethodMetadata<>(propertyMethod, relationMetadata, relationDirection,
-                        metadataFactory.createCollectionPropertyMetadata(propertyMethod));
+                    metadataFactory.createCollectionPropertyMetadata(propertyMethod));
             } else {
                 throw new XOException("Unsupported type argument '" + elementType.getName() + "' for collection property: " + propertyType.getName());
             }
@@ -461,13 +447,13 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 com.buschmais.xo.spi.reflection.AnnotatedElement<?> relationElement = getRelationDefinitionElement(propertyMethod);
                 relationMetadata = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(relationElement, metadataByType));
                 methodMetadata = new EntityReferencePropertyMethodMetadata<>(propertyMethod, relationMetadata, relationDirection,
-                        metadataFactory.createReferencePropertyMetadata(propertyMethod));
+                    metadataFactory.createReferencePropertyMetadata(propertyMethod));
             } else if (isRelationType(referencedType)) {
                 TypeMetadata relationTypeMetadata = getOrCreateTypeMetadata(propertyType);
                 relationMetadata = (RelationTypeMetadata) relationTypeMetadata;
                 relationDirection = getRelationDirection(annotatedType, propertyMethod, relationTypeMetadata, relationMetadata);
                 methodMetadata = new RelationReferencePropertyMethodMetadata<>(propertyMethod, relationMetadata, relationDirection,
-                        metadataFactory.createReferencePropertyMetadata(propertyMethod));
+                    metadataFactory.createReferencePropertyMetadata(propertyMethod));
             } else {
                 throw new XOException("Unsupported type for reference property: " + propertyType.getName());
             }
@@ -494,14 +480,14 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     }
 
     private Direction getRelationDirection(AnnotatedType annotatedEntityType, PropertyMethod propertyMethod, TypeMetadata propertyTypeMetadata,
-            RelationTypeMetadata<RelationMetadata> relationMetadata) {
+                                           RelationTypeMetadata<RelationMetadata> relationMetadata) {
         Direction relationDirection = getRelationDirection(propertyMethod, null);
         if (relationDirection == null) {
             Class<?> fromType = relationMetadata.getFromType();
             Class<?> toType = relationMetadata.getToType();
             if (fromType.equals(toType)) {
                 throw new XOException(
-                        "Direction of property '" + propertyMethod.getAnnotatedElement().toGenericString() + "' is ambiguous and must be specified.");
+                    "Direction of property '" + propertyMethod.getAnnotatedElement().toGenericString() + "' is ambiguous and must be specified.");
             }
             if (annotatedEntityType.getAnnotatedElement().equals(fromType)) {
                 relationDirection = Direction.FROM;
@@ -518,8 +504,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      * Determines the {@link AnnotatedElement} which is annotated with
      * {@link RelationDefinition}.
      *
-     * @param propertyMethod
-     *            The property method to start with.
+     * @param propertyMethod The property method to start with.
      * @return The annotated element.
      */
     private com.buschmais.xo.spi.reflection.AnnotatedElement<?> getRelationDefinitionElement(PropertyMethod propertyMethod) {
@@ -539,11 +524,9 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Creates the method metadata for methods annotated with {@link ResultOf}.
      *
-     * @param annotatedMethod
-     *            The annotated method-
-     * @param resultOf
-     *            The {@link com.buschmais.xo.api.annotation.ResultOf}
-     *            annotation.
+     * @param annotatedMethod The annotated method-
+     * @param resultOf        The {@link com.buschmais.xo.api.annotation.ResultOf}
+     *                        annotation.
      * @return The method metadata.
      */
     private MethodMetadata<?, ?> createResultOfMetadata(AnnotatedMethod annotatedMethod, ResultOf resultOf) {
@@ -581,7 +564,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             }
             if (parameter == null) {
                 throw new XOException("Cannot determine parameter names for '" + method.getName() + "', all parameters must be annotated with '"
-                        + Parameter.class.getName() + "'.");
+                    + Parameter.class.getName() + "'.");
             }
             parameters.add(parameter);
         }
@@ -592,12 +575,9 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     /**
      * Return the {@link TypeMetadata} instance representing the given type.
      *
-     * @param type
-     *            The type.
-     * @param metadataType
-     *            The expected metadata type.
-     * @param <T>
-     *            The metadata type.
+     * @param type         The type.
+     * @param metadataType The expected metadata type.
+     * @param <T>          The metadata type.
      * @return The {@link TypeMetadata} instance.
      */
     private <T extends TypeMetadata> T getMetadata(Class<?> type, Class<T> metadataType) {
@@ -607,7 +587,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         }
         if (!metadataType.isAssignableFrom(typeMetadata.getClass())) {
             throw new XOException(
-                    "Expected metadata of type '" + metadataType.getName() + "' but got '" + typeMetadata.getClass() + "' for type '" + type + "'");
+                "Expected metadata of type '" + metadataType.getName() + "' but got '" + typeMetadata.getClass() + "' for type '" + type + "'");
         }
         return metadataType.cast(typeMetadata);
     }
@@ -632,8 +612,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         /**
          * Constructor.
          *
-         * @param typeExpression
-         *            The expression.
+         * @param typeExpression The expression.
          */
         public AnnotatedQueryElement(AnnotatedElement typeExpression) {
             super(typeExpression);

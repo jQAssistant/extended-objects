@@ -1,21 +1,21 @@
 package com.buschmais.xo.impl.proxy.common.object;
 
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.xo.spi.datastore.TypeMetadataSet;
+import com.buschmais.xo.spi.datastore.DynamicType;
 import com.buschmais.xo.spi.metadata.method.MethodMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
+
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public abstract class AbstractDatastoreTypeToStringMethod<T> extends AbstractToStringMethod<T> {
 
     @Override
     protected Map<String, Object> getProperties(T datastoreType) {
         SortedMap<String, Object> properties = new TreeMap<>();
-        for (TypeMetadata type : getTypes(datastoreType)) {
+        for (TypeMetadata type : getDynamicType(datastoreType).getMetadata()) {
             addProperties(datastoreType, type, properties);
         }
         return properties;
@@ -43,7 +43,7 @@ public abstract class AbstractDatastoreTypeToStringMethod<T> extends AbstractToS
                 : null;
     }
 
-    protected abstract TypeMetadataSet<?> getTypes(T datastoreType);
+    protected abstract DynamicType<?> getDynamicType(T datastoreType);
 
     protected abstract DatastorePropertyManager<T, ?> getDatastorePropertyManager();
 }

@@ -6,7 +6,7 @@ import com.buschmais.xo.impl.cache.TransactionalCache;
 import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.impl.proxy.ProxyMethodService;
-import com.buschmais.xo.spi.datastore.TypeMetadataSet;
+import com.buschmais.xo.spi.datastore.DynamicType;
 import com.buschmais.xo.spi.session.InstanceManager;
 
 /**
@@ -63,12 +63,12 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
      * @param datastoreType
      *            The datastore type.
      * @param types
-     *            The {@link TypeMetadataSet}.
+     *            The {@link DynamicType}.
      * @param <T>
      *            The instance type.
      * @return The instance.
      */
-    public <T> T createInstance(DatastoreType datastoreType, TypeMetadataSet<?> types) {
+    public <T> T createInstance(DatastoreType datastoreType, DynamicType<?> types) {
         return newInstance(getDatastoreId(datastoreType), datastoreType, types, TransactionalCache.Mode.WRITE);
     }
 
@@ -90,7 +90,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
         DatastoreId id = getDatastoreId(datastoreType);
         Object instance = cache.get(id, cacheMode);
         if (instance == null) {
-            TypeMetadataSet<?> types = getTypes(datastoreType);
+            DynamicType<?> types = getTypes(datastoreType);
             instance = newInstance(id, datastoreType, types, cacheMode);
             if (TransactionalCache.Mode.READ.equals(cacheMode)) {
                 instanceListenerService.postLoad(instance);
@@ -108,8 +108,8 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
      *            The instance type.
      * @return The instance.
      */
-    private <T> T newInstance(DatastoreId id, DatastoreType datastoreType, TypeMetadataSet<?> types, TransactionalCache.Mode cacheMode) {
-        validateTypes(types);
+    private <T> T newInstance(DatastoreId id, DatastoreType datastoreType, DynamicType<?> types, TransactionalCache.Mode cacheMode) {
+        validateType(types);
         InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(datastoreType, getProxyMethodService());
         T instance = proxyFactory.createInstance(invocationHandler, types.getCompositeType());
         cache.put(id, instance, cacheMode);
@@ -119,17 +119,17 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     /**
      * Validates the given types.
      *
-     * @param types
+     * @param dynamicType
      *            The types.
      */
-    private void validateTypes(TypeMetadataSet<?> types) {
-        int size = types.size();
+    private void validateType(DynamicType<?> dynamicType) {
+        int size = dynamicType.getMetadata().size();
         if (size == 1) {
-            if (types.isAbstract()) {
-                throw new XOException("Cannot create an instance of a single abstract type " + types);
+            if (dynamicType.isAbstract()) {
+                throw new XOException("Cannot create an instance of a single abstract type " + dynamicType);
             }
-        } else if (types.isFinal()) {
-            throw new XOException("Cannot create an instance overriding a final type " + types);
+        } else if (dynamicType.isFinal()) {
+            throw new XOException("Cannot create an instance overriding a final type " + dynamicType);
         }
     }
 
@@ -215,14 +215,14 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     protected abstract boolean isDatastoreType(Object o);
 
     /**
-     * Determines the {@link com.buschmais.xo.spi.datastore.TypeMetadataSet} of
+     * Determines the {@link DynamicType} of
      * a datastore type.
      *
      * @param datastoreType
      *            The datastore type.
-     * @return The {@link com.buschmais.xo.spi.datastore.TypeMetadataSet}.
+     * @return The {@link DynamicType}.
      */
-    protected abstract TypeMetadataSet<?> getTypes(DatastoreType datastoreType);
+    protected abstract DynamicType<?> getTypes(DatastoreType datastoreType);
 
     /**
      * Return the {@link com.buschmais.xo.impl.proxy.ProxyMethodService}
