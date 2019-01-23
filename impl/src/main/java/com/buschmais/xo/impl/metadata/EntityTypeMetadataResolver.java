@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Allows resolving types from entity discriminators as provided by the
@@ -36,7 +37,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
     private final Map<EntityTypeMetadata<EntityMetadata>, Set<EntityTypeMetadata<EntityMetadata>>> aggregatedSuperTypes = new HashMap<>();
     private final Map<EntityTypeMetadata<EntityMetadata>, Set<EntityTypeMetadata<EntityMetadata>>> aggregatedSubTypes = new HashMap<>();
 
-    private final Cache<Set<Discriminator>, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>>> cache = Caffeine.newBuilder().build();
+    private final Map<Set<Discriminator>, TypeMetadataSet<EntityTypeMetadata<EntityMetadata>>> cache = new ConcurrentHashMap<>();
 
     /**
      * Constructor.
@@ -167,7 +168,8 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * @return The {@link com.buschmais.xo.spi.datastore.TypeMetadataSet}.
      */
     public TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> getTypes(Set<Discriminator> discriminators) {
-        return cache.get(discriminators, key -> {
+        return cache.computeIfAbsent(new HashSet<>(discriminators), key -> {
+            LOGGER.debug("Cache miss for discriminators {}.", key);
             TypeMetadataSet<EntityTypeMetadata<EntityMetadata>> result = new TypeMetadataSet<>();
             for (Discriminator discriminator : key) {
                 Set<EntityTypeMetadata<EntityMetadata>> candidates = typeMetadataByDiscriminator.get(discriminator);
