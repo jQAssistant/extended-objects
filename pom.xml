@@ -411,6 +411,7 @@
                     <mavenExecutorId>forked-path</mavenExecutorId>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <tagNameFormat>@{version}</tagNameFormat>
+                    <arguments>-DskipTests</arguments>
                 </configuration>
             </plugin>
             <plugin>
