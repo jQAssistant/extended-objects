@@ -1,24 +1,23 @@
 package com.buschmais.xo.neo4j.test.relation.qualified;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.junit.Assert.assertThat;
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
+import com.buschmais.xo.neo4j.test.relation.qualified.composite.A;
+import com.buschmais.xo.neo4j.test.relation.qualified.composite.B;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
-import com.buschmais.xo.api.XOManager;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
-import com.buschmais.xo.neo4j.test.relation.qualified.composite.A;
-import com.buschmais.xo.neo4j.test.relation.qualified.composite.B;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
@@ -75,7 +74,7 @@ public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
         assertThat(a.getOneToMany(), hasItems(b1, b2));
         assertThat(b1.getManyToOne(), equalTo(a));
         assertThat(b2.getManyToOne(), equalTo(a));
-        assertThat(executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN b").<B> getColumn("b"), hasItems(b1, b2));
+        assertThat(executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN b").<B>getColumn("b"), hasItems(b1, b2));
         a.getOneToMany().remove(b1);
         a.getOneToMany().remove(b2);
         B b3 = xoManager.create(B.class);
@@ -89,7 +88,7 @@ public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
         assertThat(b2.getManyToOne(), equalTo(null));
         assertThat(b3.getManyToOne(), equalTo(a));
         assertThat(b4.getManyToOne(), equalTo(a));
-        assertThat(executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN b").<B> getColumn("b"), hasItems(b3, b4));
+        assertThat(executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN b").<B>getColumn("b"), hasItems(b3, b4));
         xoManager.currentTransaction().commit();
     }
 
@@ -111,9 +110,9 @@ public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
         assertThat(a2.getManyToMany(), hasItems(b1, b2));
         assertThat(b1.getManyToMany(), hasItems(a1, a2));
         assertThat(b2.getManyToMany(), hasItems(a1, a2));
-        assertThat(executeQuery("MATCH (a:A)-[:ManyToMany]->(b:B) RETURN a, collect(b) as listOfB ORDER BY ID(a)").<A> getColumn("a"), hasItems(a1, a2));
-        assertThat(executeQuery("MATCH (a:A)-[:ManyToMany]->(b:B) RETURN a, collect(b) as listOfB ORDER BY ID(a)").<Iterable<B>> getColumn("listOfB"),
-                hasItems(hasItems(b1, b2), hasItems(b1, b2)));
+        assertThat(executeQuery("MATCH (a:A)-[:ManyToMany]->(b:B) RETURN a, collect(b) as listOfB ORDER BY ID(a)").<A>getColumn("a"), hasItems(a1, a2));
+        assertThat(executeQuery("MATCH (a:A)-[:ManyToMany]->(b:B) RETURN a, collect(b) as listOfB ORDER BY ID(a)").<Iterable<B>>getColumn("listOfB"),
+            hasItems(hasItems(b1, b2), hasItems(b1, b2)));
         a1.getManyToMany().remove(b1);
         a2.getManyToMany().remove(b1);
         xoManager.currentTransaction().commit();
@@ -150,18 +149,30 @@ public class QualifiedRelationTest extends AbstractNeo4jXOManagerTest {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
+        List<B> bList = new ArrayList<>();
         long details = 1000;
         for (int i = 0; i < details; i++) {
             B b = xoManager.create(B.class);
-            a.getOneToMany().add(b);
+            bList.add(b);
         }
         xoManager.currentTransaction().commit();
+
+//        xoManager.clear();
+
+        xoManager.currentTransaction().begin();
+        for (B b : bList) {
+            b.setManyToOne(a);
+        }
+        xoManager.currentTransaction().commit();
+
+//        xoManager.clear();
+
         xoManager.currentTransaction().begin();
         List<Long> count = executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN count(b) as count").getColumn("count");
         assertThat(count.get(0), equalTo(details));
-        List<B> bs = new ArrayList<>(a.getOneToMany());
+        List<B> bs = executeQuery("MATCH (b:B) RETURN b").getColumn("b");
         for (B b : bs) {
-            assertThat(b.getManyToOne(), equalTo(a));
+//            assertThat(b.getManyToOne(), equalTo(a));
             b.setManyToOne(null);
         }
         xoManager.currentTransaction().commit();

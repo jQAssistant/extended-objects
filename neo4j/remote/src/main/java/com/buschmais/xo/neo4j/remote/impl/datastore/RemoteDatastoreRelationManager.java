@@ -1,17 +1,5 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
-import static org.neo4j.driver.v1.Values.parameters;
-
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.StatementResult;
-import org.neo4j.driver.v1.types.Node;
-import org.neo4j.driver.v1.types.Relationship;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteDirection;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
@@ -24,9 +12,20 @@ import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
+import org.neo4j.driver.v1.Record;
+import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.types.Node;
+import org.neo4j.driver.v1.types.Relationship;
+
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.neo4j.driver.v1.Values.parameters;
 
 public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePropertyManager<RemoteRelationship, RelationshipState> implements
-        DatastoreRelationManager<RemoteNode, Long, RemoteRelationship, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType, PropertyMetadata> {
+    DatastoreRelationManager<RemoteNode, Long, RemoteRelationship, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType, PropertyMetadata> {
 
     private long idSequence = -1;
 
@@ -46,58 +45,59 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
 
     @Override
     public RemoteRelationship createRelation(RemoteNode source, RelationTypeMetadata<RelationshipMetadata<RemoteRelationshipType>> metadata,
-            RelationTypeMetadata.Direction direction, RemoteNode target, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
+                                             RelationTypeMetadata.Direction direction, RemoteNode target, Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
         RelationshipMetadata<RemoteRelationshipType> datastoreMetadata = metadata.getDatastoreMetadata();
         RemoteRelationshipType type = datastoreMetadata.getDiscriminator();
         RemoteNode start;
         RemoteNode end;
+        RemoteDirection remoteDirection;
+        RemoteDirection inverseRemoteDirection;
         switch (direction) {
-        case FROM:
-            start = source;
-            end = target;
-            break;
-        case TO:
-            start = target;
-            end = source;
-            break;
-        default:
-            throw new XOException("Unsupported direction " + direction);
+            case FROM:
+                start = source;
+                end = target;
+                remoteDirection = RemoteDirection.OUTGOING;
+                inverseRemoteDirection = RemoteDirection.INCOMING;
+                break;
+            case TO:
+                start = target;
+                end = source;
+                remoteDirection = RemoteDirection.INCOMING;
+                inverseRemoteDirection = RemoteDirection.OUTGOING;
+                break;
+            default:
+                throw new XOException("Unsupported direction " + direction);
         }
         Map<String, Object> properties = getProperties(exampleEntity);
         RemoteRelationship relationship;
+        StateTracker<RemoteRelationship, Set<RemoteRelationship>> relationships = getRelationships(start, type, remoteDirection);
         if (!datastoreMetadata.isBatchable()) {
+            // Create the relationship immediately
             Record record;
             if (properties.isEmpty()) {
                 String statement = String.format(
-                        "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) RETURN id(r) as id", type.getName());
+                    "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) RETURN id(r) as id", type.getName());
                 record = statementExecutor.getSingleResult(statement, parameters("start", start.getId(), "end", end.getId(), "r", Collections.emptyMap()));
             } else {
                 String statement = String.format(
-                        "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) SET r={r} RETURN id(r) as id",
-                        type.getName());
+                    "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) SET r={r} RETURN id(r) as id",
+                    type.getName());
                 record = statementExecutor.getSingleResult(statement, parameters("start", start.getId(), "end", end.getId(), "r", properties));
             }
             long id = record.get("id").asLong();
             RelationshipState relationshipState = new RelationshipState(properties);
             relationship = datastoreSessionCache.getRelationship(id, start, type, end, relationshipState);
-            // Add relation to outgoing relationships if they're already loaded
-            StateTracker<RemoteRelationship, Set<RemoteRelationship>> outgoingRelationships = source.getState().getRelationships(RemoteDirection.OUTGOING,
-                    type);
-            if (outgoingRelationships != null) {
-                outgoingRelationships.getElements().add(relationship);
-            }
+            relationships.getElements().add(relationship);
         } else {
+            // Defer creation of relationship to flush
             long id = idSequence--;
             relationship = datastoreSessionCache.getRelationship(id, start, type, end, new RelationshipState(properties));
-            // Always flush relation to outgoing relationships to make sure
-            // they're flushed
-            StateTracker<RemoteRelationship, Set<RemoteRelationship>> outgoingRelationships = getRelationships(start, type, RemoteDirection.OUTGOING);
-            outgoingRelationships.add(relationship);
+            relationships.add(relationship);
         }
-        // Add relation to incoming relationships if they're already loaded
-        StateTracker<RemoteRelationship, Set<RemoteRelationship>> incomingRelationships = end.getState().getRelationships(RemoteDirection.INCOMING, type);
-        if (incomingRelationships != null) {
-            incomingRelationships.add(relationship);
+        // Update inverse relation if it is already loaded
+        StateTracker<RemoteRelationship, Set<RemoteRelationship>> inverseRelationships = end.getState().getRelationships(inverseRemoteDirection, type);
+        if (inverseRelationships != null) {
+            inverseRelationships.getElements().add(relationship);
         }
         return relationship;
     }
@@ -122,7 +122,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     @Override
     public RemoteRelationship findRelationById(RelationTypeMetadata<RelationshipMetadata<RemoteRelationshipType>> metadata, Long id) {
         String statement = String.format("MATCH (start)-[r:%s]->(end) WHERE id(r)={id} RETURN start,r,end",
-                metadata.getDatastoreMetadata().getDiscriminator().getName());
+            metadata.getDatastoreMetadata().getDiscriminator().getName());
         Record record = statementExecutor.getSingleResult(statement, parameters("id", id));
         Node start = record.get("start").asNode();
         Relationship relationship = record.get("r").asRelationship();
@@ -132,19 +132,19 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
 
     @Override
     public boolean hasSingleRelation(RemoteNode source, RelationTypeMetadata<RelationshipMetadata<RemoteRelationshipType>> metadata,
-            RelationTypeMetadata.Direction direction) {
+                                     RelationTypeMetadata.Direction direction) {
         return !getSingleRelationship(source, metadata, direction).isEmpty();
     }
 
     @Override
     public RemoteRelationship getSingleRelation(RemoteNode source, RelationTypeMetadata<RelationshipMetadata<RemoteRelationshipType>> metadata,
-            RelationTypeMetadata.Direction direction) {
+                                                RelationTypeMetadata.Direction direction) {
         return getSingleRelationship(source, metadata, direction).iterator().next();
     }
 
     @Override
     public Iterable<RemoteRelationship> getRelations(RemoteNode source, RelationTypeMetadata<RelationshipMetadata<RemoteRelationshipType>> metadata,
-            RelationTypeMetadata.Direction direction) {
+                                                     RelationTypeMetadata.Direction direction) {
         return getRelationships(source, metadata.getDatastoreMetadata().getDiscriminator(), getRemoteDirection(direction)).getElements();
     }
 
@@ -169,12 +169,12 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     }
 
     private Set<RemoteRelationship> getSingleRelationship(RemoteNode source, RelationTypeMetadata<RelationshipMetadata<RemoteRelationshipType>> metadata,
-            RelationTypeMetadata.Direction direction) {
+                                                          RelationTypeMetadata.Direction direction) {
         Set<RemoteRelationship> relationships = getRelationships(source, metadata.getDatastoreMetadata().getDiscriminator(), getRemoteDirection(direction))
-                .getElements();
+            .getElements();
         if (relationships.size() > 1) {
             throw new XOException("Found more than one relationship for node=" + source + ", type=" + metadata.getDatastoreMetadata().getDiscriminator()
-                    + ", direction=" + direction + ", relationships=" + relationships);
+                + ", direction=" + direction + ", relationships=" + relationships);
         }
         return relationships;
     }
@@ -190,19 +190,19 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     }
 
     private StateTracker<RemoteRelationship, Set<RemoteRelationship>> getRelationships(RemoteNode source, RemoteRelationshipType type,
-            RemoteDirection remoteDirection) {
+                                                                                       RemoteDirection remoteDirection) {
         StateTracker<RemoteRelationship, Set<RemoteRelationship>> trackedRelationships = source.getState().getRelationships(remoteDirection, type);
         if (trackedRelationships == null) {
             String sourceIdentifier;
             switch (remoteDirection) {
-            case OUTGOING:
-                sourceIdentifier = "start";
-                break;
-            case INCOMING:
-                sourceIdentifier = "end";
-                break;
-            default:
-                throw new XOException("Direction not supported: " + remoteDirection);
+                case OUTGOING:
+                    sourceIdentifier = "start";
+                    break;
+                case INCOMING:
+                    sourceIdentifier = "end";
+                    break;
+                default:
+                    throw new XOException("Direction not supported: " + remoteDirection);
             }
             String statement = String.format("MATCH (start)-[r:%s]->(end) WHERE id(%s)={id} RETURN start,r,end", type.getName(), sourceIdentifier);
             StatementResult statementResult = statementExecutor.execute(statement, parameters("id", source.getId()));
@@ -227,12 +227,12 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
 
     private RemoteDirection getRemoteDirection(RelationTypeMetadata.Direction direction) {
         switch (direction) {
-        case FROM:
-            return RemoteDirection.OUTGOING;
-        case TO:
-            return RemoteDirection.INCOMING;
-        default:
-            throw new XOException("Direction not supported " + direction);
+            case FROM:
+                return RemoteDirection.OUTGOING;
+            case TO:
+                return RemoteDirection.INCOMING;
+            default:
+                throw new XOException("Direction not supported " + direction);
         }
     }
 

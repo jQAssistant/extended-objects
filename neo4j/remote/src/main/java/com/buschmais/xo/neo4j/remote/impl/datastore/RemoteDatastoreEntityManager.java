@@ -26,7 +26,7 @@ import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropert
 import static org.neo4j.driver.v1.Values.parameters;
 
 public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropertyManager<RemoteNode, NodeState>
-        implements DatastoreEntityManager<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, PropertyMetadata> {
+    implements DatastoreEntityManager<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, PropertyMetadata> {
 
     private long idSequence = -1;
 
@@ -80,8 +80,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
      * Determine if at least one type is marked as
      * {@link com.buschmais.xo.neo4j.api.annotation.Batchable}.
      *
-     * @param dynamicType
-     *            The types.
+     * @param dynamicType The types.
      * @return <code>true</code> if batching may be used.
      */
     private boolean isBatchable(DynamicType<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> dynamicType) {
@@ -97,10 +96,8 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
      * Initializes all relation properties of the given node state with empty
      * collections.
      *
-     * @param types
-     *            The types.
-     * @param nodeState
-     *            The state of the entity.
+     * @param types     The types.
+     * @param nodeState The state of the entity.
      */
     private void initializeEntity(Collection<? extends TypeMetadata> types, NodeState nodeState) {
         for (TypeMetadata type : types) {
@@ -110,19 +107,19 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
                 if (methodMetadata instanceof AbstractRelationPropertyMethodMetadata) {
                     AbstractRelationPropertyMethodMetadata<?> relationPropertyMethodMetadata = (AbstractRelationPropertyMethodMetadata) methodMetadata;
                     RelationTypeMetadata<RelationshipMetadata<RemoteRelationshipType>> relationshipMetadata = relationPropertyMethodMetadata
-                            .getRelationshipMetadata();
+                        .getRelationshipMetadata();
                     RemoteRelationshipType relationshipType = relationshipMetadata.getDatastoreMetadata().getDiscriminator();
                     RelationTypeMetadata.Direction direction = relationPropertyMethodMetadata.getDirection();
                     RemoteDirection remoteDirection;
                     switch (direction) {
-                    case FROM:
-                        remoteDirection = RemoteDirection.OUTGOING;
-                        break;
-                    case TO:
-                        remoteDirection = RemoteDirection.INCOMING;
-                        break;
-                    default:
-                        throw new XOException("Unsupported direction: " + direction);
+                        case FROM:
+                            remoteDirection = RemoteDirection.OUTGOING;
+                            break;
+                        case TO:
+                            remoteDirection = RemoteDirection.INCOMING;
+                            break;
+                        default:
+                            throw new XOException("Unsupported direction: " + direction);
                     }
                     if (nodeState.getRelationships(remoteDirection, relationshipType) == null) {
                         nodeState.setRelationships(remoteDirection, relationshipType, new StateTracker<>(new LinkedHashSet<>()));
@@ -138,6 +135,9 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
             for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : remoteNode.getState().getOutgoingRelationships().values()) {
                 flushRemovedRelationships(batchBuilder, tracker.getRemoved());
             }
+            for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : remoteNode.getState().getIncomingRelationships().values()) {
+                flushRemovedRelationships(batchBuilder, tracker.getRemoved());
+            }
             String statement = "MATCH (n) WHERE id(n)=entry['n'] DELETE n RETURN collect(id(n))";
             batchBuilder.add(statement, parameters("n", remoteNode.getId()));
         }
@@ -151,7 +151,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public ResultIterator<RemoteNode> findEntity(EntityTypeMetadata<NodeMetadata<RemoteLabel>> type, RemoteLabel remoteLabel,
-            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
+                                                 Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
         if (values.size() > 1) {
             throw new XOException("Only one property value is supported for find operation");
         }
@@ -206,8 +206,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     /**
      * Creates an expression for adding labels, e.g. ":Person:Customer".
      *
-     * @param remoteLabels
-     *            The labels.
+     * @param remoteLabels The labels.
      * @return The expression.
      */
     private StringBuilder getLabelExpression(Set<RemoteLabel> remoteLabels) {
@@ -233,6 +232,10 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         try (StatementBatchBuilder batchBuilder = new StatementBatchBuilder(statementExecutor)) {
             for (RemoteNode entity : entities) {
                 for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : entity.getState().getOutgoingRelationships().values()) {
+                    flushAddedRelationships(batchBuilder, tracker.getAdded());
+                    flushRemovedRelationships(batchBuilder, tracker.getRemoved());
+                }
+                for (StateTracker<RemoteRelationship, Set<RemoteRelationship>> tracker : entity.getState().getIncomingRelationships().values()) {
                     flushAddedRelationships(batchBuilder, tracker.getAdded());
                     flushRemovedRelationships(batchBuilder, tracker.getRemoved());
                 }
@@ -276,18 +279,18 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     private void flushAddedRelationships(StatementBatchBuilder batchBuilder, Set<RemoteRelationship> addedRelationships) {
         for (RemoteRelationship addedRelationship : addedRelationships) {
             String statement = "MATCH (start),(end) WHERE id(start)=entry['start'] AND id(end)=entry['end'] CREATE (start)-[r:"
-                    + addedRelationship.getType().getName() + "]->(end) SET r=entry['r'] RETURN collect({oldId:entry['id'], newId:id(r)}) as relations";
+                + addedRelationship.getType().getName() + "]->(end) SET r=entry['r'] RETURN collect({oldId:entry['id'], newId:id(r)}) as relations";
             batchBuilder.add(statement, parameters("start", addedRelationship.getStartNode().getId(), "id", addedRelationship.getId(), "r",
-                    addedRelationship.getProperties(), "end", addedRelationship.getEndNode().getId()), result -> {
-                        List<Object> relations = result.get("relations").asList();
-                        for (Object relation : relations) {
-                            Map<String, Object> r = (Map<String, Object>) relation;
-                            Long oldId = (Long) r.get("oldId");
-                            Long newId = (Long) r.get("newId");
-                            RemoteRelationship oldRelationship = datastoreSessionCache.getRelationship(oldId);
-                            datastoreSessionCache.update(newId, oldRelationship);
-                        }
-                    });
+                addedRelationship.getProperties(), "end", addedRelationship.getEndNode().getId()), result -> {
+                List<Object> relations = result.get("relations").asList();
+                for (Object relation : relations) {
+                    Map<String, Object> r = (Map<String, Object>) relation;
+                    Long oldId = (Long) r.get("oldId");
+                    Long newId = (Long) r.get("newId");
+                    RemoteRelationship oldRelationship = datastoreSessionCache.getRelationship(oldId);
+                    datastoreSessionCache.update(newId, oldRelationship);
+                }
+            });
         }
     }
 
@@ -295,10 +298,10 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         for (RemoteRelationship removedRelationship : removedRelationships) {
             if (removedRelationship.getId() < 0) {
                 String statement = "MATCH (start)-[r:" + removedRelationship.getType().getName()
-                        + "]->(end) WHERE id(start)=entry['start'] AND id(end)=entry['end'] DELETE r RETURN collect(id(r))";
+                    + "]->(end) WHERE id(start)=entry['start'] AND id(end)=entry['end'] DELETE r RETURN collect(id(r))";
                 batchBuilder.add(statement, parameters("start", removedRelationship.getStartNode().getId(), "end", removedRelationship.getEndNode().getId()));
             } else {
-                String statement = "MATCH ()-[r]->() WHERE id(r)=entry['r'] DELETE r RETURN collect(id(r))";
+                String statement = "MATCH ()-[r]-() WHERE id(r)=entry['r'] DELETE r RETURN collect(id(r))";
                 batchBuilder.add(statement, parameters("r", removedRelationship.getId()));
             }
         }
