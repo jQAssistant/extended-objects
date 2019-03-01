@@ -61,6 +61,10 @@
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.neo4j.remote</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.buschmais.xo</groupId>
+            <artifactId>xo.trace</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
