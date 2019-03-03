@@ -1,5 +1,12 @@
 package com.buschmais.xo.impl;
 
+import static com.buschmais.xo.api.Transaction.TransactionAttribute;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.ValidatorFactory;
+
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOTransaction;
@@ -18,24 +25,27 @@ import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 import com.buschmais.xo.spi.interceptor.XOInterceptor;
 
-import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.buschmais.xo.api.Transaction.TransactionAttribute;
-
 /**
  * Provides access to all session related services.
  *
- * @param <EntityId>              The type of entity ids.
- * @param <Entity>                The type of entities.
- * @param <EntityMetadata>        The type of entity metadata.
- * @param <EntityDiscriminator>   The type of entity discriminators
- * @param <RelationId>            The type of relation ids.
- * @param <Relation>              The type of relations.
- * @param <RelationMetadata>      The type of relation metadata.
- * @param <RelationDiscriminator> The type of relation discriminators.
- * @param <PropertyMetadata>      The type of property metadata.
+ * @param <EntityId>
+ *            The type of entity ids.
+ * @param <Entity>
+ *            The type of entities.
+ * @param <EntityMetadata>
+ *            The type of entity metadata.
+ * @param <EntityDiscriminator>
+ *            The type of entity discriminators
+ * @param <RelationId>
+ *            The type of relation ids.
+ * @param <Relation>
+ *            The type of relations.
+ * @param <RelationMetadata>
+ *            The type of relation metadata.
+ * @param <RelationDiscriminator>
+ *            The type of relation discriminators.
+ * @param <PropertyMetadata>
+ *            The type of property metadata.
  */
 public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata> {
 
@@ -55,7 +65,11 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
     private final ProxyFactory proxyFactory;
     private final DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession;
 
-    public SessionContext(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider, PluginRepositoryManager pluginRepositoryManager, DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession, ValidatorFactory validatorFactory, List<? extends Class<?>> instanceListenerTypes, TransactionAttribute defaultTransactionAttribute, ValidationMode validationMode, ConcurrencyMode concurrencyMode, ClassLoader classLoader) {
+    public SessionContext(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider,
+            PluginRepositoryManager pluginRepositoryManager,
+            DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession,
+            ValidatorFactory validatorFactory, List<? extends Class<?>> instanceListenerTypes, TransactionAttribute defaultTransactionAttribute,
+            ValidationMode validationMode, ConcurrencyMode concurrencyMode, ClassLoader classLoader) {
         this.metadataProvider = metadataProvider;
         this.pluginRepositoryManager = pluginRepositoryManager;
         this.datastoreSession = datastoreSession;

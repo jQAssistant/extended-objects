@@ -1,13 +1,14 @@
 package com.buschmais.xo.impl.proxy.collection;
 
-import com.buschmais.xo.impl.SessionContext;
-import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
-
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 
-public abstract class AbstractCollectionProxy<Instance, Entity, Relation, PropertyMetadata extends AbstractRelationPropertyMethodMetadata<?>> extends AbstractCollection<Instance> implements Collection<Instance> {
+import com.buschmais.xo.impl.SessionContext;
+import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
+
+public abstract class AbstractCollectionProxy<Instance, Entity, Relation, PropertyMetadata extends AbstractRelationPropertyMethodMetadata<?>>
+        extends AbstractCollection<Instance> implements Collection<Instance> {
 
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
     private final Entity entity;
@@ -33,7 +34,7 @@ public abstract class AbstractCollectionProxy<Instance, Entity, Relation, Proper
 
     public int size() {
         int size = 0;
-        for (Iterator<Instance> iterator = iterator(); iterator.hasNext(); ) {
+        for (Iterator<Instance> iterator = iterator(); iterator.hasNext();) {
             iterator.next();
             size++;
         }

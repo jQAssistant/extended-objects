@@ -12,18 +12,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.query.composite.A;
 import com.buschmais.xo.neo4j.test.query.composite.InstanceByValue;
+
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class QueryTest extends AbstractNeo4jXOManagerTest {
@@ -68,7 +68,8 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
     public void compositeRow() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
-        CompositeRowObject result = xoManager.createQuery("match (a:A) where a.value={value} return a, count(a) as count", ResultPart1.class, ResultPart2.class).withParameter("value", "A1").execute().getSingleResult();
+        CompositeRowObject result = xoManager.createQuery("match (a:A) where a.value={value} return a, count(a) as count", ResultPart1.class, ResultPart2.class)
+                .withParameter("value", "A1").execute().getSingleResult();
         A a = result.as(ResultPart1.class).getA();
         assertThat(a.getValue(), equalTo("A1"));
         Number count = result.as(ResultPart2.class).getCount();
@@ -85,7 +86,8 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
     public void compositeRowAsMap() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> result = xoManager.createQuery("match (a:A) where a.value={value} return a, a.value as value, id(a) as id").withParameter("value", "A1").execute();
+        Result<CompositeRowObject> result = xoManager.createQuery("match (a:A) where a.value={value} return a, a.value as value, id(a) as id")
+                .withParameter("value", "A1").execute();
         CompositeRowObject singleResult = result.getSingleResult();
         List<String> columns = singleResult.getColumns();
         assertThat(columns, Matchers.equalTo(Arrays.asList("a", "value", "id")));
@@ -114,7 +116,8 @@ public class QueryTest extends AbstractNeo4jXOManagerTest {
     public void instanceParameterCollection() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where a.value in {values} return a").withParameter("values", Arrays.asList("A1")).execute();
+        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where a.value in {values} return a").withParameter("values", Arrays.asList("A1"))
+                .execute();
         A a = row.getSingleResult().get("a", A.class);
         assertThat(a, equalTo(a1));
         xoManager.currentTransaction().commit();

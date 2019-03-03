@@ -9,16 +9,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.transaction.composite.A;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class TransactionAttributeMandatoryTest extends AbstractNeo4jXOManagerTest {
@@ -29,7 +29,8 @@ public class TransactionAttributeMandatoryTest extends AbstractNeo4jXOManagerTes
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(Neo4jDatabase.MEMORY, Neo4jDatabase.BOLT), Arrays.asList(A.class), Collections.<Class<?>>emptyList(), ValidationMode.AUTO, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
+        return xoUnits(asList(Neo4jDatabase.MEMORY, Neo4jDatabase.BOLT), Arrays.asList(A.class), Collections.<Class<?>> emptyList(), ValidationMode.AUTO,
+                ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
     }
 
     @Test

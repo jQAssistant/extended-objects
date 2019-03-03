@@ -2,8 +2,6 @@ package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
 import java.util.Map;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedDirection;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
@@ -14,6 +12,8 @@ import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
+
+import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
  * Implementation of a

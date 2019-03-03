@@ -3,10 +3,10 @@ package com.buschmais.xo.neo4j.doc.dynamic;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.junit.Test;
-
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.doc.AbstractDocumentationTest;
+
+import org.junit.Test;
 
 public class DynamicPropertyTest extends AbstractDocumentationTest {
 
@@ -24,7 +24,7 @@ public class DynamicPropertyTest extends AbstractDocumentationTest {
         actor.setAge(42);
         movie.getActors().add(actor);
 
-        Long totalActors= movie.getActorCount();
+        Long totalActors = movie.getActorCount();
         Long actorsWithAge42 = movie.getActorCountByAge(42);
 
         xoManager.currentTransaction().commit();

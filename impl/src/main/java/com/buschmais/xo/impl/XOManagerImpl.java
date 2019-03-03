@@ -1,5 +1,14 @@
 package com.buschmais.xo.impl;
 
+import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
+import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.FROM;
+import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.TO;
+import static java.util.Collections.emptyMap;
+
+import java.util.*;
+
+import javax.validation.ConstraintViolation;
+
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
@@ -16,14 +25,6 @@ import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.*;
 import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.spi.session.XOSession;
-
-import javax.validation.ConstraintViolation;
-import java.util.*;
-
-import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.FROM;
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.TO;
-import static java.util.Collections.emptyMap;
 
 /**
  * Generic implementation of a {@link com.buschmais.xo.api.XOManager}.

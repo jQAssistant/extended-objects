@@ -1,9 +1,9 @@
 package com.buschmais.xo.impl.proxy.example.property;
 
+import java.util.Map;
+
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-
-import java.util.Map;
 
 public class PrimitivePropertySetMethod implements ProxyMethod<Map<PrimitivePropertyMethodMetadata<?>, Object>> {
 

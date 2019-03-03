@@ -1,11 +1,12 @@
 package com.buschmais.xo.spi.reflection;
 
-import com.buschmais.xo.api.XOException;
-import com.google.common.base.CaseFormat;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
+
+import com.buschmais.xo.api.XOException;
+
+import com.google.common.base.CaseFormat;
 
 /**
  * Reflection based utility for analyzing classes.

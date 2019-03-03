@@ -13,17 +13,19 @@ import com.buschmais.xo.spi.metadata.method.ResultOfMethodMetadata;
 /**
  * Abstract base implementation for ResultOf methods.
  *
- * @param <DatastoreType> The datastore type to be used as "this" instance.
- * @param <Entity>        The entity type.
- * @param <Relation>      The relation type.
+ * @param <DatastoreType>
+ *            The datastore type to be used as "this" instance.
+ * @param <Entity>
+ *            The entity type.
+ * @param <Relation>
+ *            The relation type.
  */
 public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> implements ProxyMethod<DatastoreType> {
 
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
     private final ResultOfMethodMetadata<?> resultOfMethodMetadata;
 
-    public AbstractResultOfMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext,
-                                  ResultOfMethodMetadata<?> resultOfMethodMetadata) {
+    public AbstractResultOfMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, ResultOfMethodMetadata<?> resultOfMethodMetadata) {
         this.sessionContext = sessionContext;
         this.resultOfMethodMetadata = resultOfMethodMetadata;
     }

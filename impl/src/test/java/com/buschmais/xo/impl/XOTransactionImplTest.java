@@ -6,14 +6,14 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.XOTransaction;
+import com.buschmais.xo.spi.datastore.DatastoreTransaction;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.api.XOTransaction;
-import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 
 @RunWith(MockitoJUnitRunner.class)
 public class XOTransactionImplTest {

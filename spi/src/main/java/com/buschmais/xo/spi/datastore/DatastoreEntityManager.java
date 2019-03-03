@@ -1,11 +1,11 @@
 package com.buschmais.xo.spi.datastore;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Defines the interface for all entity related datastore operations.
@@ -54,7 +54,7 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      * @return The created entity.
      */
     Entity createEntity(DynamicType<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators,
-                        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity);
+            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity);
 
     /**
      * Delete an entity.

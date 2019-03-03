@@ -9,7 +9,8 @@ import com.buschmais.xo.spi.datastore.DynamicType;
 /**
  * Implementation of an instance manager for relation types.
  */
-public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator> extends AbstractInstanceManager<RelationId, Relation> {
+public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Relation, RelationDiscriminator>
+        extends AbstractInstanceManager<RelationId, Relation> {
 
     private final SessionContext<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator, ?> sessionContext;
     private final ProxyMethodService<Relation> proxyMethodService;
@@ -35,14 +36,16 @@ public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Re
 
     @Override
     protected DynamicType<?> getTypes(Relation relation) {
-        DatastoreSession<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator, ?> datastoreSession = sessionContext.getDatastoreSession();
+        DatastoreSession<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator, ?> datastoreSession = sessionContext
+                .getDatastoreSession();
         Entity source = datastoreSession.getDatastoreRelationManager().getFrom(relation);
         Entity target = datastoreSession.getDatastoreRelationManager().getTo(relation);
         RelationDiscriminator discriminator = datastoreSession.getDatastoreRelationManager().getRelationDiscriminator(relation);
         if (discriminator == null) {
             throw new XOException("Cannot determine type discriminators for relation '" + relation + "'");
         }
-        return sessionContext.getMetadataProvider().getRelationTypes(datastoreSession.getDatastoreEntityManager().getEntityDiscriminators(source), discriminator, datastoreSession.getDatastoreEntityManager().getEntityDiscriminators(target));
+        return sessionContext.getMetadataProvider().getRelationTypes(datastoreSession.getDatastoreEntityManager().getEntityDiscriminators(source),
+                discriminator, datastoreSession.getDatastoreEntityManager().getEntityDiscriminators(target));
     }
 
     @Override

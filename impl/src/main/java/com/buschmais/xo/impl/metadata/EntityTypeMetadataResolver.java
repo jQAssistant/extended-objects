@@ -1,23 +1,25 @@
 package com.buschmais.xo.impl.metadata;
 
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DynamicType;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Allows resolving types from entity discriminators as provided by the
  * datastores.
  *
- * @param <Discriminator> The discriminator type of the datastore (e.g. Neo4j labels or
- *                        strings for JSON stores).
+ * @param <Discriminator>
+ *            The discriminator type of the datastore (e.g. Neo4j labels or
+ *            strings for JSON stores).
  */
 public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> {
 
@@ -33,7 +35,8 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
     /**
      * Constructor.
      *
-     * @param metadataByType A map of all types with their metadata.
+     * @param metadataByType
+     *            A map of all types with their metadata.
      */
     public EntityTypeMetadataResolver(Map<Class<?>, TypeMetadata> metadataByType, XOUnit.MappingConfiguration mappingConfiguration) {
         LOGGER.debug("Type metadata = '{}'", metadataByType);
@@ -126,7 +129,8 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * Determine the set of discriminators for one type, i.e. the discriminator of
      * the type itself and of all it's super types.
      *
-     * @param typeMetadata The type.
+     * @param typeMetadata
+     *            The type.
      * @return The set of discriminators.
      */
     private Set<Discriminator> getAggregatedDiscriminators(EntityTypeMetadata<EntityMetadata> typeMetadata) {
@@ -149,10 +153,11 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
     }
 
     /**
-     * Return a {@link DynamicType} containing
-     * all types matching to the given entity discriminators.
+     * Return a {@link DynamicType} containing all types matching to the given
+     * entity discriminators.
      *
-     * @param discriminators The discriminators.
+     * @param discriminators
+     *            The discriminators.
      * @return The {@link DynamicType}.
      */
     public DynamicType<EntityTypeMetadata<EntityMetadata>> getDynamicType(Set<Discriminator> discriminators) {
@@ -183,8 +188,10 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * Determines if any given element in another {@link Collection} is contained in
      * this set.
      *
-     * @param set   The set.
-     * @param other The other {@link Collection}.
+     * @param set
+     *            The set.
+     * @param other
+     *            The other {@link Collection}.
      * @return <code>true</code> if any other element is contained.
      */
     public <T> boolean containsAny(Set<T> set, Collection<T> other) {
@@ -196,9 +203,8 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
         return false;
     }
 
-
     public Set<Discriminator> getDiscriminators(EntityTypeMetadata<EntityMetadata> entityTypeMetadata) {
         Set<Discriminator> discriminators = aggregatedDiscriminators.get(entityTypeMetadata);
-        return discriminators != null ? discriminators : Collections.<Discriminator>emptySet();
+        return discriminators != null ? discriminators : Collections.<Discriminator> emptySet();
     }
 }

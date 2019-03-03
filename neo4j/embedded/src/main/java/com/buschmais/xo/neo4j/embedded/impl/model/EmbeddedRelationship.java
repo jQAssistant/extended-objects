@@ -1,8 +1,8 @@
 package com.buschmais.xo.neo4j.embedded.impl.model;
 
-import org.neo4j.graphdb.Relationship;
-
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
+
+import org.neo4j.graphdb.Relationship;
 
 public class EmbeddedRelationship extends AbstractEmbeddedPropertyContainer<Relationship>
         implements Neo4jRelationship<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {

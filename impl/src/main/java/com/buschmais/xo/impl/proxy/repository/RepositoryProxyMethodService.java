@@ -12,7 +12,6 @@ import com.buschmais.xo.impl.proxy.repository.object.ToStringMethod;
 import com.buschmais.xo.spi.metadata.method.MethodMetadata;
 import com.buschmais.xo.spi.metadata.method.ResultOfMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 
 /**

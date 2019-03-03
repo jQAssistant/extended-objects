@@ -1,12 +1,13 @@
 package com.buschmais.xo.impl.plugin;
 
+import java.lang.annotation.Annotation;
+
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.plugin.QueryLanguagePlugin;
 
-import java.lang.annotation.Annotation;
-
 /**
- * Implementation of a {@link PluginRepository} for {@link com.buschmais.xo.spi.plugin.QueryLanguagePlugin}s.
+ * Implementation of a {@link PluginRepository} for
+ * {@link com.buschmais.xo.spi.plugin.QueryLanguagePlugin}s.
  */
 public class QueryLanguagePluginRepository extends AbstractPluginRepository<Class<? extends Annotation>, QueryLanguagePlugin<? extends Annotation>> {
 
@@ -15,7 +16,8 @@ public class QueryLanguagePluginRepository extends AbstractPluginRepository<Clas
     /**
      * Constructor.
      *
-     * @param datastore The datastore to be used.
+     * @param datastore
+     *            The datastore to be used.
      */
     public QueryLanguagePluginRepository(Datastore<?, ?, ?, ?, ?> datastore) {
         this.datastore = datastore;

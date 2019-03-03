@@ -1,15 +1,15 @@
 package com.buschmais.xo.neo4j.remote.impl.model.state;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteDirection;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationship;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class NodeState extends AbstractPropertyContainerState {
 

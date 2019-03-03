@@ -4,11 +4,6 @@ import static org.neo4j.driver.v1.Values.parameters;
 
 import java.util.*;
 
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.StatementResult;
-import org.neo4j.driver.v1.types.Node;
-import org.neo4j.driver.v1.types.Relationship;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteDirection;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
@@ -21,6 +16,11 @@ import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
+
+import org.neo4j.driver.v1.Record;
+import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.types.Node;
+import org.neo4j.driver.v1.types.Relationship;
 
 public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePropertyManager<RemoteRelationship, RelationshipState> implements
         DatastoreRelationManager<RemoteNode, Long, RemoteRelationship, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType, PropertyMetadata> {

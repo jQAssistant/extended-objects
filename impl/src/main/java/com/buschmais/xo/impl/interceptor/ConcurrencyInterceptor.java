@@ -1,11 +1,11 @@
 package com.buschmais.xo.impl.interceptor;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.interceptor.InvocationContext;
 import com.buschmais.xo.spi.interceptor.XOInterceptor;
-
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ConcurrencyInterceptor implements XOInterceptor {
 
@@ -25,18 +25,17 @@ public class ConcurrencyInterceptor implements XOInterceptor {
     @Override
     public Object invoke(InvocationContext invocationContext) throws Throwable {
         switch (concurrencyMode) {
-            case SINGLETHREADED:
+        case SINGLETHREADED:
+            return invocationContext.proceed();
+        case MULTITHREADED:
+            lock.lock();
+            try {
                 return invocationContext.proceed();
-            case MULTITHREADED:
-                lock.lock();
-                try {
-                    return invocationContext.proceed();
-                } finally {
-                    lock.unlock();
-                }
-            default:
-                throw new XOException("Unsupported concurrency mode " + concurrencyMode);
+            } finally {
+                lock.unlock();
+            }
+        default:
+            throw new XOException("Unsupported concurrency mode " + concurrencyMode);
         }
     }
 }
-

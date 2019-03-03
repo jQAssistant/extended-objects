@@ -1,19 +1,20 @@
 package com.buschmais.xo.impl.bootstrap.osgi;
 
-import com.buschmais.xo.api.ConcurrencyMode;
-import com.buschmais.xo.api.Transaction;
-import com.buschmais.xo.api.ValidationMode;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
-import com.buschmais.xo.spi.reflection.ClassHelper;
-import org.osgi.service.cm.ConfigurationException;
+import static com.buschmais.xo.api.bootstrap.XOUnitParameter.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static com.buschmais.xo.api.bootstrap.XOUnitParameter.*;
+import com.buschmais.xo.api.ConcurrencyMode;
+import com.buschmais.xo.api.Transaction;
+import com.buschmais.xo.api.ValidationMode;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
+import com.buschmais.xo.spi.reflection.ClassHelper;
+
+import org.osgi.service.cm.ConfigurationException;
 
 public final class XOUnitConverter {
 

@@ -9,18 +9,24 @@ import com.buschmais.xo.spi.metadata.method.RelationCollectionPropertyMethodMeta
 /**
  * Get method for relation collections.
  *
- * @param <Entity>   The entity type.
- * @param <Relation> The relation type.
+ * @param <Entity>
+ *            The entity type.
+ * @param <Relation>
+ *            The relation type.
  */
-public class RelationCollectionPropertyGetMethod<Entity, Relation> extends AbstractCollectionPropertyGetMethod<Entity, Entity, Relation, EntityPropertyManager<Entity, Relation, ?>, RelationCollectionPropertyMethodMetadata<?>> {
+public class RelationCollectionPropertyGetMethod<Entity, Relation> extends
+        AbstractCollectionPropertyGetMethod<Entity, Entity, Relation, EntityPropertyManager<Entity, Relation, ?>, RelationCollectionPropertyMethodMetadata<?>> {
 
     /**
      * Constructor.
      *
-     * @param sessionContext The session context.
-     * @param metadata       The metadata.
+     * @param sessionContext
+     *            The session context.
+     * @param metadata
+     *            The metadata.
      */
-    public RelationCollectionPropertyGetMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, RelationCollectionPropertyMethodMetadata<?> metadata) {
+    public RelationCollectionPropertyGetMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext,
+            RelationCollectionPropertyMethodMetadata<?> metadata) {
         super(sessionContext, sessionContext.getEntityPropertyManager(), metadata);
     }
 

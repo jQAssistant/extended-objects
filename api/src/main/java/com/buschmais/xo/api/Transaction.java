@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Defines the annotation to be used for declarative transaction demarcation.
  */
-@Target({ElementType.METHOD})
+@Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Transaction {
 
@@ -29,11 +29,13 @@ public @interface Transaction {
          */
         NONE,
         /**
-         * An existing transaction is mandatory, i.e. the application explicitly controls transactions.
+         * An existing transaction is mandatory, i.e. the application explicitly
+         * controls transactions.
          */
         MANDATORY,
         /**
-         * An existing transaction will be used, if no transaction exists a new one will be automatically created and committed.
+         * An existing transaction will be used, if no transaction exists a new one will
+         * be automatically created and committed.
          */
         REQUIRES,
         /**

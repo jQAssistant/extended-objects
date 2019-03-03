@@ -42,8 +42,8 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     }
 
     /**
-     * Return the proxy instance which corresponds to the given datastore type
-     * for reading.
+     * Return the proxy instance which corresponds to the given datastore type for
+     * reading.
      *
      * @param datastoreType
      *            The datastore type.
@@ -57,8 +57,8 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     }
 
     /**
-     * Return the proxy instance which corresponds to the given datastore type
-     * for writing.
+     * Return the proxy instance which corresponds to the given datastore type for
+     * writing.
      *
      * @param datastoreType
      *            The datastore type.
@@ -162,8 +162,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     }
 
     /**
-     * Determine if a given instance is a datastore type handled by this
-     * manager.
+     * Determine if a given instance is a datastore type handled by this manager.
      *
      * @param instance
      *            The instance.
@@ -215,8 +214,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     protected abstract boolean isDatastoreType(Object o);
 
     /**
-     * Determines the {@link DynamicType} of
-     * a datastore type.
+     * Determines the {@link DynamicType} of a datastore type.
      *
      * @param datastoreType
      *            The datastore type.
@@ -225,8 +223,8 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
     protected abstract DynamicType<?> getTypes(DatastoreType datastoreType);
 
     /**
-     * Return the {@link com.buschmais.xo.impl.proxy.ProxyMethodService}
-     * associated with this manager.
+     * Return the {@link com.buschmais.xo.impl.proxy.ProxyMethodService} associated
+     * with this manager.
      *
      * @return The {@link com.buschmais.xo.impl.proxy.ProxyMethodService}.
      */

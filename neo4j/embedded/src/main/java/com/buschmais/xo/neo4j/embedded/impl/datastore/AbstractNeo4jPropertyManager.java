@@ -10,13 +10,13 @@ import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 /**
  * Abstract implementation of a {@link DatastorePropertyManager} for Neo4j.
  */
-public abstract class AbstractNeo4jPropertyManager<Element extends AbstractEmbeddedPropertyContainer> implements DatastorePropertyManager<Element, PropertyMetadata> {
+public abstract class AbstractNeo4jPropertyManager<Element extends AbstractEmbeddedPropertyContainer>
+        implements DatastorePropertyManager<Element, PropertyMetadata> {
 
     @Override
     public void setProperty(Element element, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata, Object value) {
         element.setProperty(metadata.getDatastoreMetadata().getName(), value);
     }
-
 
     @Override
     public boolean hasProperty(Element element, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {

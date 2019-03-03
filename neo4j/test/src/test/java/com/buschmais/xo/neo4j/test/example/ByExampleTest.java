@@ -1,5 +1,10 @@
 package com.buschmais.xo.neo4j.test.example;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+import java.util.Collection;
+
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.Example;
 import com.buschmais.xo.api.XOManager;
@@ -8,14 +13,10 @@ import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.example.composite.A;
 import com.buschmais.xo.neo4j.test.example.composite.B;
 import com.buschmais.xo.neo4j.test.example.composite.Parent;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.util.Collection;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 @RunWith(Parameterized.class)
 public class ByExampleTest extends AbstractNeo4jXOManagerTest {
@@ -96,9 +97,7 @@ public class ByExampleTest extends AbstractNeo4jXOManagerTest {
             }
         }, A.class, B.class).getSingleResult(), equalTo(compositeObject1));
         // java 8: lambda expression
-        assertThat(xoManager.find(
-                example -> example.as(A.class).setValue("A1"),
-                A.class, B.class).getSingleResult(), equalTo(compositeObject1));
+        assertThat(xoManager.find(example -> example.as(A.class).setValue("A1"), A.class, B.class).getSingleResult(), equalTo(compositeObject1));
         // java 8: lambda expression, alternative
         assertThat(xoManager.find(A.class, example -> example.setValue("A1")).getSingleResult(), equalTo(compositeObject1));
     }

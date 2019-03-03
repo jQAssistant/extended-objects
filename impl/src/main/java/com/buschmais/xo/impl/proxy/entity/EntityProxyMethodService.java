@@ -1,12 +1,11 @@
 package com.buschmais.xo.impl.proxy.entity;
 
+import java.lang.reflect.Method;
+
 import com.buschmais.xo.api.CompositeObject;
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.impl.EntityPropertyManager;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.AbstractProxyMethodService;
-import com.buschmais.xo.impl.proxy.common.UnsupportedOperationMethod;
 import com.buschmais.xo.impl.proxy.common.composite.GetDelegateMethod;
 import com.buschmais.xo.impl.proxy.entity.composite.AsMethod;
 import com.buschmais.xo.impl.proxy.entity.composite.GetIdMethod;
@@ -21,8 +20,6 @@ import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 import com.buschmais.xo.spi.reflection.GetPropertyMethod;
 import com.buschmais.xo.spi.reflection.PropertyMethod;
 import com.buschmais.xo.spi.reflection.SetPropertyMethod;
-
-import java.lang.reflect.Method;
 
 public class EntityProxyMethodService<Entity, Relation> extends AbstractProxyMethodService<Entity> {
 

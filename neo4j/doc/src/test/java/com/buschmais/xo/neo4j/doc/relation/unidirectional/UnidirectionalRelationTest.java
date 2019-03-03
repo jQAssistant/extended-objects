@@ -2,11 +2,11 @@ package com.buschmais.xo.neo4j.doc.relation.unidirectional;
 
 import java.net.URISyntaxException;
 
-import org.junit.Test;
-
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.doc.AbstractDocumentationTest;
 import com.buschmais.xo.neo4j.doc.relation.Person;
+
+import org.junit.Test;
 
 public class UnidirectionalRelationTest extends AbstractDocumentationTest {
 

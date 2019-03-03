@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.buschmais.xo</groupId>
     <artifactId>xo.parent</artifactId>
@@ -26,7 +27,7 @@
         <connection>scm:git:git://github.com/buschmais/extended-objects.git</connection>
         <developerConnection>scm:git:git@github.com:buschmais/extended-objects.git</developerConnection>
         <url>https://github.com/buschmais/extended-objects</url>
-      <tag>0.9.0</tag>
+        <tag>0.9.0</tag>
     </scm>
 
     <ciManagement>
@@ -147,7 +148,7 @@
                                                 </goals>
                                             </pluginExecutionFilter>
                                             <action>
-                                                <ignore />
+                                                <ignore/>
                                             </action>
                                         </pluginExecution>
                                         <pluginExecution>
@@ -160,7 +161,7 @@
                                                 </goals>
                                             </pluginExecutionFilter>
                                             <action>
-                                                <ignore />
+                                                <ignore/>
                                             </action>
                                         </pluginExecution>
                                     </pluginExecutions>
@@ -265,7 +266,7 @@
                     </dependencies>
                 </plugin>
                 <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.3</version>
                     <dependencies>
@@ -341,8 +342,12 @@
                                 <manifestEntries>
                                     <Bundle-Name>${project.name} (Source)</Bundle-Name>
                                     <Bundle-SymbolicName>${bundle.name}.source</Bundle-SymbolicName>
-                                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}</Bundle-Version>
-                                    <Eclipse-SourceBundle>${bundle.name};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}";roots:="."</Eclipse-SourceBundle>
+                                    <Bundle-Version>
+                                        ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}
+                                    </Bundle-Version>
+                                    <Eclipse-SourceBundle>
+                                        ${bundle.name};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}";roots:="."
+                                    </Eclipse-SourceBundle>
                                 </manifestEntries>
                             </archive>
                         </configuration>
@@ -432,7 +437,9 @@
                     <instructions>
                         <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
                         <Bundle-Name>${project.name}</Bundle-Name>
-                        <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}</Bundle-Version>
+                        <Bundle-Version>
+                            ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${build.timestamp}
+                        </Bundle-Version>
                         <_snapshot>${maven.build.timestamp}</_snapshot>
                         <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
                         <!--
@@ -458,7 +465,8 @@
                 <configuration>
                     <failOnSeverity>CRITICAL</failOnSeverity>
                     <reportProperties>
-                        <asciidoc.report.rule.directory>${session.topLevelProject.basedir}/jqassistant</asciidoc.report.rule.directory>
+                        <asciidoc.report.rule.directory>${session.topLevelProject.basedir}/jqassistant
+                        </asciidoc.report.rule.directory>
                         <asciidoc.report.file.include>index.adoc</asciidoc.report.file.include>
                     </reportProperties>
                 </configuration>

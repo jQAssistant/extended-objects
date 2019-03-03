@@ -27,7 +27,8 @@ public class TestXODatastore<D extends DatastoreSession> implements Datastore<D,
     public DatastoreMetadataFactory<TestEntityMetadata, String, TestRelationMetadata, String> getMetadataFactory() {
         return new DatastoreMetadataFactory<TestEntityMetadata, String, TestRelationMetadata, String>() {
             @Override
-            public TestEntityMetadata createEntityMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes, Map<Class<?>, TypeMetadata> metadataByType) {
+            public TestEntityMetadata createEntityMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes,
+                    Map<Class<?>, TypeMetadata> metadataByType) {
                 return new TestEntityMetadata(annotatedType.getAnnotatedElement().getName());
             }
 

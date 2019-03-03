@@ -15,9 +15,11 @@ public interface References {
     Movie getReferenced();
 
     int getMinute();
+
     void setMinute(int minute);
 
     int getSecond();
+
     void setSecond(int second);
 }
 // end::Class[]

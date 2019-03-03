@@ -12,18 +12,17 @@ import java.lang.annotation.Target;
 import com.buschmais.xo.spi.annotation.RelationDefinition;
 
 /**
- * Defines a relationship.
- * Can be used on the following java elements:
+ * Defines a relationship. Can be used on the following java elements:
  * <ul>
- * <li>get methods references or collections of other composite objects (optional).</li>
+ * <li>get methods references or collections of other composite objects
+ * (optional).</li>
  * <li>relation qualifier types (mandatory).</li>
- * <li>relation types (mandatory)</li>
- * </ul
+ * <li>relation types (mandatory)</li> </ul
  */
 @RelationDefinition
 @Documented
 @Retention(RUNTIME)
-@Target({TYPE, ANNOTATION_TYPE, METHOD})
+@Target({ TYPE, ANNOTATION_TYPE, METHOD })
 public @interface Relation {
 
     String DEFAULT_VALUE = "";
@@ -38,7 +37,7 @@ public @interface Relation {
      */
     @FromDefinition
     @Retention(RUNTIME)
-    @Target({METHOD})
+    @Target({ METHOD })
     @interface Outgoing {
     }
 
@@ -47,7 +46,7 @@ public @interface Relation {
      */
     @ToDefinition
     @Retention(RUNTIME)
-    @Target({METHOD})
+    @Target({ METHOD })
     @interface Incoming {
     }
 
@@ -56,7 +55,7 @@ public @interface Relation {
      */
     @FromDefinition
     @Retention(RUNTIME)
-    @Target({METHOD})
+    @Target({ METHOD })
     @interface From {
     }
 
@@ -65,7 +64,7 @@ public @interface Relation {
      */
     @ToDefinition
     @Retention(RUNTIME)
-    @Target({METHOD})
+    @Target({ METHOD })
     @interface To {
     }
 

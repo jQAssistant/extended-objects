@@ -6,12 +6,12 @@ import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 import java.net.URI;
 import java.util.*;
 
-import org.junit.After;
-import org.junit.Before;
-
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Abstract base class for parametrized XO tests.
@@ -80,8 +80,8 @@ public abstract class AbstractXOManagerTest {
     }
 
     /**
-     * Return a {@link com.buschmais.xo.api.bootstrap.XOUnit} initialized with
-     * the given parameters.
+     * Return a {@link com.buschmais.xo.api.bootstrap.XOUnit} initialized with the
+     * given parameters.
      *
      * @param types
      *            The types to register.
@@ -93,8 +93,8 @@ public abstract class AbstractXOManagerTest {
     }
 
     /**
-     * Return a {@link com.buschmais.xo.api.bootstrap.XOUnit} initialized with
-     * the given parameters.
+     * Return a {@link com.buschmais.xo.api.bootstrap.XOUnit} initialized with the
+     * given parameters.
      *
      * @param types
      *            The types to register.

@@ -9,6 +9,7 @@ public interface Person {
 
     @Property("myName")
     String getName();
+
     void setName(String name);
 
 }

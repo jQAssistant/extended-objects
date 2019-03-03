@@ -5,9 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.ClassRule;
-import org.neo4j.harness.junit.Neo4jRule;
-
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.ValidationMode;
@@ -15,11 +12,14 @@ import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.test.AbstractXOManagerTest;
 
+import org.junit.ClassRule;
+import org.neo4j.harness.junit.Neo4jRule;
+
 public abstract class AbstractNeo4jXOManagerTest extends AbstractXOManagerTest {
 
     // This rule starts a Neo4j instance
     @ClassRule
-    public static Neo4jRule neo4j = new Neo4jRule().withConfig("dbms.connector.bolt.listen_address","localhost:6001");
+    public static Neo4jRule neo4j = new Neo4jRule().withConfig("dbms.connector.bolt.listen_address", "localhost:6001");
 
     protected AbstractNeo4jXOManagerTest(XOUnit xoUnit) {
         super(xoUnit);

@@ -4,7 +4,6 @@ import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.metadata.method.EntityReferencePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 
 public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyManager<Relation> {
@@ -14,12 +13,12 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
     /**
      * Constructor.
      *
-     * @param sessionContext The {@link SessionContext}.
+     * @param sessionContext
+     *            The {@link SessionContext}.
      */
     public RelationPropertyManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         this.sessionContext = sessionContext;
     }
-
 
     @Override
     protected DatastorePropertyManager<Relation, ?> getDatastorePropertyManager() {
@@ -30,19 +29,21 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
     protected AbstractInstanceManager<?, Relation> getInstanceManager() {
         return sessionContext.getRelationInstanceManager();
     }
+
     public Entity getEntityReference(Relation relation, EntityReferencePropertyMethodMetadata metadata) {
         return sessionContext.getEntityInstanceManager().readInstance(getReferencedEntity(relation, metadata.getDirection()));
     }
 
     private Entity getReferencedEntity(Relation relation, RelationTypeMetadata.Direction direction) {
-        DatastoreRelationManager<Entity, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> relationManager = sessionContext.getDatastoreSession().getDatastoreRelationManager();
+        DatastoreRelationManager<Entity, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> relationManager = sessionContext.getDatastoreSession()
+                .getDatastoreRelationManager();
         switch (direction) {
-            case TO:
-                return relationManager.getTo(relation);
-            case FROM:
-                return relationManager.getFrom(relation);
-            default:
-                throw direction.createNotSupportedException();
+        case TO:
+            return relationManager.getTo(relation);
+        case FROM:
+            return relationManager.getFrom(relation);
+        default:
+            throw direction.createNotSupportedException();
         }
     }
 

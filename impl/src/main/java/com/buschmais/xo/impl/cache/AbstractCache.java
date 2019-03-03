@@ -5,8 +5,10 @@ import java.util.Collection;
 /**
  * Abstract cache implementation.
  *
- * @param <Key>   The key type.
- * @param <Value> The value type.
+ * @param <Key>
+ *            The key type.
+ * @param <Value>
+ *            The value type.
  */
 public abstract class AbstractCache<Key, Value> implements Cache<Key, Value> {
 
@@ -15,7 +17,8 @@ public abstract class AbstractCache<Key, Value> implements Cache<Key, Value> {
     /**
      * Constructor.
      *
-     * @param cache The map to use as cache.
+     * @param cache
+     *            The map to use as cache.
      */
     protected AbstractCache(com.github.benmanes.caffeine.cache.Cache<Key, Value> cache) {
         this.cache = cache;

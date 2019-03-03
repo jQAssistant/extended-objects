@@ -4,12 +4,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.neo4j.graphdb.Result;
-
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
+
+import org.neo4j.graphdb.Result;
 
 public class EmbeddedNeo4jCypherQuery implements DatastoreQuery<Cypher> {
 

@@ -1,12 +1,12 @@
 package com.buschmais.xo.neo4j.remote.impl.converter;
 
-import org.neo4j.driver.v1.types.Entity;
-import org.neo4j.driver.v1.types.Node;
-import org.neo4j.driver.v1.types.Relationship;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.datastore.RemoteDatastoreSessionCache;
 import com.buschmais.xo.neo4j.spi.helper.TypeConverter;
+
+import org.neo4j.driver.v1.types.Entity;
+import org.neo4j.driver.v1.types.Node;
+import org.neo4j.driver.v1.types.Relationship;
 
 public class RemoteEntityConverter implements TypeConverter {
 

@@ -5,7 +5,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 /**
- * Abstract base implementation for property accessor methods (i.e. get/is/set methods).
+ * Abstract base implementation for property accessor methods (i.e. get/is/set
+ * methods).
  */
 public abstract class AbstractPropertyMethod extends AbstractAnnotatedElement<Method> implements PropertyMethod {
 
@@ -16,9 +17,12 @@ public abstract class AbstractPropertyMethod extends AbstractAnnotatedElement<Me
     /**
      * Constructor.
      *
-     * @param method The method.
-     * @param name   The name of the property.
-     * @param type   The type of the property.
+     * @param method
+     *            The method.
+     * @param name
+     *            The name of the property.
+     * @param type
+     *            The type of the property.
      */
     protected AbstractPropertyMethod(Method method, String name, Class<?> type, Type genericType) {
         super(method);

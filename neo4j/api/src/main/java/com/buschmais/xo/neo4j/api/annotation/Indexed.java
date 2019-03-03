@@ -7,7 +7,10 @@ import com.buschmais.xo.spi.annotation.IndexDefinition;
 /**
  * Marks a property as indexed.
  * <p/>
- * <p>An indexed property is used to find instances using {@link com.buschmais.xo.api.XOManager#find(Class, Object)}.</p>
+ * <p>
+ * An indexed property is used to find instances using
+ * {@link com.buschmais.xo.api.XOManager#find(Class, Object)}.
+ * </p>
  */
 @IndexDefinition
 @Documented

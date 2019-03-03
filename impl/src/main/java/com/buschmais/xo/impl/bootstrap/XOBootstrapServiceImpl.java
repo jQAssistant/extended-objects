@@ -1,16 +1,16 @@
 package com.buschmais.xo.impl.bootstrap;
 
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.api.XOManagerFactory;
-import com.buschmais.xo.api.bootstrap.XOBootstrapService;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.impl.XOManagerFactoryImpl;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.XOManagerFactory;
+import com.buschmais.xo.api.bootstrap.XOBootstrapService;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.impl.XOManagerFactoryImpl;
 
 import org.osgi.service.component.annotations.Component;
 

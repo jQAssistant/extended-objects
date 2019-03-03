@@ -2,10 +2,6 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import java.util.Arrays;
 
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.StatementResult;
-import org.neo4j.driver.v1.Values;
-
 import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.neo4j.api.Neo4jRepository;
@@ -18,6 +14,10 @@ import com.buschmais.xo.neo4j.spi.helper.Converter;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.session.XOSession;
+
+import org.neo4j.driver.v1.Record;
+import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.v1.Values;
 
 /**
  * Implementation of the {@link Neo4jRepository}.

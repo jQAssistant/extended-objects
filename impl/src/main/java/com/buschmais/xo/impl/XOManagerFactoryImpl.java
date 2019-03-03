@@ -4,9 +4,6 @@ import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.metadata.MetadataProviderImpl;
@@ -19,7 +16,11 @@ import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.reflection.ClassHelper;
 
-public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata> implements XOManagerFactory {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata>
+        implements XOManagerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XOManagerFactoryImpl.class);
 
@@ -44,7 +45,8 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
         if (!XODatastoreProvider.class.isAssignableFrom(providerType)) {
             throw new XOException(providerType.getName() + " specified as XO provider must implement " + XODatastoreProvider.class.getName());
         }
-        XODatastoreProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> XODatastoreProvider = XODatastoreProvider.class.cast(ClassHelper.newInstance(providerType));
+        XODatastoreProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> XODatastoreProvider = XODatastoreProvider.class
+                .cast(ClassHelper.newInstance(providerType));
         this.datastore = XODatastoreProvider.createDatastore(xoUnit);
         this.pluginRepositoryManager = new PluginRepositoryManager(new QueryLanguagePluginRepository(datastore));
         this.validationMode = xoUnit.getValidationMode();
@@ -82,9 +84,13 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
 
     @Override
     public XOManager createXOManager() {
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = datastore.createSession();
-        SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext = new SessionContext<>(metadataProvider, pluginRepositoryManager, datastoreSession, validatorFactory, xoUnit.getInstanceListeners(), defaultTransactionAttribute, validationMode, concurrencyMode, classLoader);
-        XOManagerImpl<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> xoManager = new XOManagerImpl<>(sessionContext);
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = datastore
+                .createSession();
+        SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext = new SessionContext<>(
+                metadataProvider, pluginRepositoryManager, datastoreSession, validatorFactory, xoUnit.getInstanceListeners(), defaultTransactionAttribute,
+                validationMode, concurrencyMode, classLoader);
+        XOManagerImpl<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> xoManager = new XOManagerImpl<>(
+                sessionContext);
         return sessionContext.getInterceptorFactory().addInterceptor(xoManager, XOManager.class);
     }
 

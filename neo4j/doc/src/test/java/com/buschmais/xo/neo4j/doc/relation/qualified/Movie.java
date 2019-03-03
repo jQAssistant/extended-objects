@@ -10,6 +10,7 @@ import com.buschmais.xo.neo4j.api.annotation.Relation.Incoming;
 public interface Movie {
 
     String getTitle();
+
     void setTitle();
 
     @ActedIn

@@ -47,8 +47,8 @@ public interface Query<T> {
      * Set the flush behavior.
      *
      * @param flush
-     *            if <code>true</code> any modified instances will be flushed to
-     *            the datastore before executing the query.
+     *            if <code>true</code> any modified instances will be flushed to the
+     *            datastore before executing the query.
      */
     Query<T> flush(boolean flush);
 
@@ -71,9 +71,8 @@ public interface Query<T> {
         void close();
 
         /**
-         * Defines the interface which is implemented by all instances contained
-         * in a {@link ResultIterable} and which allows access to a column in a
-         * row.
+         * Defines the interface which is implemented by all instances contained in a
+         * {@link ResultIterable} and which allows access to a column in a row.
          */
         interface CompositeRowObject extends CompositeObject {
 

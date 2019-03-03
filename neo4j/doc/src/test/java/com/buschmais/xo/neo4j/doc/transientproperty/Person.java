@@ -9,6 +9,7 @@ public interface Person {
 
     @Transient
     String getName();
+
     void setName(String name);
 
 }

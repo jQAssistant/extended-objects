@@ -3,14 +3,14 @@ package com.buschmais.xo.neo4j.doc;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.junit.After;
-import org.junit.Before;
-
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider;
+
+import org.junit.After;
+import org.junit.Before;
 
 public abstract class AbstractDocumentationTest {
 

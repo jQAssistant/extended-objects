@@ -1,15 +1,17 @@
 package com.buschmais.xo.impl.proxy.collection;
 
-import com.buschmais.xo.spi.session.InstanceManager;
-import com.buschmais.xo.impl.SessionContext;
-import com.buschmais.xo.spi.metadata.method.EntityCollectionPropertyMethodMetadata;
-
 import java.util.Collection;
 import java.util.Iterator;
 
-public class EntityCollectionProxy<Instance, Entity, Relation> extends AbstractCollectionProxy<Instance, Entity, Relation, EntityCollectionPropertyMethodMetadata<?>> implements Collection<Instance> {
+import com.buschmais.xo.impl.SessionContext;
+import com.buschmais.xo.spi.metadata.method.EntityCollectionPropertyMethodMetadata;
+import com.buschmais.xo.spi.session.InstanceManager;
 
-    public EntityCollectionProxy(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, Entity entity, EntityCollectionPropertyMethodMetadata<?> metadata) {
+public class EntityCollectionProxy<Instance, Entity, Relation>
+        extends AbstractCollectionProxy<Instance, Entity, Relation, EntityCollectionPropertyMethodMetadata<?>> implements Collection<Instance> {
+
+    public EntityCollectionProxy(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, Entity entity,
+            EntityCollectionPropertyMethodMetadata<?> metadata) {
         super(sessionContext, entity, metadata);
     }
 

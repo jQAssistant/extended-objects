@@ -4,6 +4,7 @@ package com.buschmais.xo.neo4j.doc.template;
 public interface Named {
 
     String getName();
+
     void setName(String name);
 
 }

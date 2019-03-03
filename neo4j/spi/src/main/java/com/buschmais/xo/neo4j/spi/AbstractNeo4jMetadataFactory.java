@@ -18,6 +18,7 @@ import com.buschmais.xo.spi.reflection.AnnotatedElement;
 import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 import com.buschmais.xo.spi.reflection.AnnotatedType;
 import com.buschmais.xo.spi.reflection.PropertyMethod;
+
 import com.google.common.base.CaseFormat;
 
 /**

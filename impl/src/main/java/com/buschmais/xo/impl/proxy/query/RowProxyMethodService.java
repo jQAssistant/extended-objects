@@ -1,5 +1,11 @@
 package com.buschmais.xo.impl.proxy.query;
 
+import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.SortedSet;
+
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.impl.proxy.AbstractProxyMethodService;
@@ -14,12 +20,6 @@ import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 import com.buschmais.xo.spi.reflection.BeanMethodProvider;
 import com.buschmais.xo.spi.reflection.GetPropertyMethod;
 import com.buschmais.xo.spi.reflection.PropertyMethod;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.SortedSet;
-
-import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 
 public class RowProxyMethodService extends AbstractProxyMethodService<Map<String, Object>> {
 

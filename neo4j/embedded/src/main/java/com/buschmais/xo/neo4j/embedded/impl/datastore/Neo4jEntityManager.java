@@ -1,5 +1,10 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
+import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
+
+import java.util.Map;
+import java.util.Set;
+
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
@@ -10,15 +15,11 @@ import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.DynamicType;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
-
-import java.util.Map;
-import java.util.Set;
-
-import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
 
 /**
  * Implementation of a
@@ -50,7 +51,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
 
     @Override
     public EmbeddedNode createEntity(DynamicType<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> types, Set<EmbeddedLabel> discriminators,
-                                     Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
+            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
         Label[] labels = new Label[discriminators.size()];
         int i = 0;
         for (EmbeddedLabel discriminator : discriminators) {

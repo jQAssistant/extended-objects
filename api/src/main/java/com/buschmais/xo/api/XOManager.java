@@ -16,8 +16,8 @@ public interface XOManager extends AutoCloseable, CloseSupport {
     /**
      * Return the {@link XOTransaction} associated with the manager.
      *
-     * @return The {@link XOTransaction} or <code>null</code> if the datastore
-     *         does not support transactions.
+     * @return The {@link XOTransaction} or <code>null</code> if the datastore does
+     *         not support transactions.
      */
     @Transaction(NOT_SUPPORTED)
     XOTransaction currentTransaction();
@@ -91,7 +91,7 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      *            The {@link Example}.
      * @return An {@link Iterable} returning the property instance.
      */
-    <T> ResultIterable<T> find( Class<T> type, Example<T> example);
+    <T> ResultIterable<T> find(Class<T> type, Example<T> example);
 
     /**
      * Create a new {@link CompositeObject} instance.
@@ -108,8 +108,8 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Create a new property instance.
      *
      * @param <T>
-     *            The expected return type. Note that it must be assignable to
-     *            at least one of the interfaces specified for the types.
+     *            The expected return type. Note that it must be assignable to at
+     *            least one of the interfaces specified for the types.
      * @param type
      *            The interface the property type shall implement.
      * @return The property instance.
@@ -295,8 +295,8 @@ public interface XOManager extends AutoCloseable, CloseSupport {
     void clear();
 
     /**
-     * Register an instance listener containing life cycle methods (e.g.
-     * annotated with {@link com.buschmais.xo.api.annotation.PostCreate}.
+     * Register an instance listener containing life cycle methods (e.g. annotated
+     * with {@link com.buschmais.xo.api.annotation.PostCreate}.
      *
      * @param instanceListener
      *            The instance listener.

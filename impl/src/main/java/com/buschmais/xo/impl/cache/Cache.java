@@ -5,8 +5,10 @@ import java.util.Collection;
 /**
  * Defines the cache interface.
  *
- * @param <K> The key type.
- * @param <V> The value type.
+ * @param <K>
+ *            The key type.
+ * @param <V>
+ *            The value type.
  */
 public interface Cache<K, V> {
 

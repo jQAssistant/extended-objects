@@ -8,11 +8,6 @@ import static org.junit.Assert.assertThat;
 import java.net.URISyntaxException;
 import java.util.*;
 
-import org.hamcrest.collection.IsMapContaining;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
@@ -23,6 +18,11 @@ import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.delegate.composite.A;
 import com.buschmais.xo.neo4j.test.delegate.composite.A2B;
 import com.buschmais.xo.neo4j.test.delegate.composite.B;
+
+import org.hamcrest.collection.IsMapContaining;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class DelegateTest extends AbstractNeo4jXOManagerTest {

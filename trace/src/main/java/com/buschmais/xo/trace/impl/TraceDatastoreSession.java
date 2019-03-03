@@ -1,10 +1,10 @@
 package com.buschmais.xo.trace.impl;
 
+import java.lang.annotation.Annotation;
+
 import com.buschmais.xo.spi.datastore.*;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 import com.buschmais.xo.spi.session.XOSession;
-
-import java.lang.annotation.Annotation;
 
 /**
  * {@link DatastoreSession} implementation allowing tracing on delegates.
@@ -27,8 +27,9 @@ public class TraceDatastoreSession<EntityId, Entity, EntityMetadata extends Data
     @Override
     public DatastoreTransaction getDatastoreTransaction() {
         DatastoreTransaction delegateDatastoreTransaction = delegate.getDatastoreTransaction();
-        return delegateDatastoreTransaction != null ? new TraceTransaction(interceptorFactory.addInterceptor(delegateDatastoreTransaction,
-                DatastoreTransaction.class)) : null;
+        return delegateDatastoreTransaction != null
+                ? new TraceTransaction(interceptorFactory.addInterceptor(delegateDatastoreTransaction, DatastoreTransaction.class))
+                : null;
     }
 
     @Override

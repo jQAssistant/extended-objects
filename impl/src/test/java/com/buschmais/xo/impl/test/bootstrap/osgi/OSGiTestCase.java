@@ -1,5 +1,11 @@
 package com.buschmais.xo.impl.test.bootstrap.osgi;
 
+import static org.ops4j.pax.exam.CoreOptions.*;
+
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
 import org.ops4j.pax.exam.*;
 import org.ops4j.pax.exam.options.UrlProvisionOption;
 import org.ops4j.pax.exam.util.PathUtils;
@@ -7,12 +13,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
-
-import javax.inject.Inject;
-
-import java.util.concurrent.TimeUnit;
-
-import static org.ops4j.pax.exam.CoreOptions.*;
 
 public class OSGiTestCase implements ConfigurationFactory {
 

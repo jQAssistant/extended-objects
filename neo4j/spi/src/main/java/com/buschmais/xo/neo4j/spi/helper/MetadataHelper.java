@@ -11,7 +11,7 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 public class MetadataHelper {
 
     public static <L extends Neo4jLabel> PropertyMetadata getIndexedPropertyMetadata(EntityTypeMetadata<NodeMetadata<L>> type,
-                                                                                     PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata) {
+            PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata) {
         if (propertyMethodMetadata == null) {
             IndexedPropertyMethodMetadata<?> indexedProperty = type.getDatastoreMetadata().getUsingIndexedPropertyOf();
             if (indexedProperty == null) {

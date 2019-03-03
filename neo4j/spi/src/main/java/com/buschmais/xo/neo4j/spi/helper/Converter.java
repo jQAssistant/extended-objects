@@ -13,7 +13,7 @@ public class Converter {
         this.converters = converters;
     }
 
-    public <T> T  convert(Object value) {
+    public <T> T convert(Object value) {
         if (value == null) {
             return null;
         }

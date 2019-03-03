@@ -9,6 +9,7 @@ import com.buschmais.xo.api.CompositeType;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
+
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
@@ -26,8 +27,7 @@ public class ProxyFactory {
      * Constructor.
      *
      * @param interceptorFactory
-     *            The
-     *            {@link com.buschmais.xo.spi.interceptor.InterceptorFactory}.
+     *            The {@link com.buschmais.xo.spi.interceptor.InterceptorFactory}.
      * @param classLoader
      *            The class loader.
      */
@@ -74,9 +74,8 @@ public class ProxyFactory {
     }
 
     /**
-     * Extracts the
-     * {@link com.buschmais.xo.impl.proxy.InstanceInvocationHandler} from a
-     * proxy instance.
+     * Extracts the {@link com.buschmais.xo.impl.proxy.InstanceInvocationHandler}
+     * from a proxy instance.
      *
      * @param instance
      *            The proxy instance.
@@ -85,8 +84,7 @@ public class ProxyFactory {
      *            {@link com.buschmais.xo.impl.proxy.InstanceInvocationHandler}
      * @param <Instance>
      *            The instance type.
-     * @return The {@link com.buschmais.xo.impl.proxy.InstanceInvocationHandler}
-     *         .
+     * @return The {@link com.buschmais.xo.impl.proxy.InstanceInvocationHandler} .
      */
     public <DatastoreType, Instance> InstanceInvocationHandler<DatastoreType> getInvocationHandler(Instance instance) {
         Instance effectiveInstance;

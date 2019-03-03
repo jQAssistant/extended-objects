@@ -10,6 +10,7 @@ import com.buschmais.xo.neo4j.api.annotation.Label;
 public interface A {
 
     String getName();
+
     void setName(String name);
 
     @ResultOf

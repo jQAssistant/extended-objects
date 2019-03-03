@@ -1,9 +1,9 @@
 package com.buschmais.xo.neo4j.embedded.impl.model;
 
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
+
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.Label;
-
-import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 
 public final class EmbeddedLabel implements Neo4jLabel {
 

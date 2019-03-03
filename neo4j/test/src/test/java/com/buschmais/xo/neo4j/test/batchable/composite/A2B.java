@@ -10,6 +10,7 @@ import com.buschmais.xo.neo4j.api.annotation.Relation.Outgoing;
 public interface A2B {
 
     int getValue();
+
     void setValue(int value);
 
     @Outgoing

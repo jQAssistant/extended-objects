@@ -1,9 +1,11 @@
 package com.buschmais.xo.spi.datastore;
 
 /**
- * Defines the interface for relation metadata produced and used by the datastore.
+ * Defines the interface for relation metadata produced and used by the
+ * datastore.
  *
- * @param <RelationDiscriminator> The type of relation discriminators.
+ * @param <RelationDiscriminator>
+ *            The type of relation discriminators.
  */
 public interface DatastoreRelationMetadata<RelationDiscriminator> {
 

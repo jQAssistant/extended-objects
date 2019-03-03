@@ -3,8 +3,6 @@ package com.buschmais.xo.neo4j.embedded.impl.datastore;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
@@ -24,6 +22,8 @@ import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import com.buschmais.xo.spi.reflection.ClassHelper;
 import com.buschmais.xo.spi.session.XOSession;
+
+import org.neo4j.graphdb.GraphDatabaseService;
 
 public class EmbeddedNeo4jDatastoreSession implements com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession {
 

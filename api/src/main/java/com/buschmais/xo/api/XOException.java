@@ -8,7 +8,8 @@ public class XOException extends RuntimeException {
     /**
      * Constructor.
      *
-     * @param message The message.
+     * @param message
+     *            The message.
      */
     public XOException(String message) {
         super(message);
@@ -17,8 +18,10 @@ public class XOException extends RuntimeException {
     /**
      * Constructor.
      *
-     * @param message The message.
-     * @param cause   The cause.
+     * @param message
+     *            The message.
+     * @param cause
+     *            The cause.
      */
     public XOException(String message, Throwable cause) {
         super(message, cause);

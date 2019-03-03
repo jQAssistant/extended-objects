@@ -1,12 +1,12 @@
 package com.buschmais.xo.impl.interceptor;
 
+import java.lang.reflect.Method;
+
 import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOTransaction;
 import com.buschmais.xo.spi.interceptor.InvocationContext;
 import com.buschmais.xo.spi.interceptor.XOInterceptor;
-
-import java.lang.reflect.Method;
 
 public class TransactionInterceptor implements XOInterceptor {
 
@@ -34,39 +34,39 @@ public class TransactionInterceptor implements XOInterceptor {
             transactionAttribute = this.defaultTransactionAttribute;
         }
         switch (transactionAttribute) {
-            case MANDATORY:
-                if (!this.xoTransaction.isActive()) {
-                    throw new XOException("An active transaction is MANDATORY when calling method '" +
-                            method.getDeclaringClass().getName() + "#" + method.getName() + "'");
-                }
-                return context.proceed();
-            case REQUIRES: {
-                if (!this.xoTransaction.isActive()) {
-                    try {
-                        this.xoTransaction.begin();
-                        Object result = context.proceed();
-                        this.xoTransaction.commit();
-                        return result;
-                    } catch (RuntimeException e) {
-                        if (this.xoTransaction.isActive()) {
-                            this.xoTransaction.rollback();
-                        }
-                        throw e;
-                    } catch (Exception e) {
-                        if (this.xoTransaction.isActive()) {
-                            this.xoTransaction.commit();
-                        }
-                        throw e;
+        case MANDATORY:
+            if (!this.xoTransaction.isActive()) {
+                throw new XOException(
+                        "An active transaction is MANDATORY when calling method '" + method.getDeclaringClass().getName() + "#" + method.getName() + "'");
+            }
+            return context.proceed();
+        case REQUIRES: {
+            if (!this.xoTransaction.isActive()) {
+                try {
+                    this.xoTransaction.begin();
+                    Object result = context.proceed();
+                    this.xoTransaction.commit();
+                    return result;
+                } catch (RuntimeException e) {
+                    if (this.xoTransaction.isActive()) {
+                        this.xoTransaction.rollback();
                     }
-                } else {
-                    return context.proceed();
+                    throw e;
+                } catch (Exception e) {
+                    if (this.xoTransaction.isActive()) {
+                        this.xoTransaction.commit();
+                    }
+                    throw e;
                 }
-            }
-            case NOT_SUPPORTED:
+            } else {
                 return context.proceed();
-            default: {
-                throw new XOException("Unsupported transaction attribute '" + transactionAttribute + "'");
             }
+        }
+        case NOT_SUPPORTED:
+            return context.proceed();
+        default: {
+            throw new XOException("Unsupported transaction attribute '" + transactionAttribute + "'");
+        }
         }
     }
 }

@@ -1,13 +1,14 @@
 package com.buschmais.xo.spi.metadata.type;
 
+import java.util.Collection;
+
 import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.method.MethodMetadata;
 import com.buschmais.xo.spi.reflection.AnnotatedType;
 
-import java.util.Collection;
-
 /**
- * Defines the base interface describing metadata of a type. (i.e. entity or relation).
+ * Defines the base interface describing metadata of a type. (i.e. entity or
+ * relation).
  */
 public interface TypeMetadata {
 

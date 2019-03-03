@@ -2,16 +2,16 @@ package com.buschmais.xo.api.bootstrap.osgi;
 
 import java.util.Collection;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-
 import com.buschmais.xo.api.CloseAdapter;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XOBootstrapService;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 /**
  * Provides methods for bootstrapping XO when running in OSGi environment.
@@ -39,8 +39,8 @@ public final class XOSGi {
             try {
                 BundleContext bundleContext = FrameworkUtil.getBundle(XOSGi.class).getBundleContext();
                 String filterString = "(name=" + name + ")";
-                Collection<ServiceReference<XOManagerFactory>> xoManagerFactoryServices = bundleContext
-                        .getServiceReferences(XOManagerFactory.class, filterString);
+                Collection<ServiceReference<XOManagerFactory>> xoManagerFactoryServices = bundleContext.getServiceReferences(XOManagerFactory.class,
+                        filterString);
                 for (ServiceReference<XOManagerFactory> xoManagerFactoryService : xoManagerFactoryServices) {
                     XOManagerFactory xoManagerFactory = bundleContext.getService(xoManagerFactoryService);
                     if (xoManagerFactory != null) {
@@ -63,8 +63,7 @@ public final class XOSGi {
     }
 
     /**
-     * Create a {@link com.buschmais.xo.api.XOManagerFactory} for the given XO
-     * unit.
+     * Create a {@link com.buschmais.xo.api.XOManagerFactory} for the given XO unit.
      * <p>
      * Internally it performs a lookup in the OSGi service registry to retrieve the
      * XOBootstrapService service.
@@ -77,8 +76,7 @@ public final class XOSGi {
     public static XOManagerFactory createXOManagerFactory(XOUnit xoUnit) {
         if (OSGiUtil.isXOLoadedAsOSGiBundle()) {
             BundleContext bundleContext = FrameworkUtil.getBundle(XOSGi.class).getBundleContext();
-            ServiceReference<XOBootstrapService> xoBootstrapServiceReference = bundleContext
-                    .getServiceReference(XOBootstrapService.class);
+            ServiceReference<XOBootstrapService> xoBootstrapServiceReference = bundleContext.getServiceReference(XOBootstrapService.class);
             if (xoBootstrapServiceReference == null) {
                 throw new XOException("Cannot bootstrap XO implementation.");
             }

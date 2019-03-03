@@ -1,12 +1,12 @@
 package com.buschmais.xo.spi.interceptor;
 
-import com.buschmais.xo.api.XOException;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.buschmais.xo.api.XOException;
 
 public class InterceptorFactory {
 
@@ -37,7 +37,8 @@ public class InterceptorFactory {
     public <T> T removeInterceptor(T instance) {
         InvocationHandler invocationHandler = Proxy.getInvocationHandler(instance);
         if (!InterceptorInvocationHandler.class.isAssignableFrom(invocationHandler.getClass())) {
-            throw new XOException(invocationHandler + " implementing " + Arrays.asList(invocationHandler.getClass().getInterfaces()) + " is not of expected type " + InterceptorInvocationHandler.class.getName());
+            throw new XOException(invocationHandler + " implementing " + Arrays.asList(invocationHandler.getClass().getInterfaces())
+                    + " is not of expected type " + InterceptorInvocationHandler.class.getName());
         }
         return (T) ((InterceptorInvocationHandler) invocationHandler).getInstance();
     }

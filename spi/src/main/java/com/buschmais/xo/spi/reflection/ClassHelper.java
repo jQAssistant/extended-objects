@@ -1,12 +1,12 @@
 package com.buschmais.xo.spi.reflection;
 
-import com.buschmais.xo.api.XOException;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.buschmais.xo.api.XOException;
 
 /**
  * Provides helper methods for working with Java classes.
@@ -73,8 +73,8 @@ public final class ClassHelper {
     }
 
     /**
-     * Determines the type of a class implementing a generic interface with one
-     * type parameter.
+     * Determines the type of a class implementing a generic interface with one type
+     * parameter.
      * 
      * @param genericType
      *            The generic interface type.

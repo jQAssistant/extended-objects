@@ -1,15 +1,16 @@
 package com.buschmais.xo.api.bootstrap;
 
-import com.buschmais.xo.api.ConcurrencyMode;
-import com.buschmais.xo.api.ValidationMode;
-import lombok.*;
-import lombok.Builder.Default;
+import static com.buschmais.xo.api.Transaction.TransactionAttribute;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.net.URI;
 import java.util.*;
 
-import static com.buschmais.xo.api.Transaction.TransactionAttribute;
-import static lombok.AccessLevel.PRIVATE;
+import com.buschmais.xo.api.ConcurrencyMode;
+import com.buschmais.xo.api.ValidationMode;
+
+import lombok.*;
+import lombok.Builder.Default;
 
 /**
  * Represents a XO unit, i.e. a configuration for a
@@ -30,10 +31,9 @@ public class XOUnit {
     public static class MappingConfiguration {
 
         /**
-         * Indicates if mappings for entities and relations are performed
-         * strict. If <code>true</code> any detected problems will be reported
-         * by an {@link com.buschmais.xo.api.XOException} at startup, otherwise
-         * a warning.
+         * Indicates if mappings for entities and relations are performed strict. If
+         * <code>true</code> any detected problems will be reported by an
+         * {@link com.buschmais.xo.api.XOException} at startup, otherwise a warning.
          */
         @Default
         private boolean strictValidation = false;

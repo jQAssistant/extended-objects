@@ -1,17 +1,17 @@
 package com.buschmais.xo.spi.datastore;
 
-import com.buschmais.xo.api.CompositeObject;
-import com.buschmais.xo.api.CompositeType;
-import com.buschmais.xo.spi.metadata.CompositeTypeBuilder;
-import com.buschmais.xo.spi.metadata.type.DatastoreTypeMetadata;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.buschmais.xo.api.CompositeObject;
+import com.buschmais.xo.api.CompositeType;
+import com.buschmais.xo.spi.metadata.CompositeTypeBuilder;
+import com.buschmais.xo.spi.metadata.type.DatastoreTypeMetadata;
+
 /**
- * Represents a set of  dynamic type metadata used a runtime.
+ * Represents a set of dynamic type metadata used a runtime.
  */
 public final class DynamicType<TypeMetadata extends DatastoreTypeMetadata<?>> {
 
@@ -64,9 +64,6 @@ public final class DynamicType<TypeMetadata extends DatastoreTypeMetadata<?>> {
 
     @Override
     public String toString() {
-        return "DynamicType{" +
-            "metadata=" + metadata +
-            ", isFinal=" + isFinal +
-            '}';
+        return "DynamicType{" + "metadata=" + metadata + ", isFinal=" + isFinal + '}';
     }
 }

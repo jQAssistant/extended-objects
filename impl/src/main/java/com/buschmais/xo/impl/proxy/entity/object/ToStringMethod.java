@@ -1,5 +1,7 @@
 package com.buschmais.xo.impl.proxy.entity.object;
 
+import java.util.Set;
+
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.common.object.AbstractDatastoreTypeToStringMethod;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
@@ -7,8 +9,6 @@ import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.datastore.DynamicType;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-
-import java.util.Set;
 
 public class ToStringMethod<Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator>
         extends AbstractDatastoreTypeToStringMethod<Entity> {

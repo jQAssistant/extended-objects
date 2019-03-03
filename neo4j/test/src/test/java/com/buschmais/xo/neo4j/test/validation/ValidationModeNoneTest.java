@@ -8,10 +8,6 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.ValidationMode;
@@ -20,6 +16,10 @@ import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.validation.composite.A;
 import com.buschmais.xo.neo4j.test.validation.composite.B;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ValidationModeNoneTest extends AbstractNeo4jXOManagerTest {
@@ -30,7 +30,8 @@ public class ValidationModeNoneTest extends AbstractNeo4jXOManagerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() throws URISyntaxException {
-        return xoUnits(asList(A.class, B.class), Collections.emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
+        return xoUnits(asList(A.class, B.class), Collections.emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED,
+                Transaction.TransactionAttribute.MANDATORY);
     }
 
     @Test

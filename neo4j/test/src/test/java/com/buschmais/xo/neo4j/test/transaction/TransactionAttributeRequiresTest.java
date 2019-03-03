@@ -10,11 +10,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.ValidationMode;
@@ -24,6 +19,11 @@ import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.transaction.composite.A;
 import com.buschmais.xo.neo4j.test.transaction.composite.B;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class TransactionAttributeRequiresTest extends AbstractNeo4jXOManagerTest {

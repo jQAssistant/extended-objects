@@ -1,10 +1,10 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Transaction;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
+
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
 
 class EmbeddedNeo4jDatastoreTransaction implements DatastoreTransaction {
 

@@ -8,11 +8,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
@@ -20,6 +15,11 @@ import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.flush.composite.A;
 import com.buschmais.xo.neo4j.test.flush.composite.FindByNameQuery;
 import com.buschmais.xo.neo4j.test.flush.composite.FlushRepository;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class QueryFlushTest extends AbstractNeo4jXOManagerTest {

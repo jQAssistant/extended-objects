@@ -1,13 +1,13 @@
 package com.buschmais.xo.impl.instancelistener;
 
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.api.annotation.*;
-import com.buschmais.xo.spi.reflection.ClassHelper;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.annotation.*;
+import com.buschmais.xo.spi.reflection.ClassHelper;
 
 /**
  * Provides functionality to invoke life cycle methods on instance listeners.
@@ -24,7 +24,8 @@ public class InstanceListenerService {
     /**
      * Constructor.
      *
-     * @param instanceListenerTypes The statically registered instance listener types.
+     * @param instanceListenerTypes
+     *            The statically registered instance listener types.
      */
     public InstanceListenerService(List<? extends Class<?>> instanceListenerTypes) {
         postCreateMethods = new IdentityHashMap<>();
@@ -40,60 +41,72 @@ public class InstanceListenerService {
     }
 
     /**
-     * Invoke all post-create methods for  the given instance.
+     * Invoke all post-create methods for the given instance.
      *
-     * @param instance The instance.
-     * @param <T>      The instance type.
+     * @param instance
+     *            The instance.
+     * @param <T>
+     *            The instance type.
      */
     public <T> void postCreate(T instance) {
         invoke(postCreateMethods, instance);
     }
 
     /**
-     * Invoke all pre-update methods for  the given instance.
+     * Invoke all pre-update methods for the given instance.
      *
-     * @param instance The instance.
-     * @param <T>      The instance type.
+     * @param instance
+     *            The instance.
+     * @param <T>
+     *            The instance type.
      */
     public <T> void preUpdate(T instance) {
         invoke(preUpdateMethods, instance);
     }
 
     /**
-     * Invoke all post-update methods for  the given instance.
+     * Invoke all post-update methods for the given instance.
      *
-     * @param instance The instance.
-     * @param <T>      The instance type.
+     * @param instance
+     *            The instance.
+     * @param <T>
+     *            The instance type.
      */
     public <T> void postUpdate(T instance) {
         invoke(postUpdateMethods, instance);
     }
 
     /**
-     * Invoke all pre-delete methods for  the given instance.
+     * Invoke all pre-delete methods for the given instance.
      *
-     * @param instance The instance.
-     * @param <T>      The instance type.
+     * @param instance
+     *            The instance.
+     * @param <T>
+     *            The instance type.
      */
     public <T> void preDelete(T instance) {
         invoke(preDeleteMethods, instance);
     }
 
     /**
-     * Invoke all post-delete methods for  the given instance.
+     * Invoke all post-delete methods for the given instance.
      *
-     * @param instance The instance.
-     * @param <T>      The instance type.
+     * @param instance
+     *            The instance.
+     * @param <T>
+     *            The instance type.
      */
     public <T> void postDelete(T instance) {
         invoke(postDeleteMethods, instance);
     }
 
     /**
-     * Invoke all post-load methods for  the given instance.
+     * Invoke all post-load methods for the given instance.
      *
-     * @param instance The instance.
-     * @param <T>      The instance type.
+     * @param instance
+     *            The instance.
+     * @param <T>
+     *            The instance type.
      */
     public <T> void postLoad(T instance) {
         invoke(postLoadMethods, instance);
@@ -102,7 +115,8 @@ public class InstanceListenerService {
     /**
      * Add an instance listener instance.
      *
-     * @param instanceListener The instance listener instance.
+     * @param instanceListener
+     *            The instance listener instance.
      */
     public void registerInstanceListener(Object instanceListener) {
         for (Method method : instanceListener.getClass().getMethods()) {
@@ -116,17 +130,23 @@ public class InstanceListenerService {
     }
 
     /**
-     * Evaluates a method if an annotation is present and if true adds to the map of life cycle methods.
+     * Evaluates a method if an annotation is present and if true adds to the map of
+     * life cycle methods.
      *
-     * @param listener   The listener instance.
-     * @param annotation The annotation to check for.
-     * @param method     The method to evaluate.
-     * @param methods    The map of methods.
+     * @param listener
+     *            The listener instance.
+     * @param annotation
+     *            The annotation to check for.
+     * @param method
+     *            The method to evaluate.
+     * @param methods
+     *            The map of methods.
      */
     private void evaluateMethod(Object listener, Class<? extends Annotation> annotation, Method method, Map<Object, Set<Method>> methods) {
         if (method.isAnnotationPresent(annotation)) {
             if (method.getParameterTypes().length != 1) {
-                throw new XOException("Life cycle method '" + method.toGenericString() + "' annotated with '" + annotation.getName() + "' must declare exactly one parameter but declares " + method.getParameterTypes().length + ".");
+                throw new XOException("Life cycle method '" + method.toGenericString() + "' annotated with '" + annotation.getName()
+                        + "' must declare exactly one parameter but declares " + method.getParameterTypes().length + ".");
             }
             Set<Method> listenerMethods = methods.get(listener);
             if (listenerMethods == null) {
@@ -140,9 +160,12 @@ public class InstanceListenerService {
     /**
      * Invokes all registered lifecycle methods on a given instance.
      *
-     * @param methods  The registered methods.
-     * @param instance The instance.
-     * @param <T>      The instance type.
+     * @param methods
+     *            The registered methods.
+     * @param instance
+     *            The instance.
+     * @param <T>
+     *            The instance type.
      */
     private <T> void invoke(Map<Object, Set<Method>> methods, T instance) {
         for (Map.Entry<Object, Set<Method>> entry : methods.entrySet()) {

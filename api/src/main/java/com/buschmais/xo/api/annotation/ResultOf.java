@@ -6,7 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Defines an method which will execute the given query with the specified parameter values.
+ * Defines an method which will execute the given query with the specified
+ * parameter values.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -18,7 +19,8 @@ public @interface ResultOf {
     Class<?> query() default Object.class;
 
     /**
-     * @return The name of the parameter passed to the query representing the containing instance ("this").
+     * @return The name of the parameter passed to the query representing the
+     *         containing instance ("this").
      */
     String usingThisAs() default "this";
 

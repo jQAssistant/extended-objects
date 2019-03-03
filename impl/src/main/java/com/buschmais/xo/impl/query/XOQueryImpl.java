@@ -158,8 +158,8 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     }
 
     /**
-     * Converts the given parameter value to instances which can be passed to
-     * the datastore.
+     * Converts the given parameter value to instances which can be passed to the
+     * datastore.
      *
      * @param value
      *            The value.

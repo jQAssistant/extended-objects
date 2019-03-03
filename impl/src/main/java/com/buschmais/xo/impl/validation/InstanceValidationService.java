@@ -1,14 +1,15 @@
 package com.buschmais.xo.impl.validation;
 
-import com.buschmais.xo.impl.cache.TransactionalCache;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
+import com.buschmais.xo.impl.cache.TransactionalCache;
 
 public class InstanceValidationService {
 
@@ -37,7 +38,7 @@ public class InstanceValidationService {
 
     public Set<ConstraintViolation<Object>> validate(Object instance) {
         Validator validator = getValidator();
-        return validator != null ? validator.validate(instance) : Collections.<ConstraintViolation<Object>>emptySet();
+        return validator != null ? validator.validate(instance) : Collections.<ConstraintViolation<Object>> emptySet();
     }
 
     private Validator getValidator() {

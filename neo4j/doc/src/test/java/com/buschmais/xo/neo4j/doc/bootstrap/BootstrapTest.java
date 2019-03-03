@@ -7,13 +7,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 
-import org.junit.Test;
-
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider;
+
+import org.junit.Test;
 
 public class BootstrapTest {
 

@@ -1,11 +1,11 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.spi.datastore.DatastoreTransaction;
+
 import org.neo4j.driver.v1.Session;
 import org.neo4j.driver.v1.StatementRunner;
 import org.neo4j.driver.v1.Transaction;
-
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 
 public class RemoteDatastoreTransaction implements DatastoreTransaction {
 

@@ -1,5 +1,7 @@
 package com.buschmais.xo.impl.proxy.example;
 
+import java.util.Map;
+
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.AbstractProxyMethodService;
@@ -10,8 +12,6 @@ import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 import com.buschmais.xo.spi.reflection.SetPropertyMethod;
-
-import java.util.Map;
 
 public class ExampleProxyMethodService<Entity> extends AbstractProxyMethodService<Map<PrimitivePropertyMethodMetadata<?>, Object>> {
 

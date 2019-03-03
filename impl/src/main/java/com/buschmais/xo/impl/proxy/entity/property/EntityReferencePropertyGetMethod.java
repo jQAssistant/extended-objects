@@ -4,7 +4,8 @@ import com.buschmais.xo.impl.EntityPropertyManager;
 import com.buschmais.xo.impl.proxy.common.property.AbstractPropertyMethod;
 import com.buschmais.xo.spi.metadata.method.EntityReferencePropertyMethodMetadata;
 
-public class EntityReferencePropertyGetMethod<Entity, Relation> extends AbstractPropertyMethod<Entity, EntityPropertyManager<Entity, Relation, ?>, EntityReferencePropertyMethodMetadata> {
+public class EntityReferencePropertyGetMethod<Entity, Relation>
+        extends AbstractPropertyMethod<Entity, EntityPropertyManager<Entity, Relation, ?>, EntityReferencePropertyMethodMetadata> {
 
     public EntityReferencePropertyGetMethod(EntityPropertyManager<Entity, Relation, ?> propertyManager, EntityReferencePropertyMethodMetadata metadata) {
         super(propertyManager, metadata);

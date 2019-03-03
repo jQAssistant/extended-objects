@@ -1,13 +1,14 @@
 package com.buschmais.xo.trace.impl;
 
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.beans.ConstructorProperties;
 import java.lang.reflect.Method;
 import java.util.*;
+
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the {@link TraceMonitorMXBean}.
@@ -23,7 +24,7 @@ public class TraceMonitor implements TraceMonitorMXBean {
         private long invocations;
         private long totalTime;
 
-        @ConstructorProperties({"invocations", "totalTime"})
+        @ConstructorProperties({ "invocations", "totalTime" })
         private MethodStatistics(String method, long invocations, long totalTime) {
             this.method = method;
             this.invocations = invocations;
@@ -59,11 +60,7 @@ public class TraceMonitor implements TraceMonitorMXBean {
      * The levels which can be used for tracing.
      */
     public enum Level {
-        TRACE,
-        DEBUG,
-        INFO,
-        WARN,
-        ERROR;
+        TRACE, DEBUG, INFO, WARN, ERROR;
     }
 
     private XOUnit xoUnit;
@@ -73,7 +70,8 @@ public class TraceMonitor implements TraceMonitorMXBean {
     /**
      * Constructor.
      *
-     * @param xoUnit The {@link com.buschmais.xo.api.bootstrap.XOUnit} to be monitored.
+     * @param xoUnit
+     *            The {@link com.buschmais.xo.api.bootstrap.XOUnit} to be monitored.
      */
     public TraceMonitor(XOUnit xoUnit) {
         this.xoUnit = xoUnit;
@@ -117,27 +115,28 @@ public class TraceMonitor implements TraceMonitorMXBean {
     /**
      * Log a message using the configured log level.
      *
-     * @param message The message.
+     * @param message
+     *            The message.
      */
     public void log(String message) {
         switch (level) {
-            case TRACE:
-                LOGGER.trace(message);
-                break;
-            case DEBUG:
-                LOGGER.debug(message);
-                break;
-            case INFO:
-                LOGGER.info(message);
-                break;
-            case WARN:
-                LOGGER.warn(message);
-                break;
-            case ERROR:
-                LOGGER.error(message);
-                break;
-            default:
-                throw new XOException("Unsupported log log level " + level);
+        case TRACE:
+            LOGGER.trace(message);
+            break;
+        case DEBUG:
+            LOGGER.debug(message);
+            break;
+        case INFO:
+            LOGGER.info(message);
+            break;
+        case WARN:
+            LOGGER.warn(message);
+            break;
+        case ERROR:
+            LOGGER.error(message);
+            break;
+        default:
+            throw new XOException("Unsupported log log level " + level);
         }
     }
 

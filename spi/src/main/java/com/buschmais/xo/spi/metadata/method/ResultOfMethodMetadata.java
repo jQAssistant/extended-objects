@@ -1,10 +1,10 @@
 package com.buschmais.xo.spi.metadata.method;
 
-import com.buschmais.xo.api.annotation.ResultOf;
-import com.buschmais.xo.spi.reflection.AnnotatedMethod;
-
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
+
+import com.buschmais.xo.api.annotation.ResultOf;
+import com.buschmais.xo.spi.reflection.AnnotatedMethod;
 
 public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMetadata<AnnotatedMethod, DatastoreMetadata> {
 
@@ -18,7 +18,8 @@ public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMet
 
     private final boolean singleResult;
 
-    public ResultOfMethodMetadata(AnnotatedMethod annotatedMethod, AnnotatedElement query, Class<?> returnType, String usingThisAs, List<ResultOf.Parameter> parameters, boolean singleResult) {
+    public ResultOfMethodMetadata(AnnotatedMethod annotatedMethod, AnnotatedElement query, Class<?> returnType, String usingThisAs,
+            List<ResultOf.Parameter> parameters, boolean singleResult) {
         super(annotatedMethod, null);
         this.query = query;
         this.returnType = returnType;

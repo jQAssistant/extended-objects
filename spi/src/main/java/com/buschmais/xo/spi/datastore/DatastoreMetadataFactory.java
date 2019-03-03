@@ -35,8 +35,7 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * @param superTypes
      *            The super types.
      * @param metadataByType
-     *            A map containing all registered type and their generic
-     *            metadata.
+     *            A map containing all registered type and their generic metadata.
      * @return An instance of datastore specific entity metadata.
      */
     EntityMetadata createEntityMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes, Map<Class<?>, TypeMetadata> metadataByType);
@@ -72,8 +71,8 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
     <ReferencePropertyMetadata> ReferencePropertyMetadata createReferencePropertyMetadata(PropertyMethod propertyMethod);
 
     /**
-     * Create the datastore specific metadata for a property representing
-     * primitive value.
+     * Create the datastore specific metadata for a property representing primitive
+     * value.
      *
      * @param propertyMethod
      *            The method.
@@ -82,8 +81,8 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
     <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPropertyMetadata(PropertyMethod propertyMethod);
 
     /**
-     * Create the datastore specific metadata for a property representing an
-     * indexed property.
+     * Create the datastore specific metadata for a property representing an indexed
+     * property.
      *
      * @param propertyMethod
      *            The method.
@@ -98,8 +97,7 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      *            The annotated element, i.e. a {@link AnnotatedType} or
      *            {@link AnnotatedMethod}.
      * @param metadataByType
-     *            A map containing all registered type and their generic
-     *            metadata.
+     *            A map containing all registered type and their generic metadata.
      * @return An instance of datastore specific method metadata.
      */
     RelationMetadata createRelationMetadata(AnnotatedElement<?> annotatedElement, Map<Class<?>, TypeMetadata> metadataByType);

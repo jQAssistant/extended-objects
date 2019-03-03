@@ -1,5 +1,12 @@
 package com.buschmais.xo.impl.metadata;
 
+import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
@@ -10,13 +17,6 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 import com.buschmais.xo.spi.reflection.AnnotatedType;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
 
 /**
  * Allows resolving types from relation discriminators as provided by the
@@ -51,8 +51,8 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
                 Set incomingDiscriminators = entityTypeMetadataResolver.getDiscriminators(incomingTypeMetadata);
                 RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator> relationMapping = new RelationMapping<>(outgoingDiscriminators,
                         relationTypeMetadata, incomingDiscriminators);
-                Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>> mappingSet = relationMappings.get(relationTypeMetadata
-                        .getDatastoreMetadata().getDiscriminator());
+                Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>> mappingSet = relationMappings
+                        .get(relationTypeMetadata.getDatastoreMetadata().getDiscriminator());
                 if (mappingSet == null) {
                     mappingSet = new HashSet<>();
                     relationMappings.put(relationTypeMetadata.getDatastoreMetadata().getDiscriminator(), mappingSet);
@@ -89,7 +89,7 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
      * @return A set of matching relation types.
      */
     public DynamicType<RelationTypeMetadata<RelationMetadata>> getRelationTypes(Set<EntityDiscriminator> sourceDiscriminators,
-                                                                                RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators) {
+            RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators) {
         DynamicType<RelationTypeMetadata<RelationMetadata>> dynamicType = new DynamicType<>();
         Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>> relations = relationMappings.get(discriminator);
         if (relations != null) {

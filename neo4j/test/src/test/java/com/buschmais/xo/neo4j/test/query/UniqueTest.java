@@ -8,17 +8,17 @@ import static org.junit.Assert.fail;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.neo4j.graphdb.ConstraintViolationException;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.query.composite.B;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.neo4j.graphdb.ConstraintViolationException;
 
 @RunWith(Parameterized.class)
 public class UniqueTest extends AbstractNeo4jXOManagerTest {

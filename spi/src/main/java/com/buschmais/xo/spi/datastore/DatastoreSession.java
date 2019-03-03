@@ -23,8 +23,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
         extends AutoCloseable {
 
     /**
-     * Return the instance of the datastore transaction associated with the
-     * session.
+     * Return the instance of the datastore transaction associated with the session.
      *
      * @return The datastore transaction.
      */
@@ -33,17 +32,14 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
     /**
      * Return the {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager}.
      *
-     * @return The {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager}
-     *         .
+     * @return The {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager} .
      */
     DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> getDatastoreEntityManager();
 
     /**
-     * Return the
-     * {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager}.
+     * Return the {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager}.
      *
-     * @return The
-     *         {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager}.
+     * @return The {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager}.
      */
     DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> getDatastoreRelationManager();
 

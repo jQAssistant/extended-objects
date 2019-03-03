@@ -1,14 +1,14 @@
 package com.buschmais.xo.trace.impl;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DynamicType;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Implementation of a
@@ -39,7 +39,7 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
 
     @Override
     public Entity createEntity(DynamicType<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> entityDiscriminators,
-                               Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
+            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
         return delegate.createEntity(types, entityDiscriminators, exampleEntity);
     }
 

@@ -4,7 +4,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 /**
- * Defines the interface for property accessor methods (i.e. get/is/set methods).
+ * Defines the interface for property accessor methods (i.e. get/is/set
+ * methods).
  */
 public interface PropertyMethod extends AnnotatedMethod {
 
@@ -30,19 +31,26 @@ public interface PropertyMethod extends AnnotatedMethod {
     Type getGenericType();
 
     /**
-     * Return an annotation which is present on the property (i.e. including the get/is method if it is not present on the set method).
+     * Return an annotation which is present on the property (i.e. including the
+     * get/is method if it is not present on the set method).
      *
-     * @param type The annotation type.
-     * @param <T>  The annotation type.
+     * @param type
+     *            The annotation type.
+     * @param <T>
+     *            The annotation type.
      * @return The annotation or <code>null</code>.
      */
     <T extends Annotation> T getAnnotationOfProperty(Class<T> type);
 
     /**
-     * Return an annotation dentified by a meta annotation type which is present on the property (i.e. including the get/is method if it is not present on the set method).
+     * Return an annotation dentified by a meta annotation type which is present on
+     * the property (i.e. including the get/is method if it is not present on the
+     * set method).
      *
-     * @param type The annotation type.
-     * @param <T>  The annotation type.
+     * @param type
+     *            The annotation type.
+     * @param <T>
+     *            The annotation type.
      * @return The annotation or <code>null</code>.
      */
     <T extends Annotation> T getByMetaAnnotationOfProperty(Class<T> type);

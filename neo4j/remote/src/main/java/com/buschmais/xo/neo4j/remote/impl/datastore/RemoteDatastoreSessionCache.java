@@ -1,16 +1,17 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.buschmais.xo.neo4j.remote.impl.model.*;
 import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
+
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.neo4j.driver.v1.types.Node;
 import org.neo4j.driver.v1.types.Relationship;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class RemoteDatastoreSessionCache {
 

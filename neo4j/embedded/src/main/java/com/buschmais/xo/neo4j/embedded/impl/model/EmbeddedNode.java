@@ -4,11 +4,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.buschmais.xo.neo4j.api.model.Neo4jNode;
+
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
-
-import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 
 public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
         implements Neo4jNode<EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {

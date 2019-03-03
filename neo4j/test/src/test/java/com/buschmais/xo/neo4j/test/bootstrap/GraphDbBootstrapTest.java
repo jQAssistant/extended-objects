@@ -28,7 +28,7 @@ public class GraphDbBootstrapTest {
     @Test
     public void bootstrap() throws URISyntaxException {
         GraphDatabaseService graphDatabaseService = new TestGraphDatabaseFactory().newImpermanentDatabase();
-        Properties properties=new Properties();
+        Properties properties = new Properties();
         properties.put(GraphDatabaseService.class.getName(), graphDatabaseService);
         XOUnit xoUnit = XOUnit.builder().uri(new URI("graphDb:///")).provider(EmbeddedNeo4jXOProvider.class).types(singletonList(A.class))
                 .properties(properties).build();

@@ -61,7 +61,6 @@ public class StaticInstanceListener {
         aggregated.add(instance);
     }
 
-
     public static List<Object> getPostCreate() {
         return postCreate;
     }
@@ -91,4 +90,3 @@ public class StaticInstanceListener {
     }
 
 }
-

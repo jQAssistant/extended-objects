@@ -1,7 +1,8 @@
 package com.buschmais.xo.impl.plugin;
 
 /**
- * Interface for plugin repositories providing methods for registration, unregistration and lookup.
+ * Interface for plugin repositories providing methods for registration,
+ * unregistration and lookup.
  */
 public interface PluginRepository<Key, Plugin> {
 
@@ -15,7 +16,8 @@ public interface PluginRepository<Key, Plugin> {
     /**
      * Register a plugin.
      *
-     * @param plugin The plugin instance.
+     * @param plugin
+     *            The plugin instance.
      * @return The key used to identify the plugin.
      */
     Key register(Plugin plugin);
@@ -23,7 +25,8 @@ public interface PluginRepository<Key, Plugin> {
     /**
      * Register a plugin by its type.
      *
-     * @param pluginType The plugin type.
+     * @param pluginType
+     *            The plugin type.
      * @return The key used to identify the plugin.
      */
     Key register(Class<Plugin> pluginType);
@@ -31,14 +34,16 @@ public interface PluginRepository<Key, Plugin> {
     /**
      * Unregister a plugin.
      *
-     * @param key The key.
+     * @param key
+     *            The key.
      */
     void unregister(Key key);
 
     /**
      * Lookup a plugin.
      *
-     * @param key The key.
+     * @param key
+     *            The key.
      * @return The plugin.
      */
     Plugin get(Key key);

@@ -1,9 +1,9 @@
 package com.buschmais.xo.impl.proxy;
 
-import com.buschmais.xo.api.XOException;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+
+import com.buschmais.xo.api.XOException;
 
 public class InstanceInvocationHandler<DatastoreType> implements InvocationHandler {
 

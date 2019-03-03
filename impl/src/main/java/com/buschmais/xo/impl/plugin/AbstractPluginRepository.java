@@ -1,11 +1,12 @@
 package com.buschmais.xo.impl.plugin;
 
-import com.buschmais.xo.spi.reflection.ClassHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.buschmais.xo.spi.reflection.ClassHelper;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base implementation of a {@link PluginRepository}.

@@ -1,19 +1,20 @@
 package com.buschmais.xo.neo4j.test.issues.url_encoding;
 
-import com.buschmais.xo.api.XOManager;
-import com.buschmais.xo.api.XOManagerFactory;
-import com.buschmais.xo.api.bootstrap.XO;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.XOManagerFactory;
+import com.buschmais.xo.api.bootstrap.XO;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * https://github.com/buschmais/extended-objects/issues/129

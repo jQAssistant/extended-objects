@@ -1,12 +1,13 @@
 package com.buschmais.xo.neo4j.embedded.api;
 
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastore;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 
-import static org.junit.Assert.assertEquals;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastore;
+
+import org.junit.Test;
 
 public class EmbeddedNeo4jXOProviderTest {
 

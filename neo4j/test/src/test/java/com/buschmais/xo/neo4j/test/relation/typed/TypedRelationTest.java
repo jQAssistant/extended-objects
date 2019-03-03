@@ -8,14 +8,14 @@ import static org.junit.Assert.assertThat;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.*;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class TypedRelationTest extends AbstractNeo4jXOManagerTest {
@@ -81,7 +81,7 @@ public class TypedRelationTest extends AbstractNeo4jXOManagerTest {
         assertThat(relationB2_1.getVersion(), equalTo(2));
         assertThat(relationB2_1.getA(), equalTo(a));
         assertThat(relationB2_1.getB(), equalTo(b2));
-        assertThat(executeQuery("MATCH ()-[r]->() RETURN r").<TypedOneToManyRelation>getColumn("r"), hasItems(relationB1_1, relationB2_1));
+        assertThat(executeQuery("MATCH ()-[r]->() RETURN r").<TypedOneToManyRelation> getColumn("r"), hasItems(relationB1_1, relationB2_1));
         TypedOneToManyRelation relationB1_2 = xoManager.create(a, TypedOneToManyRelation.class, b1);
         relationB1_2.setVersion(3);
         TypedOneToManyRelation relationB2_2 = xoManager.create(a, TypedOneToManyRelation.class, b2);
@@ -97,12 +97,12 @@ public class TypedRelationTest extends AbstractNeo4jXOManagerTest {
         assertThat(relationB2_2.getVersion(), equalTo(4));
         assertThat(relationB2_2.getA(), equalTo(a));
         assertThat(relationB2_2.getB(), equalTo(b2));
-        assertThat(executeQuery("MATCH ()-[r]->() RETURN r").<TypedOneToManyRelation>getColumn("r"), hasItems(relationB1_2, relationB2_2));
+        assertThat(executeQuery("MATCH ()-[r]->() RETURN r").<TypedOneToManyRelation> getColumn("r"), hasItems(relationB1_2, relationB2_2));
         xoManager.delete(relationB1_2);
         xoManager.delete(relationB2_2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(executeQuery("MATCH ()-[r]->() RETURN r").<TypedOneToManyRelation>getColumn("r"), equalTo(null));
+        assertThat(executeQuery("MATCH ()-[r]->() RETURN r").<TypedOneToManyRelation> getColumn("r"), equalTo(null));
         xoManager.currentTransaction().commit();
     }
 
@@ -138,14 +138,15 @@ public class TypedRelationTest extends AbstractNeo4jXOManagerTest {
         assertThat(relationB2_2.getVersion(), equalTo(4));
         assertThat(relationB2_2.getA(), equalTo(a));
         assertThat(relationB2_2.getB(), equalTo(b2));
-        assertThat(executeQuery("MATCH ()-[r]->() RETURN r").<TypedManyToManyRelation>getColumn("r"), hasItems(relationB1_1, relationB1_2, relationB2_1, relationB2_2));
+        assertThat(executeQuery("MATCH ()-[r]->() RETURN r").<TypedManyToManyRelation> getColumn("r"),
+                hasItems(relationB1_1, relationB1_2, relationB2_1, relationB2_2));
         xoManager.delete(relationB1_1);
         xoManager.delete(relationB2_1);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         assertThat(b1.getManyToMany(), hasItems(relationB1_2));
         assertThat(b2.getManyToMany(), hasItems(relationB2_2));
-        assertThat(executeQuery("MATCH ()-[r]->() RETURN r").<TypedManyToManyRelation>getColumn("r"), hasItems(relationB1_2, relationB2_2));
+        assertThat(executeQuery("MATCH ()-[r]->() RETURN r").<TypedManyToManyRelation> getColumn("r"), hasItems(relationB1_2, relationB2_2));
         xoManager.currentTransaction().commit();
     }
 }

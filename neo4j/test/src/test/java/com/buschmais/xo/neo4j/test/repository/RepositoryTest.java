@@ -6,10 +6,6 @@ import static org.junit.Assert.assertThat;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.api.Neo4jRepository;
@@ -19,6 +15,10 @@ import com.buschmais.xo.neo4j.test.repository.composite.A;
 import com.buschmais.xo.neo4j.test.repository.composite.CustomNeo4jRepository;
 import com.buschmais.xo.neo4j.test.repository.composite.CustomRepository;
 import com.buschmais.xo.neo4j.test.repository.composite.CustomTypedNeo4jRepository;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  * Provides tests for the Neo4j repository functionality.

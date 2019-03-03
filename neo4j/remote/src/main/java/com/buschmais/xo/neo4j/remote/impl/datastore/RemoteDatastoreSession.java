@@ -3,10 +3,6 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 
-import org.neo4j.driver.v1.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
@@ -28,6 +24,10 @@ import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import com.buschmais.xo.spi.reflection.ClassHelper;
 import com.buschmais.xo.spi.session.XOSession;
+
+import org.neo4j.driver.v1.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RemoteDatastoreSession implements Neo4jDatastoreSession<RemoteNode, RemoteLabel, RemoteRelationship, RemoteRelationshipType> {
 

@@ -3,13 +3,13 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.StatementResult;
-
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.spi.helper.Converter;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
+
+import org.neo4j.driver.v1.Record;
+import org.neo4j.driver.v1.StatementResult;
 
 public class RemoteDatastoreCypherQuery implements DatastoreQuery<Cypher> {
 

@@ -2,6 +2,9 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import java.util.Map;
 
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.spi.logging.LogLevel;
+
 import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.StatementRunner;
@@ -10,9 +13,6 @@ import org.neo4j.driver.v1.exceptions.Neo4jException;
 import org.neo4j.driver.v1.exceptions.NoSuchRecordException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.spi.logging.LogLevel;
 
 public class StatementExecutor {
 

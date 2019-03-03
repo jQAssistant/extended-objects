@@ -72,8 +72,8 @@ public interface DatastoreRelationManager<Entity, RelationId, Relation, Relation
     Relation findRelationById(RelationTypeMetadata<RelationMetadata> metadata, RelationId id);
 
     /**
-     * Return a single relation (i.e. representing a direct reference) between
-     * two entities.
+     * Return a single relation (i.e. representing a direct reference) between two
+     * entities.
      *
      * @param source
      *            The entity.

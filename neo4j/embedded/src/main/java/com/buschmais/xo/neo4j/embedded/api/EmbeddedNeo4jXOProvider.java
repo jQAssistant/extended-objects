@@ -1,15 +1,16 @@
 package com.buschmais.xo.neo4j.embedded.api;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import com.buschmais.xo.spi.datastore.Datastore;
+
 import com.google.common.base.CaseFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.MalformedURLException;
-import java.net.URI;
 
 public class EmbeddedNeo4jXOProvider implements XODatastoreProvider {
 
@@ -39,7 +40,7 @@ public class EmbeddedNeo4jXOProvider implements XODatastoreProvider {
     }
 
     private String getFactoryClassName(URI uri) {
-        String protocol = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL,  uri.getScheme());
+        String protocol = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, uri.getScheme());
         return DatastoreFactory.class.getPackage().getName() + "." + protocol + "DatastoreFactory";
     }
 

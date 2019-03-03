@@ -54,8 +54,8 @@ public interface XOTransaction extends AutoCloseable {
     void setRollbackOnly();
 
     /**
-     * Close the transaction, i.e. commit the transaction if it has not been
-     * marked for rollback, perform rollback otherwise.
+     * Close the transaction, i.e. commit the transaction if it has not been marked
+     * for rollback, perform rollback otherwise.
      */
     @Override
     void close();
@@ -63,8 +63,8 @@ public interface XOTransaction extends AutoCloseable {
     /**
      * Returns if the current transaction is marked as rollback only.
      * 
-     * @return <code>true</code> if the current transaction is marked as
-     *         rollback only.
+     * @return <code>true</code> if the current transaction is marked as rollback
+     *         only.
      */
     boolean isRollbackOnly();
 

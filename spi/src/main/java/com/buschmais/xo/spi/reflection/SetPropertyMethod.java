@@ -1,10 +1,10 @@
 package com.buschmais.xo.spi.reflection;
 
-import com.buschmais.xo.api.XOException;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+
+import com.buschmais.xo.api.XOException;
 
 /**
  * Represents a set method.
@@ -16,15 +16,20 @@ public class SetPropertyMethod extends AbstractPropertyMethod {
     /**
      * Constructor.
      *
-     * @param setter The set method.
-     * @param getter The corresponding {@link GetPropertyMethod}.
-     * @param name   The name of the property.
-     * @param type   The type of the property.
+     * @param setter
+     *            The set method.
+     * @param getter
+     *            The corresponding {@link GetPropertyMethod}.
+     * @param name
+     *            The name of the property.
+     * @param type
+     *            The type of the property.
      */
     public SetPropertyMethod(Method setter, GetPropertyMethod getter, String name, Class<?> type, Type genericType) {
         super(setter, name, type, genericType);
         if (getter == null) {
-            throw new XOException("No getter defined for property '" + name + "' of type '" + type.getName() + "' in type '" + setter.getDeclaringClass().getName() + "'.");
+            throw new XOException(
+                    "No getter defined for property '" + name + "' of type '" + type.getName() + "' in type '" + setter.getDeclaringClass().getName() + "'.");
         }
         this.getter = getter;
     }

@@ -1,12 +1,12 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-
 import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.spi.session.XOSession;
+
+import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
  * Implementation of {@link TypedNeo4jRepository}.

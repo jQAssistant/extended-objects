@@ -13,5 +13,4 @@ public interface A {
     @Outgoing
     List<B> getB();
 
-
 }

@@ -44,8 +44,7 @@ public interface Neo4jNode<L extends Neo4jLabel, R extends Neo4jRelationship, T 
      *            The relationship type.
      * @param dir
      *            The direction.
-     * @return The relationship or <code>null</code> if no such relationship
-     *         exists.
+     * @return The relationship or <code>null</code> if no such relationship exists.
      */
     R getSingleRelationship(T type, D dir);
 

@@ -5,15 +5,15 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
+import com.buschmais.xo.api.ResultIterator;
+import com.buschmais.xo.api.XOTransaction;
+import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.api.XOTransaction;
-import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TransactionalResultIteratorTest {

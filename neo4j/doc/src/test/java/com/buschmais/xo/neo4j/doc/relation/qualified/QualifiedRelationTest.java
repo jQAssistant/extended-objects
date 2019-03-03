@@ -2,11 +2,11 @@ package com.buschmais.xo.neo4j.doc.relation.qualified;
 
 import java.net.URISyntaxException;
 
-import org.junit.Test;
-
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.doc.AbstractDocumentationTest;
 import com.buschmais.xo.neo4j.doc.relation.Person;
+
+import org.junit.Test;
 
 public class QualifiedRelationTest extends AbstractDocumentationTest {
 

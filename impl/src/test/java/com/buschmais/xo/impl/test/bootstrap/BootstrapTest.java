@@ -1,22 +1,23 @@
 package com.buschmais.xo.impl.test.bootstrap;
 
-import com.buschmais.xo.api.XOManagerFactory;
-import com.buschmais.xo.api.bootstrap.XO;
-import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.impl.XOManagerFactoryImpl;
-import com.buschmais.xo.impl.test.bootstrap.composite.A;
-import com.buschmais.xo.impl.test.bootstrap.provider.TestXOProvider;
-import org.hamcrest.collection.IsArrayContaining;
-import org.junit.Test;
-
-import java.util.Set;
-
 import static com.buschmais.xo.api.ConcurrencyMode.MULTITHREADED;
 import static com.buschmais.xo.api.Transaction.TransactionAttribute.MANDATORY;
 import static com.buschmais.xo.api.ValidationMode.NONE;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.junit.Assert.assertThat;
+
+import java.util.Set;
+
+import com.buschmais.xo.api.XOManagerFactory;
+import com.buschmais.xo.api.bootstrap.XO;
+import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.impl.XOManagerFactoryImpl;
+import com.buschmais.xo.impl.test.bootstrap.composite.A;
+import com.buschmais.xo.impl.test.bootstrap.provider.TestXOProvider;
+
+import org.hamcrest.collection.IsArrayContaining;
+import org.junit.Test;
 
 public class BootstrapTest {
 
@@ -32,7 +33,7 @@ public class BootstrapTest {
         assertThat(xoUnit.getProvider(), typeCompatibleWith(TestXOProvider.class));
         Set<? extends Class<?>> types = xoUnit.getTypes();
         assertThat(types.size(), equalTo(1));
-        assertThat(types.toArray(), IsArrayContaining.<Object>hasItemInArray(A.class));
+        assertThat(types.toArray(), IsArrayContaining.<Object> hasItemInArray(A.class));
         assertThat(xoUnit.getValidationMode(), equalTo(NONE));
         assertThat(xoUnit.getConcurrencyMode(), equalTo(MULTITHREADED));
         assertThat(xoUnit.getDefaultTransactionAttribute(), equalTo(MANDATORY));

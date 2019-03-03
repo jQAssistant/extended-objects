@@ -9,4 +9,3 @@ import com.buschmais.xo.spi.datastore.Datastore;
 interface DatastoreFactory<DS extends Datastore> {
     DS createGraphDatabaseService(URI uri, Properties properties) throws MalformedURLException;
 }
-

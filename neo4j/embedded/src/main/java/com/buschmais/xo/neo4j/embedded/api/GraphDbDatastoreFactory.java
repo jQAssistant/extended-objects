@@ -4,10 +4,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Properties;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.embedded.impl.datastore.GraphDbNeo4jDatastore;
+
+import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
  * A {@link DatastoreFactory} re-using an existing instance of a
@@ -19,10 +19,10 @@ public class GraphDbDatastoreFactory implements DatastoreFactory<GraphDbNeo4jDat
     @Override
     public GraphDbNeo4jDatastore createGraphDatabaseService(URI uri, Properties properties) throws MalformedURLException {
         String graphDbPropertyName = GraphDatabaseService.class.getName();
-            GraphDatabaseService graphDatabaseService = (GraphDatabaseService) properties.get(graphDbPropertyName);
+        GraphDatabaseService graphDatabaseService = (GraphDatabaseService) properties.get(graphDbPropertyName);
         if (graphDatabaseService == null) {
             throw new XOException("Property " + graphDbPropertyName + " is not specified.");
         }
-                return new GraphDbNeo4jDatastore(graphDatabaseService);
-            }
-        }
+        return new GraphDbNeo4jDatastore(graphDatabaseService);
+    }
+}

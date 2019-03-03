@@ -15,8 +15,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.xml.sax.SAXException;
-
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.ValidationMode;
@@ -25,6 +23,8 @@ import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.schema.v1.*;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import com.buschmais.xo.spi.reflection.ClassHelper;
+
+import org.xml.sax.SAXException;
 
 public class XOUnitFactory {
 
@@ -54,8 +54,7 @@ public class XOUnitFactory {
         return getXOUnits(xo);
     }
 
-    private Xo readXODescriptor(URL url, Schema xoXsd)
-            throws IOException {
+    private Xo readXODescriptor(URL url, Schema xoXsd) throws IOException {
         try (InputStream is = url.openStream()) {
             try {
                 Unmarshaller unmarshaller = xoContext.createUnmarshaller();
@@ -122,12 +121,12 @@ public class XOUnitFactory {
             return ConcurrencyMode.SINGLETHREADED;
         }
         switch (concurrencyModeType) {
-            case SINGLETHREADED:
-                return ConcurrencyMode.SINGLETHREADED;
-            case MULTITHREADED:
-                return ConcurrencyMode.MULTITHREADED;
-            default:
-                throw new XOException("Unknown concurrency mode type " + concurrencyModeType);
+        case SINGLETHREADED:
+            return ConcurrencyMode.SINGLETHREADED;
+        case MULTITHREADED:
+            return ConcurrencyMode.MULTITHREADED;
+        default:
+            throw new XOException("Unknown concurrency mode type " + concurrencyModeType);
         }
     }
 
@@ -136,12 +135,12 @@ public class XOUnitFactory {
             return ValidationMode.AUTO;
         }
         switch (validationModeType) {
-            case NONE:
-                return ValidationMode.NONE;
-            case AUTO:
-                return ValidationMode.AUTO;
-            default:
-                throw new XOException("Unknown validation mode type " + validationModeType);
+        case NONE:
+            return ValidationMode.NONE;
+        case AUTO:
+            return ValidationMode.AUTO;
+        default:
+            throw new XOException("Unknown validation mode type " + validationModeType);
         }
     }
 
@@ -150,14 +149,14 @@ public class XOUnitFactory {
             return Transaction.TransactionAttribute.NONE;
         }
         switch (defaultTransactionAttributeType) {
-            case NONE:
-                return Transaction.TransactionAttribute.NONE;
-            case MANDATORY:
-                return Transaction.TransactionAttribute.MANDATORY;
-            case REQUIRES:
-                return Transaction.TransactionAttribute.REQUIRES;
-            default:
-                throw new XOException("Unknown transaction attribute type " + defaultTransactionAttributeType);
+        case NONE:
+            return Transaction.TransactionAttribute.NONE;
+        case MANDATORY:
+            return Transaction.TransactionAttribute.MANDATORY;
+        case REQUIRES:
+            return Transaction.TransactionAttribute.REQUIRES;
+        default:
+            throw new XOException("Unknown transaction attribute type " + defaultTransactionAttributeType);
         }
     }
 }

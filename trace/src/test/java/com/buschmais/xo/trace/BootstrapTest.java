@@ -1,19 +1,20 @@
 package com.buschmais.xo.trace;
 
+import static com.buschmais.xo.api.Transaction.TransactionAttribute.NONE;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
+
+import java.util.Set;
+
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.XOManagerFactoryImpl;
 import com.buschmais.xo.trace.api.TraceDatastoreProvider;
 import com.buschmais.xo.trace.composite.A;
+
 import org.hamcrest.collection.IsArrayContaining;
 import org.junit.Test;
-
-import java.util.Set;
-
-import static com.buschmais.xo.api.Transaction.TransactionAttribute.NONE;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 
 public class BootstrapTest {
 
@@ -27,7 +28,7 @@ public class BootstrapTest {
         assertThat(xoUnit.getProvider(), typeCompatibleWith(TraceDatastoreProvider.class));
         Set<? extends Class<?>> types = xoUnit.getTypes();
         assertThat(types.size(), equalTo(1));
-        assertThat(types.toArray(), IsArrayContaining.<Object>hasItemInArray(A.class));
+        assertThat(types.toArray(), IsArrayContaining.<Object> hasItemInArray(A.class));
         assertThat(xoUnit.getDefaultTransactionAttribute(), equalTo(NONE));
     }
 }

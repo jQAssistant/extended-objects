@@ -1,9 +1,9 @@
 package com.buschmais.xo.impl.proxy.repository;
 
-import com.buschmais.xo.api.XOManager;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+
+import com.buschmais.xo.api.XOManager;
 
 public class RepositoryInvocationHandler implements InvocationHandler {
 

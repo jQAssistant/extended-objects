@@ -3,7 +3,8 @@ package com.buschmais.xo.impl.proxy.common.property;
 import com.buschmais.xo.impl.AbstractPropertyManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 
-public abstract class AbstractPrimitivePropertySetMethod<DatastoreType, PropertyManager extends AbstractPropertyManager<DatastoreType>> extends AbstractPropertyMethod<DatastoreType, PropertyManager, PrimitivePropertyMethodMetadata> {
+public abstract class AbstractPrimitivePropertySetMethod<DatastoreType, PropertyManager extends AbstractPropertyManager<DatastoreType>>
+        extends AbstractPropertyMethod<DatastoreType, PropertyManager, PrimitivePropertyMethodMetadata> {
 
     public AbstractPrimitivePropertySetMethod(PropertyManager propertyManager, PrimitivePropertyMethodMetadata metadata) {
         super(propertyManager, metadata);

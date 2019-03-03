@@ -15,6 +15,7 @@ public interface Directed {
     Movie getMovie();
 
     int getYear();
+
     void setYear(int year);
 
 }

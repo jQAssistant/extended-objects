@@ -6,16 +6,16 @@ import static org.junit.Assert.assertEquals;
 
 import javax.inject.Inject;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.inject.GuiceModule;
 import com.buschmais.xo.inject.test.composite.A;
+
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class GuiceInjectionTest {
 

@@ -1,8 +1,8 @@
 package com.buschmais.xo.impl.proxy.query.object;
 
-import com.buschmais.xo.impl.proxy.query.RowProxyMethod;
-
 import java.util.Map;
+
+import com.buschmais.xo.impl.proxy.query.RowProxyMethod;
 
 public class HashCodeMethod implements RowProxyMethod {
 

@@ -5,11 +5,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeThat;
 
 import java.util.Collection;
-import java.util.concurrent.ExecutionException;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
@@ -18,6 +13,10 @@ import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.batchable.composite.A;
 import com.buschmais.xo.neo4j.test.batchable.composite.A2B;
 import com.buschmais.xo.neo4j.test.batchable.composite.B;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class BatchableTest extends AbstractNeo4jXOManagerTest {

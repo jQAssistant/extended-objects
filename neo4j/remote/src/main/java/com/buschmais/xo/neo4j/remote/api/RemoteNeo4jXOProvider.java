@@ -2,8 +2,6 @@ package com.buschmais.xo.neo4j.remote.api;
 
 import java.util.Properties;
 
-import org.neo4j.driver.v1.Config;
-
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.remote.impl.datastore.RemoteDatastore;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
@@ -13,6 +11,8 @@ import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.logging.LogLevel;
+
+import org.neo4j.driver.v1.Config;
 
 public class RemoteNeo4jXOProvider
         implements XODatastoreProvider<NodeMetadata<RemoteLabel>, RemoteLabel, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType> {

@@ -10,14 +10,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.neo4j.graphdb.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOManager;
@@ -26,6 +18,14 @@ import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNode;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNodeRelation;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.neo4j.graphdb.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RunWith(Parameterized.class)
 public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {

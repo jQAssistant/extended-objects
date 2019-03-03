@@ -9,7 +9,7 @@ import com.buschmais.xo.spi.annotation.QueryDefinition;
  */
 @QueryDefinition
 @Documented
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Cypher {
 

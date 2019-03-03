@@ -15,6 +15,9 @@ import java.util.Hashtable;
 
 import javax.inject.Inject;
 
+import com.buschmais.xo.api.XOManagerFactory;
+import com.buschmais.xo.api.bootstrap.XOUnitParameter;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +31,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ManagedServiceFactory;
-
-import com.buschmais.xo.api.XOManagerFactory;
-import com.buschmais.xo.api.bootstrap.XOUnitParameter;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)

@@ -1,5 +1,13 @@
 package com.buschmais.xo.trace.impl;
 
+import java.lang.management.ManagementFactory;
+import java.util.Map;
+
+import javax.management.JMException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
@@ -8,17 +16,11 @@ import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 
-import javax.management.JMException;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import java.lang.management.ManagementFactory;
-import java.util.Map;
-
 /**
  * {@link Datastore} implementation allowing tracing on delegates.
  */
-public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datastore.DatastoreSession, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> implements Datastore<TraceDatastoreSession, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
+public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datastore.DatastoreSession, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator>
+        implements Datastore<TraceDatastoreSession, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
 
     private Datastore<DatastoreSession, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> delegate;
 
@@ -26,7 +28,8 @@ public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datast
 
     private TraceMonitor traceMonitor;
 
-    public TraceDatastore(Datastore<DatastoreSession, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> delegate, InterceptorFactory interceptorFactory, TraceMonitor traceMonitor) {
+    public TraceDatastore(Datastore<DatastoreSession, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> delegate,
+            InterceptorFactory interceptorFactory, TraceMonitor traceMonitor) {
         this.delegate = delegate;
         this.interceptorFactory = interceptorFactory;
         this.traceMonitor = traceMonitor;
@@ -51,7 +54,8 @@ public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datast
     @Override
     public TraceDatastoreSession createSession() {
         DatastoreSession delegateSession = delegate.createSession();
-        return new TraceDatastoreSession(interceptorFactory.addInterceptor(delegateSession, com.buschmais.xo.spi.datastore.DatastoreSession.class), interceptorFactory);
+        return new TraceDatastoreSession(interceptorFactory.addInterceptor(delegateSession, com.buschmais.xo.spi.datastore.DatastoreSession.class),
+                interceptorFactory);
     }
 
     @Override
@@ -72,7 +76,7 @@ public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datast
     private ObjectName getObjectName() {
         String name = traceMonitor.getXOUnit().getName();
         try {
-            return new ObjectName("com.buschmais.xo.trace","xo-unit", name);
+            return new ObjectName("com.buschmais.xo.trace", "xo-unit", name);
         } catch (MalformedObjectNameException e) {
             throw new XOException("Cannot create object name for XO unit " + name, e);
         }

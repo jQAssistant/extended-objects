@@ -24,7 +24,7 @@ public abstract class AbstractToStringMethod<T> implements ProxyMethod<T> {
         return stringBuffer.toString();
     }
 
-    protected abstract Map<String,Object> getProperties(T datastoreType);
+    protected abstract Map<String, Object> getProperties(T datastoreType);
 
     protected abstract String getId(T datastoreType);
 

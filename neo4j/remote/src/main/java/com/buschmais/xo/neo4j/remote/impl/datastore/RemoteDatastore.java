@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.neo4j.driver.v1.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.remote.api.RemoteNeo4jXOProvider;
@@ -23,7 +19,11 @@ import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.xo.spi.logging.LogLevel;
+
 import com.google.common.base.CaseFormat;
+import org.neo4j.driver.v1.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteRelationshipType, RemoteDatastoreSession> {
 

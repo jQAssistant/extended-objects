@@ -2,7 +2,9 @@ package com.buschmais.xo.spi.datastore;
 
 /**
  * Represents a transaction on the datastore.
- * <p>It is associated to a {@link DatastoreSession}.</p>
+ * <p>
+ * It is associated to a {@link DatastoreSession}.
+ * </p>
  */
 public interface DatastoreTransaction {
 
@@ -24,7 +26,8 @@ public interface DatastoreTransaction {
     /**
      * Determine if the transaction is currently active.
      *
-     * @return <code>true</code> if the transaction is currently active, <code>false</code> otherwise.
+     * @return <code>true</code> if the transaction is currently active,
+     *         <code>false</code> otherwise.
      */
     boolean isActive();
 }

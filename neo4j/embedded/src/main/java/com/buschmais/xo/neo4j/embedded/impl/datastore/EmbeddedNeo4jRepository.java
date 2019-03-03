@@ -1,9 +1,5 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterator;
-
 import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
@@ -12,6 +8,10 @@ import com.buschmais.xo.neo4j.spi.AbstractNeo4jRepository;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.session.XOSession;
+
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.ResourceIterator;
 
 /**
  * Abstract base implementation for Neo4j repositories.

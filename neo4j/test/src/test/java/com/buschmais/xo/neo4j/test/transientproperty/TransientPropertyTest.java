@@ -7,14 +7,14 @@ import static org.junit.Assert.assertThat;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.transientproperty.composite.A;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class TransientPropertyTest extends AbstractNeo4jXOManagerTest {
@@ -37,8 +37,8 @@ public class TransientPropertyTest extends AbstractNeo4jXOManagerTest {
         a.setTransientValue("transient value");
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getValue(),equalTo("persistent value"));
-        assertThat(a.getTransientValue(),equalTo("transient value"));
+        assertThat(a.getValue(), equalTo("persistent value"));
+        assertThat(a.getTransientValue(), equalTo("transient value"));
         xoManager.currentTransaction().commit();
         closeXOmanager();
         xoManager = getXOManager();

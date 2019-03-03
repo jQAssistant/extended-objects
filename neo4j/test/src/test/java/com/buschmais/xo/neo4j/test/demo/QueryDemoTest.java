@@ -7,15 +7,15 @@ import static org.junit.Assert.assertThat;
 import java.net.URISyntaxException;
 import java.util.Collection;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
 import com.buschmais.xo.neo4j.test.demo.composite.Group;
 import com.buschmais.xo.neo4j.test.demo.composite.Person;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class QueryDemoTest extends AbstractNeo4jXOManagerTest {
@@ -42,7 +42,8 @@ public class QueryDemoTest extends AbstractNeo4jXOManagerTest {
         group.getMembers().add(person2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        MemberByName memberByName = xoManager.createQuery(MemberByName.class).withParameter("this", group).withParameter("name", "Peter").execute().getSingleResult();
+        MemberByName memberByName = xoManager.createQuery(MemberByName.class).withParameter("this", group).withParameter("name", "Peter").execute()
+                .getSingleResult();
         Person peter = memberByName.getMember();
         assertThat(peter, equalTo(person1));
         xoManager.currentTransaction().commit();

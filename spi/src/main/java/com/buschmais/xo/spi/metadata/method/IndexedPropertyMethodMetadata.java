@@ -6,7 +6,8 @@ public class IndexedPropertyMethodMetadata<DatastoreMetadata> extends AbstractPr
 
     private final PrimitivePropertyMethodMetadata propertyMethodMetadata;
 
-    public IndexedPropertyMethodMetadata(PropertyMethod propertyMethod, PrimitivePropertyMethodMetadata propertyMethodMetadata, DatastoreMetadata datastoreMetadata) {
+    public IndexedPropertyMethodMetadata(PropertyMethod propertyMethod, PrimitivePropertyMethodMetadata propertyMethodMetadata,
+            DatastoreMetadata datastoreMetadata) {
         super(propertyMethod, datastoreMetadata);
         this.propertyMethodMetadata = propertyMethodMetadata;
     }

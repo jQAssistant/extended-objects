@@ -1,5 +1,9 @@
 package com.buschmais.xo.impl.bootstrap.osgi;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
+
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.XOManagerFactoryImpl;
@@ -9,10 +13,6 @@ import org.osgi.framework.*;
 import org.osgi.service.cm.ManagedServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
 
 public class XOUnitBundleListener implements BundleActivator, BundleListener {
 
@@ -27,7 +27,7 @@ public class XOUnitBundleListener implements BundleActivator, BundleListener {
     @Override
     public void start(BundleContext context) throws Exception {
         context.addBundleListener(this);
-        Dictionary<String,String> props = new Hashtable<String,String>();
+        Dictionary<String, String> props = new Hashtable<String, String>();
         props.put(Constants.SERVICE_PID, XOManagerFactory.FACTORY_PID);
         serviceFactory = new XOManagerFactoryServiceFactory(context);
         serviceFactoryRegistration = context.registerService(ManagedServiceFactory.class, serviceFactory, props);
@@ -48,15 +48,15 @@ public class XOUnitBundleListener implements BundleActivator, BundleListener {
     @Override
     public void bundleChanged(BundleEvent event) {
         switch (event.getType()) {
-            case BundleEvent.STARTED:
-                deployXOUnits(event.getBundle());
-                break;
-            case BundleEvent.STOPPED:
-                undeployXOUnits(event.getBundle());
-                break;
-            default:
-                // intentionally left blank
-                break;
+        case BundleEvent.STARTED:
+            deployXOUnits(event.getBundle());
+            break;
+        case BundleEvent.STOPPED:
+            undeployXOUnits(event.getBundle());
+            break;
+        default:
+            // intentionally left blank
+            break;
         }
     }
 
@@ -64,7 +64,7 @@ public class XOUnitBundleListener implements BundleActivator, BundleListener {
      * helper
      */
     private void deployXOUnits(Bundle bundle) {
-        Enumeration<?> e = bundle.findEntries("META-INF", "xo.xml", false); //$NON-NLS-1$, $NON-NLS-2$
+        Enumeration<?> e = bundle.findEntries("META-INF", "xo.xml", false); //$NON-NLS-1$ , $NON-NLS-2$
         if (e != null) {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Deploying XO units in bundle '{}'", bundle.getSymbolicName());

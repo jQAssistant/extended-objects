@@ -1,11 +1,11 @@
 package com.buschmais.xo.api.annotation;
 
-import com.buschmais.xo.api.proxy.ProxyMethod;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import com.buschmais.xo.api.proxy.ProxyMethod;
 
 /**
  * Adds a custom implementation to any method of a composite object.

@@ -16,8 +16,7 @@ import com.buschmais.xo.spi.session.XOSession;
  * Implementation of the {@link XOSession} interface.
  */
 public class XOSessionImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata>
-        implements
-        XOSession<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
+        implements XOSession<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
 
     private SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext;
 

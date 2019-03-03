@@ -98,13 +98,12 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
             }
 
             private Map<Object, Object> decodeMap(Map<?, ?> map, Map<Object, Object> decodedMap) {
-            	for(Entry<?, ?> entry : map.entrySet()){
-            		decodedMap.put(decodeValue(entry.getKey()), decodeValue(entry.getValue()));
-            	}
+                for (Entry<?, ?> entry : map.entrySet()) {
+                    decodedMap.put(decodeValue(entry.getKey()), decodeValue(entry.getValue()));
+                }
 
                 return decodedMap;
             }
-
 
             @Override
             public void close() {

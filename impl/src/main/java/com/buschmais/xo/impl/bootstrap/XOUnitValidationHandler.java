@@ -1,9 +1,10 @@
 package com.buschmais.xo.impl.bootstrap;
 
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 
 public class XOUnitValidationHandler implements ValidationEventHandler {
 
@@ -20,7 +21,7 @@ public class XOUnitValidationHandler implements ValidationEventHandler {
             this.errorMessages.add(stringBuilder.toString());
             return true;
         } else {
-            //ignore validation warnings
+            // ignore validation warnings
             return true;
         }
     }

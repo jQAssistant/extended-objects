@@ -1,6 +1,5 @@
 package com.buschmais.xo.spi.annotation;
 
-
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -9,7 +8,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Marks an annotation as relation definition, i.e. a type represents a relation if it is annotated with an annotation which itself is annotated by{@link RelationDefinition}.
+ * Marks an annotation as relation definition, i.e. a type represents a relation
+ * if it is annotated with an annotation which itself is annotated
+ * by{@link RelationDefinition}.
  */
 @Documented
 @Retention(RUNTIME)

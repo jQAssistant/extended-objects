@@ -7,8 +7,10 @@ import com.buschmais.xo.spi.metadata.method.ResultOfMethodMetadata;
 /**
  * Implementation of a result of method for entities.
  *
- * @param <Entity>   The entity type.
- * @param <Relation> The relation type.
+ * @param <Entity>
+ *            The entity type.
+ * @param <Relation>
+ *            The relation type.
  */
 public class ResultOfMethod<Entity, Relation> extends AbstractResultOfMethod<Relation, Entity, Relation> {
 

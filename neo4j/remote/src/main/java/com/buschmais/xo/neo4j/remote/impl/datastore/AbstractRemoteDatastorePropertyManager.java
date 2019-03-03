@@ -5,13 +5,13 @@ import static org.neo4j.driver.v1.Values.parameters;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.neo4j.driver.v1.types.Entity;
-
 import com.buschmais.xo.neo4j.remote.impl.model.AbstractRemotePropertyContainer;
 import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+
+import org.neo4j.driver.v1.types.Entity;
 
 public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractRemotePropertyContainer, S extends AbstractPropertyContainerState>
         implements DatastorePropertyManager<T, PropertyMetadata> {

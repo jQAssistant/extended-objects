@@ -1,5 +1,13 @@
 package com.buschmais.xo.neo4j.test.bootstrap;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Properties;
+
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
@@ -7,18 +15,11 @@ import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider;
 import com.buschmais.xo.neo4j.test.bootstrap.composite.A;
 import com.buschmais.xo.neo4j.test.bootstrap.composite.AmbiguousA;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.test.TestGraphDatabaseFactory;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Properties;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 public class AmbiguousLabelsTest {
 

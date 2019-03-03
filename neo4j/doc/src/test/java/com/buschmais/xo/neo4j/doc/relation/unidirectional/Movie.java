@@ -7,6 +7,7 @@ import com.buschmais.xo.neo4j.api.annotation.Label;
 public interface Movie {
 
     String getTitle();
+
     void setTitle();
 
 }
