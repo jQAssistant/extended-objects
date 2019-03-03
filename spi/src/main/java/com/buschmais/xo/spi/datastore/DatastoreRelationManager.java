@@ -72,21 +72,6 @@ public interface DatastoreRelationManager<Entity, RelationId, Relation, Relation
     Relation findRelationById(RelationTypeMetadata<RelationMetadata> metadata, RelationId id);
 
     /**
-     * Determine if a single relation (i.e. direct reference) between two
-     * entities exists.
-     *
-     * @param source
-     *            The entity
-     * @param metadata
-     *            The relation metadata.
-     * @param direction
-     *            The direction.
-     * @return <code>true</code> if an relation exists, <code>false</code>
-     *         otherwise.
-     */
-    boolean hasSingleRelation(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction);
-
-    /**
      * Return a single relation (i.e. representing a direct reference) between
      * two entities.
      *

@@ -79,12 +79,6 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedR
     }
 
     @Override
-    public boolean hasSingleRelation(EmbeddedNode source, RelationTypeMetadata<RelationshipMetadata<EmbeddedRelationshipType>> metadata,
-            RelationTypeMetadata.Direction direction) {
-        return source.hasRelationship(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));
-    }
-
-    @Override
     public EmbeddedRelationship getSingleRelation(EmbeddedNode source, RelationTypeMetadata<RelationshipMetadata<EmbeddedRelationshipType>> metadata,
             RelationTypeMetadata.Direction direction) {
         return source.getSingleRelationship(metadata.getDatastoreMetadata().getDiscriminator(), getDirection(direction));

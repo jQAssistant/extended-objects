@@ -1,11 +1,11 @@
 package com.buschmais.xo.trace.impl;
 
+import java.util.Map;
+
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
-
-import java.util.Map;
 
 /**
  * Implementation of a
@@ -56,11 +56,6 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
     @Override
     public Relation findRelationById(RelationTypeMetadata<RelationMetadata> metadata, RelationId relationId) {
         return delegate.findRelationById(metadata, relationId);
-    }
-
-    @Override
-    public boolean hasSingleRelation(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction) {
-        return delegate.hasSingleRelation(source, metadata, direction);
     }
 
     @Override

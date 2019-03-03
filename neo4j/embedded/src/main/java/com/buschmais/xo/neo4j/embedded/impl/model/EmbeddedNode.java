@@ -54,7 +54,8 @@ public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
 
     @Override
     public EmbeddedRelationship getSingleRelationship(EmbeddedRelationshipType type, EmbeddedDirection dir) {
-        return new EmbeddedRelationship(delegate.getSingleRelationship(type.getDelegate(), dir.getDelegate()));
+        Relationship relationship = delegate.getSingleRelationship(type.getDelegate(), dir.getDelegate());
+        return relationship != null ? new EmbeddedRelationship(relationship) : null;
     }
 
     public EmbeddedRelationship createRelationshipTo(EmbeddedNode otherNode, EmbeddedRelationshipType type) {
