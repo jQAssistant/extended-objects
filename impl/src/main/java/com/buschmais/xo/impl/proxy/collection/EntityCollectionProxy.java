@@ -18,7 +18,8 @@ public class EntityCollectionProxy<Instance, Entity, Relation>
 
     public Iterator<Instance> iterator() {
         final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext = getSessionContext();
-        final Iterator<Entity> iterator = sessionContext.getEntityPropertyManager().getEntityCollection(getEntity(), getMetadata());
+        final EntityCollectionPropertyMethodMetadata<?> metadata = getMetadata();
+        final Iterator<Entity> iterator = sessionContext.getEntityPropertyManager().getEntityCollection(getEntity(), metadata);
         return sessionContext.getInterceptorFactory().addInterceptor(new Iterator<Instance>() {
 
             private Instance instance = null;
@@ -32,12 +33,12 @@ public class EntityCollectionProxy<Instance, Entity, Relation>
             }
 
             private boolean isInstance() {
-                return instance != null && getMetadata().getElementType().isAssignableFrom(instance.getClass());
+                return instance != null && metadata.getElementType().isAssignableFrom(instance.getClass());
             }
 
             @Override
             public Instance next() {
-                if (!isInstance()) {
+                if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
                 Instance next = instance;

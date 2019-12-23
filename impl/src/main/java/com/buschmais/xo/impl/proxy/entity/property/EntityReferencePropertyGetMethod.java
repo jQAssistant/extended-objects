@@ -12,6 +12,8 @@ public class EntityReferencePropertyGetMethod<Entity, Relation>
     }
 
     public Object invoke(Entity entity, Object instance, Object[] args) {
-        return getPropertyManager().getEntityReference(entity, getMetadata());
+        EntityReferencePropertyMethodMetadata metadata = getMetadata();
+        Object reference = getPropertyManager().getEntityReference(entity, metadata);
+        return reference != null && metadata.getElementType().isAssignableFrom(reference.getClass()) ? reference : null;
     }
 }

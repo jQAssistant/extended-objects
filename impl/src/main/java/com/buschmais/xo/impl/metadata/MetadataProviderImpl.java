@@ -451,8 +451,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 Direction relationDirection = getRelationDirection(propertyMethod, Direction.FROM);
                 com.buschmais.xo.spi.reflection.AnnotatedElement<?> relationElement = getRelationDefinitionElement(propertyMethod);
                 RelationTypeMetadata relationshipType = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(relationElement, metadataByType));
-                methodMetadata = new EntityCollectionPropertyMethodMetadata<>(propertyMethod, relationshipType, relationDirection,
-                    elementType, metadataFactory.createCollectionPropertyMetadata(propertyMethod));
+                methodMetadata = new EntityCollectionPropertyMethodMetadata<>(propertyMethod, relationshipType, relationDirection, elementType,
+                        metadataFactory.createCollectionPropertyMetadata(propertyMethod));
             } else if (isRelationType(annotatedTypeArgument)) {
                 TypeMetadata relationTypeMetadata = getOrCreateTypeMetadata(elementType);
                 RelationTypeMetadata<RelationMetadata> relationMetadata = (RelationTypeMetadata) relationTypeMetadata;
@@ -471,7 +471,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 com.buschmais.xo.spi.reflection.AnnotatedElement<?> relationElement = getRelationDefinitionElement(propertyMethod);
                 relationMetadata = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(relationElement, metadataByType));
                 methodMetadata = new EntityReferencePropertyMethodMetadata<>(propertyMethod, relationMetadata, relationDirection,
-                        metadataFactory.createReferencePropertyMetadata(propertyMethod));
+                        referencedType.getAnnotatedElement(), metadataFactory.createReferencePropertyMetadata(propertyMethod));
             } else if (isRelationType(referencedType)) {
                 TypeMetadata relationTypeMetadata = getOrCreateTypeMetadata(propertyType);
                 relationMetadata = (RelationTypeMetadata) relationTypeMetadata;

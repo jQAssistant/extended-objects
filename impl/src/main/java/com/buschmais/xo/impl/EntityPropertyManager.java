@@ -55,7 +55,7 @@ public class EntityPropertyManager<Entity, Relation, PropertyMetadata> extends A
         return null;
     }
 
-    public Object getEntityReference(Entity entity, EntityReferencePropertyMethodMetadata metadata) {
+    public <T> T getEntityReference(Entity entity, EntityReferencePropertyMethodMetadata metadata) {
         DatastoreRelationManager<Entity, ?, Relation, ?, ?, ?> relationManager = sessionContext.getDatastoreSession().getDatastoreRelationManager();
         Relation singleRelation = (Relation) relationManager.getSingleRelation(entity, metadata.getRelationshipMetadata(), metadata.getDirection());
         if (singleRelation != null) {
