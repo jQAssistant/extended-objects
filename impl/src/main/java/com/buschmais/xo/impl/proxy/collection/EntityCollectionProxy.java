@@ -2,6 +2,7 @@ package com.buschmais.xo.impl.proxy.collection;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.spi.metadata.method.EntityCollectionPropertyMethodMetadata;
@@ -20,14 +21,28 @@ public class EntityCollectionProxy<Instance, Entity, Relation>
         final Iterator<Entity> iterator = sessionContext.getEntityPropertyManager().getEntityCollection(getEntity(), getMetadata());
         return sessionContext.getInterceptorFactory().addInterceptor(new Iterator<Instance>() {
 
+            private Instance instance = null;
+
             @Override
             public boolean hasNext() {
-                return iterator.hasNext();
+                while (!isInstance() && iterator.hasNext()) {
+                    instance = sessionContext.getEntityInstanceManager().readInstance(iterator.next());
+                }
+                return isInstance();
+            }
+
+            private boolean isInstance() {
+                return instance != null && getMetadata().getElementType().isAssignableFrom(instance.getClass());
             }
 
             @Override
             public Instance next() {
-                return sessionContext.getEntityInstanceManager().readInstance(iterator.next());
+                if (!isInstance()) {
+                    throw new NoSuchElementException();
+                }
+                Instance next = instance;
+                instance = null;
+                return next;
             }
 
             @Override

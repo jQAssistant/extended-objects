@@ -7,9 +7,15 @@ import com.buschmais.xo.spi.reflection.PropertyMethod;
 
 public class EntityCollectionPropertyMethodMetadata<DatastoreMetadata> extends AbstractRelationPropertyMethodMetadata<DatastoreMetadata> {
 
+    private final Class<?> elementType;
+
     public EntityCollectionPropertyMethodMetadata(PropertyMethod propertyMethod, RelationTypeMetadata relationshipType, Direction direction,
-            DatastoreMetadata datastoreMetadata) {
+            Class<?> elementType, DatastoreMetadata datastoreMetadata) {
         super(propertyMethod, relationshipType, direction, datastoreMetadata);
+        this.elementType = elementType;
     }
 
+    public Class<?> getElementType() {
+        return elementType;
+    }
 }

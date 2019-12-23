@@ -452,7 +452,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 com.buschmais.xo.spi.reflection.AnnotatedElement<?> relationElement = getRelationDefinitionElement(propertyMethod);
                 RelationTypeMetadata relationshipType = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(relationElement, metadataByType));
                 methodMetadata = new EntityCollectionPropertyMethodMetadata<>(propertyMethod, relationshipType, relationDirection,
-                        metadataFactory.createCollectionPropertyMetadata(propertyMethod));
+                    elementType, metadataFactory.createCollectionPropertyMetadata(propertyMethod));
             } else if (isRelationType(annotatedTypeArgument)) {
                 TypeMetadata relationTypeMetadata = getOrCreateTypeMetadata(elementType);
                 RelationTypeMetadata<RelationMetadata> relationMetadata = (RelationTypeMetadata) relationTypeMetadata;
