@@ -4,7 +4,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
 
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -30,7 +29,7 @@ public class InstanceListenerTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+    public static Collection<Object[]> getXOUnits() {
         return xoUnits(Arrays.asList(A.class, B.class, A2B.class), Arrays.<Class<?>> asList(StaticInstanceListener.class), ValidationMode.AUTO,
                 ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
     }

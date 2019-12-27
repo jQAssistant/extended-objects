@@ -66,7 +66,7 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
 
     @Override
     public PropertyMetadata createPropertyMetadata(PropertyMethod propertyMethod) {
-        Property property = propertyMethod.getAnnotationOfProperty(Property.class);
+        Property property = propertyMethod.getAnnotation(Property.class);
         String name = property != null ? property.value() : propertyMethod.getName();
         return new PropertyMetadata(name);
     }
@@ -82,7 +82,7 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
         Relation relationAnnotation;
         boolean batchable;
         if (annotatedElement instanceof PropertyMethod) {
-            relationAnnotation = ((PropertyMethod) annotatedElement).getAnnotationOfProperty(Relation.class);
+            relationAnnotation = annotatedElement.getAnnotation(Relation.class);
             batchable = true;
         } else if (annotatedElement instanceof AnnotatedType) {
             AnnotatedType annotatedType = (AnnotatedType) annotatedElement;

@@ -1,6 +1,5 @@
 package com.buschmais.xo.neo4j.test.demo;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOManager;
@@ -23,7 +22,7 @@ public class IndexedDemoTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+    public static Collection<Object[]> getXOUnits() {
         return xoUnits(Group.class, Person.class);
     }
 

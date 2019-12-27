@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class GenericTypeTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+    public static Collection<Object[]> getXOUnits() {
         return xoUnits(GenericSuperType.class, BoundType.class, Value.class, StringValue.class, ValueContainer.class, StringValueContainer.class);
     }
 

@@ -1,6 +1,5 @@
 package com.buschmais.xo.spi.reflection;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
@@ -44,7 +43,4 @@ public abstract class AbstractPropertyMethod extends AbstractAnnotatedElement<Me
         return genericType;
     }
 
-    public abstract <T extends Annotation> T getAnnotationOfProperty(Class<T> type);
-
-    public abstract <T extends Annotation> T getByMetaAnnotationOfProperty(Class<T> type);
 }

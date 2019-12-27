@@ -390,8 +390,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         // information also to be applied to setters
         for (AnnotatedMethod annotatedMethod : annotatedMethods) {
             MethodMetadata<?, ?> methodMetadata;
-            ImplementedBy implementedBy = annotatedMethod.getAnnotation(ImplementedBy.class);
-            ResultOf resultOf = annotatedMethod.getAnnotation(ResultOf.class);
+            ImplementedBy implementedBy = annotatedMethod.getAnnotatedElement().getAnnotation(ImplementedBy.class);
+            ResultOf resultOf = annotatedMethod.getAnnotatedElement().getAnnotation(ResultOf.class);
             if (implementedBy != null) {
                 methodMetadata = new ImplementedByMethodMetadata<>(annotatedMethod, implementedBy.value(),
                         metadataFactory.createImplementedByMetadata(annotatedMethod));
@@ -399,7 +399,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 methodMetadata = createResultOfMetadata(annotatedMethod, resultOf);
             } else if (annotatedMethod instanceof PropertyMethod) {
                 PropertyMethod propertyMethod = (PropertyMethod) annotatedMethod;
-                Transient transientAnnotation = propertyMethod.getAnnotationOfProperty(Transient.class);
+                Transient transientAnnotation = propertyMethod.getAnnotation(Transient.class);
                 if (transientAnnotation != null) {
                     methodMetadata = new TransientPropertyMethodMetadata(propertyMethod);
                 } else {
@@ -488,8 +488,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     }
 
     private Direction getRelationDirection(PropertyMethod propertyMethod, Direction defaultDirection) {
-        Annotation fromAnnotation = propertyMethod.getByMetaAnnotationOfProperty(FromDefinition.class);
-        Annotation toAnnotation = propertyMethod.getByMetaAnnotationOfProperty(ToDefinition.class);
+        Annotation fromAnnotation = propertyMethod.getByMetaAnnotation(FromDefinition.class);
+        Annotation toAnnotation = propertyMethod.getByMetaAnnotation(ToDefinition.class);
         if (fromAnnotation != null && toAnnotation != null) {
             throw new XOException("The relation property '" + propertyMethod.getName() + "' must not specifiy both directions.'");
         }
@@ -533,10 +533,10 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      * @return The annotated element.
      */
     private com.buschmais.xo.spi.reflection.AnnotatedElement<?> getRelationDefinitionElement(PropertyMethod propertyMethod) {
-        if (propertyMethod.getByMetaAnnotationOfProperty(RelationDefinition.class) != null) {
+        if (propertyMethod.getByMetaAnnotation(RelationDefinition.class) != null) {
             return propertyMethod;
         }
-        Annotation[] declaredAnnotations = propertyMethod.getAnnotationsOfProperty();
+        Annotation[] declaredAnnotations = propertyMethod.getAnnotations();
         for (int i = 0; i < declaredAnnotations.length; i++) {
             com.buschmais.xo.spi.reflection.AnnotatedElement<?> annotationTypeElement = new AnnotatedType(declaredAnnotations[i].annotationType());
             if (annotationTypeElement.getByMetaAnnotation(RelationDefinition.class) != null) {

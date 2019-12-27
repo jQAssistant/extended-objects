@@ -3,7 +3,6 @@ package com.buschmais.xo.neo4j.test.repository;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOManager;
@@ -31,7 +30,7 @@ public class RepositoryTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+    public static Collection<Object[]> getXOUnits() {
         return xoUnits(A.class, CustomRepository.class, CustomNeo4jRepository.class, CustomTypedNeo4jRepository.class);
     }
 

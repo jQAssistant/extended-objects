@@ -35,17 +35,28 @@ public class SetPropertyMethod extends AbstractPropertyMethod {
     }
 
     @Override
-    public <T extends Annotation> T getAnnotationOfProperty(Class<T> type) {
+    public <T extends Annotation> T getAnnotation(Class<T> type) {
+        if (super.getAnnotation(type) != null) {
+            reportInvalidAnnotationLocation();
+        }
         return getter.getAnnotation(type);
     }
 
+
     @Override
-    public <T extends Annotation> T getByMetaAnnotationOfProperty(Class<T> type) {
+    public <T extends Annotation, M extends Annotation> T getByMetaAnnotation(Class<M> type) {
+        if (super.getByMetaAnnotation(type) != null) {
+            return reportInvalidAnnotationLocation();
+        }
         return getter.getByMetaAnnotation(type);
     }
 
     @Override
-    public Annotation[] getAnnotationsOfProperty() {
-        return getter.getAnnotationsOfProperty();
+    public Annotation[] getAnnotations() {
+        return getter.getAnnotations();
+    }
+
+    private <T extends Annotation> T reportInvalidAnnotationLocation() {
+        throw new XOException("A setter method must not be annotated, use getter instead: " + getAnnotatedElement().toString());
     }
 }
