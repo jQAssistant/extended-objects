@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOException;
@@ -27,7 +26,7 @@ public class NonRegisteredTypeTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+    public static Collection<Object[]> getXOUnits() {
         return xoUnits(B.class);
     }
 

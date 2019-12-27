@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOException;
@@ -28,7 +27,7 @@ public class UniqueTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+    public static Collection<Object[]> getXOUnits() {
         return xoUnits(asList(Neo4jDatabase.MEMORY), asList(B.class));
     }
 

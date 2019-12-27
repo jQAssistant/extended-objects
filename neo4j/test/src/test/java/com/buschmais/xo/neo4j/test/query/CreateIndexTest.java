@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeThat;
 import static org.neo4j.graphdb.Label.label;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOManager;
@@ -32,7 +31,7 @@ public class CreateIndexTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+    public static Collection<Object[]> getXOUnits() {
         return xoUnits(A.class, C.class);
     }
 

@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertThat;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOManager;
@@ -32,7 +31,7 @@ public class EntityResultOfTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+    public static Collection<Object[]> getXOUnits() {
         return xoUnits(E.class, F.class, E2F.class);
     }
 

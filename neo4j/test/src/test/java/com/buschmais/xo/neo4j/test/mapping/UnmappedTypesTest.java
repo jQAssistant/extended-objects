@@ -5,7 +5,6 @@ import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 
 import com.buschmais.xo.api.CompositeObject;
@@ -27,7 +26,7 @@ public class UnmappedTypesTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+    public static Collection<Object[]> getXOUnits() {
         return xoUnits();
     }
 

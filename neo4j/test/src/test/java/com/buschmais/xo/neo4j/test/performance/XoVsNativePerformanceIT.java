@@ -3,7 +3,6 @@ package com.buschmais.xo.neo4j.test.performance;
 import static com.buschmais.xo.api.Transaction.TransactionAttribute;
 import static java.util.Arrays.asList;
 
-import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +40,7 @@ public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+    public static Collection<Object[]> getXOUnits() {
         return xoUnits(asList(TreeNode.class, TreeNodeRelation.class), Collections.emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED,
                 TransactionAttribute.NONE);
     }

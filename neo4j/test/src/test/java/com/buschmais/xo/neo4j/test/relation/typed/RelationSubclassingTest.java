@@ -3,7 +3,6 @@ package com.buschmais.xo.neo4j.test.relation.typed;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOManager;
@@ -23,7 +22,7 @@ public class RelationSubclassingTest extends AbstractNeo4jXOManagerTest {
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> getXOUnits() throws URISyntaxException {
+    public static Collection<Object[]> getXOUnits() {
         return xoUnits(C.class, D.class, TypeA.class, TypeB.class);
     }
 
