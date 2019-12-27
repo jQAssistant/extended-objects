@@ -1,5 +1,5 @@
 [[naming:Default]]
-[role=group,includesConstraints="naming:TypeNameMustBeginWithGroupId,naming:TypeNameMustContainArtifactId,naming:AbstractClassNamePrefix,naming:NonAbstractClassNamePrefix"]
+[role=group,includesConstraints="naming:*"]
 == Naming Rules
 
 This section describes naming rules that apply to the elements of the code base.
@@ -38,7 +38,7 @@ RETURN
 MATCH
   (c:Type:Class)
 WHERE
-  has(c.abstract) and c.abstract=true
+  exists(c.abstract) and c.abstract=true
   and not c.name starts with "Abstract"
 RETURN
   c as AbstractClass
@@ -52,7 +52,7 @@ MATCH
   (c:Type:Class)
 WHERE
   not c:Inner
-  and not (has(c.abstract) and c.abstract=true)
+  and not (exists(c.abstract) and c.abstract=true)
   and c.name starts with "Abstract"
 RETURN
   c as NonAbstractClass

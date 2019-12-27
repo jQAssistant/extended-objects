@@ -1,28 +1,11 @@
 [[maven:Default]]
-[role=group,includesConcepts="maven:MainArtifactDependencies.graphml"]
+[role=group,includesConcepts="maven:*"]
 == Maven Rules
 
 This section describes rules that apply to the Maven build system.
 
-[[maven:MainArtifact]]
-[source,cypher,role=concept]
-.Adds a label `Main` to all non test artifacts created by a Maven project.
-----
-MATCH
-  (:Maven:Project)-[:CREATES]->(artifact:Artifact)
-WHERE
-  NOT artifact.type in [
-    "test-jar",
-    "pom"
-    ]
-SET
-  artifact:Main
-RETURN
-  artifact as MainArtifact
-----
-
 [[maven:MainArtifactDependencies.graphml]]
-[source,cypher,role=concept,requiresConcepts="maven:MainArtifact"]
+[source,cypher,role=concept]
 .Creates a GraphML report about the created artifacts and their dependencies
 ----
 MATCH

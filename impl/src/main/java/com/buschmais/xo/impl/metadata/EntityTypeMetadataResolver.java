@@ -10,6 +10,7 @@ import com.buschmais.xo.spi.datastore.DynamicType;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 
+import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,7 +162,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * @return The {@link DynamicType}.
      */
     public DynamicType<EntityTypeMetadata<EntityMetadata>> getDynamicType(Set<Discriminator> discriminators) {
-        return cache.computeIfAbsent(new HashSet<>(discriminators), key -> {
+        return cache.computeIfAbsent(ImmutableSet.<Discriminator> builderWithExpectedSize(discriminators.size()).addAll(discriminators).build(), key -> {
             LOGGER.debug("Cache miss for discriminators {}.", key);
             Set<EntityTypeMetadata<EntityMetadata>> metadata = new HashSet<>();
             for (Discriminator discriminator : key) {

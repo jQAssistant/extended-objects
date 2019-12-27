@@ -1,5 +1,5 @@
 [[architecture:Default]]
-[role=group,includesConstraints="architecture:ComponentDependencyViolation,architecture:UnusedComponentDependencyDefinition"]
+[role=group,includesConstraints="architecture:*"]
 == Architectural Rules
 
 This section describes rules regarding the architecture of eXtended Objects.
@@ -40,7 +40,7 @@ appropriate scopes:
 |====
 
 [[architecture:Framework]]
-[source,cypher,role=concept,requiresConcepts="maven:MainArtifact",severity=critical]
+[source,cypher,role=concept,severity=critical]
 .Adds the label `Framework` and `Component` to the framework artifacts created by Maven.
 ----
 MATCH
@@ -96,7 +96,7 @@ The Neo4j datastore consists of the following components:
 |====
 
 [[architecture:Neo4jDatastore]]
-[source,cypher,role=concept,requiresConcepts="maven:MainArtifact",severity=critical]
+[source,cypher,role=concept,severity=critical]
 .Adds the labels `Datastore` and `Component` to the Neo4j datastore components created by Maven.
 ----
 MATCH

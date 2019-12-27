@@ -83,12 +83,12 @@
         <org.asciidoctor_version>1.5.8</org.asciidoctor_version>
         <org.asciidoctorj.pdf_version>1.5.0-alpha.16</org.asciidoctorj.pdf_version>
         <org.jruby_version>9.1.17.0</org.jruby_version>
-        <org.neo4j_version>3.5.3</org.neo4j_version>
+        <org.neo4j_version>3.5.14</org.neo4j_version>
         <org.slf4j_version>1.7.25</org.slf4j_version>
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
-        <jqassistant.version>1.6.0</jqassistant.version>
+        <jqassistant.version>1.8.0-MS1</jqassistant.version>
         <org.osgi_version>4.3.1</org.osgi_version>
 
     </properties>
@@ -463,22 +463,12 @@
                 </executions>
                 <configuration>
                     <failOnSeverity>CRITICAL</failOnSeverity>
-                    <reportProperties>
-                        <asciidoc.report.rule.directory>${session.topLevelProject.basedir}/jqassistant
-                        </asciidoc.report.rule.directory>
-                        <asciidoc.report.file.include>index.adoc</asciidoc.report.file.include>
-                    </reportProperties>
                 </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>org.jqassistant.contrib.plugin</groupId>
-                        <artifactId>jqassistant-asciidoc-report-plugin</artifactId>
-                        <version>1.1.0</version>
-                    </dependency>
-                    <dependency>
                         <groupId>de.kontext-e.jqassistant.plugin</groupId>
                         <artifactId>jqassistant.plugin.git</artifactId>
-                        <version>1.5.0</version>
+                        <version>1.7.0</version>
                     </dependency>
                 </dependencies>
             </plugin>

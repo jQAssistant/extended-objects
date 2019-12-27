@@ -5,7 +5,7 @@
 The following rules are executed during a build:
 
 [[default]]
-[role=group,includesGroups="architecture:Default",naming:Default,maven:Default]
+[role=group,includesGroups="architecture:Default,naming:Default,maven:Default"]
 - <<architecture:Default>>
 - <<naming:Default>>
 - <<maven:Default>>
