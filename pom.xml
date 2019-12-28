@@ -91,6 +91,10 @@
         <jqassistant.version>1.8.0-MS1</jqassistant.version>
         <org.osgi_version>4.3.1</org.osgi_version>
 
+        <sonar.projectKey>buschmais_extended-objects</sonar.projectKey>
+        <sonar.organization>buschmais</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.login>${env.SONARCLOUD_LOGIN}</sonar.login>
     </properties>
 
     <profiles>
@@ -566,7 +570,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>27.0.1-jre</version>
+                <version>28.1-jre</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
@@ -576,7 +580,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.4</version>
+                <version>1.18.10</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
