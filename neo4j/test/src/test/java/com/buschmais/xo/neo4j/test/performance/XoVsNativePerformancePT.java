@@ -27,14 +27,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RunWith(Parameterized.class)
-public class XoVsNativePerformanceIT extends AbstractNeo4JXOManagerIT {
+public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(XoVsNativePerformanceIT.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XoVsNativePerformancePT.class);
 
     private static final int TREE_DEPTH = 7;
     private static final int NUMBER_OF_RUNS = 10;
 
-    public XoVsNativePerformanceIT(XOUnit xoUnit) {
+    public XoVsNativePerformancePT(XOUnit xoUnit) {
         super(xoUnit);
         LOGGER.info("Running using URI " + xoUnit.getUri().toString());
     }
