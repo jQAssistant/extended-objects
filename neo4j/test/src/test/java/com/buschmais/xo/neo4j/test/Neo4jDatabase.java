@@ -6,12 +6,12 @@ import java.util.Properties;
 
 import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider;
 import com.buschmais.xo.neo4j.remote.api.RemoteNeo4jXOProvider;
-import com.buschmais.xo.test.AbstractXOManagerTest;
+import com.buschmais.xo.test.AbstractXOManagerIT;
 
 /**
  * Defines the databases under test for Neo4j.
  */
-public enum Neo4jDatabase implements AbstractXOManagerTest.Database {
+public enum Neo4jDatabase implements AbstractXOManagerIT.Database {
 
     MEMORY("memory:///") {
         @Override

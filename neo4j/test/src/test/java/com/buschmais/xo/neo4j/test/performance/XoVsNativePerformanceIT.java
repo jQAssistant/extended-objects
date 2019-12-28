@@ -14,7 +14,7 @@ import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession;
-import com.buschmais.xo.neo4j.test.AbstractNeo4jXOManagerTest;
+import com.buschmais.xo.neo4j.test.AbstractNeo4JXOManagerIT;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNode;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNodeRelation;
 
@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RunWith(Parameterized.class)
-public class XoVsNativePerformanceIT extends AbstractNeo4jXOManagerTest {
+public class XoVsNativePerformanceIT extends AbstractNeo4JXOManagerIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XoVsNativePerformanceIT.class);
 
