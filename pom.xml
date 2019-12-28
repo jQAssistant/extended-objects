@@ -79,6 +79,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
+        <org.jacoco_version>0.8.5</org.jacoco_version>
         <org.asciidoctor.maven_version>1.5.7</org.asciidoctor.maven_version>
         <org.asciidoctor_version>1.5.8</org.asciidoctor_version>
         <org.asciidoctorj.pdf_version>1.5.0-alpha.16</org.asciidoctorj.pdf_version>
@@ -93,7 +94,7 @@
 
         <sonar.organization>buschmais</sonar.organization>
         <sonar.projectKey>buschmais_extended-objects</sonar.projectKey>
-        <sonar.moduleKey>${artifactId}</sonar.moduleKey>
+        <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.login>${env.SONARCLOUD_LOGIN}</sonar.login>
     </properties>
@@ -216,9 +217,9 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.14.1</version>
+                    <version>2.22.2</version>
                     <configuration>
-                        <argLine>-Xmx768M -XX:+HeapDumpOnOutOfMemoryError</argLine>
+                        <argLine>@{argLine} -Xmx768M -XX:+HeapDumpOnOutOfMemoryError</argLine>
                         <forkCount>1</forkCount>
                         <reuseForks>false</reuseForks>
                     </configuration>
@@ -226,12 +227,24 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.14.1</version>
+                    <version>2.22.2</version>
                     <configuration>
-                        <argLine>-Xmx768M -XX:+HeapDumpOnOutOfMemoryError</argLine>
+                        <argLine>@{argLine} -Xmx768M -XX:+HeapDumpOnOutOfMemoryError</argLine>
                         <forkCount>1</forkCount>
                         <reuseForks>false</reuseForks>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${org.jacoco_version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.asciidoctor</groupId>
@@ -452,6 +465,10 @@
                         <_include>-osgi.bnd</_include>
                     </instructions>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>com.buschmais.jqassistant</groupId>
