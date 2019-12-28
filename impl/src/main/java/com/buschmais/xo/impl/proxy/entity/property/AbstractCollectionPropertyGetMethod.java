@@ -55,13 +55,13 @@ public abstract class AbstractCollectionPropertyGetMethod<DatastoreType, Entity,
         AbstractCollectionProxy<?, ?, ?, ?> collectionProxy = createCollectionProxy(entity, sessionContext);
         Collection<?> collection;
         switch (collectionPropertyType) {
-        case List:
+        case LIST:
             collection = new ListProxy<>(collectionProxy);
             break;
-        case Set:
+        case SET:
             collection = new SetProxy<>(collectionProxy);
             break;
-        case Collection:
+        case COLLECTION:
             collection = collectionProxy;
             break;
         default:

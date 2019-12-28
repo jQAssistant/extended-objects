@@ -19,11 +19,8 @@ public class XOUnitValidationHandler implements ValidationEventHandler {
             stringBuilder.append(": ");
             stringBuilder.append(event.getMessage());
             this.errorMessages.add(stringBuilder.toString());
-            return true;
-        } else {
-            // ignore validation warnings
-            return true;
         }
+        return true;
     }
 
     public boolean isValid() {

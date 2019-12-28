@@ -39,7 +39,7 @@ public class DependencyResolver<T> {
      * @return The resolver.
      */
     public static <T> DependencyResolver<T> newInstance(Collection<T> elements, DependencyProvider<T> dependencyProvider) {
-        return new DependencyResolver<T>(elements, dependencyProvider);
+        return new DependencyResolver<>(elements, dependencyProvider);
     }
 
     /**

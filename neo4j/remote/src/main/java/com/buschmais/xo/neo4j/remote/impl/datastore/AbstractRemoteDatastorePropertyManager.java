@@ -13,7 +13,7 @@ import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 
 import org.neo4j.driver.v1.types.Entity;
 
-public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractRemotePropertyContainer, S extends AbstractPropertyContainerState>
+public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractRemotePropertyContainer>
         implements DatastorePropertyManager<T, PropertyMetadata> {
 
     protected StatementExecutor statementExecutor;

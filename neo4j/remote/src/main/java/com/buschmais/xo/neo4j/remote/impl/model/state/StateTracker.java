@@ -8,9 +8,9 @@ public class StateTracker<T, C extends Collection<T>> {
 
     private C elements;
 
-    private Set<T> added = new HashSet<T>();
+    private Set<T> added = new HashSet<>();
 
-    private Set<T> removed = new HashSet<T>();
+    private Set<T> removed = new HashSet<>();
 
     public StateTracker(C elements) {
         this.elements = elements;

@@ -8,7 +8,7 @@ import org.neo4j.graphdb.Transaction;
 
 class EmbeddedNeo4jDatastoreTransaction implements DatastoreTransaction {
 
-    private GraphDatabaseService graphDatabaseService;;
+    private GraphDatabaseService graphDatabaseService;
     private Transaction transaction;
 
     public EmbeddedNeo4jDatastoreTransaction(GraphDatabaseService graphDatabaseService) {

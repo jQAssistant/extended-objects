@@ -24,18 +24,22 @@ public class ConcurrencyInterceptor implements XOInterceptor {
 
     @Override
     public Object invoke(InvocationContext invocationContext) throws Throwable {
+        Object result;
         switch (concurrencyMode) {
         case SINGLETHREADED:
-            return invocationContext.proceed();
+            result = invocationContext.proceed();
+            break;
         case MULTITHREADED:
             lock.lock();
             try {
-                return invocationContext.proceed();
+                result = invocationContext.proceed();
             } finally {
                 lock.unlock();
             }
+            break;
         default:
             throw new XOException("Unsupported concurrency mode " + concurrencyMode);
         }
+        return result;
     }
 }

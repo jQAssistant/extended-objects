@@ -90,6 +90,9 @@ public abstract class AbstractNeo4jDatastore<L extends Neo4jLabel, R extends Neo
             statement = String.format("CREATE INDEX ON :%s(%s)", label.getName(), propertyMetadata.getName());
         }
         try (ResultIterator iterator = session.createQuery(Cypher.class).execute(statement, Collections.emptyMap())) {
+            while (iterator.hasNext()) {
+                iterator.next();
+            }
         }
     }
 

@@ -55,6 +55,7 @@ public class TransactionalResultIterator<E> implements ResultIterator<E>, XOTran
         this.delegateIterator = new ResultIterator<E>() {
             @Override
             public void close() {
+                // forced by interface
             }
 
             @Override
@@ -76,6 +77,7 @@ public class TransactionalResultIterator<E> implements ResultIterator<E>, XOTran
 
     @Override
     public void afterCompletion(boolean committed) {
+        // nothing to do
     }
 
     private void unregisterSynchronization() {

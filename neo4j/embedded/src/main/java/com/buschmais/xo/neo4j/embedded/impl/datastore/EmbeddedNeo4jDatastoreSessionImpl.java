@@ -25,7 +25,7 @@ import com.buschmais.xo.spi.session.XOSession;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
-public class EmbeddedNeo4jDatastoreSession implements com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession {
+public class EmbeddedNeo4jDatastoreSessionImpl implements com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession {
 
     private final GraphDatabaseService graphDatabaseService;
     private final DatastoreTransaction datastoreTransaction;
@@ -34,7 +34,7 @@ public class EmbeddedNeo4jDatastoreSession implements com.buschmais.xo.neo4j.emb
     private final Converter parameterConverter;
     private final Converter valueConverter;
 
-    public EmbeddedNeo4jDatastoreSession(GraphDatabaseService graphDatabaseService) {
+    public EmbeddedNeo4jDatastoreSessionImpl(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
         this.entityManager = new Neo4jEntityManager(graphDatabaseService);
         this.relationManager = new Neo4jRelationManager(graphDatabaseService);
@@ -89,6 +89,7 @@ public class EmbeddedNeo4jDatastoreSession implements com.buschmais.xo.neo4j.emb
 
     @Override
     public void close() {
+        // forced by interface
     }
 
     @Override

@@ -33,7 +33,7 @@ public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContai
     @Override
     public Object getProperty(String key) {
         return delegate.getProperty(key);
-    };
+    }
 
     @Override
     public void setProperty(String key, Object value) {
@@ -61,7 +61,7 @@ public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContai
     }
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o)
             return true;
         if (!(o instanceof AbstractEmbeddedPropertyContainer))
@@ -73,7 +73,7 @@ public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContai
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return (int) id;
     }
 

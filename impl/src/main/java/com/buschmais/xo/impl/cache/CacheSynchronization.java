@@ -5,11 +5,9 @@ import com.buschmais.xo.api.XOTransaction;
 public class CacheSynchronization<Entity, Relation> implements XOTransaction.Synchronization {
 
     private final CacheSynchronizationService<Entity, Relation> cacheSynchronizationService;
-    private final TransactionalCache<?>[] caches;
 
-    public CacheSynchronization(CacheSynchronizationService<Entity, Relation> cacheSynchronizationService, TransactionalCache<?>... caches) {
+    public CacheSynchronization(CacheSynchronizationService<Entity, Relation> cacheSynchronizationService) {
         this.cacheSynchronizationService = cacheSynchronizationService;
-        this.caches = caches;
     }
 
     @Override

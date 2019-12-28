@@ -1,7 +1,4 @@
-package com.buschmais.xo.neo4j.doc.dynamic;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
+package com.buschmais.xo.neo4j.doc.dynamicproperty;
 
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.doc.AbstractDocumentationTest;
@@ -16,7 +13,7 @@ public class DynamicPropertyTest extends AbstractDocumentationTest {
     }
 
     @Test
-    public void dynamicProperty() throws URISyntaxException, IOException {
+    public void dynamicProperty() {
         xoManager.currentTransaction().begin();
 
         Movie movie = xoManager.create(Movie.class);

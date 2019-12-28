@@ -13,7 +13,7 @@ public interface XOBootstrapService {
     /**
      * The resource name for XO descriptor files.
      */
-    public static final String XO_DESCRIPTOR_RESOURCE = "META-INF/xo.xml";
+    String XO_DESCRIPTOR_RESOURCE = "META-INF/xo.xml";
 
     /**
      * Create a {@link com.buschmais.xo.api.XOManagerFactory} using the name of a XO

@@ -16,6 +16,7 @@ public class CloseAdapter implements CloseListener {
      */
     @Override
     public void onBeforeClose() {
+        // to be overridden by sub-classes
     }
 
     /**
@@ -23,6 +24,7 @@ public class CloseAdapter implements CloseListener {
      */
     @Override
     public void onAfterClose() {
+        // to be overridden by sub-classes
     }
 
 }

@@ -26,7 +26,7 @@ import org.neo4j.driver.v1.Record;
 import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.types.Node;
 
-public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropertyManager<RemoteNode, NodeState>
+public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropertyManager<RemoteNode>
         implements DatastoreEntityManager<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, PropertyMetadata> {
 
     private long idSequence = -1;
@@ -63,14 +63,8 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
             remoteNode = datastoreSessionCache.getNode(id, nodeState);
         } else {
             StringBuilder labels = getLabelExpression(remoteLabels);
-            Record record;
-            if (properties.isEmpty()) {
-                String statement = "CREATE (n" + labels.toString() + ") RETURN id(n) as id";
-                record = statementExecutor.getSingleResult(statement, Collections.emptyMap());
-            } else {
-                String statement = "CREATE (n" + labels.toString() + "{n}) RETURN id(n) as id";
-                record = statementExecutor.getSingleResult(statement, parameters("n", properties));
-            }
+            String statement = "CREATE (n" + labels.toString() + "{n}) RETURN id(n) as id";
+            Record record = statementExecutor.getSingleResult(statement, parameters("n", properties));
             long id = record.get("id").asLong();
             remoteNode = datastoreSessionCache.getNode(id, nodeState);
         }

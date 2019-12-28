@@ -10,6 +10,7 @@ public enum LogLevel {
     NONE {
         @Override
         public void log(Logger logger, String message) {
+            // do nothing
         }
     },
     TRACE {

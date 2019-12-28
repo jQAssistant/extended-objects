@@ -25,9 +25,9 @@ public class XOUnitBundleListener implements BundleActivator, BundleListener {
     private XOManagerFactoryServiceFactory serviceFactory;
 
     @Override
-    public void start(BundleContext context) throws Exception {
+    public void start(BundleContext context) {
         context.addBundleListener(this);
-        Dictionary<String, String> props = new Hashtable<String, String>();
+        Dictionary<String, String> props = new Hashtable<>();
         props.put(Constants.SERVICE_PID, XOManagerFactory.FACTORY_PID);
         serviceFactory = new XOManagerFactoryServiceFactory(context);
         serviceFactoryRegistration = context.registerService(ManagedServiceFactory.class, serviceFactory, props);
@@ -37,7 +37,7 @@ public class XOUnitBundleListener implements BundleActivator, BundleListener {
     }
 
     @Override
-    public void stop(BundleContext context) throws Exception {
+    public void stop(BundleContext context) {
         context.removeBundleListener(this);
         serviceFactory.stop();
         if (serviceFactoryRegistration != null) {

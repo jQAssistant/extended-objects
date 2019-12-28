@@ -71,12 +71,10 @@ public class EntityProxyMethodService<Entity, Relation> extends AbstractProxyMet
                             addProxyMethod(new EntityCollectionPropertySetMethod(propertyManager, (EntityCollectionPropertyMethodMetadata) methodMetadata),
                                     method);
                         }
-                    } else if (methodMetadata instanceof RelationCollectionPropertyMethodMetadata) {
-                        if (propertyMethod instanceof GetPropertyMethod) {
-                            RelationCollectionPropertyGetMethod<Entity, ?> proxyMethod = new RelationCollectionPropertyGetMethod<>(sessionContext,
-                                    (RelationCollectionPropertyMethodMetadata<?>) methodMetadata);
-                            addProxyMethod(proxyMethod, method);
-                        }
+                    } else if (methodMetadata instanceof RelationCollectionPropertyMethodMetadata && propertyMethod instanceof GetPropertyMethod) {
+                        RelationCollectionPropertyGetMethod<Entity, ?> proxyMethod = new RelationCollectionPropertyGetMethod<>(sessionContext,
+                                (RelationCollectionPropertyMethodMetadata<?>) methodMetadata);
+                        addProxyMethod(proxyMethod, method);
                     }
                 }
             }

@@ -45,16 +45,16 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
         if (!XODatastoreProvider.class.isAssignableFrom(providerType)) {
             throw new XOException(providerType.getName() + " specified as XO provider must implement " + XODatastoreProvider.class.getName());
         }
-        XODatastoreProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> XODatastoreProvider = XODatastoreProvider.class
+        XODatastoreProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> xoDatastoreProvider = XODatastoreProvider.class
                 .cast(ClassHelper.newInstance(providerType));
-        this.datastore = XODatastoreProvider.createDatastore(xoUnit);
+        this.datastore = xoDatastoreProvider.createDatastore(xoUnit);
         this.pluginRepositoryManager = new PluginRepositoryManager(new QueryLanguagePluginRepository(datastore));
         this.validationMode = xoUnit.getValidationMode();
         this.concurrencyMode = xoUnit.getConcurrencyMode();
         this.defaultTransactionAttribute = xoUnit.getDefaultTransactionAttribute();
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         final ClassLoader parentClassLoader = contextClassLoader != null ? contextClassLoader : xoUnit.getClass().getClassLoader();
-        LOGGER.debug("Using class loader '{}'.", parentClassLoader.toString());
+        LOGGER.debug("Using class loader '{}'.", parentClassLoader);
         classLoader = new ClassLoader() {
             @Override
             public Class<?> loadClass(String name) throws ClassNotFoundException {

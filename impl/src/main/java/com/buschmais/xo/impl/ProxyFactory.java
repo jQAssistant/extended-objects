@@ -58,7 +58,7 @@ public class ProxyFactory {
                 throw new XOException("Cannot create proxy for " + compositeType + " of classes " + compositeType.getClasses(), e);
             }
             try {
-                constructor = type.getConstructor(new Class<?>[] { InvocationHandler.class });
+                constructor = type.getConstructor(InvocationHandler.class);
             } catch (NoSuchMethodException e) {
                 throw new XOException("Cannot find constructor for " + compositeType, e);
             }

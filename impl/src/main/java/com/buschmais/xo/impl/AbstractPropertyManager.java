@@ -46,12 +46,7 @@ public abstract class AbstractPropertyManager<DatastoreType> {
         if (this.transientInstances == null) {
             this.transientInstances = new IdentityHashMap<>();
         }
-        Map<String, Object> transientProperties = this.transientInstances.get(datastoreType);
-        if (transientProperties == null) {
-            transientProperties = new HashMap<>();
-            this.transientInstances.put(datastoreType, transientProperties);
-        }
-        return transientProperties;
+        return this.transientInstances.computeIfAbsent(datastoreType, k -> new HashMap<>());
     }
 
 }

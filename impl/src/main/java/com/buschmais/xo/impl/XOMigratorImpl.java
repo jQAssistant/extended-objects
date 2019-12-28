@@ -13,7 +13,7 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
 /**
  * Implementation of the {@link com.buschmais.xo.api.XOMigrator} interface.
- * 
+ *
  * @param <EntityId>
  *            The type of entity ids as provided by the datastore.
  * @param <Entity>
@@ -24,7 +24,7 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
  *            The type of discriminators as provided by the datastore.
  */
 public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator>
-        implements XOMigrator<T> {
+        implements XOMigrator {
 
     private T instance;
 
@@ -34,7 +34,7 @@ public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends Datastor
 
     /**
      * Constructor.
-     * 
+     *
      * @param instance
      *            The instance to migrate.
      * @param sessionContext

@@ -131,7 +131,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <T> ResultIterable<T> find(Class<T> type, Example<T> example) {
-        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type, new Class<?>[0]);
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = prepareExample(example, type);
         return findByExample(type, exampleEntity);
     }
 
@@ -148,11 +148,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
      */
     private <T> Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> prepareExample(Example<T> example, Class<?> type, Class<?>... types) {
         Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity = new HashMap<>();
-        ExampleProxyMethodService<T> proxyMethodService = (ExampleProxyMethodService<T>) exampleProxyMethodServices.get(type);
-        if (proxyMethodService == null) {
-            proxyMethodService = new ExampleProxyMethodService(type, sessionContext);
-            exampleProxyMethodServices.put(type, proxyMethodService);
-        }
+        ExampleProxyMethodService<T> proxyMethodService = (ExampleProxyMethodService<T>) exampleProxyMethodServices.computeIfAbsent(type,
+                k -> new ExampleProxyMethodService(type, sessionContext));
         InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(exampleEntity, proxyMethodService);
         List<Class<?>> effectiveTypes = new ArrayList<>(types.length + 1);
         effectiveTypes.add(type);
@@ -312,7 +309,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
-    public <T> XOMigrator<T> migrate(T instance) {
+    public <T> XOMigrator migrate(T instance) {
         return sessionContext.getInterceptorFactory().addInterceptor(new XOMigratorImpl<>(instance, sessionContext));
     }
 

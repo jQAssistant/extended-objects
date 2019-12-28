@@ -14,7 +14,7 @@ public class PrimitivePropertySetMethod implements ProxyMethod<Map<PrimitiveProp
     }
 
     @Override
-    public Object invoke(Map<PrimitivePropertyMethodMetadata<?>, Object> properties, Object instance, Object[] args) throws Exception {
+    public Object invoke(Map<PrimitivePropertyMethodMetadata<?>, Object> properties, Object instance, Object[] args) {
         properties.put(methodMetadata, args[0]);
         return null;
     }

@@ -171,11 +171,7 @@ public abstract class AbstractXOManagerTest {
         for (CompositeRowObject row : result) {
             Iterable<String> columnNames = row.getColumns();
             for (String columnName : columnNames) {
-                List<Object> columnValues = columns.get(columnName);
-                if (columnValues == null) {
-                    columnValues = new ArrayList<>();
-                    columns.put(columnName, columnValues);
-                }
+                List<Object> columnValues = columns.computeIfAbsent(columnName, k -> new ArrayList<>());
                 columnValues.add(row.get(columnName, Object.class));
             }
         }

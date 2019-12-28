@@ -83,6 +83,7 @@ public class EntityPropertyManager<Entity, Relation, PropertyMetadata> extends A
 
             @Override
             public void remove() {
+                // forced by the interface
             }
         };
     }

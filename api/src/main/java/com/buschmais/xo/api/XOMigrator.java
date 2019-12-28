@@ -2,11 +2,8 @@ package com.buschmais.xo.api;
 
 /**
  * Defines the interface for a type migrator.
- *
- * @param <T>
- *            The type of the instance to migrate.
  */
-public interface XOMigrator<T> {
+public interface XOMigrator {
     /**
      * Add a type to the instance.
      *

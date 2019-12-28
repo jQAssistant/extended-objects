@@ -10,5 +10,6 @@ public class GraphDbNeo4jDatastore extends AbstractEmbeddedNeo4jDatastore {
 
     @Override
     public void close() {
+        // externally managed
     }
 }

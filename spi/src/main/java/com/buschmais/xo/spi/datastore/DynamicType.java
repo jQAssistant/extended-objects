@@ -28,7 +28,7 @@ public final class DynamicType<TypeMetadata extends DatastoreTypeMetadata<?>> {
     public DynamicType(Set<TypeMetadata> metadata) {
         this.metadata = Collections.unmodifiableSet(metadata);
         this.isFinal = metadata.stream().anyMatch(typeMetadata -> typeMetadata.isFinal());
-        this.isAbstract = !metadata.stream().anyMatch(typeMetadata -> !typeMetadata.isAbstract());
+        this.isAbstract = metadata.stream().allMatch(typeMetadata -> typeMetadata.isAbstract());
     }
 
     public Set<TypeMetadata> getMetadata() {
@@ -66,4 +66,5 @@ public final class DynamicType<TypeMetadata extends DatastoreTypeMetadata<?>> {
     public String toString() {
         return "DynamicType{" + "metadata=" + metadata + ", isFinal=" + isFinal + '}';
     }
+
 }

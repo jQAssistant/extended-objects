@@ -54,7 +54,7 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
                 if (rowProxyMethodService != null) {
                     RowInvocationHandler invocationHandler = new RowInvocationHandler(row, rowProxyMethodService);
                     CompositeType compositeType = CompositeTypeBuilder.create(CompositeRowObject.class, returnTypes.toArray(new Class[returnTypes.size()]));
-                    return (T) sessionContext.getProxyFactory().createInstance(invocationHandler, compositeType);
+                    return sessionContext.getProxyFactory().createInstance(invocationHandler, compositeType);
                 }
                 if (row.size() != 1) {
                     throw new XOException("Only single columns per row can be returned.");

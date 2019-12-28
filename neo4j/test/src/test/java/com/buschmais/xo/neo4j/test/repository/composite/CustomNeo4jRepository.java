@@ -23,7 +23,7 @@ public interface CustomNeo4jRepository extends Neo4jRepository {
     public class FindMethod implements ProxyMethod<XOManager> {
 
         @Override
-        public Object invoke(XOManager xoManager, Object instance, Object[] args) throws Exception {
+        public Object invoke(XOManager xoManager, Object instance, Object[] args) {
             Object arg = args[0];
             return xoManager.find(A.class, arg).getSingleResult();
         }

@@ -91,7 +91,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         this.cacheSynchronizationService = new CacheSynchronizationService<>(this, validationMode);
         if (xoTransaction != null) {
             // Register default synchronizations.
-            xoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(cacheSynchronizationService, entityCache, relationCache));
+            xoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(cacheSynchronizationService));
         }
     }
 

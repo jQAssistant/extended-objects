@@ -1,5 +1,7 @@
 package com.buschmais.xo.spi.metadata;
 
+import static java.util.Arrays.asList;
+
 import java.util.*;
 
 import com.buschmais.xo.api.CompositeType;
@@ -60,9 +62,7 @@ public class CompositeTypeBuilder {
     }
 
     private static void addTypes(SortedSet<Class<?>> classes, Class<?>[] types) {
-        for (Class<?> additionalType : types) {
-            classes.add(additionalType);
-        }
+        classes.addAll(asList(types));
     }
 
     private static CompositeTypeImpl getCompositeType(Set<Class<?>> classes) {
@@ -74,7 +74,7 @@ public class CompositeTypeBuilder {
 
     /**
      * A function to map a input value to an output value.
-     * 
+     *
      * @param <T>
      *            The input type.
      * @param <R>
@@ -85,7 +85,7 @@ public class CompositeTypeBuilder {
 
         /**
          * Apply the function.
-         * 
+         *
          * @param t
          *            The input value.
          * @return The output value.
@@ -133,7 +133,7 @@ public class CompositeTypeBuilder {
 
         @Override
         public String toString() {
-            return Arrays.asList(classes).toString();
+            return asList(classes).toString();
         }
 
     }

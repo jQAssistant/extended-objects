@@ -73,12 +73,12 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
     }
 
     @Override
-    public boolean equals(Object other) {
+    public final boolean equals(Object other) {
         return this == other;
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return this.hashCode;
     }
 

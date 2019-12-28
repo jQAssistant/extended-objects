@@ -28,7 +28,6 @@ import com.buschmais.xo.spi.reflection.AnnotatedType;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +46,7 @@ import org.slf4j.LoggerFactory;
 public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator>
         implements MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeMetadata.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetadataProviderImpl.class);
 
     private final DatastoreMetadataFactory<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataFactory;
     private final EntityTypeMetadataResolver<EntityMetadata, EntityDiscriminator> entityTypeMetadataResolver;
@@ -186,11 +185,11 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      */
     private TypeMetadata createTypeMetadata(AnnotatedType annotatedType) {
         Class<?> currentClass = annotatedType.getAnnotatedElement();
-        Collection<AnnotatedMethod> annotatedMethods = this.annotatedMethods.get(currentClass);
-        if (annotatedMethods == null) {
+        Collection<AnnotatedMethod> methods = this.annotatedMethods.get(currentClass);
+        if (methods == null) {
             throw new XOException("XO unit does not declare '" + currentClass.getName() + "'.");
         }
-        Collection<MethodMetadata<?, ?>> methodMetadataOfType = getMethodMetadataOfType(annotatedType, annotatedMethods);
+        Collection<MethodMetadata<?, ?>> methodMetadataOfType = getMethodMetadataOfType(annotatedType, methods);
         TypeMetadata metadata;
         List<TypeMetadata> superTypes = getSuperTypeMetadata(annotatedType);
         if (isEntityType(annotatedType)) {
@@ -627,7 +626,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         if (cachedOptional == null) {
             AnnotatedQueryElement element = new AnnotatedQueryElement(annotatedElement);
             Annotation annotation = element.getByMetaAnnotation(QueryDefinition.class);
-            cachedOptional = Optional.fromNullable(annotation);
+            cachedOptional = Optional.ofNullable(annotation);
             queryTypes.put(annotatedElement, cachedOptional);
         }
         return cachedOptional.isPresent() ? (QL) cachedOptional.get() : null;

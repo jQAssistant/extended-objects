@@ -105,8 +105,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
                     EntityTypeMetadata<EntityMetadata> superTypeMetadata = (EntityTypeMetadata<EntityMetadata>) metadata;
                     superTypes.add(superTypeMetadata);
                     addSubType(superTypeMetadata, entityTypeMetadata);
-                    Set<EntityTypeMetadata<EntityMetadata>> aggregatedSuperTypes = aggregateSuperTypes(superTypeMetadata);
-                    superTypes.addAll(aggregatedSuperTypes);
+                    superTypes.addAll(aggregateSuperTypes(superTypeMetadata));
                     for (EntityTypeMetadata<EntityMetadata> superType : superTypes) {
                         addSubType(superType, entityTypeMetadata);
                     }
@@ -118,11 +117,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
     }
 
     private void addSubType(EntityTypeMetadata<EntityMetadata> superType, EntityTypeMetadata<EntityMetadata> subType) {
-        Set<EntityTypeMetadata<EntityMetadata>> subTypes = aggregatedSubTypes.get(superType);
-        if (subTypes == null) {
-            subTypes = new HashSet<>();
-            aggregatedSubTypes.put(superType, subTypes);
-        }
+        Set<EntityTypeMetadata<EntityMetadata>> subTypes = aggregatedSubTypes.computeIfAbsent(superType, k -> new HashSet<>());
         subTypes.add(subType);
     }
 
@@ -135,9 +130,8 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * @return The set of discriminators.
      */
     private Set<Discriminator> getAggregatedDiscriminators(EntityTypeMetadata<EntityMetadata> typeMetadata) {
-        Set<Discriminator> discriminators = aggregatedDiscriminators.get(typeMetadata);
-        if (discriminators == null) {
-            discriminators = new HashSet<>();
+        return aggregatedDiscriminators.computeIfAbsent(typeMetadata, k -> {
+            Set<Discriminator> discriminators = new HashSet<>();
             Discriminator discriminator = typeMetadata.getDatastoreMetadata().getDiscriminator();
             if (discriminator != null) {
                 discriminators.add(discriminator);
@@ -148,9 +142,8 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
                     discriminators.add(discriminator);
                 }
             }
-            aggregatedDiscriminators.put(typeMetadata, discriminators);
-        }
-        return discriminators;
+            return discriminators;
+        });
     }
 
     /**

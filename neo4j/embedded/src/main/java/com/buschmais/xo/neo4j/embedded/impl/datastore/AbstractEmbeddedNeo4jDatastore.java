@@ -8,13 +8,13 @@ import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 
-import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.RelationshipType;
 
 /**
  * Abstract base implementation for embedded graph stores.
  */
-public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedLabel, EmbeddedRelationshipType, EmbeddedNeo4jDatastoreSession> {
+public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatastore<EmbeddedLabel, EmbeddedRelationshipType, EmbeddedNeo4jDatastoreSessionImpl> {
 
     protected final GraphDatabaseService graphDatabaseService;
 
@@ -37,7 +37,7 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
             }
 
             protected EmbeddedRelationshipType createRelationshipType(String name) {
-                return new EmbeddedRelationshipType(DynamicRelationshipType.withName(name));
+                return new EmbeddedRelationshipType(RelationshipType.withName(name));
             }
 
             @Override
@@ -48,7 +48,7 @@ public abstract class AbstractEmbeddedNeo4jDatastore extends AbstractNeo4jDatast
     }
 
     @Override
-    public EmbeddedNeo4jDatastoreSession createSession() {
-        return new EmbeddedNeo4jDatastoreSession(graphDatabaseService);
+    public EmbeddedNeo4jDatastoreSessionImpl createSession() {
+        return new EmbeddedNeo4jDatastoreSessionImpl(graphDatabaseService);
     }
 }

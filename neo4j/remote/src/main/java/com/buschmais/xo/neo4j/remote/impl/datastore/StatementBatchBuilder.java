@@ -55,11 +55,7 @@ public class StatementBatchBuilder implements AutoCloseable {
     }
 
     public void add(String key, Value parameters, Callback callback) {
-        BatchEntry batch = batches.get(key);
-        if (batch == null) {
-            batch = new BatchEntry(callback);
-            batches.put(key, batch);
-        }
+        BatchEntry batch = batches.computeIfAbsent(key, k -> new BatchEntry(callback));
         batch.add(parameters);
     }
 

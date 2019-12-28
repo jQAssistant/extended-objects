@@ -1,5 +1,7 @@
 package com.buschmais.xo.neo4j.test.concurrency.composite;
 
+import static org.junit.Assert.fail;
+
 import java.util.concurrent.TimeUnit;
 
 import com.buschmais.xo.api.annotation.ImplementedBy;
@@ -16,14 +18,18 @@ public interface A {
     class IncrementAndGet implements ProxyMethod<EmbeddedNode> {
 
         @Override
-        public Object invoke(EmbeddedNode node, Object instance, Object[] args) throws Exception {
+        public Object invoke(EmbeddedNode node, Object instance, Object[] args) {
             int value;
             if (!node.hasProperty("value")) {
                 value = 0;
             } else {
                 value = (int) node.getProperty("value");
             }
-            TimeUnit.SECONDS.sleep(5);
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e) {
+                fail("Interrupted.");
+            }
             value++;
             node.setProperty("value", value);
             return value;

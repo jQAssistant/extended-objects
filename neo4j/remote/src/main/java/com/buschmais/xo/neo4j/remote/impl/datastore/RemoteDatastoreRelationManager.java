@@ -2,7 +2,10 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import static org.neo4j.driver.v1.Values.parameters;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteDirection;
@@ -22,7 +25,7 @@ import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.types.Node;
 import org.neo4j.driver.v1.types.Relationship;
 
-public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePropertyManager<RemoteRelationship, RelationshipState> implements
+public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePropertyManager<RemoteRelationship> implements
         DatastoreRelationManager<RemoteNode, Long, RemoteRelationship, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType, PropertyMetadata> {
 
     private long idSequence = -1;
@@ -71,17 +74,9 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
         RemoteRelationship relationship;
         if (!datastoreMetadata.isBatchable()) {
             // Create the relationship immediately
-            Record record;
-            if (properties.isEmpty()) {
-                String statement = String.format(
-                        "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) RETURN id(r) as id", type.getName());
-                record = statementExecutor.getSingleResult(statement, parameters("start", start.getId(), "end", end.getId(), "r", Collections.emptyMap()));
-            } else {
-                String statement = String.format(
-                        "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) SET r={r} RETURN id(r) as id",
-                        type.getName());
-                record = statementExecutor.getSingleResult(statement, parameters("start", start.getId(), "end", end.getId(), "r", properties));
-            }
+            String statement = String.format(
+                    "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) SET r={r} RETURN id(r) as id", type.getName());
+            Record record = statementExecutor.getSingleResult(statement, parameters("start", start.getId(), "end", end.getId(), "r", properties));
             long id = record.get("id").asLong();
             RelationshipState relationshipState = new RelationshipState(properties);
             relationship = datastoreSessionCache.getRelationship(id, start, type, end, relationshipState);

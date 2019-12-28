@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.doc.dynamic;
+package com.buschmais.xo.neo4j.doc.dynamicproperty;
 
 import com.buschmais.xo.neo4j.api.annotation.Label;
 

@@ -27,7 +27,7 @@ public abstract class AbstractPluginRepository<Key, Plugin> implements PluginRep
     @Override
     public Key register(Plugin plugin) {
         Key key = getKey(plugin);
-        LOGGER.debug("Registering plugin for " + key);
+        LOGGER.debug("Registering plugin for {}.", key);
         if (key != null) {
             this.plugins.put(key, plugin);
         }
@@ -41,7 +41,7 @@ public abstract class AbstractPluginRepository<Key, Plugin> implements PluginRep
 
     @Override
     public void unregister(Key key) {
-        LOGGER.debug("Unregistering plugin for " + key);
+        LOGGER.debug("Unregistering plugin for {}.", key);
         plugins.remove(key);
     }
 

@@ -19,7 +19,7 @@ public class ListProxy<Instance> extends AbstractSequentialList<Instance> implem
         for (int i = 0; i < index && iterator.hasNext(); i++) {
             iterator.next();
         }
-        ListIterator<Instance> listIterator = new ListIterator<Instance>() {
+        return new ListIterator<Instance>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -32,40 +32,43 @@ public class ListProxy<Instance> extends AbstractSequentialList<Instance> implem
 
             @Override
             public boolean hasPrevious() {
-                throw new UnsupportedOperationException("Operation not supported.");
+                return unsupportedOperation();
             }
 
             @Override
             public Instance previous() {
-                throw new UnsupportedOperationException("Operation not supported.");
+                return unsupportedOperation();
             }
 
             @Override
             public int nextIndex() {
-                throw new UnsupportedOperationException("Operation not supported.");
+                return unsupportedOperation();
             }
 
             @Override
             public int previousIndex() {
-                throw new UnsupportedOperationException("Operation not supported.");
+                return unsupportedOperation();
             }
 
             @Override
             public void remove() {
-                throw new UnsupportedOperationException("Operation not supported.");
+                unsupportedOperation();
             }
 
             @Override
             public void set(Instance instance) {
-                throw new UnsupportedOperationException("Operation not supported.");
+                unsupportedOperation();
             }
 
             @Override
             public void add(Instance instance) {
+                unsupportedOperation();
+            }
+
+            private <T> T unsupportedOperation() {
                 throw new UnsupportedOperationException("Operation not supported.");
             }
         };
-        return listIterator;
     }
 
     @Override
@@ -82,4 +85,5 @@ public class ListProxy<Instance> extends AbstractSequentialList<Instance> implem
     public boolean remove(Object o) {
         return collectionProxy.remove(o);
     }
+
 }

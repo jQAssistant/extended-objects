@@ -2,6 +2,7 @@ package com.buschmais.xo.impl.proxy.common;
 
 import java.lang.reflect.Method;
 
+import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 
 /**
@@ -18,7 +19,7 @@ public class DelegateMethod<T> implements ProxyMethod<T> {
 
     /**
      * Constructor.
-     * 
+     *
      * @param delegate
      *            The delegate instance.
      * @param method
@@ -30,7 +31,11 @@ public class DelegateMethod<T> implements ProxyMethod<T> {
     }
 
     @Override
-    public Object invoke(T repository, Object instance, Object[] args) throws Exception {
-        return method.invoke(delegate, args);
+    public Object invoke(T repository, Object instance, Object[] args) {
+        try {
+            return method.invoke(delegate, args);
+        } catch (ReflectiveOperationException e) {
+            throw new XOException("Cannot invoke delegate method " + method.toString());
+        }
     }
 }

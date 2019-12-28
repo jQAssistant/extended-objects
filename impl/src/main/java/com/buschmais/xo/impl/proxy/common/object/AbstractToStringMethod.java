@@ -8,7 +8,7 @@ public abstract class AbstractToStringMethod<T> implements ProxyMethod<T> {
 
     @Override
     public Object invoke(T datastoreType, Object instance, Object[] args) {
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         for (Class<?> type : instance.getClass().getInterfaces()) {
             if (stringBuffer.length() > 0) {
                 stringBuffer.append('|');

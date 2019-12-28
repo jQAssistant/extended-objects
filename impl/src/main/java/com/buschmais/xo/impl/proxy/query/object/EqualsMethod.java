@@ -9,7 +9,7 @@ public class EqualsMethod implements RowProxyMethod {
     @Override
     public Object invoke(Map<String, Object> entity, Object instance, Object[] args) {
         Object other = args[0];
-        if (other != null && other instanceof Map) {
+        if (other instanceof Map) {
             return entity.equals(other);
         }
         return false;

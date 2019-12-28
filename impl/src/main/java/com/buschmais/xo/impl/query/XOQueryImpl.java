@@ -1,5 +1,7 @@
 package com.buschmais.xo.impl.query;
 
+import static java.util.Comparator.comparing;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.*;
@@ -58,11 +60,11 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     }
 
     public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression) {
-        this(sessionContext, expression, null, Collections.<Class<?>> emptyList());
+        this(sessionContext, expression, null, Collections.emptyList());
     }
 
     public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression, Class<?> returnType) {
-        this(sessionContext, expression, returnType, Collections.<Class<?>> emptyList());
+        this(sessionContext, expression, returnType, Collections.emptyList());
     }
 
     @Override
@@ -150,7 +152,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
             doFlush = this.flush;
         } else {
             Flush autoFlushAnnotation = annotatedElement != null ? annotatedElement.getAnnotation(Flush.class) : null;
-            doFlush = autoFlushAnnotation != null ? autoFlushAnnotation.value() : true;
+            doFlush = autoFlushAnnotation == null || autoFlushAnnotation.value();
         }
         if (doFlush) {
             sessionContext.getCacheSynchronizationService().flush();
@@ -182,12 +184,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     }
 
     private SortedSet<Class<?>> getResultTypes() {
-        SortedSet<Class<?>> resultTypes = new TreeSet<>(new Comparator<Class<?>>() {
-            @Override
-            public int compare(Class<?> o1, Class<?> o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        SortedSet<Class<?>> resultTypes = new TreeSet<>(comparing(Class::getName));
         if (returnType != null) {
             resultTypes.add(returnType);
         }

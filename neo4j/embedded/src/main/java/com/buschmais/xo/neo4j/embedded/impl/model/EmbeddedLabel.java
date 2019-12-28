@@ -2,7 +2,6 @@ package com.buschmais.xo.neo4j.embedded.impl.model;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 
-import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.Label;
 
 public final class EmbeddedLabel implements Neo4jLabel {
@@ -12,7 +11,7 @@ public final class EmbeddedLabel implements Neo4jLabel {
     private Label delegate;
 
     public EmbeddedLabel(String name) {
-        this(DynamicLabel.label(name));
+        this(Label.label(name));
     }
 
     public EmbeddedLabel(Label delegate) {

@@ -99,15 +99,12 @@ public class TraceMonitor implements TraceMonitorMXBean {
     @Override
     public synchronized List<MethodStatistics> getMethodStatistics() {
         List<MethodStatistics> methodStatisticses = new ArrayList<>(statistics.values());
-        Collections.sort(methodStatisticses, new Comparator<MethodStatistics>() {
-            @Override
-            public int compare(MethodStatistics o1, MethodStatistics o2) {
-                if (o1.getTotalTime() == o2.getTotalTime()) {
-                    return 0;
-                }
-                // Sort descending
-                return (o2.getTotalTime() < o1.getTotalTime()) ? -1 : 1;
+        Collections.sort(methodStatisticses, (o1, o2) -> {
+            if (o1.getTotalTime() == o2.getTotalTime()) {
+                return 0;
             }
+            // Sort descending
+            return (o2.getTotalTime() < o1.getTotalTime()) ? -1 : 1;
         });
         return methodStatisticses;
     }
@@ -141,11 +138,7 @@ public class TraceMonitor implements TraceMonitorMXBean {
     }
 
     public synchronized void recordInvocation(Method method, long time) {
-        MethodStatistics methodStatistics = statistics.get(method);
-        if (methodStatistics == null) {
-            methodStatistics = new MethodStatistics(method.toGenericString(), 0, 0);
-            statistics.put(method, methodStatistics);
-        }
+        MethodStatistics methodStatistics = statistics.computeIfAbsent(method, m -> new MethodStatistics(m.toGenericString(), 0, 0));
         methodStatistics.setInvocations(methodStatistics.getInvocations() + 1);
         methodStatistics.setTotalTime(methodStatistics.getTotalTime() + time);
     }

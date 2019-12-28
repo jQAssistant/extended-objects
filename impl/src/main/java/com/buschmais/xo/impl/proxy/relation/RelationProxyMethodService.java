@@ -49,12 +49,9 @@ public class RelationProxyMethodService<Entity, Relation> extends AbstractProxyM
                         } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new TransientPropertySetMethod(relationPropertyManager, (TransientPropertyMethodMetadata) methodMetadata), method);
                         }
-                    } else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata) {
-                        if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(
-                                    new EntityReferencePropertyGetMethod(relationPropertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata),
-                                    method);
-                        }
+                    } else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata && propertyMethod instanceof GetPropertyMethod) {
+                        addProxyMethod(new EntityReferencePropertyGetMethod(relationPropertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata),
+                                method);
                     }
                 }
             }

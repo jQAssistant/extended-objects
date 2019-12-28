@@ -53,7 +53,7 @@ public abstract class AbstractAnnotatedElement<AE extends java.lang.reflect.Anno
     }
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -61,14 +61,11 @@ public abstract class AbstractAnnotatedElement<AE extends java.lang.reflect.Anno
             return false;
         }
         AbstractAnnotatedElement that = (AbstractAnnotatedElement) o;
-        if (!annotated.equals(that.annotated)) {
-            return false;
-        }
-        return true;
+        return annotated.equals(that.annotated);
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return annotated.hashCode();
     }
 

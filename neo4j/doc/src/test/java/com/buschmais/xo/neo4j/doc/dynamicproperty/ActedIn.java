@@ -1,4 +1,4 @@
-package com.buschmais.xo.neo4j.doc.dynamic;
+package com.buschmais.xo.neo4j.doc.dynamicproperty;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 

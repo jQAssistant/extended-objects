@@ -20,7 +20,7 @@ public class RemoteNode extends AbstractRemotePropertyContainer<NodeState>
         case OUTGOING:
             return state.getOutgoingRelationships(type).getElements();
         case INCOMING:
-            return state.getOutgoingRelationships(type).getElements();
+            return state.getIncomingRelationships(type).getElements();
         }
         throw new XOException("Unsupported direction " + dir);
     }

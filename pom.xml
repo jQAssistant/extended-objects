@@ -80,7 +80,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
         <org.jacoco_version>0.8.5</org.jacoco_version>
-        <org.asciidoctor.maven_version>1.5.7</org.asciidoctor.maven_version>
+        <org.asciidoctor.maven_version>1.5.8</org.asciidoctor.maven_version>
         <org.asciidoctor_version>1.5.8</org.asciidoctor_version>
         <org.asciidoctorj.pdf_version>1.5.0-alpha.16</org.asciidoctorj.pdf_version>
         <org.jruby_version>9.1.17.0</org.jruby_version>
@@ -218,21 +218,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.22.2</version>
-                    <configuration>
-                        <argLine>@{argLine} -Xmx768M -XX:+HeapDumpOnOutOfMemoryError</argLine>
-                        <forkCount>1</forkCount>
-                        <reuseForks>false</reuseForks>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>2.22.2</version>
-                    <configuration>
-                        <argLine>@{argLine} -Xmx768M -XX:+HeapDumpOnOutOfMemoryError</argLine>
-                        <forkCount>1</forkCount>
-                        <reuseForks>false</reuseForks>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>

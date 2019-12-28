@@ -148,11 +148,7 @@ public class InstanceListenerService {
                 throw new XOException("Life cycle method '" + method.toGenericString() + "' annotated with '" + annotation.getName()
                         + "' must declare exactly one parameter but declares " + method.getParameterTypes().length + ".");
             }
-            Set<Method> listenerMethods = methods.get(listener);
-            if (listenerMethods == null) {
-                listenerMethods = new HashSet<>();
-                methods.put(listener, listenerMethods);
-            }
+            Set<Method> listenerMethods = methods.computeIfAbsent(listener, k -> new HashSet<>());
             listenerMethods.add(method);
         }
     }

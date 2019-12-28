@@ -22,6 +22,7 @@ public class GuiceModule extends AbstractModule {
 
     @Override
     protected void configure() {
+        // forced by interface
     }
 
     @Provides

@@ -20,6 +20,9 @@ import org.osgi.framework.ServiceReference;
  */
 public final class XOSGi {
 
+    private XOSGi() {
+    }
+
     /**
      * Create a {@link com.buschmais.xo.api.XOManagerFactory} for the XO unit
      * identified by name.
@@ -86,9 +89,7 @@ public final class XOSGi {
             }
             XOManagerFactory xoManagerFactory = xoBootstrapService.createXOManagerFactory(xoUnit);
             bundleContext.ungetService(xoBootstrapServiceReference);
-            if (xoManagerFactory != null) {
-                return xoManagerFactory;
-            }
+            return xoManagerFactory;
         }
         throw new XOException("Cannot bootstrap XO implementation.");
     }

@@ -57,8 +57,10 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
                 break;
             case TRUST_CUSTOM_CA_SIGNED_CERTIFICATES:
                 configBuilder.withTrustStrategy(Config.TrustStrategy.trustCustomCertificateSignedBy(new File(trustCertificate)));
+                break;
             case TRUST_SYSTEM_CA_SIGNED_CERTIFICATES:
                 configBuilder.withTrustStrategy(Config.TrustStrategy.trustSystemCertificates());
+                break;
             default:
                 throw new XOException("Trust strategy not supported: " + trustStrategy);
             }
@@ -77,9 +79,9 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
         if (batchableDefault != null) {
             statementConfigBuilder.batchableDefault(Boolean.valueOf(batchableDefault));
         }
-        StatementConfig statementConfig = statementConfigBuilder.build();
-        LOGGER.debug("Using statement configuration " + statementConfig);
-        return statementConfig;
+        StatementConfig config = statementConfigBuilder.build();
+        LOGGER.debug("Using statement configuration {}.", config);
+        return config;
     }
 
     @Override

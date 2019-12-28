@@ -13,9 +13,9 @@ import org.neo4j.graphdb.Result;
 
 public class EmbeddedNeo4jCypherQuery implements DatastoreQuery<Cypher> {
 
-    private EmbeddedNeo4jDatastoreSession embeddedNeo4jDatastoreSession;
+    private EmbeddedNeo4jDatastoreSessionImpl embeddedNeo4jDatastoreSession;
 
-    public EmbeddedNeo4jCypherQuery(EmbeddedNeo4jDatastoreSession embeddedNeo4jDatastoreSession) {
+    public EmbeddedNeo4jCypherQuery(EmbeddedNeo4jDatastoreSessionImpl embeddedNeo4jDatastoreSession) {
         this.embeddedNeo4jDatastoreSession = embeddedNeo4jDatastoreSession;
     }
 
