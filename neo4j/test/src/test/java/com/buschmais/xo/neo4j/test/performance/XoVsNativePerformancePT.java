@@ -2,6 +2,7 @@ package com.buschmais.xo.neo4j.test.performance;
 
 import static com.buschmais.xo.api.Transaction.TransactionAttribute;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession;
 import com.buschmais.xo.neo4j.test.AbstractNeo4JXOManagerIT;
+import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNode;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNodeRelation;
 
@@ -41,8 +43,8 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() {
-        return xoUnits(asList(TreeNode.class, TreeNodeRelation.class), Collections.emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED,
-                TransactionAttribute.NONE);
+        return xoUnits(singletonList(Neo4jDatabase.MEMORY), asList(TreeNode.class, TreeNodeRelation.class), Collections.emptyList(), ValidationMode.NONE,
+                ConcurrencyMode.SINGLETHREADED, TransactionAttribute.NONE);
     }
 
     private class Measurement {
@@ -80,7 +82,7 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
             Transaction transaction = graphDatabaseService.beginTx();
             Node n1 = graphDatabaseService.createNode();
             Node n2 = graphDatabaseService.createNode();
-            n1.createRelationshipTo(n2, DynamicRelationshipType.withName("BOOTSTRAP"));
+            n1.createRelationshipTo(n2, RelationshipType.withName("BOOTSTRAP"));
             transaction.success();
             transaction.close();
         }

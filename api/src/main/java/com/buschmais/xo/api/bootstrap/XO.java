@@ -1,6 +1,8 @@
 package com.buschmais.xo.api.bootstrap;
 
+import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.stream.StreamSupport;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManagerFactory;
@@ -26,9 +28,9 @@ public final class XO {
      * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
      */
     public static XOManagerFactory createXOManagerFactory(String name) {
-        ServiceLoader<XOBootstrapService> serviceLoader = ServiceLoader.load(XOBootstrapService.class);
-        for (XOBootstrapService xoBootstrapService : serviceLoader) {
-            return xoBootstrapService.createXOManagerFactory(name);
+        Optional<XOBootstrapService> bootstrapService = getBootstrapService();
+        if (bootstrapService.isPresent()) {
+            return bootstrapService.get().createXOManagerFactory(name);
         }
         throw new XOException("Cannot bootstrap XO implementation.");
     }
@@ -41,11 +43,16 @@ public final class XO {
      * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
      */
     public static XOManagerFactory createXOManagerFactory(XOUnit xoUnit) {
-        ServiceLoader<XOBootstrapService> serviceLoader = ServiceLoader.load(XOBootstrapService.class);
-        for (XOBootstrapService xoBootstrapService : serviceLoader) {
-            return xoBootstrapService.createXOManagerFactory(xoUnit);
+        Optional<XOBootstrapService> bootstrapService = getBootstrapService();
+        if (bootstrapService.isPresent()) {
+            return bootstrapService.get().createXOManagerFactory(xoUnit);
         }
         throw new XOException("Cannot bootstrap XO implementation.");
+    }
+
+    private static Optional<XOBootstrapService> getBootstrapService() {
+        ServiceLoader<XOBootstrapService> serviceLoader = ServiceLoader.load(XOBootstrapService.class);
+        return StreamSupport.stream(serviceLoader.spliterator(), false).findFirst();
     }
 
 }
