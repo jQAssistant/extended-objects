@@ -112,7 +112,7 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
 
     @Override
     public void close() {
-        driver.close();
+        driver.closeAsync();
     }
 
     private <E extends Enum<E>> E getEnumOption(Class<E> enumType, String value) {
