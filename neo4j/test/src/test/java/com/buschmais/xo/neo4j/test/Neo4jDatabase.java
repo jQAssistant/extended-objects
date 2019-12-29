@@ -34,6 +34,7 @@ public enum Neo4jDatabase implements AbstractXOManagerIT.Database {
         public Properties getProperties() {
             Properties properties = new Properties();
             properties.put("neo4j.remote.statement.log.level", "info");
+            properties.put("neo4j.remote.encryption", "false");
             return properties;
         }
 

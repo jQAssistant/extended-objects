@@ -1,7 +1,7 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
-import static org.neo4j.driver.v1.Values.parameters;
+import static org.neo4j.driver.Values.parameters;
 
 import java.util.*;
 
@@ -22,9 +22,9 @@ import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 import com.buschmais.xo.spi.metadata.type.TypeMetadata;
 
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.StatementResult;
-import org.neo4j.driver.v1.types.Node;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.types.Node;
 
 public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropertyManager<RemoteNode>
         implements DatastoreEntityManager<Long, RemoteNode, NodeMetadata<RemoteLabel>, RemoteLabel, PropertyMetadata> {
@@ -157,7 +157,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         PropertyMetadata propertyMetadata = getIndexedPropertyMetadata(type, entry.getKey());
         Object value = entry.getValue();
         String statement = String.format("MATCH (n:%s) WHERE n.%s={v} RETURN n", remoteLabel.getName(), propertyMetadata.getName());
-        StatementResult result = statementExecutor.execute(statement, parameters("v", value));
+        Result result = statementExecutor.execute(statement, parameters("v", value));
         return new ResultIterator<RemoteNode>() {
             @Override
             public boolean hasNext() {

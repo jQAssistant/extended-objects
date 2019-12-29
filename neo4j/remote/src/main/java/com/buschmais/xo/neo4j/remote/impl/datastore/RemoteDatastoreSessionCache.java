@@ -10,8 +10,8 @@ import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import org.neo4j.driver.v1.types.Node;
-import org.neo4j.driver.v1.types.Relationship;
+import org.neo4j.driver.types.Node;
+import org.neo4j.driver.types.Relationship;
 
 public class RemoteDatastoreSessionCache {
 

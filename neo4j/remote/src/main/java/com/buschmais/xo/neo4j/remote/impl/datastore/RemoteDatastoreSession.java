@@ -25,7 +25,7 @@ import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import com.buschmais.xo.spi.reflection.ClassHelper;
 import com.buschmais.xo.spi.session.XOSession;
 
-import org.neo4j.driver.v1.Session;
+import org.neo4j.driver.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -3,9 +3,9 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 
-import org.neo4j.driver.v1.Session;
-import org.neo4j.driver.v1.StatementRunner;
-import org.neo4j.driver.v1.Transaction;
+import org.neo4j.driver.QueryRunner;
+import org.neo4j.driver.Session;
+import org.neo4j.driver.Transaction;
 
 public class RemoteDatastoreTransaction implements DatastoreTransaction {
 
@@ -29,7 +29,7 @@ public class RemoteDatastoreTransaction implements DatastoreTransaction {
     public void commit() {
         assertTransaction();
         try {
-            this.transaction.success();
+            this.transaction.commit();
         } finally {
             close();
         }
@@ -39,7 +39,7 @@ public class RemoteDatastoreTransaction implements DatastoreTransaction {
     public void rollback() {
         assertTransaction();
         try {
-            this.transaction.failure();
+            this.transaction.rollback();
         } finally {
             close();
         }
@@ -62,7 +62,7 @@ public class RemoteDatastoreTransaction implements DatastoreTransaction {
         return transaction != null && transaction.isOpen();
     }
 
-    public StatementRunner getStatementRunner() {
+    public QueryRunner getQueryRunner() {
         return transaction != null ? transaction : session;
     }
 }

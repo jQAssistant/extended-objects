@@ -1,6 +1,6 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
-import static org.neo4j.driver.v1.Values.parameters;
+import static org.neo4j.driver.Values.parameters;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,7 @@ import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 
-import org.neo4j.driver.v1.types.Entity;
+import org.neo4j.driver.types.Entity;
 
 public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractRemotePropertyContainer>
         implements DatastorePropertyManager<T, PropertyMetadata> {

@@ -1,6 +1,6 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
-import static org.neo4j.driver.v1.Values.parameters;
+import static org.neo4j.driver.Values.parameters;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -20,10 +20,10 @@ import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.StatementResult;
-import org.neo4j.driver.v1.types.Node;
-import org.neo4j.driver.v1.types.Relationship;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.types.Node;
+import org.neo4j.driver.types.Relationship;
 
 public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePropertyManager<RemoteRelationship> implements
         DatastoreRelationManager<RemoteNode, Long, RemoteRelationship, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType, PropertyMetadata> {
@@ -202,7 +202,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
                 throw new XOException("Direction not supported: " + remoteDirection);
             }
             String statement = String.format("MATCH (start)-[r:%s]->(end) WHERE id(%s)={id} RETURN start,r,end", type.getName(), sourceIdentifier);
-            StatementResult statementResult = statementExecutor.execute(statement, parameters("id", source.getId()));
+            Result statementResult = statementExecutor.execute(statement, parameters("id", source.getId()));
             Set<RemoteRelationship> loaded = new LinkedHashSet<>();
             try {
                 while (statementResult.hasNext()) {

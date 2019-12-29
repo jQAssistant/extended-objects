@@ -1,14 +1,14 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
-import static org.neo4j.driver.v1.Values.parameters;
+import static org.neo4j.driver.Values.parameters;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.Value;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Value;
 
 public class StatementBatchBuilder implements AutoCloseable {
 

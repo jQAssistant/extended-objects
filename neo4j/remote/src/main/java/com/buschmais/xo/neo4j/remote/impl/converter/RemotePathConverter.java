@@ -6,7 +6,7 @@ import java.util.List;
 import com.buschmais.xo.neo4j.remote.impl.datastore.RemoteDatastoreSessionCache;
 import com.buschmais.xo.neo4j.spi.helper.TypeConverter;
 
-import org.neo4j.driver.v1.types.Path;
+import org.neo4j.driver.types.Path;
 
 /**
  * Converts a path into an iterable consisting of all nodes and relationships.

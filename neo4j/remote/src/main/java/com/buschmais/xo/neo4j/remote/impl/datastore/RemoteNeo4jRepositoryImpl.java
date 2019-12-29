@@ -15,9 +15,9 @@ import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.session.XOSession;
 
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.StatementResult;
-import org.neo4j.driver.v1.Values;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.Values;
 
 /**
  * Implementation of the {@link Neo4jRepository}.
@@ -41,7 +41,7 @@ public class RemoteNeo4jRepositoryImpl extends AbstractNeo4jRepository<RemoteLab
     @Override
     protected <T> ResultIterable<T> find(RemoteLabel label, PropertyMetadata datastoreMetadata, Object value) {
         String statement = String.format("MATCH (n:%s{%s:{value}}) RETURN n", label.getName(), datastoreMetadata.getName());
-        StatementResult statementResult = statementExecutor.execute(statement, Values.parameters("value", parameterConverter.convert(value)));
+        Result statementResult = statementExecutor.execute(statement, Values.parameters("value", parameterConverter.convert(value)));
         return xoSession.toResult(new ResultIterator<RemoteNode>() {
 
             @Override

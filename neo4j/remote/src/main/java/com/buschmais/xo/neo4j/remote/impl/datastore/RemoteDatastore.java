@@ -21,7 +21,7 @@ import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.xo.spi.logging.LogLevel;
 
 import com.google.common.base.CaseFormat;
-import org.neo4j.driver.v1.*;
+import org.neo4j.driver.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,12 +43,12 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
     private Driver getDriver(URI uri, Properties properties) {
         String username = RemoteNeo4jXOProvider.Property.USERNAME.get(properties);
         String password = RemoteNeo4jXOProvider.Property.PASSWORD.get(properties);
-        String encryptionLevel = RemoteNeo4jXOProvider.Property.ENCRYPTION_LEVEL.get(properties);
+        String encryption = RemoteNeo4jXOProvider.Property.ENCRYPTION.get(properties);
         String trustStrategy = RemoteNeo4jXOProvider.Property.TRUST_STRATEGY.get(properties);
         String trustCertificate = RemoteNeo4jXOProvider.Property.TRUST_CERTIFICATE.get(properties);
-        Config.ConfigBuilder configBuilder = Config.build();
-        if (encryptionLevel != null) {
-            configBuilder.withEncryptionLevel(getEnumOption(Config.EncryptionLevel.class, encryptionLevel));
+        Config.ConfigBuilder configBuilder = Config.builder();
+        if (encryption == null || Boolean.valueOf(encryption)) {
+            configBuilder.withEncryption();
         }
         if (trustStrategy != null) {
             switch (getEnumOption(Config.TrustStrategy.Strategy.class, trustStrategy)) {
@@ -66,7 +66,7 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
             }
         }
         AuthToken authToken = username != null ? AuthTokens.basic(username, password) : null;
-        return GraphDatabase.driver(uri, authToken, configBuilder.toConfig());
+        return GraphDatabase.driver(uri, authToken, configBuilder.build());
     }
 
     private StatementConfig getStatementConfig(Properties properties) {

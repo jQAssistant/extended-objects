@@ -5,12 +5,12 @@ import java.util.Map;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.logging.LogLevel;
 
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.StatementResult;
-import org.neo4j.driver.v1.StatementRunner;
-import org.neo4j.driver.v1.Value;
-import org.neo4j.driver.v1.exceptions.Neo4jException;
-import org.neo4j.driver.v1.exceptions.NoSuchRecordException;
+import org.neo4j.driver.QueryRunner;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.Value;
+import org.neo4j.driver.exceptions.Neo4jException;
+import org.neo4j.driver.exceptions.NoSuchRecordException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,24 +39,24 @@ public class StatementExecutor {
         }
     }
 
-    public StatementResult execute(String statement, Value parameters) {
+    public Result execute(String statement, Value parameters) {
         return execute(statement, parameters.asMap());
     }
 
-    public StatementResult execute(String statement, Map<String, Object> parameters) {
+    public Result execute(String statement, Map<String, Object> parameters) {
         LogLevel statementLogger = statementConfig.getLogLevel();
         if (!LogLevel.NONE.equals(statementLogger)) {
             statementLogger.log(LOGGER, "'" + statement + "': " + parameters);
         }
         try {
-            StatementRunner statementRunner = transaction.getStatementRunner();
-            return statementRunner.run(statement, parameters);
+            QueryRunner queryRunner = transaction.getQueryRunner();
+            return queryRunner.run(statement, parameters);
         } catch (Neo4jException e) {
             throw new XOException("Cannot execute statement '" + statement + "', " + parameters, e);
         }
     }
 
-    private Record getSingleResult(StatementResult result) {
+    private Record getSingleResult(Result result) {
         try {
             return result.single();
         } catch (NoSuchRecordException e) {

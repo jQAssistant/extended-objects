@@ -8,8 +8,8 @@ import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.spi.helper.Converter;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 
-import org.neo4j.driver.v1.Record;
-import org.neo4j.driver.v1.StatementResult;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Result;
 
 public class RemoteDatastoreCypherQuery implements DatastoreQuery<Cypher> {
 
@@ -32,7 +32,7 @@ public class RemoteDatastoreCypherQuery implements DatastoreQuery<Cypher> {
 
     @Override
     public ResultIterator<Map<String, Object>> execute(String query, Map<String, Object> parameters) {
-        StatementResult result = statementExecutor.execute(query, parameterConverter.<Map<String, Object>> convert(parameters));
+        Result result = statementExecutor.execute(query, parameterConverter.<Map<String, Object>> convert(parameters));
         return new ResultIterator<Map<String, Object>>() {
 
             @Override

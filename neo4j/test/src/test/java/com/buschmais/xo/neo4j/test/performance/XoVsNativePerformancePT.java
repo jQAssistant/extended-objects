@@ -154,7 +154,7 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
 
             @Override
             public Node createEntity() {
-                Node node = graphDatabaseService.createNode(DynamicLabel.label(TreeNode.class.getSimpleName()));
+                Node node = graphDatabaseService.createNode(Label.label(TreeNode.class.getSimpleName()));
                 return node;
             }
 
@@ -165,7 +165,7 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
 
             @Override
             public Relationship createRelation(Node parent, Node child) {
-                DynamicRelationshipType relationshipType = DynamicRelationshipType.withName(TreeNodeRelation.class.getSimpleName());
+                RelationshipType relationshipType = RelationshipType.withName(TreeNodeRelation.class.getSimpleName());
                 if (parent.hasRelationship(relationshipType, Direction.OUTGOING)) {
                     parent.getSingleRelationship(relationshipType, Direction.OUTGOING).delete();
                 }
