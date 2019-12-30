@@ -89,12 +89,6 @@
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
         <jqassistant.version>1.8.0-MS1</jqassistant.version>
         <org.osgi_version>4.3.1</org.osgi_version>
-
-        <sonar.organization>buschmais</sonar.organization>
-        <sonar.projectKey>buschmais_extended-objects</sonar.projectKey>
-        <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.login>${env.SONARCLOUD_LOGIN}</sonar.login>
     </properties>
 
     <profiles>
@@ -130,6 +124,13 @@
         </profile>
         <profile>
             <id>sonar</id>
+            <properties>
+                <sonar.organization>buschmais</sonar.organization>
+                <sonar.projectKey>buschmais_extended-objects</sonar.projectKey>
+                <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+                <sonar.login>${env.SONARCLOUD_LOGIN}</sonar.login>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
