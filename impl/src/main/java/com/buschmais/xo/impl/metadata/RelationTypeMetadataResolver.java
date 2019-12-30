@@ -79,7 +79,7 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
     /**
      * Determine the relation type for the given source discriminators, relation
      * descriminator and target discriminators.
-     * 
+     *
      * @param sourceDiscriminators
      *            The source discriminators.
      * @param discriminator
@@ -112,20 +112,13 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
         Class<?> containingType = null;
         switch (direction) {
         case FROM:
-            if (relationTypeMetadata.getFromType().isAssignableFrom(type)) {
-                containingType = relationTypeMetadata.getFromType();
-            }
+            containingType = relationTypeMetadata.getFromType();
             break;
         case TO:
-            if (relationTypeMetadata.getToType().isAssignableFrom(type)) {
-                containingType = relationTypeMetadata.getToType();
-            }
+            containingType = relationTypeMetadata.getToType();
             break;
         default:
             throw direction.createNotSupportedException();
-        }
-        if (containingType == null) {
-            throw new XOException("Cannot resolve entity type containing a relation of type '" + relationTypeMetadata.getAnnotatedType().getName() + "'.");
         }
         RelationPropertyKey relationPropertyKey = new RelationPropertyKey(containingType, relationTypeMetadata, direction);
         AbstractRelationPropertyMethodMetadata<?> propertyMethodMetadata = relationProperties.get(relationPropertyKey);
