@@ -618,13 +618,11 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     @Override
     public <QL extends Annotation> QL getQuery(AnnotatedElement annotatedElement) {
-        Optional<Annotation> cachedOptional = queryTypes.getIfPresent(annotatedElement);
-        if (cachedOptional == null) {
-            AnnotatedQueryElement element = new AnnotatedQueryElement(annotatedElement);
+        Optional<Annotation> cachedOptional = queryTypes.get(annotatedElement, k -> {
+            AnnotatedQueryElement element = new AnnotatedQueryElement(k);
             Annotation annotation = element.getByMetaAnnotation(QueryDefinition.class);
-            cachedOptional = Optional.ofNullable(annotation);
-            queryTypes.put(annotatedElement, cachedOptional);
-        }
+            return Optional.ofNullable(annotation);
+        });
         return cachedOptional.isPresent() ? (QL) cachedOptional.get() : null;
     }
 

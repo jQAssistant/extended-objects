@@ -2,6 +2,10 @@ package com.buschmais.xo.impl.cache;
 
 import java.util.Collection;
 
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
 /**
  * Transactional cache which handles read and write access to instances.
  *
@@ -10,22 +14,13 @@ import java.util.Collection;
  */
 public class TransactionalCache<Id> {
 
+    @RequiredArgsConstructor
+    @EqualsAndHashCode
+    @ToString
     private static class CacheKey<Id> {
-        private Id id;
 
-        private CacheKey(Id id) {
-            this.id = id;
-        }
+        private final Id id;
 
-        @Override
-        public int hashCode() {
-            return id.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj != null && id.equals(((CacheKey) obj).id);
-        }
     }
 
     /**

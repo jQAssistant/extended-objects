@@ -124,6 +124,12 @@
         </profile>
         <profile>
             <id>sonar</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
             <properties>
                 <sonar.organization>buschmais</sonar.organization>
                 <sonar.projectKey>buschmais_extended-objects</sonar.projectKey>

@@ -2,6 +2,7 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
@@ -42,6 +43,9 @@ public class RemoteDatastoreCypherQuery implements DatastoreQuery<Cypher> {
 
             @Override
             public Map<String, Object> next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 Record record = result.next();
                 Map<String, Object> row = record.asMap();
                 Map<String, Object> result = new LinkedHashMap<>(row.size(), 1);
