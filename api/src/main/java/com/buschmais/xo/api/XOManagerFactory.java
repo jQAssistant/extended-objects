@@ -8,11 +8,6 @@ import com.buschmais.xo.api.bootstrap.XOUnit;
 public interface XOManagerFactory extends AutoCloseable, CloseSupport {
 
     /**
-     * The persistent identifier (PID).
-     */
-    String FACTORY_PID = "com.buschmais.xo.factory";
-
-    /**
      * Create a {@link XOManager} instance.
      *
      * @return The {@link XOManager} instance.

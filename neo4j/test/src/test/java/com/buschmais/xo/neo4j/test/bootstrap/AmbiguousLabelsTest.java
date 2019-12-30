@@ -1,6 +1,7 @@
 package com.buschmais.xo.neo4j.test.bootstrap;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -9,6 +10,7 @@ import java.net.URISyntaxException;
 import java.util.Properties;
 
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XO;
 import com.buschmais.xo.api.bootstrap.XOUnit;
@@ -42,14 +44,18 @@ public class AmbiguousLabelsTest {
     @Test
     public void warn() throws URISyntaxException {
         try (XOManagerFactory xoManagerFactory = createFactory(XOUnit.MappingConfiguration.builder().strictValidation(false).build())) {
-            xoManagerFactory.createXOManager().close();
+            XOManager xoManager = xoManagerFactory.createXOManager();
+            assertThat(xoManager, notNullValue());
+            xoManager.close();
         }
     }
 
     @Test
     public void defaultSetting() throws URISyntaxException {
         try (XOManagerFactory xoManagerFactory = createFactory(null)) {
-            xoManagerFactory.createXOManager().close();
+            XOManager xoManager = xoManagerFactory.createXOManager();
+            assertThat(xoManager, notNullValue());
+            xoManager.close();
         }
     }
 

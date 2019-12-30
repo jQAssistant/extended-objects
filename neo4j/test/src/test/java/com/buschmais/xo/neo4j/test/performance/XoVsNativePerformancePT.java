@@ -37,7 +37,7 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XoVsNativePerformancePT.class);
 
-    private static final int TREE_DEPTH = 7;
+    private static final int TREE_DEPTH = 6;
     private static final int NUMBER_OF_RUNS = 20;
 
     public XoVsNativePerformancePT(XOUnit xoUnit) {
@@ -96,6 +96,7 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
     private List<Measurement> nativeMeasurements = new ArrayList<>();
 
     @Test
+    @SuppressWarnings("squid:S2699")
     public void test() {
         try (XOManager xoManager = getXOManagerFactory().createXOManager()) {
             nativeMeasurements = runNative(xoManager);

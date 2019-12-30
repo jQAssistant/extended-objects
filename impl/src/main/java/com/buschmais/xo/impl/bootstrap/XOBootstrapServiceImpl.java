@@ -17,6 +17,11 @@ import org.osgi.service.component.annotations.Component;
 @Component
 public class XOBootstrapServiceImpl implements XOBootstrapService {
 
+    /**
+     * The resource name for XO descriptor files.
+     */
+    public static final String XO_DESCRIPTOR_RESOURCE = "META-INF/xo.xml";
+
     private final XOUnitFactory xoUnitFactory;
     private final Map<String, XOUnit> xoUnits;
 

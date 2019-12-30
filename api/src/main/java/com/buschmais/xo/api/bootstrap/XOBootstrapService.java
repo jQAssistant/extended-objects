@@ -11,11 +11,6 @@ import com.buschmais.xo.api.XOManagerFactory;
 public interface XOBootstrapService {
 
     /**
-     * The resource name for XO descriptor files.
-     */
-    String XO_DESCRIPTOR_RESOURCE = "META-INF/xo.xml";
-
-    /**
      * Create a {@link com.buschmais.xo.api.XOManagerFactory} using the name of a XO
      * unit.
      * <p>

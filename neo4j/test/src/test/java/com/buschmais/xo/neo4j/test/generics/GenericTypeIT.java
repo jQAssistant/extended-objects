@@ -35,6 +35,9 @@ public class GenericTypeIT extends AbstractNeo4JXOManagerIT {
         BoundType b = xoManager.create(BoundType.class);
         b.setValue("value");
         xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
+        assertThat(b.getValue(), equalTo("value"));
+        xoManager.currentTransaction().commit();
     }
 
     @Test

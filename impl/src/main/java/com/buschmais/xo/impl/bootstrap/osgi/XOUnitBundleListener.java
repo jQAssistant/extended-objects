@@ -16,6 +16,11 @@ import org.slf4j.LoggerFactory;
 
 public class XOUnitBundleListener implements BundleActivator, BundleListener {
 
+    /**
+     * The persistent identifier (PID).
+     */
+    public static final String FACTORY_PID = "com.buschmais.xo.factory";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(XOUnitBundleListener.class);
 
     private final Map<Long, List<XOManagerFactory>> registeredXOManagerFactories = new HashMap<>();
@@ -27,8 +32,9 @@ public class XOUnitBundleListener implements BundleActivator, BundleListener {
     @Override
     public void start(BundleContext context) {
         context.addBundleListener(this);
+        @SuppressWarnings("squid:S1149")
         Dictionary<String, String> props = new Hashtable<>();
-        props.put(Constants.SERVICE_PID, XOManagerFactory.FACTORY_PID);
+        props.put(Constants.SERVICE_PID, FACTORY_PID);
         serviceFactory = new XOManagerFactoryServiceFactory(context);
         serviceFactoryRegistration = context.registerService(ManagedServiceFactory.class, serviceFactory, props);
         if (LOGGER.isDebugEnabled()) {
@@ -66,36 +72,36 @@ public class XOUnitBundleListener implements BundleActivator, BundleListener {
     private void deployXOUnits(Bundle bundle) {
         Enumeration<?> e = bundle.findEntries("META-INF", "xo.xml", false); //$NON-NLS-1$ , $NON-NLS-2$
         if (e != null) {
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Deploying XO units in bundle '{}'", bundle.getSymbolicName());
-            }
+            LOGGER.info("Deploying XO units in bundle '{}'", bundle.getSymbolicName());
             List<XOManagerFactory> xoManagerFactories = new LinkedList<>();
             while (e.hasMoreElements()) {
                 URL xoUnitUrl = (URL) e.nextElement();
-                List<XOUnit> xoUnits = Collections.emptyList();
-                try {
-                    xoUnits = XOUnitFactory.getInstance().getXOUnits(xoUnitUrl);
-                } catch (IOException ioe) {
-                    if (LOGGER.isErrorEnabled()) {
-                        LOGGER.error("Error while loading XOUnit", ioe);
-                    }
-                }
+                List<XOUnit> xoUnits = getXoUnits(xoUnitUrl);
                 for (XOUnit xoUnit : xoUnits) {
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Found XOUnit '{}'", xoUnit.getName());
-                    }
+                    LOGGER.debug("Found XOUnit '{}'", xoUnit.getName());
                     XOManagerFactory xoManagerFactory = new XOManagerFactoryImpl(xoUnit);
+                    @SuppressWarnings("squid:S1149")
                     Dictionary<String, Object> p = new Hashtable<>();
                     p.put("name", xoUnit.getName());
                     bundle.getBundleContext().registerService(XOManagerFactory.class, xoManagerFactory, p);
                     xoManagerFactories.add(xoManagerFactory);
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Registered service for XOUnit '{}'", xoUnit.getName());
-                    }
+                    LOGGER.debug("Registered service for XOUnit '{}'", xoUnit.getName());
                 }
             }
             this.registeredXOManagerFactories.put(Long.valueOf(bundle.getBundleId()), xoManagerFactories);
         }
+    }
+
+    private List<XOUnit> getXoUnits(URL xoUnitUrl) {
+        List<XOUnit> xoUnits = Collections.emptyList();
+        try {
+            xoUnits = XOUnitFactory.getInstance().getXOUnits(xoUnitUrl);
+        } catch (IOException ioe) {
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Error while loading XOUnit", ioe);
+            }
+        }
+        return xoUnits;
     }
 
     private void undeployXOUnits(Bundle bundle) {

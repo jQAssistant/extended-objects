@@ -4,13 +4,16 @@ import static com.buschmais.xo.api.bootstrap.XOUnitParameter.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.Iterator;
+import java.util.Properties;
 
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.Transaction;
 import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.api.bootstrap.XOUnitParameter;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import com.buschmais.xo.spi.reflection.ClassHelper;
 
@@ -23,21 +26,12 @@ public final class XOUnitConverter {
 
     public static XOUnit fromProperties(final Dictionary<String, ?> properties) throws ConfigurationException {
         // must: url
-        String url = (String) properties.get(URL.getKey());
-        if (url == null) {
-            throw new ConfigurationException(URL.getKey(), "Property missing");
-        }
+        String url = getProperty(properties, URL);
         // must: types
-        Collection<String> typeNames = (Collection<String>) properties.get(TYPES.getKey());
-        if (typeNames == null) {
-            throw new ConfigurationException(TYPES.getKey(), "Property missing");
-        }
+        Collection<String> typeNames = getProperty(properties, TYPES);
         Collection<Class<?>> types = ClassHelper.getTypes(typeNames);
         // must: provider
-        String providerName = (String) properties.get(PROVIDER.getKey());
-        if (providerName == null) {
-            throw new ConfigurationException(PROVIDER.getKey(), "Property missing");
-        }
+        String providerName = getProperty(properties, PROVIDER);
         Class<? extends XODatastoreProvider> provider = ClassHelper.getType(providerName);
 
         XOUnit.XOUnitBuilder builder;
@@ -85,18 +79,12 @@ public final class XOUnitConverter {
         return builder.build();
     }
 
-    public static Properties fromXOUnit(final XOUnit xoUnit) {
-        Properties properties = new Properties();
-
-        // optional: properties
-        Properties props = xoUnit.getProperties();
-        // only simple types and collections/arrays of simple types allowed
-        Collection<Object> providerProps = toList(props);
-        if (!providerProps.isEmpty()) {
-            properties.put(PROPERTIES.getKey(), providerProps);
+    private static <T> T getProperty(Dictionary<String, ?> properties, XOUnitParameter parameter) throws ConfigurationException {
+        T value = (T) properties.get(parameter.getKey());
+        if (value == null) {
+            throw new ConfigurationException(parameter.getKey(), "Property " + parameter.getKey() + " missing");
         }
-
-        return properties;
+        return value;
     }
 
     private static Properties toMap(Collection<Object> entries) throws ConfigurationException {
@@ -114,12 +102,4 @@ public final class XOUnitConverter {
         return properties;
     }
 
-    private static Collection<Object> toList(Properties props) {
-        List<Object> entries = new ArrayList<>();
-        for (Entry<Object, Object> entry : props.entrySet()) {
-            entries.add(entry.getKey());
-            entries.add(entry.getValue());
-        }
-        return entries;
-    }
 }
