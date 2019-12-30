@@ -141,7 +141,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
     @Override
     public <R> AbstractRelationPropertyMethodMetadata<?> getPropertyMetadata(Class<?> entityType, Class<R> relationType, Direction direction) {
-        return relationTypeMetadataResolver.getRelationPropertyMethodMetadata(entityType, getRelationMetadata(relationType), direction);
+        return relationTypeMetadataResolver.getRelationPropertyMethodMetadata(getRelationMetadata(relationType), direction);
     }
 
     @Override

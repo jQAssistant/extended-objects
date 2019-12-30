@@ -107,8 +107,7 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
         return dynamicType;
     }
 
-    public AbstractRelationPropertyMethodMetadata<?> getRelationPropertyMethodMetadata(Class<?> type, RelationTypeMetadata<?> relationTypeMetadata,
-            Direction direction) {
+    public AbstractRelationPropertyMethodMetadata<?> getRelationPropertyMethodMetadata(RelationTypeMetadata<?> relationTypeMetadata, Direction direction) {
         Class<?> containingType = null;
         switch (direction) {
         case FROM:
@@ -155,10 +154,7 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
             if (!entityType.equals(that.entityType)) {
                 return false;
             }
-            if (!relationTypeMetadata.equals(that.relationTypeMetadata)) {
-                return false;
-            }
-            return true;
+            return relationTypeMetadata.equals(that.relationTypeMetadata);
         }
 
         @Override
