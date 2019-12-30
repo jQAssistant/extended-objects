@@ -613,10 +613,6 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         if (typeMetadata == null) {
             throw new XOException("Cannot resolve metadata for type " + type.getName() + ".");
         }
-        if (!metadataType.isAssignableFrom(typeMetadata.getClass())) {
-            throw new XOException(
-                    "Expected metadata of type '" + metadataType.getName() + "' but got '" + typeMetadata.getClass() + "' for type '" + type + "'");
-        }
         return metadataType.cast(typeMetadata);
     }
 

@@ -31,10 +31,14 @@ import org.slf4j.LoggerFactory;
 @RunWith(Parameterized.class)
 public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
 
+    public static final Label LABEL = Label.label(TreeNode.class.getSimpleName());
+
+    public static final String RELATIONSHIPTYPE = TreeNodeRelation.class.getSimpleName();
+
     private static final Logger LOGGER = LoggerFactory.getLogger(XoVsNativePerformancePT.class);
 
     private static final int TREE_DEPTH = 7;
-    private static final int NUMBER_OF_RUNS = 10;
+    private static final int NUMBER_OF_RUNS = 20;
 
     public XoVsNativePerformancePT(XOUnit xoUnit) {
         super(xoUnit);
@@ -154,7 +158,7 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
 
             @Override
             public Node createEntity() {
-                Node node = graphDatabaseService.createNode(Label.label(TreeNode.class.getSimpleName()));
+                Node node = graphDatabaseService.createNode(LABEL);
                 return node;
             }
 
@@ -165,9 +169,9 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
 
             @Override
             public Relationship createRelation(Node parent, Node child) {
-                RelationshipType relationshipType = RelationshipType.withName(TreeNodeRelation.class.getSimpleName());
-                if (parent.hasRelationship(relationshipType, Direction.OUTGOING)) {
-                    parent.getSingleRelationship(relationshipType, Direction.OUTGOING).delete();
+                RelationshipType relationshipType = RelationshipType.withName(RELATIONSHIPTYPE);
+                if (child.hasRelationship(relationshipType, Direction.INCOMING)) {
+                    child.getSingleRelationship(relationshipType, Direction.INCOMING).delete();
                 }
                 Relationship relationshipTo = parent.createRelationshipTo(child, relationshipType);
                 return relationshipTo;
@@ -186,7 +190,6 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
         LOGGER.info("Starting run with API '" + apiUnderTest + "'");
         List<Measurement> measurements = new ArrayList<>(NUMBER_OF_RUNS);
         for (int i = 0; i < NUMBER_OF_RUNS; i++) {
-            dropDatabase();
             apiUnderTest.begin();
             long start = System.currentTimeMillis();
             Entity root = apiUnderTest.createEntity();
