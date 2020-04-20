@@ -11,7 +11,7 @@ import com.buschmais.xo.neo4j.api.annotation.Cypher;
 public interface CustomTypedNeo4jRepository extends TypedNeo4jRepository<A> {
 
     @ResultOf
-    @Cypher("match (a) where a.name={name} return a")
+    @Cypher("match (a) where a.name=$name return a")
     A findByName(@Parameter("name") String name);
 
 }

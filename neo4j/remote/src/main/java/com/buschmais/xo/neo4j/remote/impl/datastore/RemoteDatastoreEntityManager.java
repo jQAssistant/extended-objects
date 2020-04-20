@@ -63,7 +63,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
             remoteNode = datastoreSessionCache.getNode(id, nodeState);
         } else {
             StringBuilder labels = getLabelExpression(remoteLabels);
-            String statement = "CREATE (n" + labels.toString() + "{n}) RETURN id(n) as id";
+            String statement = "CREATE (n" + labels.toString() + "$n) RETURN id(n) as id";
             Record record = statementExecutor.getSingleResult(statement, parameters("n", properties));
             long id = record.get("id").asLong();
             remoteNode = datastoreSessionCache.getNode(id, nodeState);
@@ -156,7 +156,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         Map.Entry<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entry = values.entrySet().iterator().next();
         PropertyMetadata propertyMetadata = getIndexedPropertyMetadata(type, entry.getKey());
         Object value = entry.getValue();
-        String statement = String.format("MATCH (n:%s) WHERE n.%s={v} RETURN n", remoteLabel.getName(), propertyMetadata.getName());
+        String statement = String.format("MATCH (n:%s) WHERE n.%s=$v RETURN n", remoteLabel.getName(), propertyMetadata.getName());
         Result result = statementExecutor.execute(statement, parameters("v", value));
         return new ResultIterator<RemoteNode>() {
             @Override
@@ -198,7 +198,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     }
 
     private Node fetch(Long id) {
-        Record record = statementExecutor.getSingleResult("MATCH (n) WHERE id(n)={id} RETURN n", parameters("id", id));
+        Record record = statementExecutor.getSingleResult("MATCH (n) WHERE id(n)=$id RETURN n", parameters("id", id));
         return record.get("n").asNode();
     }
 

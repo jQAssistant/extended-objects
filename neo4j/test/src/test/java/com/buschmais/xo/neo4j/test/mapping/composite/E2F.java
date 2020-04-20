@@ -34,27 +34,27 @@ public interface E2F {
     ByValueUsingImplicitThis getByValueUsingImplicitThis(@Parameter("value") String value);
 
     @ResultOf
-    @Cypher("match ()-[e2f:E2F]->(f:F) where e2f.value={value} return f")
+    @Cypher("match ()-[e2f:E2F]->(f:F) where e2f.value=$value return f")
     Result<F> getResultUsingCypher(@Parameter("value") String value);
 
     @ResultOf
-    @Cypher("match ()-[e2f:E2F]->(f:F) where e2f.value={value} return f")
+    @Cypher("match ()-[e2f:E2F]->(f:F) where e2f.value=$value return f")
     F getSingleResultUsingCypher(@Parameter("value") String value);
 
     @ResultOf
-    @Cypher("match ()-[e2f:E2F]->(f:F) where e2f.value={value} set e2f.result='true'")
+    @Cypher("match ()-[e2f:E2F]->(f:F) where e2f.value=$value set e2f.result='true'")
     void voidResultUsingCypher(@Parameter("value") String value);
 
     void setValue(String value);
 
     String getValue();
 
-    @Cypher("match ()-[e2f:E2F]->(f:F) where id(e2f)={e2f} and e2f.value={value} return f")
+    @Cypher("match ()-[e2f:E2F]->(f:F) where id(e2f)=$e2f and e2f.value=$value return f")
     public interface ByValue {
         F getF();
     }
 
-    @Cypher("match ()-[e2f:E2F]->(f:F) where id(e2f)={this} and e2f.value={value} return f")
+    @Cypher("match ()-[e2f:E2F]->(f:F) where id(e2f)=$this and e2f.value=$value return f")
     public interface ByValueUsingImplicitThis {
         F getF();
     }

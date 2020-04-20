@@ -43,7 +43,7 @@ public class CustomQueryLanguagePlugin implements QueryLanguagePlugin<CustomQuer
                     String key = matcher.group(2);
                     String value = matcher.group(3);
                     Neo4jDatastoreSession neo4jDatastoreSession = (Neo4jDatastoreSession) session;
-                    String s = String.format("MATCH (n:%s{%s:{%s}}) RETURN n", label, key, key);
+                    String s = String.format("MATCH (n:%s{%s:$%s}) RETURN n", label, key, key);
                     Map<String, Object> params = new HashMap<>();
                     params.put(key, value);
                     ResultIterator<Map<String, Object>> iterator = neo4jDatastoreSession.createQuery(Cypher.class).execute(s, params);

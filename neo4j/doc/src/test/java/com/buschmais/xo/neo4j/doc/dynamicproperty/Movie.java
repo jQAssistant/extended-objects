@@ -13,11 +13,11 @@ import com.buschmais.xo.neo4j.api.annotation.Relation.Incoming;
 public interface Movie {
 
     @ResultOf
-    @Cypher("match (a:Actor)-[:ACTED_IN]->(m:Movie) where id(m)={this} return count(a)")
+    @Cypher("match (a:Actor)-[:ACTED_IN]->(m:Movie) where id(m)=$this return count(a)")
     Long getActorCount();
 
     @ResultOf
-    @Cypher("match (a:Actor)-[:ACTED_IN]->(m:Movie) where id(m)={this} and a.age={age} return count(a)")
+    @Cypher("match (a:Actor)-[:ACTED_IN]->(m:Movie) where id(m)=$this and a.age={age} return count(a)")
     Long getActorCountByAge(@Parameter("age") int age);
 
     @ActedIn

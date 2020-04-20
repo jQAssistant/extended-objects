@@ -14,7 +14,7 @@ public interface A {
     void setName(String name);
 
     @ResultOf
-    @Cypher("MATCH (a) WHERE a.name={name} RETURN a")
+    @Cypher("MATCH (a) WHERE a.name=$name RETURN a")
     @Flush(false)
     A findByName(@Parameter("name") String name);
 

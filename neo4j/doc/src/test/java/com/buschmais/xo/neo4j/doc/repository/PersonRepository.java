@@ -11,7 +11,7 @@ import com.buschmais.xo.neo4j.api.annotation.Cypher;
 public interface PersonRepository {
 
     @ResultOf
-    @Cypher("MATCH (p:Person) WHERE p.name={name} RETURN p")
+    @Cypher("MATCH (p:Person) WHERE p.name=$name RETURN p")
     Result<Person> getPersonsByName(@Parameter("name") String name);
 }
 // end::Class[]

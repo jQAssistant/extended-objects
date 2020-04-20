@@ -28,14 +28,10 @@ public class StatementExecutor {
     }
 
     public Record getSingleResult(String statement, Value parameters) {
-        return getSingleResult(statement, parameters.asMap());
-    }
-
-    public Record getSingleResult(String statement, Map<String, Object> parameters) {
         try {
-            return getSingleResult(execute(statement, parameters));
+            return getSingleResult(execute(statement, parameters.asMap()));
         } catch (Neo4jException e) {
-            throw new XOException("Cannot get result for statement '" + statement + "', " + parameters, e);
+            throw new XOException("Cannot get result for statement '" + statement + "', " + parameters.asMap(), e);
         }
     }
 

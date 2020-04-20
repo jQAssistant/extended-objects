@@ -10,7 +10,7 @@ import com.buschmais.xo.neo4j.api.annotation.Cypher;
 public interface FlushRepository {
 
     @ResultOf
-    @Cypher("MATCH (a:A) WHERE a.name={name} RETURN a")
+    @Cypher("MATCH (a:A) WHERE a.name=$name RETURN a")
     @Flush(false)
     A findByName(@Parameter("name") String name);
 

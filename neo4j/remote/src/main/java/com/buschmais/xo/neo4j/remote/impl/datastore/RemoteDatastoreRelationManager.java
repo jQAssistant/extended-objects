@@ -75,7 +75,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
         if (!datastoreMetadata.isBatchable()) {
             // Create the relationship immediately
             String statement = String.format(
-                    "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) SET r={r} RETURN id(r) as id", type.getName());
+                    "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) SET r=$r RETURN id(r) as id", type.getName());
             Record record = statementExecutor.getSingleResult(statement, parameters("start", start.getId(), "end", end.getId(), "r", properties));
             long id = record.get("id").asLong();
             RelationshipState relationshipState = new RelationshipState(properties);
@@ -123,7 +123,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
 
     @Override
     public RemoteRelationship findRelationById(RelationTypeMetadata<RelationshipMetadata<RemoteRelationshipType>> metadata, Long id) {
-        String statement = String.format("MATCH (start)-[r:%s]->(end) WHERE id(r)={id} RETURN start,r,end",
+        String statement = String.format("MATCH (start)-[r:%s]->(end) WHERE id(r)=$id RETURN start,r,end",
                 metadata.getDatastoreMetadata().getDiscriminator().getName());
         Record record = statementExecutor.getSingleResult(statement, parameters("id", id));
         Node start = record.get("start").asNode();
@@ -161,7 +161,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     }
 
     private Relationship fetch(Long id) {
-        Record record = statementExecutor.getSingleResult("MATCH ()-[r]->() WHERE id(r)={id} RETURN r", parameters("id", id));
+        Record record = statementExecutor.getSingleResult("MATCH ()-[r]->() WHERE id(r)=$id RETURN r", parameters("id", id));
         return record.get("r").asRelationship();
     }
 
@@ -201,7 +201,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
             default:
                 throw new XOException("Direction not supported: " + remoteDirection);
             }
-            String statement = String.format("MATCH (start)-[r:%s]->(end) WHERE id(%s)={id} RETURN start,r,end", type.getName(), sourceIdentifier);
+            String statement = String.format("MATCH (start)-[r:%s]->(end) WHERE id(%s)=$id RETURN start,r,end", type.getName(), sourceIdentifier);
             Result statementResult = statementExecutor.execute(statement, parameters("id", source.getId()));
             Set<RemoteRelationship> loaded = new LinkedHashSet<>();
             try {

@@ -32,25 +32,25 @@ public interface E {
     ByValueUsingImplicitThis getByValueUsingImplicitThis(@Parameter("value") String value);
 
     @ResultOf
-    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where f.value={value} return f")
+    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where f.value=$value return f")
     Result<F> getResultUsingCypher(@Parameter("value") String value);
 
     @ResultOf
-    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where f.value={value} return f")
+    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where f.value=$value return f")
     F getSingleResultUsingCypher(@Parameter("value") String value);
 
     @ResultOf
-    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where f.value={value} set e:Result")
+    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where f.value=$value set e:Result")
     void voidResultUsingCypher(@Parameter("value") String value);
 
     List<E2F> getE2F();
 
-    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where id(e)={e} and f.value={value} return f")
+    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where id(e)=$e and f.value=$value return f")
     interface ByValue {
         F getF();
     }
 
-    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where id(e)={this} and f.value={value} return f")
+    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where id(e)=$this and f.value=$value return f")
     interface ByValueUsingImplicitThis {
         F getF();
     }

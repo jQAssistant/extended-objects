@@ -66,7 +66,7 @@ public class StatementBatchBuilder implements AutoCloseable {
             BatchEntry batchEntry = entry.getValue();
             List<Value> batch = batchEntry.getBatch();
             if (!batch.isEmpty()) {
-                String batchStatement = "UNWIND {batch} as entry " + statement;
+                String batchStatement = "UNWIND $batch as entry " + statement;
                 Record result = statementExecutor.getSingleResult(batchStatement, parameters("batch", batch));
                 Callback callback = batchEntry.getCallback();
                 if (callback != null) {

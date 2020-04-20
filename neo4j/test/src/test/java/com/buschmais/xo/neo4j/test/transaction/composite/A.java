@@ -31,7 +31,7 @@ public interface A {
     @ResultOf
     ByValue getByValue(@Parameter("value") String value);
 
-    @Cypher("match (a:A) where a.value={value} return a")
+    @Cypher("match (a:A) where a.value=$value return a")
     interface ByValue {
         A getA();
     }

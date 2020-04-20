@@ -13,7 +13,7 @@ import com.buschmais.xo.neo4j.api.annotation.Cypher;
 public interface CustomRepository {
 
     @ResultOf
-    @Cypher("match (a) where a.name={name} return a")
+    @Cypher("match (a) where a.name=$name return a")
     A findByName(@Parameter("name") String name);
 
     @ImplementedBy(FindMethod.class)

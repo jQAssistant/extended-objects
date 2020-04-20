@@ -40,7 +40,7 @@ public class RemoteNeo4jRepositoryImpl extends AbstractNeo4jRepository<RemoteLab
 
     @Override
     protected <T> ResultIterable<T> find(RemoteLabel label, PropertyMetadata datastoreMetadata, Object value) {
-        String statement = String.format("MATCH (n:%s{%s:{value}}) RETURN n", label.getName(), datastoreMetadata.getName());
+        String statement = String.format("MATCH (n:%s{%s:$value}) RETURN n", label.getName(), datastoreMetadata.getName());
         Result statementResult = statementExecutor.execute(statement, Values.parameters("value", parameterConverter.convert(value)));
         return xoSession.toResult(new ResultIterator<RemoteNode>() {
 
