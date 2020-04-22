@@ -26,6 +26,10 @@ public interface A extends Version {
 
     void setMappedString(String mapppedString);
 
+    String[] getStringArray();
+
+    void setStringArray(String[] stringArray);
+
     B getB();
 
     void setB(B b);

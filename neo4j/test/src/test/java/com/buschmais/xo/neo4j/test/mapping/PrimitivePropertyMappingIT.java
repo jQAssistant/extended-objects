@@ -59,4 +59,16 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
         assertThat(result.getColumn("v"), hasItem("mappedValue"));
         xoManager.currentTransaction().commit();
     }
+
+    @Test
+    public void primitiveArrayProperty() {
+        XOManager xoManager = getXOManager();
+        xoManager.currentTransaction().begin();
+        A a = xoManager.create(A.class);
+        a.setStringArray(new String[] { "A", "B" });
+        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction().begin();
+        assertThat(a.getStringArray(), equalTo(new String[] { "A", "B" }));
+        xoManager.currentTransaction().commit();
+    }
 }
