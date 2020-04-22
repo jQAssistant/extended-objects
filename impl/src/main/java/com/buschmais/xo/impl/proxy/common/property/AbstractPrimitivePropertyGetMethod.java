@@ -37,6 +37,17 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Property
                 if (Collection.class.isAssignableFrom(value.getClass())) {
                     return toArray((Collection<?>) value, type.getComponentType());
                 }
+            } else if (type.isPrimitive() && Number.class.isAssignableFrom(value.getClass())) {
+                Number number = (Number) value;
+                if (int.class.equals(type)) {
+                    return number.intValue();
+                } else if (long.class.equals(type)) {
+                    return number.longValue();
+                } else if (double.class.equals(type)) {
+                    return number.doubleValue();
+                } else if (float.class.equals(type)) {
+                    return number.floatValue();
+                }
             }
             throw new XOException("Cannot convert value of type " + value.getClass() + " to type " + type);
         } else if (boolean.class.equals(type)) {
