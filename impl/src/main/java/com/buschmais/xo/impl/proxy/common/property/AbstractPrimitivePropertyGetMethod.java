@@ -27,45 +27,60 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Property
         return convert(value, metadata.getAnnotatedMethod().getType());
     }
 
-    private Object convert(Object value, Class<?> type) {
+    private Object convert(Object value, Class<?> propertyType) {
         if (value != null) {
-            if (type.isAssignableFrom(value.getClass())) {
+            if (propertyType.isAssignableFrom(value.getClass())) {
                 return value;
-            } else if (Enum.class.isAssignableFrom(type)) {
-                return Enum.valueOf((Class<Enum>) type, (String) value);
-            } else if (type.isArray()) {
+            } else if (Enum.class.isAssignableFrom(propertyType)) {
+                return Enum.valueOf((Class<Enum>) propertyType, (String) value);
+            } else if (propertyType.isArray()) {
                 if (Collection.class.isAssignableFrom(value.getClass())) {
-                    return toArray((Collection<?>) value, type.getComponentType());
+                    return toArray((Collection<?>) value, propertyType.getComponentType());
                 }
-            } else if (type.isPrimitive() && Number.class.isAssignableFrom(value.getClass())) {
-                Number number = (Number) value;
-                if (int.class.equals(type)) {
-                    return number.intValue();
-                } else if (long.class.equals(type)) {
-                    return number.longValue();
-                } else if (double.class.equals(type)) {
-                    return number.doubleValue();
-                } else if (float.class.equals(type)) {
-                    return number.floatValue();
-                }
+            } else if (propertyType.isPrimitive()) {
+                return convertPrimitve(value, propertyType);
             }
-            throw new XOException("Cannot convert value of type " + value.getClass() + " to type " + type);
-        } else if (boolean.class.equals(type)) {
+            throw new XOException("Cannot convert value of type " + value.getClass() + " to type " + propertyType);
+        } else if (boolean.class.equals(propertyType)) {
             return false;
-        } else if (short.class.equals(type)) {
+        } else if (short.class.equals(propertyType)) {
             return 0;
-        } else if (int.class.equals(type)) {
+        } else if (int.class.equals(propertyType)) {
             return 0;
-        } else if (long.class.equals(type)) {
+        } else if (long.class.equals(propertyType)) {
             return 0L;
-        } else if (float.class.equals(type)) {
+        } else if (float.class.equals(propertyType)) {
             return 0f;
-        } else if (double.class.equals(type)) {
+        } else if (double.class.equals(propertyType)) {
             return 0d;
-        } else if (char.class.equals(type)) {
+        } else if (char.class.equals(propertyType)) {
             return 0;
-        } else if (byte.class.equals(type)) {
+        } else if (byte.class.equals(propertyType)) {
             return 0;
+        }
+        return null;
+    }
+
+    private Object convertPrimitve(Object value, Class<?> propertyType) {
+        if (Number.class.isAssignableFrom(value.getClass())) {
+            Number number = (Number) value;
+            if (byte.class.equals(propertyType)) {
+                return number.byteValue();
+            } else if (short.class.equals(propertyType)) {
+                return number.shortValue();
+            } else if (int.class.equals(propertyType)) {
+                return number.intValue();
+            } else if (long.class.equals(propertyType)) {
+                return number.longValue();
+            } else if (float.class.equals(propertyType)) {
+                return number.floatValue();
+            } else if (double.class.equals(propertyType)) {
+                return number.doubleValue();
+            }
+        } else if (boolean.class.equals(propertyType)) {
+            return ((Boolean) value).booleanValue();
+        } else if (char.class.equals(propertyType)) {
+            return ((Character) value).charValue();
         }
         return null;
     }
