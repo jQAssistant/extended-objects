@@ -1,27 +1,23 @@
 package com.buschmais.xo.neo4j.test.query;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeThat;
-import static org.neo4j.graphdb.Label.label;
 
 import java.util.Collection;
+import java.util.Set;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession;
+import com.buschmais.xo.neo4j.spi.Neo4jDatastoreSession;
+import com.buschmais.xo.neo4j.spi.Neo4jDatastoreSession.Index;
 import com.buschmais.xo.neo4j.test.AbstractNeo4JXOManagerIT;
-import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.query.composite.A;
 import com.buschmais.xo.neo4j.test.query.composite.C;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.schema.IndexDefinition;
 
 @RunWith(Parameterized.class)
 public class CreateIndexIT extends AbstractNeo4JXOManagerIT {
@@ -37,35 +33,11 @@ public class CreateIndexIT extends AbstractNeo4JXOManagerIT {
 
     @Test
     public void createIndex() {
-        assumeThat(getXOManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
-        GraphDatabaseService graphDatabaseService = xoManager.getDatastoreSession(EmbeddedNeo4jDatastoreSession.class).getGraphDatabaseService();
-        assertThat(findIndex(graphDatabaseService, label("A"), "value"), notNullValue());
-        assertThat(findIndex(graphDatabaseService, label("C"), "value"), notNullValue());
+        Set<Index> indexes = ((Neo4jDatastoreSession<?, ?, ?, ?>) xoManager.getDatastoreSession(Neo4jDatastoreSession.class)).getIndexes();
+        assertThat(indexes.size(), equalTo(2));
+        assertThat(indexes, hasItems(Index.builder().label("A").property("value").build(), Index.builder().label("C").property("value").build()));
         xoManager.currentTransaction().commit();
-    }
-
-    /**
-     * Find an index.
-     *
-     * @param graphDatabaseService
-     *            The Graph database service.
-     * @param label
-     *            The label.
-     * @param propertyName
-     *            The property name.
-     * @return The index or <code>null</code>:
-     */
-    private IndexDefinition findIndex(GraphDatabaseService graphDatabaseService, Label label, String propertyName) {
-        final Iterable<IndexDefinition> indexes = graphDatabaseService.schema().getIndexes(label);
-        for (IndexDefinition indexDefinition : indexes) {
-            for (String key : indexDefinition.getPropertyKeys()) {
-                if (key.equals(propertyName)) {
-                    return indexDefinition;
-                }
-            }
-        }
-        return null;
     }
 }

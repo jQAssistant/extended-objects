@@ -13,7 +13,7 @@ import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationship;
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
-import com.buschmais.xo.neo4j.spi.Neo4jDatastoreSession;
+import com.buschmais.xo.neo4j.spi.AbstractNeo4jDatastoreSession;
 import com.buschmais.xo.neo4j.spi.helper.Converter;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
@@ -29,7 +29,7 @@ import org.neo4j.driver.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RemoteDatastoreSession implements Neo4jDatastoreSession<RemoteNode, RemoteLabel, RemoteRelationship, RemoteRelationshipType> {
+public class RemoteDatastoreSession extends AbstractNeo4jDatastoreSession<RemoteNode, RemoteLabel, RemoteRelationship, RemoteRelationshipType> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoteDatastoreSession.class);
 

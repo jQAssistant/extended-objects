@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.api.annotation.*;
+import com.buschmais.xo.neo4j.api.annotation.Batchable;
+import com.buschmais.xo.neo4j.api.annotation.Label;
+import com.buschmais.xo.neo4j.api.annotation.Property;
+import com.buschmais.xo.neo4j.api.annotation.Relation;
 import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationshipType;
 import com.buschmais.xo.neo4j.spi.metadata.IndexedPropertyMetadata;
@@ -73,8 +76,7 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
 
     @Override
     public IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod propertyMethod) {
-        Indexed indexed = propertyMethod.getAnnotation(Indexed.class);
-        return new IndexedPropertyMetadata(indexed.create(), indexed.unique());
+        return new IndexedPropertyMetadata();
     }
 
     @Override

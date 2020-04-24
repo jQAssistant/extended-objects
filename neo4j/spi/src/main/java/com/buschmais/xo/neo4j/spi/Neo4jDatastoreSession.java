@@ -1,5 +1,7 @@
 package com.buschmais.xo.neo4j.spi;
 
+import java.util.Set;
+
 import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
@@ -8,6 +10,8 @@ import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
+
+import lombok.*;
 
 /**
  * Defines the Neo4j specific {@link DatastoreSession} interface.
@@ -18,4 +22,23 @@ public interface Neo4jDatastoreSession<N extends Neo4jNode, L extends Neo4jLabel
     Object convertValue(Object value);
 
     Object convertParameter(Object value);
+
+    Set<Index> getIndexes();
+
+    void createIndexes(Set<Index> indexes);
+
+    @Builder
+    @Getter
+    @EqualsAndHashCode
+    @ToString
+    class Index {
+
+        @Singular
+        private final Set<String> labels;
+
+        @Singular
+        private final Set<String> properties;
+
+    }
+
 }

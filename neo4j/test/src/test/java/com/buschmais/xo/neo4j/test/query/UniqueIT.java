@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Collection;
 
+import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
@@ -14,6 +15,7 @@ import com.buschmais.xo.neo4j.test.AbstractNeo4JXOManagerIT;
 import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.query.composite.B;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -31,16 +33,23 @@ public class UniqueIT extends AbstractNeo4JXOManagerIT {
         return xoUnits(asList(Neo4jDatabase.MEMORY), asList(B.class));
     }
 
+    @Before
+    public void createConstraint() {
+        try (Query.Result<Query.Result.CompositeRowObject> execute = getXOManager().createQuery("CREATE CONSTRAINT ON (b:B) ASSERT b.uniqueValue IS UNIQUE")
+                .execute()) {
+        }
+    }
+
     @Test(expected = ConstraintViolationException.class)
     public void denyDuplicates() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         B a1 = xoManager.create(B.class);
-        a1.setValue("A1");
+        a1.setUniqueValue("A1");
         B a2_1 = xoManager.create(B.class);
-        a2_1.setValue("A2");
+        a2_1.setUniqueValue("A2");
         B a2_2 = xoManager.create(B.class);
-        a2_2.setValue("A2");
+        a2_2.setUniqueValue("A2");
         xoManager.currentTransaction().commit();
     }
 

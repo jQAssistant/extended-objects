@@ -6,12 +6,14 @@ import java.util.Arrays;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
+import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession;
 import com.buschmais.xo.neo4j.embedded.impl.converter.EmbeddedParameterConverter;
 import com.buschmais.xo.neo4j.embedded.impl.converter.EmbeddedValueConverter;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationship;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
+import com.buschmais.xo.neo4j.spi.AbstractNeo4jDatastoreSession;
 import com.buschmais.xo.neo4j.spi.helper.Converter;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
@@ -25,7 +27,8 @@ import com.buschmais.xo.spi.session.XOSession;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
-public class EmbeddedNeo4jDatastoreSessionImpl implements com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession {
+public class EmbeddedNeo4jDatastoreSessionImpl extends
+        AbstractNeo4jDatastoreSession<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType> implements EmbeddedNeo4jDatastoreSession {
 
     private final GraphDatabaseService graphDatabaseService;
     private final DatastoreTransaction datastoreTransaction;

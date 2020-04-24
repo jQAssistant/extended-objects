@@ -6,7 +6,7 @@ import com.buschmais.xo.neo4j.api.annotation.Label;
 @Label("A")
 public interface A {
 
-    @Indexed(create = true)
+    @Indexed
     String getValue();
 
     void setValue(String value);
