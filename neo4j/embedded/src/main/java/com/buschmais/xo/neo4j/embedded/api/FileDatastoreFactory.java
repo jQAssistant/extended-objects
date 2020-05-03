@@ -28,6 +28,7 @@ public class FileDatastoreFactory implements DatastoreFactory<EmbeddedNeo4jDatas
             throw new MalformedURLException(e.getMessage());
         }
         File storeDir = new File(path);
+        storeDir.mkdirs();
         LOGGER.debug("Creating graph database service datastore for directory '{}'.", storeDir.getAbsolutePath());
         GraphDatabaseBuilder databaseBuilder = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(storeDir);
         Properties neo4jProperties = Neo4jPropertyHelper.getNeo4jProperties(properties);
