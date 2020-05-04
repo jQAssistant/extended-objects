@@ -9,13 +9,12 @@ import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerS
 
 /**
  * Abstract base class for property containers.
- *
+ * <p>
  * NOTE: This class and all deriving classes must not override
  * {@link #equals(Object)} and {@link #hashCode()}, equality is defined by
  * reference.
  *
- * @param <S>
- *            The state type.
+ * @param <S> The state type.
  */
 public abstract class AbstractRemotePropertyContainer<S extends AbstractPropertyContainerState> implements Neo4jPropertyContainer {
 
@@ -64,8 +63,11 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
     }
 
     public void setProperty(String key, Object value) {
-        state.getOrCreateWriteCache().put(key, value);
-        state.getReadCache().put(key, value);
+        Object existingValue = getProperty(key);
+        if ((existingValue == null && value != null) || (existingValue != null && !existingValue.equals(value))) {
+            state.getOrCreateWriteCache().put(key, value);
+            state.getReadCache().put(key, value);
+        }
     }
 
     public void removeProperty(String name) {
