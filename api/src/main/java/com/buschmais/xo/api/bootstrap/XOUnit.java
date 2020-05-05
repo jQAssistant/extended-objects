@@ -87,6 +87,13 @@ public class XOUnit {
     private ConcurrencyMode concurrencyMode = ConcurrencyMode.SINGLETHREADED;
 
     /**
+     * If <code>true</code> cached values will be cleared after transaction
+     * completion.
+     */
+    @Default
+    private boolean clearAfterCompletion = true;
+
+    /**
      * The {@link TransactionAttribute} to use.
      */
     @Default

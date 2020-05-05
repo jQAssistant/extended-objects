@@ -1,15 +1,12 @@
 package com.buschmais.xo.impl;
 
-import static com.buschmais.xo.api.Transaction.TransactionAttribute;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.ValidatorFactory;
 
-import com.buschmais.xo.api.ConcurrencyMode;
-import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOTransaction;
+import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.cache.CacheSynchronization;
 import com.buschmais.xo.impl.cache.CacheSynchronizationService;
 import com.buschmais.xo.impl.cache.TransactionalCache;
@@ -68,8 +65,7 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
     public SessionContext(MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> metadataProvider,
             PluginRepositoryManager pluginRepositoryManager,
             DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession,
-            ValidatorFactory validatorFactory, List<? extends Class<?>> instanceListenerTypes, TransactionAttribute defaultTransactionAttribute,
-            ValidationMode validationMode, ConcurrencyMode concurrencyMode, ClassLoader classLoader) {
+            ValidatorFactory validatorFactory, XOUnit xoUnit, ClassLoader classLoader) {
         this.metadataProvider = metadataProvider;
         this.pluginRepositoryManager = pluginRepositoryManager;
         this.datastoreSession = datastoreSession;
@@ -78,17 +74,17 @@ public class SessionContext<EntityId, Entity, EntityMetadata extends DatastoreEn
         DatastoreTransaction datastoreTransaction = datastoreSession.getDatastoreTransaction();
         this.xoTransaction = datastoreTransaction != null ? new XOTransactionImpl(datastoreTransaction) : null;
         List<XOInterceptor> interceptorChain = new ArrayList<>();
-        interceptorChain.add(new ConcurrencyInterceptor(concurrencyMode));
-        interceptorChain.add(new TransactionInterceptor(xoTransaction, defaultTransactionAttribute));
+        interceptorChain.add(new ConcurrencyInterceptor(xoUnit.getConcurrencyMode()));
+        interceptorChain.add(new TransactionInterceptor(xoTransaction, xoUnit.getDefaultTransactionAttribute()));
         this.interceptorFactory = new InterceptorFactory(interceptorChain);
         this.proxyFactory = new ProxyFactory(interceptorFactory, classLoader);
-        this.instanceListenerService = new InstanceListenerService(instanceListenerTypes);
+        this.instanceListenerService = new InstanceListenerService(xoUnit.getInstanceListeners());
         this.entityPropertyManager = new EntityPropertyManager<>(this);
         this.relationPropertyManager = new RelationPropertyManager<>(this);
         this.relationInstanceManager = new RelationInstanceManager<>(this);
         this.entityInstanceManager = new EntityInstanceManager<>(this);
         this.instanceValidationService = new InstanceValidationService(validatorFactory, relationCache, entityCache);
-        this.cacheSynchronizationService = new CacheSynchronizationService<>(this, validationMode);
+        this.cacheSynchronizationService = new CacheSynchronizationService<>(this, xoUnit);
         if (xoTransaction != null) {
             // Register default synchronizations.
             xoTransaction.registerDefaultSynchronization(new CacheSynchronization<>(cacheSynchronizationService));

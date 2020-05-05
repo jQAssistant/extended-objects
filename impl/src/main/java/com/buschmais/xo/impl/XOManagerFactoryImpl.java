@@ -4,7 +4,11 @@ import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
 
-import com.buschmais.xo.api.*;
+import com.buschmais.xo.api.CloseListener;
+import com.buschmais.xo.api.ValidationMode;
+import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.XOManager;
+import com.buschmais.xo.api.XOManagerFactory;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.metadata.MetadataProviderImpl;
 import com.buschmais.xo.impl.plugin.PluginRepositoryManager;
@@ -30,9 +34,6 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
     private final Datastore<?, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> datastore;
     private final PluginRepositoryManager pluginRepositoryManager;
     private final ValidatorFactory validatorFactory;
-    private final ValidationMode validationMode;
-    private final ConcurrencyMode concurrencyMode;
-    private final Transaction.TransactionAttribute defaultTransactionAttribute;
 
     private final DefaultCloseSupport closeSupport = new DefaultCloseSupport();
 
@@ -49,9 +50,6 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
                 .cast(ClassHelper.newInstance(providerType));
         this.datastore = xoDatastoreProvider.createDatastore(xoUnit);
         this.pluginRepositoryManager = new PluginRepositoryManager(new QueryLanguagePluginRepository(datastore));
-        this.validationMode = xoUnit.getValidationMode();
-        this.concurrencyMode = xoUnit.getConcurrencyMode();
-        this.defaultTransactionAttribute = xoUnit.getDefaultTransactionAttribute();
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         final ClassLoader parentClassLoader = contextClassLoader != null ? contextClassLoader : xoUnit.getClass().getClassLoader();
         LOGGER.debug("Using class loader '{}'.", parentClassLoader);
@@ -72,7 +70,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
      * @return The {@link javax.validation.ValidatorFactory}.
      */
     private ValidatorFactory getValidatorFactory() {
-        if (!ValidationMode.NONE.equals(validationMode)) {
+        if (!ValidationMode.NONE.equals(xoUnit.getValidationMode())) {
             try {
                 return Validation.buildDefaultValidatorFactory();
             } catch (ValidationException e) {
@@ -87,8 +85,7 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = datastore
                 .createSession();
         SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext = new SessionContext<>(
-                metadataProvider, pluginRepositoryManager, datastoreSession, validatorFactory, xoUnit.getInstanceListeners(), defaultTransactionAttribute,
-                validationMode, concurrencyMode, classLoader);
+                metadataProvider, pluginRepositoryManager, datastoreSession, validatorFactory, xoUnit, classLoader);
         XOManagerImpl<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> xoManager = new XOManagerImpl<>(
                 sessionContext);
         return sessionContext.getInterceptorFactory().addInterceptor(xoManager, XOManager.class);

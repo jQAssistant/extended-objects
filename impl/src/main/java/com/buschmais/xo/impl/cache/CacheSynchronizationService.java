@@ -9,6 +9,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import com.buschmais.xo.api.ValidationMode;
+import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.AbstractInstanceManager;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
@@ -18,11 +19,11 @@ import com.buschmais.xo.spi.datastore.DatastoreSession;
 public class CacheSynchronizationService<Entity, Relation> {
 
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
-    private ValidationMode validationMode;
+    private final XOUnit xoUnit;
 
-    public CacheSynchronizationService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, ValidationMode validationMode) {
+    public CacheSynchronizationService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, XOUnit xoUnit) {
         this.sessionContext = sessionContext;
-        this.validationMode = validationMode;
+        this.xoUnit = xoUnit;
     }
 
     public void flush() {
@@ -58,18 +59,20 @@ public class CacheSynchronizationService<Entity, Relation> {
     }
 
     private <T> void clear(TransactionalCache<?> cache, AbstractInstanceManager<?, T> instanceManager, DatastorePropertyManager<T, ?> datastoreManager) {
-        Collection<?> instances = cache.readInstances();
-        for (Object instance : instances) {
-            T entity = instanceManager.getDatastoreType(instance);
-            if (entity != null) {
-                datastoreManager.clear(entity);
+        if (xoUnit.isClearAfterCompletion()) {
+            Collection<?> instances = cache.readInstances();
+            for (Object instance : instances) {
+                T datastoreType = instanceManager.getDatastoreType(instance);
+                if (datastoreType != null) {
+                    datastoreManager.clear(datastoreType);
+                }
             }
         }
         cache.clear();
     }
 
     private void validateInstance(Object instance) {
-        if (!ValidationMode.NONE.equals(validationMode)) {
+        if (!ValidationMode.NONE.equals(xoUnit.getValidationMode())) {
             Set<ConstraintViolation<Object>> constraintViolations = sessionContext.getInstanceValidationService().validate(instance);
             if (!constraintViolations.isEmpty()) {
                 throw new ConstraintViolationException(constraintViolations);
