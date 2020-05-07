@@ -9,7 +9,7 @@ public interface DatastorePropertyManager<Element, PropertyMetadata> {
 
     /**
      * Set the value of a primitive property.
-     * 
+     *
      * @param entity
      *            The entity.
      * @param metadata
@@ -21,7 +21,7 @@ public interface DatastorePropertyManager<Element, PropertyMetadata> {
 
     /**
      * Determine if the value of a primitive property is set.
-     * 
+     *
      * @param entity
      *            The entity.
      * @param metadata
@@ -31,7 +31,7 @@ public interface DatastorePropertyManager<Element, PropertyMetadata> {
 
     /**
      * Remove the value of a primitive property.
-     * 
+     *
      * @param entity
      *            The entity.
      * @param metadata
@@ -41,7 +41,7 @@ public interface DatastorePropertyManager<Element, PropertyMetadata> {
 
     /**
      * Get the value of a primitive property.
-     * 
+     *
      * @param entity
      *            The entity.
      * @param metadata
@@ -51,17 +51,19 @@ public interface DatastorePropertyManager<Element, PropertyMetadata> {
 
     /**
      * Flush any tracked state of the given entities to the datastore.
-     * 
+     *
      * @param entities
      *            The entities.
      */
     void flush(Iterable<Element> entities);
 
     /**
-     * Clear any tracked state for the given entity.
-     * 
+     * Perform after completion operations.
+     *
      * @param entity
      *            The entity.
+     * @param clear
+     *            If <code>true</code> clean-up tracked state.
      */
-    void clear(Element entity);
+    void afterCompletion(Element entity, boolean clear);
 }

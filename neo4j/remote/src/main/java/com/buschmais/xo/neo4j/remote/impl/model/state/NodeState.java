@@ -84,8 +84,8 @@ public class NodeState extends AbstractPropertyContainerState {
     }
 
     @Override
-    public void clear() {
-        super.clear();
+    public void afterCompletion(boolean clear) {
+        super.afterCompletion(clear);
         outgoingRelationships.clear();
         incomingRelationships.clear();
     }

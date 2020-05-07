@@ -40,9 +40,10 @@ public abstract class AbstractPropertyContainerState {
         writeCache = null;
     }
 
-    public void clear() {
-        readCache = null;
-        writeCache = null;
+    public void afterCompletion(boolean clear) {
+        if (clear) {
+            readCache = null;
+            writeCache = null;
+        }
     }
-
 }

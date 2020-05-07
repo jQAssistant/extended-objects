@@ -26,7 +26,7 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedR
 
     /**
      * Constructor.
-     * 
+     *
      * @param graphDatabaseService
      *            The graph database service.
      */
@@ -119,7 +119,9 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedR
     }
 
     @Override
-    public void clear(EmbeddedRelationship relationship) {
-        relationship.clear();
+    public void afterCompletion(EmbeddedRelationship relationship, boolean clear) {
+        if (clear) {
+            relationship.clear();
+        }
     }
 }

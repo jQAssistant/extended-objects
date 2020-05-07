@@ -90,7 +90,7 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
     }
 
     @Override
-    public void clear(Entity entity) {
-        delegate.clear(entity);
+    public void afterCompletion(Entity entity, boolean clear) {
+        delegate.afterCompletion(entity, clear);
     }
 }

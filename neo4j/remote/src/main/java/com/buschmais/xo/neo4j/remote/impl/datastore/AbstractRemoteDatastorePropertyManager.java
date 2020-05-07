@@ -70,8 +70,8 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
     }
 
     @Override
-    public final void clear(T entity) {
-        entity.getState().clear();
+    public final void afterCompletion(T entity, boolean clear) {
+        entity.getState().afterCompletion(clear);
     }
 
     protected final void ensureLoaded(T entity) {

@@ -104,7 +104,7 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
     }
 
     @Override
-    public void clear(Relation relation) {
-        delegate.clear(relation);
+    public void afterCompletion(Relation relation, boolean clear) {
+        delegate.afterCompletion(relation, clear);
     }
 }
