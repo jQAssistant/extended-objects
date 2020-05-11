@@ -2,7 +2,7 @@ package com.buschmais.xo.neo4j.api.model;
 
 /**
  * Defines a node.
- * 
+ *
  * @param <L>
  *            The type representing labels.
  * @param <R>
@@ -17,7 +17,7 @@ public interface Neo4jNode<L extends Neo4jLabel, R extends Neo4jRelationship, T 
 
     /**
      * Return all relationships of the given type and direction.
-     * 
+     *
      * @param type
      *            The relationship type.
      * @param dir
@@ -28,7 +28,7 @@ public interface Neo4jNode<L extends Neo4jLabel, R extends Neo4jRelationship, T 
 
     /**
      * Return if the node has a relationship of the given type and direction.
-     * 
+     *
      * @param type
      *            The relationship type.
      * @param dir
@@ -49,17 +49,8 @@ public interface Neo4jNode<L extends Neo4jLabel, R extends Neo4jRelationship, T 
     R getSingleRelationship(T type, D dir);
 
     /**
-     * Return if the node has a label.
-     * 
-     * @param label
-     *            The label.
-     * @return <code>true</code> if the node has the label.
-     */
-    boolean hasLabel(L label);
-
-    /**
      * Return all labels of the node.
-     * 
+     *
      * @return The labels of the node.
      */
     Iterable<L> getLabels();

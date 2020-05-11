@@ -3,11 +3,19 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
 import static org.neo4j.driver.Values.parameters;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.remote.impl.model.*;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteDirection;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationship;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
 import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.StateTracker;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
@@ -60,13 +68,13 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
         RemoteNode remoteNode;
         if (isBatchable(dynamicType)) {
             long id = idSequence--;
-            remoteNode = datastoreSessionCache.getNode(id, nodeState);
+            remoteNode = datastoreSessionCache.getNode(id, () -> nodeState);
         } else {
             StringBuilder labels = getLabelExpression(remoteLabels);
             String statement = "CREATE (n" + labels.toString() + "$n) RETURN id(n) as id";
             Record record = statementExecutor.getSingleResult(statement, parameters("n", properties));
             long id = record.get("id").asLong();
-            remoteNode = datastoreSessionCache.getNode(id, nodeState);
+            remoteNode = datastoreSessionCache.getNode(id, () -> nodeState);
         }
         return remoteNode;
     }

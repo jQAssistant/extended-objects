@@ -73,11 +73,6 @@ public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
     }
 
     @Override
-    public boolean hasLabel(EmbeddedLabel label) {
-        return labels.contains(label);
-    }
-
-    @Override
     public Set<EmbeddedLabel> getLabels() {
         return labels;
     }

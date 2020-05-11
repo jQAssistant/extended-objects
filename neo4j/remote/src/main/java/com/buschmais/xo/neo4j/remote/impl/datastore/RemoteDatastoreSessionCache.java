@@ -2,8 +2,13 @@ package com.buschmais.xo.neo4j.remote.impl.datastore;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 
-import com.buschmais.xo.neo4j.remote.impl.model.*;
+import com.buschmais.xo.neo4j.remote.impl.model.AbstractRemotePropertyContainer;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationship;
+import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
 import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
@@ -24,19 +29,20 @@ public class RemoteDatastoreSessionCache {
     }
 
     public RemoteNode getNode(long id) {
-        return getNode(id, new NodeState());
+        return getNode(id, () -> new NodeState());
     }
 
-    public RemoteNode getNode(long id, NodeState nodeState) {
-        return nodeCache.get(id, key -> new RemoteNode(key, nodeState));
+    public RemoteNode getNode(long id, Supplier<NodeState> nodeStateSupplier) {
+        return nodeCache.get(id, key -> new RemoteNode(key, nodeStateSupplier.get()));
     }
 
     public RemoteRelationship getRelationship(long id, RemoteNode source, RemoteRelationshipType type, RemoteNode target) {
-        return getRelationship(id, source, type, target, new RelationshipState());
+        return getRelationship(id, source, type, target, () -> new RelationshipState());
     }
 
-    public RemoteRelationship getRelationship(long id, RemoteNode source, RemoteRelationshipType type, RemoteNode target, RelationshipState relationshipState) {
-        return relationshipCache.get(id, key -> new RemoteRelationship(key, relationshipState, source, type, target));
+    public RemoteRelationship getRelationship(long id, RemoteNode source, RemoteRelationshipType type, RemoteNode target,
+            Supplier<RelationshipState> relationshipStateSupplier) {
+        return relationshipCache.get(id, key -> new RemoteRelationship(key, relationshipStateSupplier.get(), source, type, target));
     }
 
     public RemoteNode getNode(Node node) {

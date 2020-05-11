@@ -79,12 +79,12 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
             Record record = statementExecutor.getSingleResult(statement, parameters("start", start.getId(), "end", end.getId(), "r", properties));
             long id = record.get("id").asLong();
             RelationshipState relationshipState = new RelationshipState(properties);
-            relationship = datastoreSessionCache.getRelationship(id, start, type, end, relationshipState);
+            relationship = datastoreSessionCache.getRelationship(id, start, type, end, () -> relationshipState);
             relationships.getElements().add(relationship);
         } else {
             // Defer creation of relationship to flush
             long id = idSequence--;
-            relationship = datastoreSessionCache.getRelationship(id, start, type, end, new RelationshipState(properties));
+            relationship = datastoreSessionCache.getRelationship(id, start, type, end, () -> new RelationshipState(properties));
             relationships.add(relationship);
         }
         // Update inverse relation if it is already loaded
