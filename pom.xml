@@ -88,7 +88,7 @@
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
-        <jqassistant.version>1.8.0-MS1</jqassistant.version>
+        <jqassistant.version>1.8.0</jqassistant.version>
         <org.osgi_version>4.3.1</org.osgi_version>
     </properties>
 
