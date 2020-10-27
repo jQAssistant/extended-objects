@@ -708,7 +708,6 @@
         <module>neo4j</module>
         <module>doc</module>
         <module>inject</module>
-        <module>distribution</module>
     </modules>
 
 </project>
