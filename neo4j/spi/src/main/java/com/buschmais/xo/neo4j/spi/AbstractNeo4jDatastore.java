@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
@@ -24,8 +25,6 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractNeo4jDatastore<L extends Neo4jLabel, R extends Neo4jRelationshipType, DS extends Neo4jDatastoreSession>
         implements Neo4jDatastore<L, R, DS> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNeo4jDatastore.class);
-
     @Override
     public void init(Map<Class<?>, TypeMetadata> registeredMetadata) {
         Set<Index> indexes = new HashSet<>();
@@ -41,17 +40,29 @@ public abstract class AbstractNeo4jDatastore<L extends Neo4jLabel, R extends Neo
             }
         }
         try (DS session = createSession()) {
-            DatastoreTransaction transaction = session.getDatastoreTransaction();
-            transaction.begin();
-            try {
-                Set<Index> existingIndexes = session.getIndexes();
-                indexes.removeAll(existingIndexes);
-                session.createIndexes(indexes);
-                transaction.commit();
-            } catch (XOException e) {
-                transaction.rollback();
-                throw e;
-            }
+            Set<Index> existingIndexes = inTransaction(session, () -> session.getIndexes());
+            indexes.removeAll(existingIndexes);
+            inTransaction(session, () -> session.createIndexes(indexes));
+        }
+    }
+
+    private void inTransaction(DS session, Runnable runnable) {
+        inTransaction(session, () -> {
+            runnable.run();
+            return null;
+        });
+    }
+
+    private <T> T inTransaction(DS session, Supplier<T> supplier) {
+        DatastoreTransaction transaction = session.getDatastoreTransaction();
+        transaction.begin();
+        try {
+            T t = supplier.get();
+            transaction.commit();
+            return t;
+        } catch (XOException e) {
+            transaction.rollback();
+            throw e;
         }
     }
 

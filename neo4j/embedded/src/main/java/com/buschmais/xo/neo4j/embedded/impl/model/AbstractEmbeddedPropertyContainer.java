@@ -3,17 +3,18 @@ package com.buschmais.xo.neo4j.embedded.impl.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.neo4j.graphdb.PropertyContainer;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastoreTransaction;
+import org.neo4j.graphdb.Entity;
 
-public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContainer> implements EmbeddedNeo4jPropertyContainer {
+public abstract class AbstractEmbeddedPropertyContainer<T extends Entity> implements EmbeddedNeo4jPropertyContainer {
 
-    private long id;
+    protected final EmbeddedNeo4jDatastoreTransaction transaction;
 
-    protected T delegate;
+    protected final long id;
 
-    public AbstractEmbeddedPropertyContainer(long id, T delegate) {
-        this.id = id;
-        this.delegate = delegate;
+    public AbstractEmbeddedPropertyContainer(EmbeddedNeo4jDatastoreTransaction transaction, Entity entity) {
+        this.transaction = transaction;
+        this.id = entity.getId();
     }
 
     @Override
@@ -21,34 +22,32 @@ public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContai
         return id;
     }
 
-    public T getDelegate() {
-        return delegate;
-    }
+    public abstract T getDelegate();
 
     @Override
     public boolean hasProperty(String key) {
-        return delegate.hasProperty(key);
+        return getDelegate().hasProperty(key);
     }
 
     @Override
     public Object getProperty(String key) {
-        return delegate.getProperty(key);
+        return getDelegate().getProperty(key);
     }
 
     @Override
     public void setProperty(String key, Object value) {
-        delegate.setProperty(key, value);
+        getDelegate().setProperty(key, value);
     }
 
     @Override
     public Object removeProperty(String key) {
-        return delegate.removeProperty(key);
+        return getDelegate().removeProperty(key);
     }
 
     @Override
     public Map<String, Object> getProperties() {
         Map<String, Object> properties = new HashMap<>();
-        for (String key : delegate.getPropertyKeys()) {
+        for (String key : getDelegate().getPropertyKeys()) {
             properties.put(key, getProperty(key));
         }
         return properties;
@@ -79,6 +78,6 @@ public abstract class AbstractEmbeddedPropertyContainer<T extends PropertyContai
 
     @Override
     public final String toString() {
-        return delegate.toString();
+        return getDelegate().toString();
     }
 }

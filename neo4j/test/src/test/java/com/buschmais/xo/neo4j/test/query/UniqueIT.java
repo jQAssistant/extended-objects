@@ -35,9 +35,11 @@ public class UniqueIT extends AbstractNeo4JXOManagerIT {
 
     @Before
     public void createConstraint() {
+        getXOManager().currentTransaction().begin();
         try (Query.Result<Query.Result.CompositeRowObject> execute = getXOManager().createQuery("CREATE CONSTRAINT ON (b:B) ASSERT b.uniqueValue IS UNIQUE")
                 .execute()) {
         }
+        getXOManager().currentTransaction().commit();
     }
 
     @Test(expected = ConstraintViolationException.class)

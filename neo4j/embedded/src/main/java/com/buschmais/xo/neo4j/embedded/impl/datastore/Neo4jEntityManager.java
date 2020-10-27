@@ -16,7 +16,6 @@ import com.buschmais.xo.spi.datastore.DynamicType;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
 
-import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
@@ -28,10 +27,10 @@ import org.neo4j.graphdb.ResourceIterator;
 public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNode>
         implements DatastoreEntityManager<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, PropertyMetadata> {
 
-    private final GraphDatabaseService graphDatabaseService;
+    private final EmbeddedNeo4jDatastoreTransaction datastoreTransaction;
 
-    public Neo4jEntityManager(GraphDatabaseService graphDatabaseService) {
-        this.graphDatabaseService = graphDatabaseService;
+    public Neo4jEntityManager(EmbeddedNeo4jDatastoreTransaction datastoreTransaction) {
+        this.datastoreTransaction = datastoreTransaction;
     }
 
     @Override
@@ -57,7 +56,8 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
         for (EmbeddedLabel discriminator : discriminators) {
             labels[i++] = discriminator.getDelegate();
         }
-        EmbeddedNode node = new EmbeddedNode(graphDatabaseService.createNode(labels));
+        Node delegate = datastoreTransaction.getTransaction().createNode(labels);
+        EmbeddedNode node = new EmbeddedNode(datastoreTransaction, delegate);
         setProperties(node, example);
         return node;
     }
@@ -69,7 +69,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
 
     @Override
     public EmbeddedNode findEntityById(EntityTypeMetadata<NodeMetadata<EmbeddedLabel>> metadata, EmbeddedLabel label, Long id) {
-        return new EmbeddedNode(graphDatabaseService.getNodeById(id));
+        return new EmbeddedNode(datastoreTransaction, datastoreTransaction.getTransaction().getNodeById(id));
     }
 
     @Override
@@ -81,7 +81,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
         Map.Entry<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entry = values.entrySet().iterator().next();
         Object value = entry.getValue();
         PropertyMetadata propertyMetadata = getIndexedPropertyMetadata(entityTypeMetadata, entry.getKey());
-        ResourceIterator<Node> iterator = graphDatabaseService.findNodes(discriminator.getDelegate(), propertyMetadata.getName(), value);
+        ResourceIterator<Node> iterator = datastoreTransaction.getTransaction().findNodes(discriminator.getDelegate(), propertyMetadata.getName(), value);
         return new ResultIterator<EmbeddedNode>() {
             @Override
             public boolean hasNext() {
@@ -90,7 +90,7 @@ public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNod
 
             @Override
             public EmbeddedNode next() {
-                return new EmbeddedNode(iterator.next());
+                return new EmbeddedNode(datastoreTransaction, iterator.next());
             }
 
             @Override

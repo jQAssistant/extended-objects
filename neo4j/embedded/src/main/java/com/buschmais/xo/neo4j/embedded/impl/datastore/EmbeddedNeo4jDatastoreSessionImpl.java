@@ -1,7 +1,8 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
+import static java.util.Collections.singletonList;
+
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
@@ -21,7 +22,6 @@ import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
-import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import com.buschmais.xo.spi.reflection.ClassHelper;
 import com.buschmais.xo.spi.session.XOSession;
 
@@ -31,23 +31,23 @@ public class EmbeddedNeo4jDatastoreSessionImpl extends
         AbstractNeo4jDatastoreSession<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType> implements EmbeddedNeo4jDatastoreSession {
 
     private final GraphDatabaseService graphDatabaseService;
-    private final DatastoreTransaction datastoreTransaction;
+    private final EmbeddedNeo4jDatastoreTransaction datastoreTransaction;
     private final Neo4jEntityManager entityManager;
     private final Neo4jRelationManager relationManager;
     private final Converter parameterConverter;
     private final Converter valueConverter;
 
-    public EmbeddedNeo4jDatastoreSessionImpl(GraphDatabaseService graphDatabaseService) {
+    public EmbeddedNeo4jDatastoreSessionImpl(EmbeddedNeo4jDatastoreTransaction transaction, GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
-        this.entityManager = new Neo4jEntityManager(graphDatabaseService);
-        this.relationManager = new Neo4jRelationManager(graphDatabaseService);
-        this.parameterConverter = new Converter(Arrays.asList(new EmbeddedParameterConverter()));
-        this.valueConverter = new Converter(Arrays.asList(new EmbeddedValueConverter()));
-        datastoreTransaction = new EmbeddedNeo4jDatastoreTransaction(graphDatabaseService);
+        this.entityManager = new Neo4jEntityManager(transaction);
+        this.relationManager = new Neo4jRelationManager(transaction);
+        this.parameterConverter = new Converter(singletonList(new EmbeddedParameterConverter()));
+        this.valueConverter = new Converter(singletonList(new EmbeddedValueConverter(transaction)));
+        this.datastoreTransaction = transaction;
     }
 
     @Override
-    public DatastoreTransaction getDatastoreTransaction() {
+    public EmbeddedNeo4jDatastoreTransaction getDatastoreTransaction() {
         return datastoreTransaction;
     }
 
@@ -85,9 +85,9 @@ public class EmbeddedNeo4jDatastoreSessionImpl extends
             if (typeParameter == null) {
                 throw new XOException("Cannot determine type parameter for " + type.getName());
             }
-            return (R) new EmbeddedTypedNeoj4Repository<>(typeParameter, graphDatabaseService, xoSession);
+            return (R) new EmbeddedTypedNeoj4Repository<>(typeParameter, datastoreTransaction, xoSession);
         }
-        return (R) new EmbeddedNeo4jRepository(graphDatabaseService, xoSession);
+        return (R) new EmbeddedNeo4jRepository(datastoreTransaction, xoSession);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.buschmais.xo.neo4j.test.demo;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOManager;
@@ -8,8 +11,6 @@ import com.buschmais.xo.neo4j.test.AbstractNeo4JXOManagerIT;
 import com.buschmais.xo.neo4j.test.demo.composite.Group;
 import com.buschmais.xo.neo4j.test.demo.composite.Person;
 
-import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -35,7 +36,7 @@ public class IndexedDemoIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         Person person2 = xoManager.find(Person.class, "Peter").getSingleResult();
-        Assert.assertThat(person2, Matchers.equalTo(person1));
+        assertThat(person2, equalTo(person1));
         xoManager.currentTransaction().commit();
     }
 }

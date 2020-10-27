@@ -67,7 +67,7 @@ public class QueryIT extends AbstractNeo4JXOManagerIT {
     public void compositeRow() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
-        CompositeRowObject result = xoManager.createQuery("match (a:A) where a.value={value} return a, count(a) as count", ResultPart1.class, ResultPart2.class)
+        CompositeRowObject result = xoManager.createQuery("match (a:A) where a.value=$value return a, count(a) as count", ResultPart1.class, ResultPart2.class)
                 .withParameter("value", "A1").execute().getSingleResult();
         A a = result.as(ResultPart1.class).getA();
         assertThat(a.getValue(), equalTo("A1"));
@@ -85,14 +85,14 @@ public class QueryIT extends AbstractNeo4JXOManagerIT {
     public void compositeRowAsMap() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> result = xoManager.createQuery("match (a:A) where a.value={value} return a, a.value as value, id(a) as id")
+        Result<CompositeRowObject> result = xoManager.createQuery("match (a:A) where a.value=$value return a, a.value as value, id(a) as id")
                 .withParameter("value", "A1").execute();
         CompositeRowObject singleResult = result.getSingleResult();
         List<String> columns = singleResult.getColumns();
         assertThat(columns, Matchers.equalTo(Arrays.asList("a", "value", "id")));
         A a = singleResult.get("a", A.class);
         assertThat(a.getValue(), equalTo("A1"));
-        result = xoManager.createQuery("match (a:A) where a.Value={value} return a").withParameter("value", "A2").execute();
+        result = xoManager.createQuery("match (a:A) where a.Value=$value return a").withParameter("value", "A2").execute();
         try {
             result.getSingleResult().get("a", A.class);
             fail("Expecting a " + XOException.class.getName());
@@ -105,7 +105,7 @@ public class QueryIT extends AbstractNeo4JXOManagerIT {
     public void instanceParameter() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where id(a)={instance} return a").withParameter("instance", a1).execute();
+        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where id(a)=$instance return a").withParameter("instance", a1).execute();
         A a = row.getSingleResult().get("a", A.class);
         assertThat(a, equalTo(a1));
         xoManager.currentTransaction().commit();
@@ -115,7 +115,7 @@ public class QueryIT extends AbstractNeo4JXOManagerIT {
     public void instanceParameterCollection() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where a.value in {values} return a").withParameter("values", Arrays.asList("A1"))
+        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where a.value in $values return a").withParameter("values", Arrays.asList("A1"))
                 .execute();
         A a = row.getSingleResult().get("a", A.class);
         assertThat(a, equalTo(a1));

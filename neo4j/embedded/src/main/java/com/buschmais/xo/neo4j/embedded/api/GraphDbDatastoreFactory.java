@@ -1,6 +1,5 @@
 package com.buschmais.xo.neo4j.embedded.api;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Properties;
 
@@ -17,7 +16,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 public class GraphDbDatastoreFactory implements DatastoreFactory<GraphDbNeo4jDatastore> {
 
     @Override
-    public GraphDbNeo4jDatastore createGraphDatabaseService(URI uri, Properties properties) throws MalformedURLException {
+    public GraphDbNeo4jDatastore createGraphDatabaseService(URI uri, Properties properties) {
         String graphDbPropertyName = GraphDatabaseService.class.getName();
         GraphDatabaseService graphDatabaseService = (GraphDatabaseService) properties.get(graphDbPropertyName);
         if (graphDatabaseService == null) {

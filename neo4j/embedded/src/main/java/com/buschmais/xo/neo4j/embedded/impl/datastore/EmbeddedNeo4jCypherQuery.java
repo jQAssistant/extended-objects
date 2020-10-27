@@ -27,7 +27,7 @@ public class EmbeddedNeo4jCypherQuery implements DatastoreQuery<Cypher> {
     @Override
     public ResultIterator<Map<String, Object>> execute(String expression, Map<String, Object> parameters) {
         Map<String, Object> convertedParameters = (Map<String, Object>) embeddedNeo4jDatastoreSession.convertParameter(parameters);
-        Result executionResult = embeddedNeo4jDatastoreSession.getGraphDatabaseService().execute(expression, convertedParameters);
+        Result executionResult = embeddedNeo4jDatastoreSession.getDatastoreTransaction().getTransaction().execute(expression, convertedParameters);
         final List<String> columns = executionResult.columns();
         return new ResultIterator<Map<String, Object>>() {
 

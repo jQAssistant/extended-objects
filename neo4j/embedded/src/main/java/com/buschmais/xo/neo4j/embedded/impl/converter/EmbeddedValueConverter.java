@@ -1,27 +1,34 @@
 package com.buschmais.xo.neo4j.embedded.impl.converter;
 
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastoreTransaction;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationship;
 import com.buschmais.xo.neo4j.spi.helper.TypeConverter;
 
+import org.neo4j.graphdb.Entity;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.Relationship;
 
 public class EmbeddedValueConverter implements TypeConverter {
 
+    private final EmbeddedNeo4jDatastoreTransaction transaction;
+
+    public EmbeddedValueConverter(EmbeddedNeo4jDatastoreTransaction transaction) {
+        this.transaction = transaction;
+    }
+
     @Override
     public Class<?> getType() {
-        return PropertyContainer.class;
+        return Entity.class;
     }
 
     @Override
     public Object convert(Object value) {
         if (value instanceof Node) {
-            return new EmbeddedNode((Node) value);
+            return new EmbeddedNode(transaction, (Node) value);
         } else if (value instanceof Relationship) {
-            return new EmbeddedRelationship((Relationship) value);
+            return new EmbeddedRelationship(transaction, (Relationship) value);
         }
         throw new XOException("Unsupported value type " + value);
     }

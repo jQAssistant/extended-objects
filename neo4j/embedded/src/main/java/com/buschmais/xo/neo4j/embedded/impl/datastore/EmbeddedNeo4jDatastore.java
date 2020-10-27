@@ -1,15 +1,19 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
+import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 public class EmbeddedNeo4jDatastore extends AbstractEmbeddedNeo4jDatastore {
 
-    public EmbeddedNeo4jDatastore(GraphDatabaseService graphDatabaseService) {
+    private DatabaseManagementService managementService;
+
+    public EmbeddedNeo4jDatastore(DatabaseManagementService managementService, GraphDatabaseService graphDatabaseService) {
         super(graphDatabaseService);
+        this.managementService = managementService;
     }
 
     @Override
     public void close() {
-        graphDatabaseService.shutdown();
+        managementService.shutdown();
     }
 }

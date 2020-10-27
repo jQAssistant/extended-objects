@@ -15,6 +15,7 @@ import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastoreTransaction;
 import com.buschmais.xo.neo4j.test.AbstractNeo4JXOManagerIT;
 import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNode;
@@ -24,7 +25,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,12 +89,11 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
     public void initialize() {
         try (XOManager xoManager = getXOManagerFactory().createXOManager()) {
             EmbeddedNeo4jDatastoreSession datastoreSession = xoManager.getDatastoreSession(EmbeddedNeo4jDatastoreSession.class);
-            GraphDatabaseService graphDatabaseService = datastoreSession.getGraphDatabaseService();
-            Transaction transaction = graphDatabaseService.beginTx();
-            Node n1 = graphDatabaseService.createNode();
-            Node n2 = graphDatabaseService.createNode();
+            Transaction transaction = ((EmbeddedNeo4jDatastoreTransaction) datastoreSession.getDatastoreTransaction()).getTransaction();
+            Node n1 = transaction.createNode();
+            Node n2 = transaction.createNode();
             n1.createRelationshipTo(n2, RelationshipType.withName("BOOTSTRAP"));
-            transaction.success();
+            transaction.commit();
             transaction.close();
         }
     }
@@ -153,13 +159,13 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
 
             @Override
             public void commit() {
-                transaction.success();
+                transaction.commit();
                 transaction.close();
             }
 
             @Override
             public Node createEntity() {
-                Node node = graphDatabaseService.createNode(LABEL);
+                Node node = transaction.createNode(LABEL);
                 return node;
             }
 
@@ -171,7 +177,7 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
             @Override
             public Relationship createRelation(Node parent, Node child) {
                 RelationshipType relationshipType = RelationshipType.withName(RELATIONSHIPTYPE);
-                if (child.hasRelationship(relationshipType, Direction.INCOMING)) {
+                if (child.hasRelationship(Direction.INCOMING, relationshipType)) {
                     child.getSingleRelationship(relationshipType, Direction.INCOMING).delete();
                 }
                 Relationship relationshipTo = parent.createRelationshipTo(child, relationshipType);

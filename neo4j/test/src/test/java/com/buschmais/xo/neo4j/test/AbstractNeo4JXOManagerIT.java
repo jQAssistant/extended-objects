@@ -1,5 +1,8 @@
 package com.buschmais.xo.neo4j.test;
 
+import static org.neo4j.configuration.connectors.BoltConnector.encryption_level;
+import static org.neo4j.configuration.connectors.BoltConnector.listen_address;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,13 +16,16 @@ import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.test.AbstractXOManagerIT;
 
 import org.junit.ClassRule;
-import org.neo4j.harness.junit.Neo4jRule;
+import org.neo4j.configuration.connectors.BoltConnector.EncryptionLevel;
+import org.neo4j.configuration.helpers.SocketAddress;
+import org.neo4j.harness.junit.rule.Neo4jRule;
 
 public abstract class AbstractNeo4JXOManagerIT extends AbstractXOManagerIT {
 
     // This rule starts a Neo4j instance
     @ClassRule
-    public static Neo4jRule neo4j = new Neo4jRule().withConfig("dbms.connector.bolt.listen_address", "localhost:6001");
+    public static Neo4jRule neo4j = new Neo4jRule().withConfig(listen_address, new SocketAddress("localhost", 6001)).withConfig(encryption_level,
+            EncryptionLevel.OPTIONAL);
 
     protected AbstractNeo4JXOManagerIT(XOUnit xoUnit) {
         super(xoUnit);

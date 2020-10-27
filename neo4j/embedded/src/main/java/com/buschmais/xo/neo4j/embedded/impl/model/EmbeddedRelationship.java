@@ -1,39 +1,43 @@
 package com.buschmais.xo.neo4j.embedded.impl.model;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastoreTransaction;
 
 import org.neo4j.graphdb.Relationship;
 
 public class EmbeddedRelationship extends AbstractEmbeddedPropertyContainer<Relationship>
         implements Neo4jRelationship<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {
 
-    private EmbeddedNode startNode;
+    public EmbeddedRelationship(EmbeddedNeo4jDatastoreTransaction transaction, Relationship relationship) {
+        super(transaction, relationship);
+    }
 
-    private EmbeddedNode endNode;
-
-    public EmbeddedRelationship(Relationship delegate) {
-        super(delegate.getId(), delegate);
-        this.startNode = new EmbeddedNode(delegate.getStartNode());
-        this.endNode = new EmbeddedNode(delegate.getEndNode());
+    @Override
+    public Relationship getDelegate() {
+        return transaction.getTransaction().getRelationshipById(id);
     }
 
     public void delete() {
-        delegate.delete();
+        getDelegate().delete();
     }
 
     @Override
     public EmbeddedNode getStartNode() {
-        return startNode;
+        return getEmbeddedNode();
+    }
+
+    private EmbeddedNode getEmbeddedNode() {
+        return new EmbeddedNode(transaction, getDelegate().getStartNode());
     }
 
     @Override
     public EmbeddedNode getEndNode() {
-        return endNode;
+        return new EmbeddedNode(transaction, getDelegate().getEndNode());
     }
 
     @Override
     public EmbeddedRelationshipType getType() {
-        return new EmbeddedRelationshipType(delegate.getType());
+        return new EmbeddedRelationshipType(getDelegate().getType());
     }
 
 }

@@ -6,11 +6,9 @@ import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.spi.session.XOSession;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-
 /**
  * Implementation of {@link TypedNeo4jRepository}.
- * 
+ *
  * @param <T>
  */
 public class EmbeddedTypedNeoj4Repository<T> extends EmbeddedNeo4jRepository implements TypedNeo4jRepository<T> {
@@ -19,17 +17,17 @@ public class EmbeddedTypedNeoj4Repository<T> extends EmbeddedNeo4jRepository imp
 
     /**
      * Constructor.
-     * 
+     *
      * @param type
      *            The repository type.
-     * @param graphDatabaseService
-     *            The graph database service.
+     * @param datastoreTransaction
+     *            The {@link EmbeddedNeo4jDatastoreTransaction}.
      * @param xoSession
      *            The {@link XOSession}.
      */
-    public EmbeddedTypedNeoj4Repository(Class<T> type, GraphDatabaseService graphDatabaseService,
+    public EmbeddedTypedNeoj4Repository(Class<T> type, EmbeddedNeo4jDatastoreTransaction datastoreTransaction,
             XOSession<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?> xoSession) {
-        super(graphDatabaseService, xoSession);
+        super(datastoreTransaction, xoSession);
         this.type = type;
     }
 

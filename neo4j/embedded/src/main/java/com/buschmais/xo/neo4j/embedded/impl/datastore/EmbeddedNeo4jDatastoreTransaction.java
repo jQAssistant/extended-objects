@@ -6,7 +6,7 @@ import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
-class EmbeddedNeo4jDatastoreTransaction implements DatastoreTransaction {
+public class EmbeddedNeo4jDatastoreTransaction implements DatastoreTransaction {
 
     private GraphDatabaseService graphDatabaseService;
     private Transaction transaction;
@@ -26,14 +26,14 @@ class EmbeddedNeo4jDatastoreTransaction implements DatastoreTransaction {
     @Override
     public void commit() {
         ensureTransaction();
-        transaction.success();
+        transaction.commit();
         closeTransaction();
     }
 
     @Override
     public void rollback() {
         ensureTransaction();
-        transaction.failure();
+        transaction.rollback();
         closeTransaction();
     }
 
@@ -42,9 +42,14 @@ class EmbeddedNeo4jDatastoreTransaction implements DatastoreTransaction {
         return transaction != null;
     }
 
+    public Transaction getTransaction() {
+        ensureTransaction();
+        return transaction;
+    }
+
     private void ensureTransaction() {
         if (transaction == null) {
-            throw new XOException("There is no existing transaction.");
+            throw new XOException("There is no active transaction.");
         }
     }
 

@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -20,8 +21,10 @@ import com.buschmais.xo.neo4j.test.bootstrap.composite.AmbiguousA;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.neo4j.dbms.api.DatabaseManagementService;
+import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.test.TestGraphDatabaseFactory;
+import org.neo4j.test.TestDatabaseManagementServiceBuilder;
 
 public class AmbiguousLabelsTest {
 
@@ -29,7 +32,9 @@ public class AmbiguousLabelsTest {
 
     @BeforeClass
     public static void setUp() {
-        graphDatabaseService = new TestGraphDatabaseFactory().newImpermanentDatabase();
+        DatabaseManagementServiceBuilder databaseManagementServiceBuilder = new TestDatabaseManagementServiceBuilder().impermanent();
+        DatabaseManagementService managementService = databaseManagementServiceBuilder.build();
+        graphDatabaseService = managementService.database(DEFAULT_DATABASE_NAME);
     }
 
     @Test

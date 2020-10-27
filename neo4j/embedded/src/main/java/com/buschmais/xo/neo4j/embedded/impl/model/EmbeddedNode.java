@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jNode;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastoreTransaction;
 
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
@@ -15,21 +16,26 @@ public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
 
     private final Set<EmbeddedLabel> labels;
 
-    public EmbeddedNode(Node delegate) {
-        super(delegate.getId(), delegate);
+    public EmbeddedNode(EmbeddedNeo4jDatastoreTransaction transaction, Node node) {
+        super(transaction, node);
         this.labels = new HashSet<>();
-        for (Label label : delegate.getLabels()) {
+        for (Label label : getDelegate().getLabels()) {
             labels.add(new EmbeddedLabel(label));
         }
     }
 
+    @Override
+    public Node getDelegate() {
+        return transaction.getTransaction().getNodeById(id);
+    }
+
     public void delete() {
-        delegate.delete();
+        getDelegate().delete();
     }
 
     @Override
     public Iterable<EmbeddedRelationship> getRelationships(EmbeddedRelationshipType type, EmbeddedDirection dir) {
-        Iterable<Relationship> relationships = delegate.getRelationships(type.getDelegate(), dir.getDelegate());
+        Iterable<Relationship> relationships = getDelegate().getRelationships(dir.getDelegate(), type.getDelegate());
         return () -> {
             Iterator<Relationship> iterator = relationships.iterator();
             return new Iterator<EmbeddedRelationship>() {
@@ -40,40 +46,44 @@ public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
 
                 @Override
                 public EmbeddedRelationship next() {
-                    return new EmbeddedRelationship(iterator.next());
+                    return getEmbeddedRelationship(iterator.next());
                 }
             };
         };
-
     }
 
     @Override
     public boolean hasRelationship(EmbeddedRelationshipType type, EmbeddedDirection dir) {
-        return delegate.hasRelationship(type.getDelegate(), dir.getDelegate());
+        return getDelegate().hasRelationship(dir.getDelegate(), type.getDelegate());
     }
 
     @Override
     public EmbeddedRelationship getSingleRelationship(EmbeddedRelationshipType type, EmbeddedDirection dir) {
-        Relationship relationship = delegate.getSingleRelationship(type.getDelegate(), dir.getDelegate());
-        return relationship != null ? new EmbeddedRelationship(relationship) : null;
+        Relationship relationship = getDelegate().getSingleRelationship(type.getDelegate(), dir.getDelegate());
+        return relationship != null ? getEmbeddedRelationship(relationship) : null;
     }
 
+
     public EmbeddedRelationship createRelationshipTo(EmbeddedNode otherNode, EmbeddedRelationshipType type) {
-        return new EmbeddedRelationship(delegate.createRelationshipTo(otherNode.getDelegate(), type.getDelegate()));
+        return getEmbeddedRelationship(getDelegate().createRelationshipTo(otherNode.getDelegate(), type.getDelegate()));
     }
 
     public void addLabel(EmbeddedLabel label) {
-        delegate.addLabel(label.getDelegate());
+        getDelegate().addLabel(label.getDelegate());
         labels.add(label);
     }
 
     public void removeLabel(EmbeddedLabel label) {
-        delegate.removeLabel(label.getDelegate());
+        getDelegate().removeLabel(label.getDelegate());
         labels.remove(label);
     }
 
     @Override
     public Set<EmbeddedLabel> getLabels() {
         return labels;
+    }
+
+    private EmbeddedRelationship getEmbeddedRelationship(Relationship relationship) {
+        return new EmbeddedRelationship(transaction, relationship);
     }
 }

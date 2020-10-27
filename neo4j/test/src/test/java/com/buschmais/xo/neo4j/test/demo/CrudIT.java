@@ -2,6 +2,7 @@ package com.buschmais.xo.neo4j.test.demo;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.fail;
 
 import java.util.Collection;
 
@@ -30,7 +31,7 @@ public class CrudIT extends AbstractNeo4JXOManagerIT {
     }
 
     @Test
-    public void create() throws InterruptedException {
+    public void create() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
@@ -42,13 +43,13 @@ public class CrudIT extends AbstractNeo4JXOManagerIT {
         a.setName("Bar");
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        xoManager.createQuery("match (a:A) where a.name={name} return a").withParameter("name", "Bar").execute().getSingleResult();
+        xoManager.createQuery("match (a:A) where a.name=$name return a").withParameter("name", "Bar").execute().getSingleResult();
         xoManager.delete(a);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         try {
             xoManager.createQuery("match (a:A) return a").execute().getSingleResult();
-            Assert.fail("An exception is expected.");
+            fail("An exception is expected.");
         } catch (XOException e) {
         }
         xoManager.currentTransaction().commit();

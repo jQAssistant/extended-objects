@@ -13,8 +13,6 @@ import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-
 /**
  * Implementation of a
  * {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager} for Neo4j.
@@ -22,16 +20,10 @@ import org.neo4j.graphdb.GraphDatabaseService;
 public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedRelationship> implements
         DatastoreRelationManager<EmbeddedNode, Long, EmbeddedRelationship, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType, PropertyMetadata> {
 
-    private final GraphDatabaseService graphDatabaseService;
+    private final EmbeddedNeo4jDatastoreTransaction datastoreTransaction;
 
-    /**
-     * Constructor.
-     *
-     * @param graphDatabaseService
-     *            The graph database service.
-     */
-    public Neo4jRelationManager(GraphDatabaseService graphDatabaseService) {
-        this.graphDatabaseService = graphDatabaseService;
+    public Neo4jRelationManager(EmbeddedNeo4jDatastoreTransaction datastoreTransaction) {
+        this.datastoreTransaction = datastoreTransaction;
     }
 
     @Override
@@ -75,7 +67,7 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedR
 
     @Override
     public EmbeddedRelationship findRelationById(RelationTypeMetadata<RelationshipMetadata<EmbeddedRelationshipType>> metadata, Long id) {
-        return new EmbeddedRelationship(graphDatabaseService.getRelationshipById(id));
+        return new EmbeddedRelationship(datastoreTransaction, datastoreTransaction.getTransaction().getRelationshipById(id));
     }
 
     @Override

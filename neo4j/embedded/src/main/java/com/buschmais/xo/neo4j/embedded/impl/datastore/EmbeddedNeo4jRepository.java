@@ -9,7 +9,6 @@ import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.session.XOSession;
 
-import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
 
@@ -18,17 +17,18 @@ import org.neo4j.graphdb.ResourceIterator;
  */
 public class EmbeddedNeo4jRepository extends AbstractNeo4jRepository<EmbeddedLabel> {
 
-    private final GraphDatabaseService graphDatabaseService;
+    private final EmbeddedNeo4jDatastoreTransaction datastoreTransaction;
 
-    protected EmbeddedNeo4jRepository(GraphDatabaseService graphDatabaseService, XOSession<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?> xoSession) {
+    protected EmbeddedNeo4jRepository(EmbeddedNeo4jDatastoreTransaction datastoreTransaction,
+            XOSession<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?> xoSession) {
         super(xoSession);
-        this.graphDatabaseService = graphDatabaseService;
+        this.datastoreTransaction = datastoreTransaction;
     }
 
     @Override
     protected <T> ResultIterable<T> find(EmbeddedLabel label, PropertyMetadata datastoreMetadata, Object datastoreValue) {
         String propertyName = datastoreMetadata.getName();
-        ResourceIterator<Node> iterator = graphDatabaseService.findNodes(label.getDelegate(), propertyName, datastoreValue);
+        ResourceIterator<Node> iterator = datastoreTransaction.getTransaction().findNodes(label.getDelegate(), propertyName, datastoreValue);
         return xoSession.toResult(new ResultIterator<EmbeddedNode>() {
 
             @Override
@@ -38,7 +38,7 @@ public class EmbeddedNeo4jRepository extends AbstractNeo4jRepository<EmbeddedLab
 
             @Override
             public EmbeddedNode next() {
-                return new EmbeddedNode(iterator.next());
+                return new EmbeddedNode(datastoreTransaction, iterator.next());
             }
 
             @Override
