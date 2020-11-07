@@ -103,6 +103,11 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
         return xoUnit;
     }
 
+    @Override
+    public <DS> DS getDatastore(Class<DS> datastoreType) {
+        return datastoreType.cast(datastore);
+    }
+
     /**
      * Return the instance of the plugin manager repository.
      *

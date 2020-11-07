@@ -1,5 +1,6 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
+import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
 import com.buschmais.xo.neo4j.spi.AbstractNeo4jDatastore;
@@ -15,7 +16,7 @@ import org.neo4j.graphdb.RelationshipType;
  * Abstract base implementation for embedded graph stores.
  */
 public abstract class AbstractEmbeddedNeo4jDatastore
-        extends AbstractNeo4jDatastore<EmbeddedLabel, EmbeddedRelationshipType, EmbeddedNeo4jDatastoreSessionImpl> {
+        extends AbstractNeo4jDatastore<EmbeddedLabel, EmbeddedRelationshipType, EmbeddedNeo4jDatastoreSession> {
 
     protected final EmbeddedNeo4jDatastoreTransaction transaction;
 
@@ -51,7 +52,7 @@ public abstract class AbstractEmbeddedNeo4jDatastore
     }
 
     @Override
-    public EmbeddedNeo4jDatastoreSessionImpl createSession() {
+    public EmbeddedNeo4jDatastoreSession createSession() {
         return new EmbeddedNeo4jDatastoreSessionImpl(transaction, graphDatabaseService);
     }
 }

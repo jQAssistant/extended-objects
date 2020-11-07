@@ -26,4 +26,15 @@ public interface XOManagerFactory extends AutoCloseable, CloseSupport {
      */
     XOUnit getXOUnit();
 
+    /**
+     * Reutrn the underlying configured datastore.
+     *
+     * @param datastoreType
+     *            The expected datastore type.
+     * @param <DS>
+     *            The datastore type.
+     * @return The datastore.
+     */
+    <DS> DS getDatastore(Class<DS> datastoreType);
+
 }

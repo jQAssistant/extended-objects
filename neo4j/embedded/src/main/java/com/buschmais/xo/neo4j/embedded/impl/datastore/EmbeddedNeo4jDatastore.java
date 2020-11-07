@@ -16,4 +16,8 @@ public class EmbeddedNeo4jDatastore extends AbstractEmbeddedNeo4jDatastore {
     public void close() {
         managementService.shutdown();
     }
+
+    public DatabaseManagementService getManagementService() {
+        return managementService;
+    }
 }
