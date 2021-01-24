@@ -12,17 +12,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.data.neo4j.Neo4jProperties;
 import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ XOManagerFactory.class, XOTransactionManager.class, PlatformTransactionManager.class })
-@EnableConfigurationProperties(Neo4jProperties.class)
+@EnableTransactionManagement
 public class XOAutoConfiguration {
 
     @Bean
@@ -54,10 +53,11 @@ public class XOAutoConfiguration {
             XOManager xoManager = xoManagerHolder.getXOManager();
             try {
                 return method.invoke(xoManager, args);
+            } catch (XOException e) {
+                throw e;
             } catch (ReflectiveOperationException e) {
                 throw new XOException("Cannot invoke method " + method + " on transactional XOManager instance " + xoManager, e);
             }
         }
     }
-
 }

@@ -12,11 +12,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.transaction.CannotCreateTransactionException;
-import org.springframework.transaction.IllegalTransactionStateException;
-import org.springframework.transaction.InvalidIsolationLevelException;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionException;
+import org.springframework.transaction.*;
 import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 import org.springframework.transaction.support.ResourceTransactionManager;
@@ -27,10 +23,6 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
     private static final Logger logger = LoggerFactory.getLogger(XOTransactionManager.class);
 
     private XOManagerFactory xoManagerFactory;
-
-    public XOTransactionManager() {
-        this(null);
-    }
 
     public XOTransactionManager(XOManagerFactory xoManagerFactory) {
         setTransactionSynchronization(SYNCHRONIZATION_ON_ACTUAL_TRANSACTION);
@@ -110,7 +102,6 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
             txObject.setXOTransaction(xoTransaction);
             logger.debug("Beginning Transaction {} on XOManager {}", xoTransaction, xoManager);
 
-            // Bind the session holder to the thread.
             if (txObject.isNewXOManagerHolder()) {
                 TransactionSynchronizationManager.bindResource(getXOManagerFactory(), txObject.getXOManagerHolder());
             }
@@ -139,6 +130,7 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
             } catch (Throwable ex) {
                 logger.debug("Could not rollback XOTransaction after failed transaction begin", ex);
             } finally {
+                xoManager.close();
                 txObject.setXOManagerHolder(null, false);
             }
         }
@@ -163,35 +155,32 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
 
     @Override
     protected void doCommit(DefaultTransactionStatus status) {
-        XOTransactionObject txObject = (XOTransactionObject) status.getTransaction();
-        XOManager xoManager = txObject.getXOManagerHolder().getXOManager();
-        XOTransaction xoTransaction = xoManager.currentTransaction();
-        try {
-            logger.debug("Committing XO transaction {} on XOManager {}", xoTransaction, xoManager);
-            if (xoTransaction.isActive()) {
-                xoTransaction.commit();
-            }
-        } catch (XOException ex) {
-            throw new InvalidDataAccessApiUsageException("Cannot commit XOTransaction.", ex);
-        }
+        doComplete(status, true);
     }
 
     @Override
     protected void doRollback(DefaultTransactionStatus status) {
+        doComplete(status, false);
+    }
+
+    private void doComplete(DefaultTransactionStatus status, boolean commit) {
         XOTransactionObject txObject = (XOTransactionObject) status.getTransaction();
         XOManager xoManager = txObject.getXOManagerHolder().getXOManager();
         XOTransaction xoTransaction = xoManager.currentTransaction();
         try {
-            logger.debug("Rolling back XO transaction {} on XOManager {}", xoTransaction, xoManager);
             if (xoTransaction.isActive()) {
-                xoTransaction.rollback();
+                if (commit) {
+                    logger.debug("Committing XO transaction {} on XOManager {}", xoTransaction, xoManager);
+                    xoTransaction.commit();
+                } else {
+                    logger.debug("Rolling back XO transaction {} on XOManager {}", xoTransaction, xoManager);
+                    xoTransaction.rollback();
+                }
             }
-        } catch (RuntimeException ex) {
-            throw new InvalidDataAccessApiUsageException("Cannot rollback XOTransaction.", ex);
+        } catch (XOException ex) {
+            throw new InvalidDataAccessApiUsageException("Cannot complete XOTransaction (commit: " + commit + ")", ex);
         } finally {
-            if (!txObject.isNewXOManagerHolder()) {
-                xoManager.clear();
-            }
+            xoManager.close();
         }
     }
 
