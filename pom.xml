@@ -88,7 +88,7 @@
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
-        <jqassistant.version>1.8.0</jqassistant.version>
+        <jqassistant.version>1.9.0</jqassistant.version>
     </properties>
 
     <profiles>
@@ -662,6 +662,7 @@
         <module>neo4j</module>
         <module>doc</module>
         <module>inject</module>
+        <module>spring</module>
     </modules>
 
 </project>
