@@ -82,12 +82,12 @@
         <org.asciidoctor.maven_version>1.5.8</org.asciidoctor.maven_version>
         <org.asciidoctor_version>1.5.8</org.asciidoctor_version>
         <org.asciidoctorj.pdf_version>1.5.0-alpha.16</org.asciidoctorj.pdf_version>
-        <org.neo4j_version>3.5.17</org.neo4j_version>
+        <org.neo4j_version>3.5.26</org.neo4j_version>
         <org.slf4j_version>1.7.25</org.slf4j_version>
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
         <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
-        <jqassistant.version>1.8.0</jqassistant.version>
+        <jqassistant.version>1.9.0</jqassistant.version>
         <org.osgi_version>4.3.1</org.osgi_version>
     </properties>
 
