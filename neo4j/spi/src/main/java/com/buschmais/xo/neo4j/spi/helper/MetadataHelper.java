@@ -4,9 +4,9 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
-import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.api.metadata.method.IndexedPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
 
 public class MetadataHelper {
 

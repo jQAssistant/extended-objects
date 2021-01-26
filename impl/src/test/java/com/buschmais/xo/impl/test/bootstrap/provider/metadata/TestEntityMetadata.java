@@ -1,6 +1,6 @@
 package com.buschmais.xo.impl.test.bootstrap.provider.metadata;
 
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
 
 public class TestEntityMetadata implements DatastoreEntityMetadata<String> {
 

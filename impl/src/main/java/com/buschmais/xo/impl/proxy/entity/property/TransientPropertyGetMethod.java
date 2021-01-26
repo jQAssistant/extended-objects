@@ -2,7 +2,7 @@ package com.buschmais.xo.impl.proxy.entity.property;
 
 import com.buschmais.xo.impl.EntityPropertyManager;
 import com.buschmais.xo.impl.proxy.common.property.AbstractTransientPropertyGetMethod;
-import com.buschmais.xo.spi.metadata.method.TransientPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.TransientPropertyMethodMetadata;
 
 public class TransientPropertyGetMethod<Entity, Relation> extends AbstractTransientPropertyGetMethod<Entity, EntityPropertyManager<Entity, Relation, ?>> {
 

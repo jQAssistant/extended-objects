@@ -5,10 +5,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.xo.spi.datastore.DynamicType;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
 
 import com.google.common.collect.ImmutableSet;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
     private final Map<EntityTypeMetadata<EntityMetadata>, Set<EntityTypeMetadata<EntityMetadata>>> aggregatedSuperTypes = new HashMap<>();
     private final Map<EntityTypeMetadata<EntityMetadata>, Set<EntityTypeMetadata<EntityMetadata>>> aggregatedSubTypes = new HashMap<>();
 
-    private final Map<Set<Discriminator>, DynamicType<EntityTypeMetadata<EntityMetadata>>> cache = new ConcurrentHashMap<>();
+    private final Map<Set<Discriminator>, CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>>> cache = new ConcurrentHashMap<>();
 
     /**
      * Constructor.
@@ -147,14 +147,14 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
     }
 
     /**
-     * Return a {@link DynamicType} containing all types matching to the given
+     * Return a {@link CompositeTypeMetadata} containing all types matching to the given
      * entity discriminators.
      *
      * @param discriminators
      *            The discriminators.
-     * @return The {@link DynamicType}.
+     * @return The {@link CompositeTypeMetadata}.
      */
-    public DynamicType<EntityTypeMetadata<EntityMetadata>> getDynamicType(Set<Discriminator> discriminators) {
+    public CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> getDynamicType(Set<Discriminator> discriminators) {
         return cache.computeIfAbsent(ImmutableSet.<Discriminator> builderWithExpectedSize(discriminators.size()).addAll(discriminators).build(), key -> {
             LOGGER.debug("Cache miss for discriminators {}.", key);
             Set<EntityTypeMetadata<EntityMetadata>> metadata = new HashSet<>();
@@ -174,7 +174,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
                     }
                 }
             }
-            return new DynamicType<>(metadata);
+            return new CompositeTypeMetadata<>(metadata);
         });
     }
 

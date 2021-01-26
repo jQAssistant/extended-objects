@@ -3,15 +3,14 @@ package com.buschmais.xo.impl.query;
 import java.util.*;
 import java.util.Map.Entry;
 
-import com.buschmais.xo.api.CompositeType;
 import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.metadata.type.CompositeType;
 import com.buschmais.xo.impl.AbstractResultIterable;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.query.RowInvocationHandler;
 import com.buschmais.xo.impl.proxy.query.RowProxyMethodService;
-import com.buschmais.xo.spi.metadata.CompositeTypeBuilder;
 
 class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterable<T> implements Query.Result<T> {
 
@@ -53,7 +52,7 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
                 }
                 if (rowProxyMethodService != null) {
                     RowInvocationHandler invocationHandler = new RowInvocationHandler(row, rowProxyMethodService);
-                    CompositeType compositeType = CompositeTypeBuilder.create(CompositeRowObject.class, returnTypes.toArray(new Class[returnTypes.size()]));
+                    CompositeType compositeType = CompositeType.builder().type(CompositeRowObject.class).types(returnTypes).build();
                     return sessionContext.getProxyFactory().createInstance(invocationHandler, compositeType);
                 }
                 if (row.size() != 1) {

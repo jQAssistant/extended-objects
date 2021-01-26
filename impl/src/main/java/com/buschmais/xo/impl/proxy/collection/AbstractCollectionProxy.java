@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import com.buschmais.xo.impl.SessionContext;
-import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.AbstractRelationPropertyMethodMetadata;
 
 public abstract class AbstractCollectionProxy<Instance, Entity, Relation, PropertyMetadata extends AbstractRelationPropertyMethodMetadata<?>>
         extends AbstractCollection<Instance> implements Collection<Instance> {

@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.impl.AbstractPropertyManager;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
 
 public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, PropertyManager extends AbstractPropertyManager<DatastoreType>>
         extends AbstractPropertyMethod<DatastoreType, PropertyManager, PrimitivePropertyMethodMetadata> {

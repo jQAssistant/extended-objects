@@ -2,6 +2,8 @@ package com.buschmais.xo.trace.impl;
 
 import java.lang.annotation.Annotation;
 
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.*;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 import com.buschmais.xo.spi.session.XOSession;

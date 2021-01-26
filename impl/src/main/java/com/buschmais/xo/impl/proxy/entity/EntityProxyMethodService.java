@@ -14,12 +14,12 @@ import com.buschmais.xo.impl.proxy.entity.object.HashCodeMethod;
 import com.buschmais.xo.impl.proxy.entity.object.ToStringMethod;
 import com.buschmais.xo.impl.proxy.entity.property.*;
 import com.buschmais.xo.impl.proxy.entity.resultof.ResultOfMethod;
-import com.buschmais.xo.spi.metadata.method.*;
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
-import com.buschmais.xo.spi.reflection.AnnotatedMethod;
-import com.buschmais.xo.spi.reflection.GetPropertyMethod;
-import com.buschmais.xo.spi.reflection.PropertyMethod;
-import com.buschmais.xo.spi.reflection.SetPropertyMethod;
+import com.buschmais.xo.api.metadata.method.*;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
+import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
+import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
+import com.buschmais.xo.api.metadata.reflection.SetPropertyMethod;
 
 public class EntityProxyMethodService<Entity, Relation> extends AbstractProxyMethodService<Entity> {
 

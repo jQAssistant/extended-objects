@@ -2,7 +2,9 @@ package com.buschmais.xo.spi.datastore;
 
 import java.util.Map;
 
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
 
 /**
  * Defines the interface of a datastore.

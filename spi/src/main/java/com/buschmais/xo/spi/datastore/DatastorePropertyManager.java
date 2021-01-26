@@ -1,6 +1,6 @@
 package com.buschmais.xo.spi.datastore;
 
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
 
 /**
  * Defines the interface for all datastore operations related to properties.

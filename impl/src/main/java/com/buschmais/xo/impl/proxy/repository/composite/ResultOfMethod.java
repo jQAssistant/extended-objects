@@ -3,7 +3,7 @@ package com.buschmais.xo.impl.proxy.repository.composite;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.common.resultof.AbstractResultOfMethod;
-import com.buschmais.xo.spi.metadata.method.ResultOfMethodMetadata;
+import com.buschmais.xo.api.metadata.method.ResultOfMethodMetadata;
 
 /**
  * Implementation of a result of method for repositories.

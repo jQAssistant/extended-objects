@@ -8,7 +8,7 @@ import com.buschmais.xo.api.annotation.ResultOf;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.query.XOQueryImpl;
-import com.buschmais.xo.spi.metadata.method.ResultOfMethodMetadata;
+import com.buschmais.xo.api.metadata.method.ResultOfMethodMetadata;
 
 /**
  * Abstract base implementation for ResultOf methods.

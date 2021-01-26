@@ -9,7 +9,7 @@ import com.buschmais.xo.neo4j.remote.impl.model.AbstractRemotePropertyContainer;
 import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
 
 import org.neo4j.driver.types.Entity;
 

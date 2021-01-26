@@ -4,11 +4,11 @@ import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOTransaction;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
+import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
+import com.buschmais.xo.api.metadata.type.RepositoryTypeMetadata;
 import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.spi.session.XOSession;
 
@@ -22,7 +22,7 @@ public class XOSessionImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     /**
      * Constructor.
-     * 
+     *
      * @param sessionContext
      *            The session context.
      */

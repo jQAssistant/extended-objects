@@ -10,11 +10,11 @@ import javax.management.ObjectName;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.spi.datastore.Datastore;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
-import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
 
 /**
  * {@link Datastore} implementation allowing tracing on delegates.

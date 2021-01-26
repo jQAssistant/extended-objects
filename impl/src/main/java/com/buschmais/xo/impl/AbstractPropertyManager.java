@@ -5,8 +5,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.method.TransientPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.TransientPropertyMethodMetadata;
 
 public abstract class AbstractPropertyManager<DatastoreType> {
 

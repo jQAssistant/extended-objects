@@ -1,6 +1,6 @@
 package com.buschmais.xo.impl.metadata;
 
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
+import static com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,15 +8,15 @@ import java.util.Map;
 import java.util.Set;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
-import com.buschmais.xo.spi.datastore.DynamicType;
-import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.method.MethodMetadata;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
-import com.buschmais.xo.spi.reflection.AnnotatedType;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.api.metadata.method.AbstractRelationPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.MethodMetadata;
+import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedType;
 
 /**
  * Allows resolving types from relation discriminators as provided by the
@@ -88,9 +88,9 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
      *            The target discriminators.
      * @return A set of matching relation types.
      */
-    public DynamicType<RelationTypeMetadata<RelationMetadata>> getRelationTypes(Set<EntityDiscriminator> sourceDiscriminators,
-            RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators) {
-        DynamicType<RelationTypeMetadata<RelationMetadata>> dynamicType = new DynamicType<>();
+    public CompositeTypeMetadata<RelationTypeMetadata<RelationMetadata>> getRelationTypes(Set<EntityDiscriminator> sourceDiscriminators,
+                                                                                          RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators) {
+        CompositeTypeMetadata<RelationTypeMetadata<RelationMetadata>> compositeTypeMetadata = new CompositeTypeMetadata<>();
         Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>> relations = relationMappings.get(discriminator);
         if (relations != null) {
             Set<RelationTypeMetadata<RelationMetadata>> relationTypes = new HashSet<>();
@@ -102,9 +102,9 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
                     relationTypes.add(relationType);
                 }
             }
-            dynamicType = new DynamicType<>(relationTypes);
+            compositeTypeMetadata = new CompositeTypeMetadata<>(relationTypes);
         }
-        return dynamicType;
+        return compositeTypeMetadata;
     }
 
     public AbstractRelationPropertyMethodMetadata<?> getRelationPropertyMethodMetadata(RelationTypeMetadata<?> relationTypeMetadata, Direction direction) {

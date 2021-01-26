@@ -5,10 +5,10 @@ import java.util.Set;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.xo.spi.datastore.DynamicType;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
 
 /**
  * Implementation of a
@@ -38,8 +38,8 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
     }
 
     @Override
-    public Entity createEntity(DynamicType<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> entityDiscriminators,
-            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
+    public Entity createEntity(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> entityDiscriminators,
+                               Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
         return delegate.createEntity(types, entityDiscriminators, exampleEntity);
     }
 
@@ -59,12 +59,12 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
     }
 
     @Override
-    public void addDiscriminators(DynamicType<EntityTypeMetadata<EntityMetadata>> types, Entity entity, Set<EntityDiscriminator> discriminators) {
+    public void addDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> types, Entity entity, Set<EntityDiscriminator> discriminators) {
         delegate.addDiscriminators(types, entity, discriminators);
     }
 
     @Override
-    public void removeDiscriminators(DynamicType<EntityTypeMetadata<EntityMetadata>> removedTypes, Entity entity, Set<EntityDiscriminator> discriminators) {
+    public void removeDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> removedTypes, Entity entity, Set<EntityDiscriminator> discriminators) {
         delegate.removeDiscriminators(removedTypes, entity, discriminators);
     }
 

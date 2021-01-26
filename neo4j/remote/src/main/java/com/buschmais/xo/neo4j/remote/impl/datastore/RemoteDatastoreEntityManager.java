@@ -22,13 +22,13 @@ import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
-import com.buschmais.xo.spi.datastore.DynamicType;
-import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.method.MethodMetadata;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.api.metadata.method.AbstractRelationPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.MethodMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
 
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
@@ -60,13 +60,13 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     }
 
     @Override
-    public RemoteNode createEntity(DynamicType<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> dynamicType, Set<RemoteLabel> remoteLabels,
-            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
+    public RemoteNode createEntity(CompositeTypeMetadata<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> compositeTypeMetadata, Set<RemoteLabel> remoteLabels,
+                                   Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
         Map<String, Object> properties = getProperties(exampleEntity);
         NodeState nodeState = new NodeState(remoteLabels, properties);
-        initializeEntity(dynamicType.getMetadata(), nodeState);
+        initializeEntity(compositeTypeMetadata.getMetadata(), nodeState);
         RemoteNode remoteNode;
-        if (isBatchable(dynamicType)) {
+        if (isBatchable(compositeTypeMetadata)) {
             long id = idSequence--;
             remoteNode = datastoreSessionCache.getNode(id, () -> nodeState);
         } else {
@@ -83,12 +83,12 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
      * Determine if at least one type is marked as
      * {@link com.buschmais.xo.neo4j.api.annotation.Batchable}.
      *
-     * @param dynamicType
+     * @param compositeTypeMetadata
      *            The types.
      * @return <code>true</code> if batching may be used.
      */
-    private boolean isBatchable(DynamicType<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> dynamicType) {
-        for (EntityTypeMetadata<NodeMetadata<RemoteLabel>> type : dynamicType.getMetadata()) {
+    private boolean isBatchable(CompositeTypeMetadata<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> compositeTypeMetadata) {
+        for (EntityTypeMetadata<NodeMetadata<RemoteLabel>> type : compositeTypeMetadata.getMetadata()) {
             if (type.getDatastoreMetadata().isBatchable()) {
                 return true;
             }
@@ -187,16 +187,16 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     }
 
     @Override
-    public void addDiscriminators(DynamicType<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> dynamicType, RemoteNode remoteNode,
-            Set<RemoteLabel> remoteLabels) {
+    public void addDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> compositeTypeMetadata, RemoteNode remoteNode,
+                                  Set<RemoteLabel> remoteLabels) {
         NodeState state = remoteNode.getState();
         state.getLabels().addAll(remoteLabels);
-        initializeEntity(dynamicType.getMetadata(), state);
+        initializeEntity(compositeTypeMetadata.getMetadata(), state);
     }
 
     @Override
-    public void removeDiscriminators(DynamicType<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> removedTypes, RemoteNode remoteNode,
-            Set<RemoteLabel> remoteLabels) {
+    public void removeDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<NodeMetadata<RemoteLabel>>> removedTypes, RemoteNode remoteNode,
+                                     Set<RemoteLabel> remoteLabels) {
         remoteNode.getState().getLabels().removeAll(remoteLabels);
     }
 

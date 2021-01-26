@@ -1,6 +1,6 @@
 package com.buschmais.xo.spi.session;
 
-import com.buschmais.xo.spi.datastore.DynamicType;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
 
 /**
  * Created by Dirk Mahler on 29.10.2014.
@@ -8,7 +8,7 @@ import com.buschmais.xo.spi.datastore.DynamicType;
 public interface InstanceManager<DatastoreId, DatastoreType> {
     <T> T readInstance(DatastoreType datastoreType);
 
-    <T> T createInstance(DatastoreType datastoreType, DynamicType<?> types);
+    <T> T createInstance(DatastoreType datastoreType, CompositeTypeMetadata<?> types);
 
     <T> T updateInstance(DatastoreType datastoreType);
 

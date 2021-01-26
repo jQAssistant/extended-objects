@@ -15,12 +15,12 @@ import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
-import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
-import com.buschmais.xo.spi.reflection.AnnotatedElement;
-import com.buschmais.xo.spi.reflection.AnnotatedMethod;
-import com.buschmais.xo.spi.reflection.AnnotatedType;
-import com.buschmais.xo.spi.reflection.PropertyMethod;
+import com.buschmais.xo.api.metadata.method.IndexedPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedElement;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedType;
+import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
 
 import com.google.common.base.CaseFormat;
 

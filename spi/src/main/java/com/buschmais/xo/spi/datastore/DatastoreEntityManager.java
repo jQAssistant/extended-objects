@@ -4,8 +4,10 @@ import java.util.Map;
 import java.util.Set;
 
 import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
 
 /**
  * Defines the interface for all entity related datastore operations.
@@ -53,8 +55,8 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      *            The example entity.
      * @return The created entity.
      */
-    Entity createEntity(DynamicType<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators,
-            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity);
+    Entity createEntity(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators,
+                        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity);
 
     /**
      * Delete an entity.
@@ -99,7 +101,7 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      *            The entity.
      * @param discriminators
      */
-    void addDiscriminators(DynamicType<EntityTypeMetadata<EntityMetadata>> types, Entity entity, Set<EntityDiscriminator> discriminators);
+    void addDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> types, Entity entity, Set<EntityDiscriminator> discriminators);
 
     /**
      * Remove a set of discriminators from an entity.
@@ -109,6 +111,6 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      *            The entity.
      * @param discriminators
      */
-    void removeDiscriminators(DynamicType<EntityTypeMetadata<EntityMetadata>> removedTypes, Entity entity, Set<EntityDiscriminator> discriminators);
+    void removeDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> removedTypes, Entity entity, Set<EntityDiscriminator> discriminators);
 
 }

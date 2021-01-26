@@ -5,8 +5,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
-import com.buschmais.xo.api.CompositeType;
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.metadata.type.CompositeType;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 

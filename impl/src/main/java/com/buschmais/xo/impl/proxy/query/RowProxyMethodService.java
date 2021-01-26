@@ -16,10 +16,10 @@ import com.buschmais.xo.impl.proxy.query.object.HashCodeMethod;
 import com.buschmais.xo.impl.proxy.query.object.ToStringMethod;
 import com.buschmais.xo.impl.proxy.query.property.GetMethod;
 import com.buschmais.xo.impl.proxy.query.row.GetColumnsMethod;
-import com.buschmais.xo.spi.reflection.AnnotatedMethod;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
 import com.buschmais.xo.spi.reflection.BeanMethodProvider;
-import com.buschmais.xo.spi.reflection.GetPropertyMethod;
-import com.buschmais.xo.spi.reflection.PropertyMethod;
+import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
+import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
 
 public class RowProxyMethodService extends AbstractProxyMethodService<Map<String, Object>> {
 

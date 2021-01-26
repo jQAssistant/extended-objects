@@ -4,7 +4,7 @@ import com.buschmais.xo.impl.EntityPropertyManager;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.collection.AbstractCollectionProxy;
 import com.buschmais.xo.impl.proxy.collection.RelationCollectionProxy;
-import com.buschmais.xo.spi.metadata.method.RelationCollectionPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.RelationCollectionPropertyMethodMetadata;
 
 /**
  * Get method for relation collections.

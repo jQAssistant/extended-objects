@@ -2,8 +2,9 @@ package com.buschmais.xo.spi.datastore;
 
 import java.util.Map;
 
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
 
 /**
  * Defines the interface for all relation related datastore operations.
@@ -100,7 +101,7 @@ public interface DatastoreRelationManager<Entity, RelationId, Relation, Relation
 
     /**
      * Return the source of a relation (i.e. where the direction is
-     * {@link com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction#TO}
+     * {@link com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction#TO}
      * .
      *
      * @param relation
@@ -111,7 +112,7 @@ public interface DatastoreRelationManager<Entity, RelationId, Relation, Relation
 
     /**
      * Return the target of a relation (i.e. where the direction is
-     * {@link com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction#FROM}
+     * {@link com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction#FROM}
      * .
      *
      * @param relation

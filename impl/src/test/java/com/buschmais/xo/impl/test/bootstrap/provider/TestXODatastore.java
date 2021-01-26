@@ -9,11 +9,11 @@ import com.buschmais.xo.impl.test.bootstrap.provider.metadata.TestRelationMetada
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
-import com.buschmais.xo.spi.reflection.AnnotatedElement;
-import com.buschmais.xo.spi.reflection.AnnotatedMethod;
-import com.buschmais.xo.spi.reflection.AnnotatedType;
-import com.buschmais.xo.spi.reflection.PropertyMethod;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedElement;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedType;
+import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
 
 public class TestXODatastore<D extends DatastoreSession> implements Datastore<D, TestEntityMetadata, String, TestRelationMetadata, String> {
 
