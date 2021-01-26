@@ -3,12 +3,14 @@ package com.buschmais.xo.spring;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -39,25 +41,45 @@ public class XOAutoConfiguration {
                 new XOInvocationHandler(xoManagerFactory));
     }
 
-    @RequiredArgsConstructor
     private static class XOInvocationHandler implements InvocationHandler {
 
         private final XOManagerFactory xoManagerFactory;
 
+        private Map<Method, Function<Object[], Object>> methodInvovationHandlers = new HashMap<>();
+
+        private XOInvocationHandler(XOManagerFactory xoManagerFactory) {
+            this.xoManagerFactory = xoManagerFactory;
+            try {
+                methodInvovationHandlers.put(XOManager.class.getMethod("close"), args -> null);
+                methodInvovationHandlers.put(Object.class.getMethod("toString"), args -> "Transactional XOManager Proxy:" + getXOManagerHolder());
+                methodInvovationHandlers.put(Object.class.getMethod("hashCode"), args -> System.identityHashCode(this));
+                methodInvovationHandlers.put(Object.class.getMethod("equals", Object.class), args -> super.equals(args[0]));
+            } catch (NoSuchMethodException e) {
+                throw new XOException("Cannot initialize transactional XOManager proxy", e);
+            }
+        }
+
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) {
-            XOManagerHolder xoManagerHolder = (XOManagerHolder) TransactionSynchronizationManager.getResource(xoManagerFactory);
-            if (xoManagerHolder == null) {
-                throw new XOException("There is no XOManager associated with the current transaction.");
-            }
-            XOManager xoManager = xoManagerHolder.getXOManager();
-            try {
-                return method.invoke(xoManager, args);
-            } catch (XOException e) {
-                throw e;
-            } catch (ReflectiveOperationException e) {
-                throw new XOException("Cannot invoke method " + method + " on transactional XOManager instance " + xoManager, e);
-            }
+            Function<Object[], Object> methodInvocationHandler = this.methodInvovationHandlers.getOrDefault(method, x -> {
+                XOManagerHolder xoManagerHolder = getXOManagerHolder();
+                if (xoManagerHolder == null) {
+                    throw new XOException("There is no XOManager associated with the current transaction.");
+                }
+                XOManager xoManager = xoManagerHolder.getXOManager();
+                try {
+                    return method.invoke(xoManager, args);
+                } catch (XOException e) {
+                    throw e;
+                } catch (ReflectiveOperationException e) {
+                    throw new XOException("Cannot invoke method " + method + " on transactional XOManager instance " + xoManager, e);
+                }
+            });
+            return methodInvocationHandler.apply(args);
+        }
+
+        private XOManagerHolder getXOManagerHolder() {
+            return (XOManagerHolder) TransactionSynchronizationManager.getResource(xoManagerFactory);
         }
     }
 }

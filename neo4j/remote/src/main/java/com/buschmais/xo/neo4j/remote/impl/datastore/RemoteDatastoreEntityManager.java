@@ -71,7 +71,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
             remoteNode = datastoreSessionCache.getNode(id, () -> nodeState);
         } else {
             StringBuilder labels = getLabelExpression(remoteLabels);
-            String statement = "CREATE (n" + labels.toString() + "$n) RETURN id(n) as id";
+            String statement = "CREATE (n" + labels.toString() + ") SET n=$n RETURN id(n) as id";
             Record record = statementExecutor.getSingleResult(statement, parameters("n", properties));
             long id = record.get("id").asLong();
             remoteNode = datastoreSessionCache.getNode(id, () -> nodeState);
