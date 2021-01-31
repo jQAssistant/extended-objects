@@ -26,7 +26,7 @@ public class GuiceXOManagerFactoryInjectionTest {
             @Provides
             @Singleton
             @Named("guice")
-            XOManagerFactory special() {
+            XOManagerFactory<?, ?, ?, ?> special() {
                 return XO.createXOManagerFactory("guice");
             }
         });
@@ -49,19 +49,19 @@ public class GuiceXOManagerFactoryInjectionTest {
     static class A {
         @Inject
         @Named("guice")
-        XOManagerFactory guiceXOManager;
+        XOManagerFactory<?, ?, ?, ?> guiceXOManager;
 
         @Inject
-        XOManagerFactory defaultXOManager;
+        XOManagerFactory<?, ?, ?, ?> defaultXOManager;
     }
 
     static class B {
 
-        private final XOManagerFactory guiceXOManager;
-        private final XOManagerFactory defaultXOManager;
+        private final XOManagerFactory<?, ?, ?, ?> guiceXOManager;
+        private final XOManagerFactory<?, ?, ?, ?> defaultXOManager;
 
         @Inject
-        public B(@Named("guice") XOManagerFactory guiceXOManager, XOManagerFactory defaultXOManager) {
+        public B(@Named("guice") XOManagerFactory<?, ?, ?, ?> guiceXOManager, XOManagerFactory<?, ?, ?, ?> defaultXOManager) {
             this.guiceXOManager = guiceXOManager;
             this.defaultXOManager = defaultXOManager;
         }
