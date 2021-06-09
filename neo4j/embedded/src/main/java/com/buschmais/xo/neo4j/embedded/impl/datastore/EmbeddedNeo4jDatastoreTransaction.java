@@ -42,9 +42,14 @@ class EmbeddedNeo4jDatastoreTransaction implements DatastoreTransaction {
         return transaction != null;
     }
 
+    public Transaction getTransaction() {
+        ensureTransaction();
+        return transaction;
+    }
+
     private void ensureTransaction() {
         if (transaction == null) {
-            throw new XOException("There is no existing transaction.");
+            throw new XOException("There is no active transaction.");
         }
     }
 

@@ -75,7 +75,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
         if (!datastoreMetadata.isBatchable()) {
             // Create the relationship immediately
             String statement = String.format(
-                    "MATCH (start),(end) WHERE id(start)={start} and id(end)={end} CREATE (start)-[r:%s]->(end) SET r=$r RETURN id(r) as id", type.getName());
+                    "MATCH (start),(end) WHERE id(start)=$start and id(end)=$end CREATE (start)-[r:%s]->(end) SET r=$r RETURN id(r) as id", type.getName());
             Record record = statementExecutor.getSingleResult(statement, parameters("start", start.getId(), "end", end.getId(), "r", properties));
             long id = record.get("id").asLong();
             RelationshipState relationshipState = new RelationshipState(properties);

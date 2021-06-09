@@ -12,9 +12,6 @@ import com.buschmais.xo.api.bootstrap.XOBootstrapService;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.impl.XOManagerFactoryImpl;
 
-import org.osgi.service.component.annotations.Component;
-
-@Component
 public class XOBootstrapServiceImpl implements XOBootstrapService {
 
     /**

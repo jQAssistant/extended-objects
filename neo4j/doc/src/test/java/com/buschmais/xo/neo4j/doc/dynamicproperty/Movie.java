@@ -17,7 +17,7 @@ public interface Movie {
     Long getActorCount();
 
     @ResultOf
-    @Cypher("match (a:Actor)-[:ACTED_IN]->(m:Movie) where id(m)=$this and a.age={age} return count(a)")
+    @Cypher("match (a:Actor)-[:ACTED_IN]->(m:Movie) where id(m)=$this and a.age=$age return count(a)")
     Long getActorCountByAge(@Parameter("age") int age);
 
     @ActedIn

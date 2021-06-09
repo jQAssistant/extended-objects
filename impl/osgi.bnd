@@ -1,8 +1,0 @@
-#-----------------------------------------------------------------
-# Use this file to add customized Bnd instructions for the bundle
-#-----------------------------------------------------------------
-
-Bundle-Activator: com.buschmais.xo.impl.bootstrap.osgi.XOUnitBundleListener
-DynamicImport-Package: *
-Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/com.buschmais.xo.impl.bootstrap.XOBootstrapServiceImpl.xml
