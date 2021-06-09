@@ -13,14 +13,14 @@ import com.buschmais.xo.api.metadata.method.ResultOfMethodMetadata;
  * @param <Relation>
  *            The relation type.
  */
-public class ResultOfMethod<Entity, Relation> extends AbstractResultOfMethod<XOManager, Entity, Relation> {
+public class ResultOfMethod<T, Entity, Relation> extends AbstractResultOfMethod<T, Entity, Relation> {
 
     public ResultOfMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, ResultOfMethodMetadata<?> resultOfMethodMetadata) {
         super(sessionContext, resultOfMethodMetadata);
     }
 
     @Override
-    protected XOManager getThisInstance(XOManager datastoreType, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
+    protected Object getThisInstance(T datastoreType, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         return null;
     }
 

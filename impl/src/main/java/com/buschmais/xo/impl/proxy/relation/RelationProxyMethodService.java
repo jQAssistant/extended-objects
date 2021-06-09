@@ -25,13 +25,13 @@ public class RelationProxyMethodService<Entity, Relation> extends AbstractProxyM
 
     public RelationProxyMethodService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata().values()) {
-            for (MethodMetadata methodMetadata : typeMetadata.getProperties()) {
+            for (MethodMetadata<?, ?> methodMetadata : typeMetadata.getProperties()) {
                 AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
                 addUnsupportedOperationMethod(methodMetadata, typeMethod);
                 addImplementedByMethod(methodMetadata, typeMethod);
                 if (methodMetadata instanceof ResultOfMethodMetadata) {
-                    ResultOfMethodMetadata resultOfMethodMetadata = (ResultOfMethodMetadata) methodMetadata;
-                    addProxyMethod(new ResultOfMethod(sessionContext, resultOfMethodMetadata), typeMethod.getAnnotatedElement());
+                    ResultOfMethodMetadata<?> resultOfMethodMetadata = (ResultOfMethodMetadata) methodMetadata;
+                    addProxyMethod(new ResultOfMethod<>(sessionContext, resultOfMethodMetadata), typeMethod.getAnnotatedElement());
                 }
                 if (methodMetadata instanceof AbstractPropertyMethodMetadata) {
                     RelationPropertyManager<Entity, Relation> relationPropertyManager = sessionContext.getRelationPropertyManager();
@@ -39,27 +39,27 @@ public class RelationProxyMethodService<Entity, Relation> extends AbstractProxyM
                     Method method = propertyMethod.getAnnotatedElement();
                     if (methodMetadata instanceof PrimitivePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new PrimitivePropertyGetMethod(relationPropertyManager, (PrimitivePropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new PrimitivePropertyGetMethod<>(relationPropertyManager, (PrimitivePropertyMethodMetadata) methodMetadata), method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new PrimitivePropertySetMethod(relationPropertyManager, (PrimitivePropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new PrimitivePropertySetMethod<>(relationPropertyManager, (PrimitivePropertyMethodMetadata) methodMetadata), method);
                         }
                     } else if (methodMetadata instanceof TransientPropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
-                            addProxyMethod(new TransientPropertyGetMethod(relationPropertyManager, (TransientPropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new TransientPropertyGetMethod<>(relationPropertyManager, (TransientPropertyMethodMetadata) methodMetadata), method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
-                            addProxyMethod(new TransientPropertySetMethod(relationPropertyManager, (TransientPropertyMethodMetadata) methodMetadata), method);
+                            addProxyMethod(new TransientPropertySetMethod<>(relationPropertyManager, (TransientPropertyMethodMetadata) methodMetadata), method);
                         }
                     } else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata && propertyMethod instanceof GetPropertyMethod) {
-                        addProxyMethod(new EntityReferencePropertyGetMethod(relationPropertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata),
+                        addProxyMethod(new EntityReferencePropertyGetMethod<>(relationPropertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata),
                                 method);
                     }
                 }
             }
         }
         addMethod(new AsMethod<>(sessionContext), CompositeObject.class, "as", Class.class);
-        addMethod(new GetIdMethod<Relation>(sessionContext), CompositeObject.class, "getId");
-        addMethod(new GetDelegateMethod<Relation>(), CompositeObject.class, "getDelegate");
-        addMethod(new HashCodeMethod<>(sessionContext), Object.class, "hashCode");
+        addMethod(new GetIdMethod<>(sessionContext), CompositeObject.class, "getId");
+        addMethod(new GetDelegateMethod<>(), CompositeObject.class, "getDelegate");
+        addMethod(new HashCodeMethod<>(), Object.class, "hashCode");
         addMethod(new EqualsMethod<>(sessionContext), Object.class, "equals", Object.class);
         addMethod(new ToStringMethod<>(sessionContext), Object.class, "toString");
     }

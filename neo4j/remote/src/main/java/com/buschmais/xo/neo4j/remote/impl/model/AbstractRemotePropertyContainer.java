@@ -6,6 +6,7 @@ import java.util.Map;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.model.Neo4jPropertyContainer;
 import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
+import lombok.ToString;
 
 /**
  * Abstract base class for property containers.
@@ -14,20 +15,22 @@ import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerS
  * {@link #equals(Object)} and {@link #hashCode()}, equality is defined by
  * reference.
  *
- * @param <S> The state type.
+ * @param <S>
+ *            The state type.
  */
+@ToString
 public abstract class AbstractRemotePropertyContainer<S extends AbstractPropertyContainerState> implements Neo4jPropertyContainer {
 
     private final S state;
 
-    private final int hashCode;
+    private final long initialId;
 
     private long id;
 
     protected AbstractRemotePropertyContainer(long id, S state) {
+        this.initialId = id;
         this.id = id;
         this.state = state;
-        this.hashCode = super.hashCode();
     }
 
     @Override
@@ -76,17 +79,18 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
 
     @Override
     public final boolean equals(Object other) {
-        return this == other;
+        if (this == other) {
+            return true;
+        } else if (other != null && other.getClass().equals(this.getClass())) {
+            AbstractRemotePropertyContainer<?> otherContainer = (AbstractRemotePropertyContainer<?>) other;
+            return this.id == otherContainer.id || this.id == otherContainer.initialId || this.initialId == otherContainer.id;
+        }
+        return false;
     }
 
     @Override
     public final int hashCode() {
-        return this.hashCode;
-    }
-
-    @Override
-    public final String toString() {
-        return getClass().getSimpleName() + "{" + "id=" + id + '}';
+        return (int) this.initialId;
     }
 
 }
