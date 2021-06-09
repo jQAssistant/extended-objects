@@ -1,7 +1,10 @@
 package com.buschmais.xo.impl.proxy.relation.object;
 
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.common.object.AbstractDatastoreTypeToStringMethod;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
 import com.buschmais.xo.spi.datastore.*;
 
 public class ToStringMethod<Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator>
@@ -25,7 +28,7 @@ public class ToStringMethod<Entity, EntityMetadata extends DatastoreEntityMetada
     }
 
     @Override
-    protected DynamicType<?> getDynamicType(Relation datastoreType) {
+    protected CompositeTypeMetadata<?> getDynamicType(Relation datastoreType) {
         Entity from = datastoreRelationManager.getFrom(datastoreType);
         Entity to = datastoreRelationManager.getTo(datastoreType);
         return sessionContext.getMetadataProvider().getRelationTypes(datastoreEntityManager.getEntityDiscriminators(from),

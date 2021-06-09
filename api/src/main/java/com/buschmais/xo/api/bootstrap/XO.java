@@ -27,7 +27,7 @@ public final class XO {
      *            The name of the XO unit.
      * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
      */
-    public static XOManagerFactory createXOManagerFactory(String name) {
+    public static XOManagerFactory<?, ?, ?, ?> createXOManagerFactory(String name) {
         Optional<XOBootstrapService> bootstrapService = getBootstrapService();
         if (bootstrapService.isPresent()) {
             return bootstrapService.get().createXOManagerFactory(name);
@@ -42,7 +42,7 @@ public final class XO {
      *            The XO unit.
      * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
      */
-    public static XOManagerFactory createXOManagerFactory(XOUnit xoUnit) {
+    public static XOManagerFactory<?, ?, ?, ?> createXOManagerFactory(XOUnit xoUnit) {
         Optional<XOBootstrapService> bootstrapService = getBootstrapService();
         if (bootstrapService.isPresent()) {
             return bootstrapService.get().createXOManagerFactory(xoUnit);

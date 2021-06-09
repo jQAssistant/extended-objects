@@ -32,7 +32,7 @@ public abstract class AbstractXOManagerIT {
     }
 
     private XOUnit xoUnit;
-    private XOManagerFactory xoManagerFactory;
+    private XOManagerFactory<?, ?, ?, ?> xoManagerFactory;
     private XOManager xoManager = null;
 
     /**
@@ -183,7 +183,7 @@ public abstract class AbstractXOManagerIT {
      *
      * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
      */
-    protected XOManagerFactory getXOManagerFactory() {
+    protected XOManagerFactory<?, ?, ?, ?> getXOManagerFactory() {
         return xoManagerFactory;
     }
 

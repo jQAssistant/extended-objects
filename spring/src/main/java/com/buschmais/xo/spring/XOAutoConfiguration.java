@@ -28,7 +28,7 @@ public class XOAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(PlatformTransactionManager.class)
-    public XOTransactionManager transactionManager(XOManagerFactory xoManagerFactory,
+    public XOTransactionManager transactionManager(XOManagerFactory<?, ?, ?, ?> xoManagerFactory,
             ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
         XOTransactionManager transactionManager = new XOTransactionManager(xoManagerFactory);
         transactionManagerCustomizers.ifAvailable((customizers) -> customizers.customize(transactionManager));
@@ -36,18 +36,18 @@ public class XOAutoConfiguration {
     }
 
     @Bean
-    public XOManager getXOManager(XOManagerFactory xoManagerFactory) {
+    public XOManager getXOManager(XOManagerFactory<?, ?, ?, ?> xoManagerFactory) {
         return (XOManager) Proxy.newProxyInstance(XOAutoConfiguration.class.getClassLoader(), new Class<?>[] { XOManager.class },
                 new XOInvocationHandler(xoManagerFactory));
     }
 
     private static class XOInvocationHandler implements InvocationHandler {
 
-        private final XOManagerFactory xoManagerFactory;
+        private final XOManagerFactory<?, ?, ?, ?> xoManagerFactory;
 
         private Map<Method, Function<Object[], Object>> methodInvovationHandlers = new HashMap<>();
 
-        private XOInvocationHandler(XOManagerFactory xoManagerFactory) {
+        private XOInvocationHandler(XOManagerFactory<?, ?, ?, ?> xoManagerFactory) {
             this.xoManagerFactory = xoManagerFactory;
             try {
                 methodInvovationHandlers.put(XOManager.class.getMethod("close"), args -> null);

@@ -7,6 +7,7 @@ import javax.validation.ValidatorFactory;
 
 import com.buschmais.xo.api.XOTransaction;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.api.metadata.MetadataProvider;
 import com.buschmais.xo.impl.cache.CacheSynchronization;
 import com.buschmais.xo.impl.cache.CacheSynchronizationService;
 import com.buschmais.xo.impl.cache.TransactionalCache;
@@ -15,8 +16,8 @@ import com.buschmais.xo.impl.interceptor.ConcurrencyInterceptor;
 import com.buschmais.xo.impl.interceptor.TransactionInterceptor;
 import com.buschmais.xo.impl.plugin.PluginRepositoryManager;
 import com.buschmais.xo.impl.validation.InstanceValidationService;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import com.buschmais.xo.spi.interceptor.InterceptorFactory;

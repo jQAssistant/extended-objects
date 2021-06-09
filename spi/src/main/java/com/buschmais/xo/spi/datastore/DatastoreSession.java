@@ -2,6 +2,8 @@ package com.buschmais.xo.spi.datastore;
 
 import java.lang.annotation.Annotation;
 
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.session.XOSession;
 
 /**
@@ -63,7 +65,7 @@ public interface DatastoreSession<EntityId, Entity, EntityMetadata extends Datas
 
     /**
      * Create a datastore repository for the given type.
-     * 
+     *
      * @param xoSession
      *            The {@link com.buschmais.xo.spi.session.XOSession}.
      * @param type

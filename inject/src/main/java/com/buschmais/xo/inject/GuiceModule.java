@@ -27,7 +27,7 @@ public class GuiceModule extends AbstractModule {
 
     @Provides
     @Singleton
-    XOManagerFactory xoManagerFactory() {
+    XOManagerFactory<?, ?, ?, ?> xoManagerFactory() {
         return XO.createXOManagerFactory(defaultUnit);
     }
 }

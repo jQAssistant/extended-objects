@@ -4,7 +4,7 @@ import static com.buschmais.xo.api.Query.Result;
 import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
 import static com.buschmais.xo.spi.annotation.RelationDefinition.FromDefinition;
 import static com.buschmais.xo.spi.annotation.RelationDefinition.ToDefinition;
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction;
+import static com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -15,16 +15,20 @@ import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.annotation.*;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.impl.MetadataProvider;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
+import com.buschmais.xo.api.metadata.MetadataProvider;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
 import com.buschmais.xo.spi.annotation.EntityDefinition;
 import com.buschmais.xo.spi.annotation.IndexDefinition;
 import com.buschmais.xo.spi.annotation.QueryDefinition;
 import com.buschmais.xo.spi.annotation.RelationDefinition;
 import com.buschmais.xo.spi.datastore.*;
-import com.buschmais.xo.spi.metadata.method.*;
-import com.buschmais.xo.spi.metadata.type.*;
+import com.buschmais.xo.api.metadata.method.*;
+import com.buschmais.xo.api.metadata.reflection.*;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedType;
+import com.buschmais.xo.api.metadata.type.*;
 import com.buschmais.xo.spi.reflection.*;
-import com.buschmais.xo.spi.reflection.AnnotatedType;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -89,20 +93,20 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     }
 
     @Override
-    public DynamicType<EntityTypeMetadata<EntityMetadata>> getTypes(Set<EntityDiscriminator> entityDiscriminators) {
+    public CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> getTypes(Set<EntityDiscriminator> entityDiscriminators) {
         return entityTypeMetadataResolver.getDynamicType(entityDiscriminators);
     }
 
     @Override
-    public DynamicType<RelationTypeMetadata<RelationMetadata>> getRelationTypes(Set<EntityDiscriminator> sourceDiscriminators,
-            RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators) {
+    public CompositeTypeMetadata<RelationTypeMetadata<RelationMetadata>> getRelationTypes(Set<EntityDiscriminator> sourceDiscriminators,
+                                                                                          RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators) {
         return relationTypeMetadataResolver.getRelationTypes(sourceDiscriminators, discriminator, targetDiscriminators);
     }
 
     @Override
-    public Set<EntityDiscriminator> getEntityDiscriminators(DynamicType<EntityTypeMetadata<EntityMetadata>> dynamicType) {
+    public Set<EntityDiscriminator> getEntityDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> compositeTypeMetadata) {
         Set<EntityDiscriminator> entityDiscriminators = new HashSet<>();
-        for (EntityTypeMetadata<EntityMetadata> entityTypeMetadata : dynamicType.getMetadata()) {
+        for (EntityTypeMetadata<EntityMetadata> entityTypeMetadata : compositeTypeMetadata.getMetadata()) {
             Set<EntityDiscriminator> discriminatorsOfType = entityTypeMetadataResolver.getDiscriminators(entityTypeMetadata);
             entityDiscriminators.addAll(discriminatorsOfType);
         }
@@ -145,14 +149,14 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
     }
 
     @Override
-    public DynamicType<EntityTypeMetadata<EntityMetadata>> getEffectiveTypes(Class<?> type, Class<?>... types) {
+    public CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> getEffectiveTypes(Class<?> type, Class<?>... types) {
         Set<EntityTypeMetadata<EntityMetadata>> metadataSet = new HashSet<>();
         EntityTypeMetadata<EntityMetadata> entityMetadata = getEntityMetadata(type);
         metadataSet.add(entityMetadata);
         for (Class<?> otherType : types) {
             metadataSet.add(getEntityMetadata(otherType));
         }
-        return new DynamicType<>(metadataSet);
+        return new CompositeTypeMetadata<>(metadataSet);
     }
 
     /**
@@ -448,7 +452,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             AnnotatedType annotatedTypeArgument = new AnnotatedType(elementType);
             if (isEntityType(annotatedTypeArgument)) {
                 Direction relationDirection = getRelationDirection(propertyMethod, Direction.FROM);
-                com.buschmais.xo.spi.reflection.AnnotatedElement<?> relationElement = getRelationDefinitionElement(propertyMethod);
+                com.buschmais.xo.api.metadata.reflection.AnnotatedElement<?> relationElement = getRelationDefinitionElement(propertyMethod);
                 RelationTypeMetadata relationshipType = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(relationElement, metadataByType));
                 methodMetadata = new EntityCollectionPropertyMethodMetadata<>(propertyMethod, relationshipType, relationDirection, elementType,
                         metadataFactory.createCollectionPropertyMetadata(propertyMethod));
@@ -467,7 +471,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             RelationTypeMetadata<RelationMetadata> relationMetadata;
             if (isEntityType(referencedType)) {
                 relationDirection = getRelationDirection(propertyMethod, Direction.FROM);
-                com.buschmais.xo.spi.reflection.AnnotatedElement<?> relationElement = getRelationDefinitionElement(propertyMethod);
+                com.buschmais.xo.api.metadata.reflection.AnnotatedElement<?> relationElement = getRelationDefinitionElement(propertyMethod);
                 relationMetadata = new RelationTypeMetadata<>(metadataFactory.createRelationMetadata(relationElement, metadataByType));
                 methodMetadata = new EntityReferencePropertyMethodMetadata<>(propertyMethod, relationMetadata, relationDirection,
                         referencedType.getAnnotatedElement(), metadataFactory.createReferencePropertyMetadata(propertyMethod));
@@ -531,13 +535,13 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
      *            The property method to start with.
      * @return The annotated element.
      */
-    private com.buschmais.xo.spi.reflection.AnnotatedElement<?> getRelationDefinitionElement(PropertyMethod propertyMethod) {
+    private com.buschmais.xo.api.metadata.reflection.AnnotatedElement<?> getRelationDefinitionElement(PropertyMethod propertyMethod) {
         if (propertyMethod.getByMetaAnnotation(RelationDefinition.class) != null) {
             return propertyMethod;
         }
         Annotation[] declaredAnnotations = propertyMethod.getAnnotations();
         for (int i = 0; i < declaredAnnotations.length; i++) {
-            com.buschmais.xo.spi.reflection.AnnotatedElement<?> annotationTypeElement = new AnnotatedType(declaredAnnotations[i].annotationType());
+            com.buschmais.xo.api.metadata.reflection.AnnotatedElement<?> annotationTypeElement = new AnnotatedType(declaredAnnotations[i].annotationType());
             if (annotationTypeElement.getByMetaAnnotation(RelationDefinition.class) != null) {
                 return annotationTypeElement;
             }

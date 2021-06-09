@@ -1,8 +1,8 @@
 package com.buschmais.xo.neo4j.spi.metadata;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.method.IndexedPropertyMethodMetadata;
 
 public class NodeMetadata<L extends Neo4jLabel> extends AbstractPropertyContainerMetadata implements DatastoreEntityMetadata<L> {
 

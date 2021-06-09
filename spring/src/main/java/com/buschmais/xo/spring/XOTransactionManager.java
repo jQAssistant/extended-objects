@@ -22,18 +22,18 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
 
     private static final Logger logger = LoggerFactory.getLogger(XOTransactionManager.class);
 
-    private XOManagerFactory xoManagerFactory;
+    private XOManagerFactory<?, ?, ?, ?> xoManagerFactory;
 
-    public XOTransactionManager(XOManagerFactory xoManagerFactory) {
+    public XOTransactionManager(XOManagerFactory<?, ?, ?, ?> xoManagerFactory) {
         setTransactionSynchronization(SYNCHRONIZATION_ON_ACTUAL_TRANSACTION);
         this.xoManagerFactory = xoManagerFactory;
     }
 
-    public void setXOManagerFactory(XOManagerFactory xoManagerFactory) {
+    public void setXOManagerFactory(XOManagerFactory<?, ?, ?, ?> xoManagerFactory) {
         this.xoManagerFactory = xoManagerFactory;
     }
 
-    public XOManagerFactory getXOManagerFactory() {
+    public XOManagerFactory<?, ?, ?, ?> getXOManagerFactory() {
         return this.xoManagerFactory;
     }
 

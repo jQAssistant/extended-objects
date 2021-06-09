@@ -5,10 +5,10 @@ import java.util.Set;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.common.object.AbstractDatastoreTypeToStringMethod;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.xo.spi.datastore.DynamicType;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
 
 public class ToStringMethod<Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator>
         extends AbstractDatastoreTypeToStringMethod<Entity> {
@@ -27,7 +27,7 @@ public class ToStringMethod<Entity, EntityMetadata extends DatastoreEntityMetada
         return datastoreEntityManager.getEntityId(datastoreType).toString();
     }
 
-    protected DynamicType<EntityTypeMetadata<EntityMetadata>> getDynamicType(Entity entity) {
+    protected CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> getDynamicType(Entity entity) {
         Set<EntityDiscriminator> discriminators = datastoreEntityManager.getEntityDiscriminators(entity);
         return sessionContext.getMetadataProvider().getTypes(discriminators);
     }

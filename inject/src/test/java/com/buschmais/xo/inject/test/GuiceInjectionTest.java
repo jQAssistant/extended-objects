@@ -20,7 +20,7 @@ import org.junit.Test;
 public class GuiceInjectionTest {
 
     @Inject
-    private XOManagerFactory xoManagerFactory;
+    private XOManagerFactory<?, ?, ?, ?> xoManagerFactory;
 
     private XOManager xoManager;
 

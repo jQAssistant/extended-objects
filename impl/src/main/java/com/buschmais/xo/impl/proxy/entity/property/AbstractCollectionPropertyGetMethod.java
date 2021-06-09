@@ -9,7 +9,7 @@ import com.buschmais.xo.impl.proxy.collection.AbstractCollectionProxy;
 import com.buschmais.xo.impl.proxy.collection.ListProxy;
 import com.buschmais.xo.impl.proxy.collection.SetProxy;
 import com.buschmais.xo.impl.proxy.common.property.AbstractPropertyMethod;
-import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.AbstractRelationPropertyMethodMetadata;
 
 /**
  * Abstract base implementation for get methods returning collections of

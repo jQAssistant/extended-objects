@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import com.buschmais.xo.impl.SessionContext;
-import com.buschmais.xo.spi.metadata.method.EntityCollectionPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.EntityCollectionPropertyMethodMetadata;
 import com.buschmais.xo.spi.session.InstanceManager;
 
 public class EntityCollectionProxy<Instance, Entity, Relation>

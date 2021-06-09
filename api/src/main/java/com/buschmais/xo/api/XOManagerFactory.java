@@ -1,11 +1,15 @@
 package com.buschmais.xo.api;
 
 import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.api.metadata.MetadataProvider;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
 
 /**
  * Defines the factory interfaces for {@link XOManager} instances.
  */
-public interface XOManagerFactory extends AutoCloseable, CloseSupport {
+public interface XOManagerFactory<EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator>
+        extends AutoCloseable, CloseSupport {
 
     /**
      * Create a {@link XOManager} instance.
@@ -37,4 +41,5 @@ public interface XOManagerFactory extends AutoCloseable, CloseSupport {
      */
     <DS> DS getDatastore(Class<DS> datastoreType);
 
+    MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> getMetadataProvider();
 }

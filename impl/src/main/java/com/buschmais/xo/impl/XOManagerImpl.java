@@ -1,8 +1,8 @@
 package com.buschmais.xo.impl;
 
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.FROM;
-import static com.buschmais.xo.spi.metadata.type.RelationTypeMetadata.Direction.TO;
+import static com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction.FROM;
+import static com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction.TO;
 import static java.util.Collections.emptyMap;
 
 import java.util.*;
@@ -10,6 +10,12 @@ import java.util.*;
 import javax.validation.ConstraintViolation;
 
 import com.buschmais.xo.api.*;
+import com.buschmais.xo.api.metadata.type.CompositeType;
+import com.buschmais.xo.api.metadata.MetadataProvider;
+import com.buschmais.xo.api.metadata.method.AbstractRelationPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.IndexedPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.*;
 import com.buschmais.xo.impl.instancelistener.InstanceListenerService;
 import com.buschmais.xo.impl.proxy.InstanceInvocationHandler;
 import com.buschmais.xo.impl.proxy.example.ExampleProxyMethodService;
@@ -17,12 +23,8 @@ import com.buschmais.xo.impl.proxy.repository.RepositoryInvocationHandler;
 import com.buschmais.xo.impl.proxy.repository.RepositoryProxyMethodService;
 import com.buschmais.xo.impl.query.XOQueryImpl;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
-import com.buschmais.xo.spi.datastore.*;
-import com.buschmais.xo.spi.metadata.CompositeTypeBuilder;
-import com.buschmais.xo.spi.metadata.method.AbstractRelationPropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.method.IndexedPropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.*;
+import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
+import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.spi.session.XOSession;
 
@@ -154,7 +156,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         List<Class<?>> effectiveTypes = new ArrayList<>(types.length + 1);
         effectiveTypes.add(type);
         effectiveTypes.addAll(Arrays.asList(types));
-        CompositeType compositeType = CompositeTypeBuilder.create(CompositeObject.class, type, types);
+        CompositeType compositeType = CompositeType.builder().type(CompositeObject.class).type(type).types(types).build();
         T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, compositeType);
         example.prepare(instance);
         return exampleEntity;
@@ -242,7 +244,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
      * @return The {@link CompositeObject} instance.
      */
     private CompositeObject createByExample(Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity, Class<?> type, Class<?>... types) {
-        DynamicType<EntityTypeMetadata<EntityMetadata>> effectiveTypes = sessionContext.getMetadataProvider().getEffectiveTypes(type, types);
+        CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> effectiveTypes = sessionContext.getMetadataProvider().getEffectiveTypes(type, types);
         Set<EntityDiscriminator> entityDiscriminators = sessionContext.getMetadataProvider().getEntityDiscriminators(effectiveTypes);
         DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = sessionContext
                 .getDatastoreSession();
@@ -287,7 +289,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
                 proxyMethodService = new RepositoryProxyMethodService<>(datastoreRepository, repositoryMetadata, sessionContext);
             }
             RepositoryInvocationHandler invocationHandler = new RepositoryInvocationHandler(proxyMethodService, this);
-            T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, CompositeTypeBuilder.create(repositoryType));
+            T instance = sessionContext.getProxyFactory().createInstance(invocationHandler, CompositeType.builder().type(repositoryType).build());
             repository = sessionContext.getInterceptorFactory().addInterceptor(instance, repositoryType);
             repositories.put(repositoryType, repository);
         }

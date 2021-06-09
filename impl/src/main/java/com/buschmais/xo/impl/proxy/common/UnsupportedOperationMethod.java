@@ -3,7 +3,7 @@ package com.buschmais.xo.impl.proxy.common;
 import java.lang.reflect.Method;
 
 import com.buschmais.xo.api.proxy.ProxyMethod;
-import com.buschmais.xo.spi.metadata.method.UnsupportedOperationMethodMetadata;
+import com.buschmais.xo.api.metadata.method.UnsupportedOperationMethodMetadata;
 
 public class UnsupportedOperationMethod<DatastoreType> implements ProxyMethod<DatastoreType> {
 

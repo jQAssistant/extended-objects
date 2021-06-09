@@ -5,10 +5,10 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.xo.spi.datastore.DynamicType;
-import com.buschmais.xo.spi.metadata.method.MethodMetadata;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.TypeMetadata;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.api.metadata.method.MethodMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
 
 public abstract class AbstractDatastoreTypeToStringMethod<T> extends AbstractToStringMethod<T> {
 
@@ -43,7 +43,7 @@ public abstract class AbstractDatastoreTypeToStringMethod<T> extends AbstractToS
                 : null;
     }
 
-    protected abstract DynamicType<?> getDynamicType(T datastoreType);
+    protected abstract CompositeTypeMetadata<?> getDynamicType(T datastoreType);
 
     protected abstract DatastorePropertyManager<T, ?> getDatastorePropertyManager();
 }

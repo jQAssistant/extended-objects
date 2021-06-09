@@ -4,7 +4,7 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.impl.proxy.ProxyMethodService;
 import com.buschmais.xo.impl.proxy.relation.RelationProxyMethodService;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
-import com.buschmais.xo.spi.datastore.DynamicType;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
 
 /**
  * Implementation of an instance manager for relation types.
@@ -35,7 +35,7 @@ public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Re
     }
 
     @Override
-    protected DynamicType<?> getTypes(Relation relation) {
+    protected CompositeTypeMetadata<?> getTypes(Relation relation) {
         DatastoreSession<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator, ?> datastoreSession = sessionContext
                 .getDatastoreSession();
         Entity source = datastoreSession.getDatastoreRelationManager().getFrom(relation);

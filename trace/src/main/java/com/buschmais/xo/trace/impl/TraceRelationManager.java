@@ -3,9 +3,9 @@ package com.buschmais.xo.trace.impl;
 import java.util.Map;
 
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
-import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
 
 /**
  * Implementation of a

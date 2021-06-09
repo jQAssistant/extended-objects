@@ -4,19 +4,16 @@ import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
 
-import com.buschmais.xo.api.CloseListener;
-import com.buschmais.xo.api.ValidationMode;
-import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.api.XOManager;
-import com.buschmais.xo.api.XOManagerFactory;
+import com.buschmais.xo.api.*;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.api.metadata.MetadataProvider;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
 import com.buschmais.xo.impl.metadata.MetadataProviderImpl;
 import com.buschmais.xo.impl.plugin.PluginRepositoryManager;
 import com.buschmais.xo.impl.plugin.QueryLanguagePluginRepository;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import com.buschmais.xo.spi.datastore.Datastore;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.reflection.ClassHelper;
 
@@ -24,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata>
-        implements XOManagerFactory {
+        implements XOManagerFactory<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XOManagerFactoryImpl.class);
 
@@ -115,6 +112,11 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
      */
     public PluginRepositoryManager getPluginRepositoryManager() {
         return pluginRepositoryManager;
+    }
+
+    @Override
+    public MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> getMetadataProvider() {
+        return metadataProvider;
     }
 
     @Override

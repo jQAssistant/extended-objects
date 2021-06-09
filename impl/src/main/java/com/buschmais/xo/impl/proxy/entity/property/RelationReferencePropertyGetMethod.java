@@ -2,7 +2,7 @@ package com.buschmais.xo.impl.proxy.entity.property;
 
 import com.buschmais.xo.impl.EntityPropertyManager;
 import com.buschmais.xo.impl.proxy.common.property.AbstractPropertyMethod;
-import com.buschmais.xo.spi.metadata.method.RelationReferencePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.RelationReferencePropertyMethodMetadata;
 
 public class RelationReferencePropertyGetMethod<Entity, Relation>
         extends AbstractPropertyMethod<Entity, EntityPropertyManager<Entity, Relation, ?>, RelationReferencePropertyMethodMetadata> {

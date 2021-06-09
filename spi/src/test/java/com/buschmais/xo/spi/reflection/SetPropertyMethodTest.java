@@ -8,6 +8,8 @@ import java.lang.annotation.Annotation;
 
 import com.buschmais.xo.api.XOException;
 
+import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
+import com.buschmais.xo.api.metadata.reflection.SetPropertyMethod;
 import org.junit.Before;
 import org.junit.Test;
 

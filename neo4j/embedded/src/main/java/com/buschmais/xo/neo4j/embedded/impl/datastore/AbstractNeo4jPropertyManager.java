@@ -5,7 +5,7 @@ import java.util.Map;
 import com.buschmais.xo.neo4j.embedded.impl.model.AbstractEmbeddedPropertyContainer;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.xo.spi.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
 
 /**
  * Abstract implementation of a {@link DatastorePropertyManager} for Neo4j.

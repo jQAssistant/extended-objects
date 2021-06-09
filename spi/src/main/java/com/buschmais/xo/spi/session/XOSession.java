@@ -2,11 +2,11 @@ package com.buschmais.xo.spi.session;
 
 import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.RelationTypeMetadata;
-import com.buschmais.xo.spi.metadata.type.RepositoryTypeMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
+import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
+import com.buschmais.xo.api.metadata.type.RepositoryTypeMetadata;
 
 /**
  * Defines functionality to be used by repository implementations.
@@ -15,7 +15,7 @@ public interface XOSession<EntityMetadata extends DatastoreEntityMetadata<Entity
 
     /**
      * Converts a value to the datastore representation.
-     * 
+     *
      * @param value
      *            The value.
      * @param <T>
@@ -28,7 +28,7 @@ public interface XOSession<EntityMetadata extends DatastoreEntityMetadata<Entity
 
     /**
      * Converts a value from the datastore representation.
-     * 
+     *
      * @param value
      *            The value.
      * @param <T>
@@ -41,7 +41,7 @@ public interface XOSession<EntityMetadata extends DatastoreEntityMetadata<Entity
 
     /**
      * Return the metadata for an entity type.
-     * 
+     *
      * @param type
      *            The entity type.
      * @param <T>
@@ -75,7 +75,7 @@ public interface XOSession<EntityMetadata extends DatastoreEntityMetadata<Entity
     /**
      * Return the {@link com.buschmais.xo.spi.session.InstanceManager} for a
      * datastore entity or relation.
-     * 
+     *
      * @param datastoreType
      *            The datastore type.
      * @param <D>
@@ -87,7 +87,7 @@ public interface XOSession<EntityMetadata extends DatastoreEntityMetadata<Entity
 
     /**
      * Converts a datastore result.
-     * 
+     *
      * @param iterator
      *            The datastore result.
      * @param <D>

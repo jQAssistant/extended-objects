@@ -6,6 +6,10 @@ import java.util.*;
 
 import com.buschmais.xo.api.XOException;
 
+import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
+import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
+import com.buschmais.xo.api.metadata.reflection.SetPropertyMethod;
+import com.buschmais.xo.api.metadata.reflection.UserMethod;
 import com.google.common.base.CaseFormat;
 
 /**

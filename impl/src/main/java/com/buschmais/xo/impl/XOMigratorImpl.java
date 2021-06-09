@@ -5,11 +5,12 @@ import java.util.Set;
 
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOMigrator;
+import com.buschmais.xo.api.metadata.MetadataProvider;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
-import com.buschmais.xo.spi.datastore.DatastoreEntityMetadata;
-import com.buschmais.xo.spi.datastore.DatastoreRelationMetadata;
-import com.buschmais.xo.spi.datastore.DynamicType;
-import com.buschmais.xo.spi.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
 
 /**
  * Implementation of the {@link com.buschmais.xo.api.XOMigrator} interface.
@@ -49,7 +50,7 @@ public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends Datastor
 
     @Override
     public CompositeObject add(Class<?> newType, Class<?>... newTypes) {
-        DynamicType<EntityTypeMetadata<EntityMetadata>> types = getDiscriminators(newType, newTypes);
+        CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> types = getDiscriminators(newType, newTypes);
         Set<EntityDiscriminator> newDiscriminators = new HashSet<>(metadataProvider.getEntityDiscriminators(types));
         Entity entity = removeInstance(entityInstanceManager);
         Set<EntityDiscriminator> entityDiscriminators = datastoreEntityManager.getEntityDiscriminators(entity);
@@ -60,7 +61,7 @@ public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends Datastor
 
     @Override
     public CompositeObject remove(Class<?> obsoleteType, Class<?>... obsoleteTypes) {
-        DynamicType<EntityTypeMetadata<EntityMetadata>> types = getDiscriminators(obsoleteType, obsoleteTypes);
+        CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> types = getDiscriminators(obsoleteType, obsoleteTypes);
         Set<EntityDiscriminator> obsoleteDiscriminators = new HashSet<>(metadataProvider.getEntityDiscriminators(types));
         Entity entity = removeInstance(entityInstanceManager);
         Set<EntityDiscriminator> entityDiscriminators = datastoreEntityManager.getEntityDiscriminators(entity);
@@ -69,13 +70,13 @@ public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends Datastor
         return createInstance(entity);
     }
 
-    private DynamicType<EntityTypeMetadata<EntityMetadata>> getDiscriminators(Class<?> type, Class<?>[] types) {
+    private CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> getDiscriminators(Class<?> type, Class<?>[] types) {
         Set<EntityTypeMetadata<EntityMetadata>> metadata = new HashSet<>();
         metadata.add(metadataProvider.getEntityMetadata(type));
         for (Class<?> currentType : types) {
             metadata.add(metadataProvider.getEntityMetadata(currentType));
         }
-        return new DynamicType<>(metadata);
+        return new CompositeTypeMetadata<>(metadata);
     }
 
     private Entity removeInstance(AbstractInstanceManager<EntityId, Entity> entityInstanceManager) {
@@ -85,7 +86,7 @@ public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends Datastor
     }
 
     private CompositeObject createInstance(Entity entity) {
-        DynamicType<?> metadata = entityInstanceManager.getTypes(entity);
+        CompositeTypeMetadata<?> metadata = entityInstanceManager.getTypes(entity);
         instance = entityInstanceManager.createInstance(entity, metadata);
         return CompositeObject.class.cast(instance);
     }
