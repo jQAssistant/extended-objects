@@ -255,7 +255,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     private void flushAddedEntity(StatementBatchBuilder batchBuilder, RemoteNode entity) {
         Map<String, Object> properties = entity.getProperties();
         StringBuilder labelExpression = getLabelExpression(entity.getLabels());
-        String statement = "CREATE (n" + labelExpression.toString() + ") SET n=entry['n'] RETURN collect({oldId:entry['id'], newId:id(n)}) as nodes";
+        String statement = "CREATE (n" + labelExpression + ") SET n=entry['n'] RETURN collect({oldId:entry['id'], newId:id(n)}) as nodes";
         batchBuilder.add(statement, parameters("id", entity.getId(), "n", properties), result -> {
             List<Object> nodes = result.get("nodes").asList();
             for (Object node : nodes) {

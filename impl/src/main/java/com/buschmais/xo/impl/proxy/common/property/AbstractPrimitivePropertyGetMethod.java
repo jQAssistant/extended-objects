@@ -4,8 +4,8 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.impl.AbstractPropertyManager;
 import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.impl.AbstractPropertyManager;
 
 public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, PropertyManager extends AbstractPropertyManager<DatastoreType>>
         extends AbstractPropertyMethod<DatastoreType, PropertyManager, PrimitivePropertyMethodMetadata> {
@@ -61,6 +61,16 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Property
         return null;
     }
 
+    private Object toArray(Collection<?> values, Class<?> componentType) {
+        Object array = Array.newInstance(componentType, values.size());
+        int index = 0;
+        for (Object value : values) {
+            Array.set(array, index, convert(value, componentType));
+            index++;
+        }
+        return array;
+    }
+
     private Object convertPrimitive(Object value, Class<?> propertyType) {
         if (Number.class.isAssignableFrom(value.getClass())) {
             Number number = (Number) value;
@@ -77,17 +87,12 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Property
             } else if (double.class.equals(propertyType)) {
                 return number.doubleValue();
             }
-        } else if (boolean.class.equals(propertyType)) {
-            return ((Boolean) value).booleanValue();
-        } else if (char.class.equals(propertyType)) {
-            return ((Character) value).charValue();
+        } else if (String.class.isAssignableFrom(value.getClass())) {
+            if (Character.class.equals(propertyType) || char.class.equals(propertyType)) {
+                return ((String) value).charAt(0);
+            }
         }
-        return null;
-    }
-
-    private <T> T[] toArray(Collection<?> value, Class<T> componentType) {
-        T[] array = (T[]) Array.newInstance(componentType, 0);
-        return value.toArray(array);
+        return value;
     }
 
 }
