@@ -1,15 +1,15 @@
 package com.buschmais.xo.spi.reflection;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.lang.annotation.Annotation;
 
 import com.buschmais.xo.api.XOException;
-
 import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
 import com.buschmais.xo.api.metadata.reflection.SetPropertyMethod;
+
 import org.junit.Before;
 import org.junit.Test;
 

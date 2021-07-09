@@ -1,8 +1,8 @@
 package com.buschmais.xo.neo4j.test.query;
 
 import static com.buschmais.xo.api.Query.Result;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
 import java.util.Map;

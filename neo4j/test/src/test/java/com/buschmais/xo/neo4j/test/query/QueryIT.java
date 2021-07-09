@@ -3,8 +3,8 @@ package com.buschmais.xo.neo4j.test.query;
 import static com.buschmais.xo.api.Query.Result;
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 import static com.buschmais.xo.neo4j.test.query.CustomQueryLanguagePlugin.CustomQueryLanguage;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;

@@ -1,8 +1,8 @@
 package com.buschmais.xo.neo4j.test.validation;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
 import java.util.Collections;

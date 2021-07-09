@@ -1,7 +1,7 @@
 package com.buschmais.xo.neo4j.test.issues.not_a_proxy;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
 

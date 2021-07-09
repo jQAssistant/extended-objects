@@ -1,7 +1,7 @@
 package com.buschmais.xo.neo4j.test.label;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
 

@@ -1,8 +1,8 @@
 package com.buschmais.xo.neo4j.test.mapping;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 
 import java.util.Collection;
 
@@ -29,6 +29,7 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
 
     @Test
     public void primitiveProperty() {
+
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);

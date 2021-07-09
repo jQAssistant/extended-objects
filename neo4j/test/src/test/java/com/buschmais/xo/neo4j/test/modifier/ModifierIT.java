@@ -1,7 +1,7 @@
 package com.buschmais.xo.neo4j.test.modifier;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Collection;
