@@ -3,6 +3,8 @@ package com.buschmais.xo.neo4j.embedded.impl.datastore;
 import java.util.Map;
 
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedDirection;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationship;
@@ -10,8 +12,6 @@ import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
-import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
@@ -19,7 +19,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
  * Implementation of a
  * {@link com.buschmais.xo.spi.datastore.DatastoreRelationManager} for Neo4j.
  */
-public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedRelationship> implements
+public class EmbeddedRelationManager extends AbstractEmbeddedPropertyManager<EmbeddedRelationship> implements
         DatastoreRelationManager<EmbeddedNode, Long, EmbeddedRelationship, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType, PropertyMetadata> {
 
     private final GraphDatabaseService graphDatabaseService;
@@ -30,7 +30,7 @@ public class Neo4jRelationManager extends AbstractNeo4jPropertyManager<EmbeddedR
      * @param graphDatabaseService
      *            The graph database service.
      */
-    public Neo4jRelationManager(GraphDatabaseService graphDatabaseService) {
+    public EmbeddedRelationManager(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
     }
 

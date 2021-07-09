@@ -10,16 +10,16 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 /**
  * Implementation of {@link TypedNeo4jRepository}.
- * 
+ *
  * @param <T>
  */
-public class EmbeddedTypedNeoj4Repository<T> extends EmbeddedNeo4jRepository implements TypedNeo4jRepository<T> {
+public class TypedEmbeddedRepository<T> extends EmbeddedRepository implements TypedNeo4jRepository<T> {
 
     private Class<T> type;
 
     /**
      * Constructor.
-     * 
+     *
      * @param type
      *            The repository type.
      * @param graphDatabaseService
@@ -27,7 +27,7 @@ public class EmbeddedTypedNeoj4Repository<T> extends EmbeddedNeo4jRepository imp
      * @param xoSession
      *            The {@link XOSession}.
      */
-    public EmbeddedTypedNeoj4Repository(Class<T> type, GraphDatabaseService graphDatabaseService,
+    public TypedEmbeddedRepository(Class<T> type, GraphDatabaseService graphDatabaseService,
             XOSession<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?> xoSession) {
         super(graphDatabaseService, xoSession);
         this.type = type;

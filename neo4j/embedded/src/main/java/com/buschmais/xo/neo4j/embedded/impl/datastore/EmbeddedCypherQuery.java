@@ -11,11 +11,11 @@ import com.buschmais.xo.spi.datastore.DatastoreQuery;
 
 import org.neo4j.graphdb.Result;
 
-public class EmbeddedNeo4jCypherQuery implements DatastoreQuery<Cypher> {
+public class EmbeddedCypherQuery implements DatastoreQuery<Cypher> {
 
-    private EmbeddedNeo4jDatastoreSessionImpl embeddedNeo4jDatastoreSession;
+    private EmbeddedDatastoreSessionImpl embeddedNeo4jDatastoreSession;
 
-    public EmbeddedNeo4jCypherQuery(EmbeddedNeo4jDatastoreSessionImpl embeddedNeo4jDatastoreSession) {
+    public EmbeddedCypherQuery(EmbeddedDatastoreSessionImpl embeddedNeo4jDatastoreSession) {
         this.embeddedNeo4jDatastoreSession = embeddedNeo4jDatastoreSession;
     }
 

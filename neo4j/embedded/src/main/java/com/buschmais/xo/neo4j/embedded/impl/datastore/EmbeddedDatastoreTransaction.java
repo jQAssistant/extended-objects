@@ -6,12 +6,12 @@ import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
-class EmbeddedNeo4jDatastoreTransaction implements DatastoreTransaction {
+class EmbeddedDatastoreTransaction implements DatastoreTransaction {
 
     private GraphDatabaseService graphDatabaseService;
     private Transaction transaction;
 
-    public EmbeddedNeo4jDatastoreTransaction(GraphDatabaseService graphDatabaseService) {
+    public EmbeddedDatastoreTransaction(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
     }
 

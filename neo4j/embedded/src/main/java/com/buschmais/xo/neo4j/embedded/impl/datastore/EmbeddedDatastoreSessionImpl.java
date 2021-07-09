@@ -27,23 +27,23 @@ import com.buschmais.xo.spi.session.XOSession;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
-public class EmbeddedNeo4jDatastoreSessionImpl extends
+public class EmbeddedDatastoreSessionImpl extends
         AbstractNeo4jDatastoreSession<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType> implements EmbeddedNeo4jDatastoreSession {
 
     private final GraphDatabaseService graphDatabaseService;
     private final DatastoreTransaction datastoreTransaction;
-    private final Neo4jEntityManager entityManager;
-    private final Neo4jRelationManager relationManager;
+    private final EmbeddedEntityManager entityManager;
+    private final EmbeddedRelationManager relationManager;
     private final Converter parameterConverter;
     private final Converter valueConverter;
 
-    public EmbeddedNeo4jDatastoreSessionImpl(GraphDatabaseService graphDatabaseService) {
+    public EmbeddedDatastoreSessionImpl(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
-        this.entityManager = new Neo4jEntityManager(graphDatabaseService);
-        this.relationManager = new Neo4jRelationManager(graphDatabaseService);
+        this.entityManager = new EmbeddedEntityManager(graphDatabaseService);
+        this.relationManager = new EmbeddedRelationManager(graphDatabaseService);
         this.parameterConverter = new Converter(Arrays.asList(new EmbeddedParameterConverter()));
         this.valueConverter = new Converter(Arrays.asList(new EmbeddedValueConverter()));
-        datastoreTransaction = new EmbeddedNeo4jDatastoreTransaction(graphDatabaseService);
+        datastoreTransaction = new EmbeddedDatastoreTransaction(graphDatabaseService);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class EmbeddedNeo4jDatastoreSessionImpl extends
     @Override
     public <QL extends Annotation> DatastoreQuery<QL> createQuery(Class<QL> queryLanguage) {
         if (Cypher.class.equals(queryLanguage)) {
-            return (DatastoreQuery<QL>) new EmbeddedNeo4jCypherQuery(this);
+            return (DatastoreQuery<QL>) new EmbeddedCypherQuery(this);
         }
         throw new XOException("Unsupported query language: " + queryLanguage.getName());
     }
@@ -85,9 +85,9 @@ public class EmbeddedNeo4jDatastoreSessionImpl extends
             if (typeParameter == null) {
                 throw new XOException("Cannot determine type parameter for " + type.getName());
             }
-            return (R) new EmbeddedTypedNeoj4Repository<>(typeParameter, graphDatabaseService, xoSession);
+            return (R) new TypedEmbeddedRepository<>(typeParameter, graphDatabaseService, xoSession);
         }
-        return (R) new EmbeddedNeo4jRepository(graphDatabaseService, xoSession);
+        return (R) new EmbeddedRepository(graphDatabaseService, xoSession);
     }
 
     @Override

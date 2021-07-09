@@ -12,7 +12,7 @@ import com.buschmais.xo.spi.datastore.DatastoreQuery;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 
-public class RemoteDatastoreCypherQuery implements DatastoreQuery<Cypher> {
+public class RemoteCypherQuery implements DatastoreQuery<Cypher> {
 
     private final StatementExecutor statementExecutor;
 
@@ -20,7 +20,7 @@ public class RemoteDatastoreCypherQuery implements DatastoreQuery<Cypher> {
 
     private final Converter valueConverter;
 
-    public RemoteDatastoreCypherQuery(StatementExecutor statementExecutor, Converter parameterConverter, Converter valueConverter) {
+    public RemoteCypherQuery(StatementExecutor statementExecutor, Converter parameterConverter, Converter valueConverter) {
         this.statementExecutor = statementExecutor;
         this.parameterConverter = parameterConverter;
         this.valueConverter = valueConverter;

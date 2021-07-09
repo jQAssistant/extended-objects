@@ -7,7 +7,7 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.util.Properties;
 
-import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastore;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastore;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseBuilder;
@@ -15,12 +15,12 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileDatastoreFactory implements DatastoreFactory<EmbeddedNeo4jDatastore> {
+public class FileDatastoreFactory implements DatastoreFactory<EmbeddedDatastore> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileDatastoreFactory.class);
 
     @Override
-    public EmbeddedNeo4jDatastore createGraphDatabaseService(URI uri, Properties properties) throws MalformedURLException {
+    public EmbeddedDatastore createGraphDatabaseService(URI uri, Properties properties) throws MalformedURLException {
         String path;
         try {
             path = URLDecoder.decode(uri.toURL().getPath(), "UTF-8");
@@ -37,6 +37,6 @@ public class FileDatastoreFactory implements DatastoreFactory<EmbeddedNeo4jDatas
         }
         GraphDatabaseService graphDatabaseService = databaseBuilder.newGraphDatabase();
         LOGGER.debug("Graph database service for directory '{}' created.", storeDir.getAbsolutePath());
-        return new EmbeddedNeo4jDatastore(graphDatabaseService);
+        return new EmbeddedDatastore(graphDatabaseService);
     }
 }

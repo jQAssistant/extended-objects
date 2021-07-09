@@ -8,14 +8,14 @@ import com.buschmais.xo.spi.session.XOSession;
 
 /**
  * Implementation of {@link TypedNeo4jRepository}.
- * 
+ *
  * @param <T>
  */
-public class RemoteTypedNeo4jRepositoryImpl<T> extends RemoteNeo4jRepositoryImpl implements TypedNeo4jRepository<T> {
+public class TypedRemoteRepositoryImpl<T> extends RemoteNeo4jRepositoryImpl implements TypedNeo4jRepository<T> {
 
     private final Class<T> type;
 
-    public RemoteTypedNeo4jRepositoryImpl(XOSession<NodeMetadata<RemoteLabel>, RemoteLabel, ?, ?> xoSession, Class<T> type, StatementExecutor statementExecutor,
+    public TypedRemoteRepositoryImpl(XOSession<NodeMetadata<RemoteLabel>, RemoteLabel, ?, ?> xoSession, Class<T> type, StatementExecutor statementExecutor,
             RemoteDatastoreSessionCache sessionCache) {
         super(xoSession, statementExecutor, sessionCache);
         this.type = type;

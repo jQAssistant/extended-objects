@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.net.URI;
 
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastore;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastore;
 
 import org.junit.Test;
 
@@ -22,7 +22,7 @@ public class EmbeddedNeo4jXOProviderTest {
 
     @Test
     public void createDsTests() throws Exception {
-        assertEquals(EmbeddedNeo4jDatastore.class, provider.createDatastore(unit("memory:///")).getClass());
+        assertEquals(EmbeddedDatastore.class, provider.createDatastore(unit("memory:///")).getClass());
     }
 
     private XOUnit unit(String uri) throws Exception {
