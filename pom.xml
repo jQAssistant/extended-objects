@@ -595,7 +595,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>29.0-jre</version>
+                <version>30.0-jre</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -625,7 +625,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.4.1</version>
+                <version>3.5.0</version>
             </dependency>
             <dependency>
                 <groupId>com.google.errorprone</groupId>
@@ -656,7 +656,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>5.3.6.Final</version>
+                <version>5.4.3.Final</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
