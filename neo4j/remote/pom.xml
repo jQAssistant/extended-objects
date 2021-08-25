@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.buschmais.xo</groupId>
         <artifactId>xo.neo4j</artifactId>
-        <version>1.3.0-SNAPSHOT</version>
+        <version>1.3.0</version>
     </parent>
     <artifactId>xo.neo4j.remote</artifactId>
 
