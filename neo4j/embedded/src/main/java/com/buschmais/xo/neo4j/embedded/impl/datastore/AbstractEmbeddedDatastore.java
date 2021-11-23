@@ -15,10 +15,7 @@ import org.neo4j.graphdb.RelationshipType;
 /**
  * Abstract base implementation for embedded graph stores.
  */
-public abstract class AbstractEmbeddedNeo4jDatastore
-        extends AbstractNeo4jDatastore<EmbeddedLabel, EmbeddedRelationshipType, EmbeddedNeo4jDatastoreSession> {
-
-    protected final EmbeddedNeo4jDatastoreTransaction transaction;
+public abstract class AbstractEmbeddedDatastore extends AbstractNeo4jDatastore<EmbeddedLabel, EmbeddedRelationshipType, EmbeddedDatastoreSessionImpl> {
 
     protected final GraphDatabaseService graphDatabaseService;
 
@@ -27,7 +24,7 @@ public abstract class AbstractEmbeddedNeo4jDatastore
      *
      * @param graphDatabaseService
      */
-    public AbstractEmbeddedNeo4jDatastore(GraphDatabaseService graphDatabaseService) {
+    public AbstractEmbeddedDatastore(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
         this.transaction = new EmbeddedNeo4jDatastoreTransaction(graphDatabaseService);
     }
@@ -52,7 +49,7 @@ public abstract class AbstractEmbeddedNeo4jDatastore
     }
 
     @Override
-    public EmbeddedNeo4jDatastoreSession createSession() {
-        return new EmbeddedNeo4jDatastoreSessionImpl(transaction, graphDatabaseService);
+    public EmbeddedDatastoreSessionImpl createSession() {
+        return new EmbeddedDatastoreSessionImpl(graphDatabaseService);
     }
 }

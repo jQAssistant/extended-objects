@@ -1,8 +1,8 @@
 package com.buschmais.xo.neo4j.test.demo;
 
 import static com.buschmais.xo.neo4j.test.demo.composite.Group.MemberByName;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
 

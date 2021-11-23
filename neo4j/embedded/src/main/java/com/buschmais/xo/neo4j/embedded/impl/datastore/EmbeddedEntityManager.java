@@ -7,14 +7,14 @@ import java.util.Set;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
 import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
-import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
-import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
-import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
 
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
@@ -24,12 +24,12 @@ import org.neo4j.graphdb.ResourceIterator;
  * Implementation of a
  * {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager} for Neo4j.
  */
-public class Neo4jEntityManager extends AbstractNeo4jPropertyManager<EmbeddedNode>
+public class EmbeddedEntityManager extends AbstractEmbeddedPropertyManager<EmbeddedNode>
         implements DatastoreEntityManager<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, PropertyMetadata> {
 
     private final EmbeddedNeo4jDatastoreTransaction datastoreTransaction;
 
-    public Neo4jEntityManager(EmbeddedNeo4jDatastoreTransaction datastoreTransaction) {
+    public EmbeddedEntityManager(EmbeddedDatastoreTransaction datastoreTransaction) {
         this.datastoreTransaction = datastoreTransaction;
     }
 

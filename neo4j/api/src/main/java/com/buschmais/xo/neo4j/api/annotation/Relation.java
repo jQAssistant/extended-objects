@@ -17,7 +17,8 @@ import com.buschmais.xo.spi.annotation.RelationDefinition;
  * <li>get methods references or collections of other composite objects
  * (optional).</li>
  * <li>relation qualifier types (mandatory).</li>
- * <li>relation types (mandatory)</li> </ul
+ * <li>relation types (mandatory)</li>
+ * </ul>
  */
 @RelationDefinition
 @Documented

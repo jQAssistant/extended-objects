@@ -1,8 +1,8 @@
 package com.buschmais.xo.neo4j.test.relation.filtered;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
 

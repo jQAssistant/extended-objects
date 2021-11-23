@@ -24,4 +24,8 @@ public class StatementConfig {
 
     @Builder.Default
     private boolean batchableDefault = true;
+
+    public static class StatementConfigBuilder {
+        // needed to add this for an issue between Javadoc and Lombo, see https://stackoverflow.com/a/58809436
+    }
 }

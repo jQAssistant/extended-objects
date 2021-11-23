@@ -19,16 +19,72 @@ public interface A extends Version {
 
     String getString();
 
-    void setString(String string);
-
-    @Property("MAPPED_STRING")
-    String getMappedString();
-
-    void setMappedString(String mapppedString);
+    void setString(String stringValue);
 
     String[] getStringArray();
 
     void setStringArray(String[] stringArray);
+
+    char getCharacter();
+
+    void setCharacter(char characterValue);
+
+    char[] getCharacterArray();
+
+    void setCharacterArray(char[] characterValues);
+
+    byte getByte();
+
+    void setByte(byte byteValue);
+
+    byte[] getByteArray();
+
+    void setByteArray(byte[] byteValues);
+
+    short getShort();
+
+    void setShort(short shortValue);
+
+    short[] getShortArray();
+
+    void setShortArray(short[] shortValues);
+
+    int getInteger();
+
+    void setInteger(int integerValue);
+
+    int[] getIntegerArray();
+
+    void setIntegerArray(int[] integerValues);
+
+    long getLong();
+
+    void setLong(long longValue);
+
+    long[] getLongArray();
+
+    void setLongArray(long[] longValues);
+
+    float getFloat();
+
+    void setFloat(float floatValue);
+
+    float[] getFloatArray();
+
+    void setFloatArray(float[] floatValues);
+
+    double getDouble();
+
+    void setDouble(double doubleValue);
+
+    double[] getDoubleArray();
+
+    void setDoubleArray(double[] doubleValues);
+
+    @Property("MAPPED_STRING")
+    String getMappedString();
+
+    void setMappedString(String mappedString);
 
     B getB();
 
@@ -57,4 +113,5 @@ public interface A extends Version {
     Enumeration getMappedEnumeration();
 
     void setMappedEnumeration(Enumeration enumeration);
+
 }

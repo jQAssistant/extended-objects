@@ -11,7 +11,7 @@ import com.buschmais.xo.spi.session.XOSession;
  *
  * @param <T>
  */
-public class EmbeddedTypedNeoj4Repository<T> extends EmbeddedNeo4jRepository implements TypedNeo4jRepository<T> {
+public class TypedEmbeddedRepository<T> extends EmbeddedRepository implements TypedNeo4jRepository<T> {
 
     private Class<T> type;
 
@@ -25,7 +25,7 @@ public class EmbeddedTypedNeoj4Repository<T> extends EmbeddedNeo4jRepository imp
      * @param xoSession
      *            The {@link XOSession}.
      */
-    public EmbeddedTypedNeoj4Repository(Class<T> type, EmbeddedNeo4jDatastoreTransaction datastoreTransaction,
+    public TypedEmbeddedRepository(Class<T> type, EmbeddedNeo4jDatastoreTransaction datastoreTransaction,
             XOSession<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?> xoSession) {
         super(datastoreTransaction, xoSession);
         this.type = type;

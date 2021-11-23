@@ -1,7 +1,7 @@
 package com.buschmais.xo.neo4j.test.issues.url_encoding;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.net.URI;

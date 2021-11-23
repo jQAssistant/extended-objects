@@ -1,7 +1,7 @@
 package com.buschmais.xo.neo4j.test.relation.typed;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
 

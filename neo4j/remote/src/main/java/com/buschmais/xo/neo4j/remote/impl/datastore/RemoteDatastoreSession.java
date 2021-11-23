@@ -76,7 +76,7 @@ public class RemoteDatastoreSession extends AbstractNeo4jDatastoreSession<Remote
     @Override
     public <QL extends Annotation> DatastoreQuery<QL> createQuery(Class<QL> queryLanguage) {
         if (Cypher.class.equals(queryLanguage)) {
-            return (DatastoreQuery<QL>) new RemoteDatastoreCypherQuery(statementExecutor, parameterConverter, valueConverter);
+            return (DatastoreQuery<QL>) new RemoteCypherQuery(statementExecutor, parameterConverter, valueConverter);
         }
         throw new XOException("Unsupported query language: " + queryLanguage.getName());
     }
@@ -88,7 +88,7 @@ public class RemoteDatastoreSession extends AbstractNeo4jDatastoreSession<Remote
             if (typeParameter == null) {
                 throw new XOException("Cannot determine type parameter for " + type.getName());
             }
-            return (R) new RemoteTypedNeo4jRepositoryImpl<>(xoSession, typeParameter, statementExecutor, datastoreSessionCache);
+            return (R) new TypedRemoteRepositoryImpl<>(xoSession, typeParameter, statementExecutor, datastoreSessionCache);
         }
         return (R) new RemoteNeo4jRepositoryImpl(xoSession, statementExecutor, datastoreSessionCache);
     }

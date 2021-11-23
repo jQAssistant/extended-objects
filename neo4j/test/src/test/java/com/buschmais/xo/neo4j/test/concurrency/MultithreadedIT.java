@@ -1,8 +1,8 @@
 package com.buschmais.xo.neo4j.test.concurrency;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeThat;
 
 import java.util.Collection;

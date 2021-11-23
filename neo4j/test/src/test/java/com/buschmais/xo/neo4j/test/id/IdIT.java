@@ -1,8 +1,8 @@
 package com.buschmais.xo.neo4j.test.id;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
 
