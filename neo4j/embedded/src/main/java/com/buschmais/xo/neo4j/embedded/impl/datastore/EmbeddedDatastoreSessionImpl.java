@@ -31,7 +31,7 @@ public class EmbeddedDatastoreSessionImpl extends
         AbstractNeo4jDatastoreSession<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType> implements EmbeddedNeo4jDatastoreSession {
 
     private final GraphDatabaseService graphDatabaseService;
-    private final EmbeddedNeo4jDatastoreTransaction datastoreTransaction;
+    private final EmbeddedDatastoreTransaction datastoreTransaction;
     private final EmbeddedEntityManager entityManager;
     private final EmbeddedRelationManager relationManager;
     private final Converter parameterConverter;
@@ -39,7 +39,7 @@ public class EmbeddedDatastoreSessionImpl extends
 
     public EmbeddedDatastoreSessionImpl(EmbeddedDatastoreTransaction transaction, GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
-        this.entityManager = new EmbeddedRepository(transaction);
+        this.entityManager = new EmbeddedEntityManager(transaction);
         this.relationManager = new EmbeddedRelationManager(transaction);
         this.parameterConverter = new Converter(singletonList(new EmbeddedParameterConverter()));
         this.valueConverter = new Converter(singletonList(new EmbeddedValueConverter(transaction)));
@@ -47,7 +47,7 @@ public class EmbeddedDatastoreSessionImpl extends
     }
 
     @Override
-    public EmbeddedNeo4jDatastoreTransaction getDatastoreTransaction() {
+    public EmbeddedDatastoreTransaction getDatastoreTransaction() {
         return datastoreTransaction;
     }
 

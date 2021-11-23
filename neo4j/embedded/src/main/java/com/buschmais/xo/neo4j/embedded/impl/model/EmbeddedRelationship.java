@@ -1,14 +1,14 @@
 package com.buschmais.xo.neo4j.embedded.impl.model;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastoreTransaction;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastoreTransaction;
 
 import org.neo4j.graphdb.Relationship;
 
 public class EmbeddedRelationship extends AbstractEmbeddedPropertyContainer<Relationship>
         implements Neo4jRelationship<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {
 
-    public EmbeddedRelationship(EmbeddedNeo4jDatastoreTransaction transaction, Relationship relationship) {
+    public EmbeddedRelationship(EmbeddedDatastoreTransaction transaction, Relationship relationship) {
         super(transaction, relationship);
     }
 

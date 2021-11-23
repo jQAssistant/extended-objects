@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jNode;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastoreTransaction;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastoreTransaction;
 
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
@@ -16,7 +16,7 @@ public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
 
     private final Set<EmbeddedLabel> labels;
 
-    public EmbeddedNode(EmbeddedNeo4jDatastoreTransaction transaction, Node node) {
+    public EmbeddedNode(EmbeddedDatastoreTransaction transaction, Node node) {
         super(transaction, node);
         this.labels = new HashSet<>();
         for (Label label : getDelegate().getLabels()) {

@@ -20,7 +20,7 @@ import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 public class EmbeddedRelationManager extends AbstractEmbeddedPropertyManager<EmbeddedRelationship> implements
         DatastoreRelationManager<EmbeddedNode, Long, EmbeddedRelationship, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType, PropertyMetadata> {
 
-    private final EmbeddedNeo4jDatastoreTransaction datastoreTransaction;
+    private final EmbeddedDatastoreTransaction datastoreTransaction;
 
     public EmbeddedRelationManager(EmbeddedDatastoreTransaction datastoreTransaction) {
         this.datastoreTransaction = datastoreTransaction;

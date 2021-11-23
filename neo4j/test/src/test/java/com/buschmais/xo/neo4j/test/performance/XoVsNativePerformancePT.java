@@ -15,7 +15,7 @@ import com.buschmais.xo.api.ValidationMode;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastoreTransaction;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastoreTransaction;
 import com.buschmais.xo.neo4j.test.AbstractNeo4JXOManagerIT;
 import com.buschmais.xo.neo4j.test.Neo4jDatabase;
 import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNode;
@@ -89,7 +89,7 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
     public void initialize() {
         try (XOManager xoManager = getXOManagerFactory().createXOManager()) {
             EmbeddedNeo4jDatastoreSession datastoreSession = xoManager.getDatastoreSession(EmbeddedNeo4jDatastoreSession.class);
-            Transaction transaction = ((EmbeddedNeo4jDatastoreTransaction) datastoreSession.getDatastoreTransaction()).getTransaction();
+            Transaction transaction = ((EmbeddedDatastoreTransaction) datastoreSession.getDatastoreTransaction()).getTransaction();
             Node n1 = transaction.createNode();
             Node n2 = transaction.createNode();
             n1.createRelationshipTo(n2, RelationshipType.withName("BOOTSTRAP"));

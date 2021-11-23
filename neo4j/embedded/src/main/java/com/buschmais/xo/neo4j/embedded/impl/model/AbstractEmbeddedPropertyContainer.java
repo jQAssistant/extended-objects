@@ -3,16 +3,17 @@ package com.buschmais.xo.neo4j.embedded.impl.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastoreTransaction;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastoreTransaction;
+
 import org.neo4j.graphdb.Entity;
 
 public abstract class AbstractEmbeddedPropertyContainer<T extends Entity> implements EmbeddedNeo4jPropertyContainer {
 
-    protected final EmbeddedNeo4jDatastoreTransaction transaction;
+    protected final EmbeddedDatastoreTransaction transaction;
 
     protected final long id;
 
-    public AbstractEmbeddedPropertyContainer(EmbeddedNeo4jDatastoreTransaction transaction, Entity entity) {
+    public AbstractEmbeddedPropertyContainer(EmbeddedDatastoreTransaction transaction, Entity entity) {
         this.transaction = transaction;
         this.id = entity.getId();
     }

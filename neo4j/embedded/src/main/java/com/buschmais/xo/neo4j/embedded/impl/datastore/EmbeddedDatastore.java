@@ -7,7 +7,7 @@ public class EmbeddedDatastore extends AbstractEmbeddedDatastore {
 
     private DatabaseManagementService managementService;
 
-    public EmbeddedNeo4jDatastore(DatabaseManagementService managementService, GraphDatabaseService graphDatabaseService) {
+    public EmbeddedDatastore(DatabaseManagementService managementService, GraphDatabaseService graphDatabaseService) {
         super(graphDatabaseService);
         this.managementService = managementService;
     }

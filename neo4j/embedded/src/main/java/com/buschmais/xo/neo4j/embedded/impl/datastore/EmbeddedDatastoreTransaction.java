@@ -6,7 +6,7 @@ import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 
-class EmbeddedDatastoreTransaction implements DatastoreTransaction {
+public class EmbeddedDatastoreTransaction implements DatastoreTransaction {
 
     private GraphDatabaseService graphDatabaseService;
     private Transaction transaction;

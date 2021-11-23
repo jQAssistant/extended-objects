@@ -1,7 +1,7 @@
 package com.buschmais.xo.neo4j.embedded.impl.converter;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedNeo4jDatastoreTransaction;
+import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastoreTransaction;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationship;
 import com.buschmais.xo.neo4j.spi.helper.TypeConverter;
@@ -12,9 +12,9 @@ import org.neo4j.graphdb.Relationship;
 
 public class EmbeddedValueConverter implements TypeConverter {
 
-    private final EmbeddedNeo4jDatastoreTransaction transaction;
+    private final EmbeddedDatastoreTransaction transaction;
 
-    public EmbeddedValueConverter(EmbeddedNeo4jDatastoreTransaction transaction) {
+    public EmbeddedValueConverter(EmbeddedDatastoreTransaction transaction) {
         this.transaction = transaction;
     }
 

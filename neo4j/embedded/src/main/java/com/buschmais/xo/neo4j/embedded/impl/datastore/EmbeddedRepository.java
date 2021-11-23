@@ -17,9 +17,9 @@ import org.neo4j.graphdb.ResourceIterator;
  */
 public class EmbeddedRepository extends AbstractNeo4jRepository<EmbeddedLabel> {
 
-    private final EmbeddedNeo4jDatastoreTransaction datastoreTransaction;
+    private final EmbeddedDatastoreTransaction datastoreTransaction;
 
-    protected EmbeddedRepository(EmbeddedNeo4jDatastoreTransaction datastoreTransaction,
+    protected EmbeddedRepository(EmbeddedDatastoreTransaction datastoreTransaction,
             XOSession<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?> xoSession) {
         super(xoSession);
         this.datastoreTransaction = datastoreTransaction;

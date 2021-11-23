@@ -17,6 +17,6 @@ public class MemoryDatastoreFactory implements DatastoreFactory<EmbeddedDatastor
     public EmbeddedDatastore createGraphDatabaseService(URI uri, Properties properties) {
         DatabaseManagementService managementService = new TestDatabaseManagementServiceBuilder().impermanent().build();
         GraphDatabaseService graphDatabaseService = managementService.database(DEFAULT_DATABASE_NAME);
-        return new EmbeddedNeo4jDatastore(managementService, graphDatabaseService);
+        return new EmbeddedDatastore(managementService, graphDatabaseService);
     }
 }

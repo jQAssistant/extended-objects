@@ -27,7 +27,7 @@ import org.neo4j.graphdb.ResourceIterator;
 public class EmbeddedEntityManager extends AbstractEmbeddedPropertyManager<EmbeddedNode>
         implements DatastoreEntityManager<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, PropertyMetadata> {
 
-    private final EmbeddedNeo4jDatastoreTransaction datastoreTransaction;
+    private final EmbeddedDatastoreTransaction datastoreTransaction;
 
     public EmbeddedEntityManager(EmbeddedDatastoreTransaction datastoreTransaction) {
         this.datastoreTransaction = datastoreTransaction;

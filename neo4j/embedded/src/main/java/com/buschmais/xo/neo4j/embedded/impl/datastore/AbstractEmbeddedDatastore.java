@@ -1,6 +1,5 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
-import com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jDatastoreSession;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
 import com.buschmais.xo.neo4j.spi.AbstractNeo4jDatastore;
@@ -19,6 +18,8 @@ public abstract class AbstractEmbeddedDatastore extends AbstractNeo4jDatastore<E
 
     protected final GraphDatabaseService graphDatabaseService;
 
+    private final EmbeddedDatastoreTransaction transaction;
+
     /**
      * Constructor.
      *
@@ -26,7 +27,7 @@ public abstract class AbstractEmbeddedDatastore extends AbstractNeo4jDatastore<E
      */
     public AbstractEmbeddedDatastore(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
-        this.transaction = new EmbeddedNeo4jDatastoreTransaction(graphDatabaseService);
+        this.transaction = new EmbeddedDatastoreTransaction(graphDatabaseService);
     }
 
     @Override
@@ -50,6 +51,6 @@ public abstract class AbstractEmbeddedDatastore extends AbstractNeo4jDatastore<E
 
     @Override
     public EmbeddedDatastoreSessionImpl createSession() {
-        return new EmbeddedDatastoreSessionImpl(graphDatabaseService);
+        return new EmbeddedDatastoreSessionImpl(transaction, graphDatabaseService);
     }
 }

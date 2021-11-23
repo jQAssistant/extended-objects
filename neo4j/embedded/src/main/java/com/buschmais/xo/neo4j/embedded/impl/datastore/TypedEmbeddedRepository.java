@@ -21,11 +21,11 @@ public class TypedEmbeddedRepository<T> extends EmbeddedRepository implements Ty
      * @param type
      *            The repository type.
      * @param datastoreTransaction
-     *            The {@link EmbeddedNeo4jDatastoreTransaction}.
+     *            The {@link EmbeddedDatastoreTransaction}.
      * @param xoSession
      *            The {@link XOSession}.
      */
-    public TypedEmbeddedRepository(Class<T> type, EmbeddedNeo4jDatastoreTransaction datastoreTransaction,
+    public TypedEmbeddedRepository(Class<T> type, EmbeddedDatastoreTransaction datastoreTransaction,
             XOSession<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?> xoSession) {
         super(datastoreTransaction, xoSession);
         this.type = type;
