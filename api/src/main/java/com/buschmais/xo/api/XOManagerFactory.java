@@ -30,5 +30,16 @@ public interface XOManagerFactory<EntityMetadata extends DatastoreEntityMetadata
      */
     XOUnit getXOUnit();
 
+    /**
+     * Reutrn the underlying configured datastore.
+     *
+     * @param datastoreType
+     *            The expected datastore type.
+     * @param <DS>
+     *            The datastore type.
+     * @return The datastore.
+     */
+    <DS> DS getDatastore(Class<DS> datastoreType);
+
     MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> getMetadataProvider();
 }

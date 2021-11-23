@@ -1,7 +1,8 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
+import static java.util.Collections.singletonList;
+
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.TypedNeo4jRepository;
@@ -41,8 +42,8 @@ public class EmbeddedDatastoreSessionImpl extends
         this.graphDatabaseService = graphDatabaseService;
         this.entityManager = new EmbeddedEntityManager(graphDatabaseService);
         this.relationManager = new EmbeddedRelationManager(graphDatabaseService);
-        this.parameterConverter = new Converter(Arrays.asList(new EmbeddedParameterConverter()));
-        this.valueConverter = new Converter(Arrays.asList(new EmbeddedValueConverter()));
+        this.parameterConverter = new Converter(singletonList(new EmbeddedParameterConverter()));
+        this.valueConverter = new Converter(singletonList(new EmbeddedValueConverter()));
         datastoreTransaction = new EmbeddedDatastoreTransaction(graphDatabaseService);
     }
 

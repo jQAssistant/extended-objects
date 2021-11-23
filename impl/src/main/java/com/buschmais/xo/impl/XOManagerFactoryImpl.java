@@ -101,6 +101,20 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
     }
 
     @Override
+    public <DS> DS getDatastore(Class<DS> datastoreType) {
+        return datastoreType.cast(datastore);
+    }
+
+    /**
+     * Return the instance of the plugin manager repository.
+     *
+     * @return The plugin manager repository.
+     */
+    public PluginRepositoryManager getPluginRepositoryManager() {
+        return pluginRepositoryManager;
+    }
+
+    @Override
     public MetadataProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> getMetadataProvider() {
         return metadataProvider;
     }

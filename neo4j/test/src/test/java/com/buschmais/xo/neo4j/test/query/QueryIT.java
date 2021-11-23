@@ -92,7 +92,7 @@ public class QueryIT extends AbstractNeo4JXOManagerIT {
         assertThat(columns, Matchers.equalTo(Arrays.asList("a", "value", "id")));
         A a = singleResult.get("a", A.class);
         assertThat(a.getValue(), equalTo("A1"));
-        result = xoManager.createQuery("match (a:A) where a.Value={value} return a").withParameter("value", "A2").execute();
+        result = xoManager.createQuery("match (a:A) where a.Value=$value return a").withParameter("value", "A2").execute();
         try {
             result.getSingleResult().get("a", A.class);
             fail("Expecting a " + XOException.class.getName());

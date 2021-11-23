@@ -24,12 +24,6 @@ public class EmbeddedRelationManager extends AbstractEmbeddedPropertyManager<Emb
 
     private final GraphDatabaseService graphDatabaseService;
 
-    /**
-     * Constructor.
-     *
-     * @param graphDatabaseService
-     *            The graph database service.
-     */
     public EmbeddedRelationManager(GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
     }
