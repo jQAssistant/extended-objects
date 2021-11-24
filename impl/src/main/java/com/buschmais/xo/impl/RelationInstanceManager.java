@@ -13,12 +13,10 @@ public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Re
         extends AbstractInstanceManager<RelationId, Relation> {
 
     private final SessionContext<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator, ?> sessionContext;
-    private final ProxyMethodService<Relation> proxyMethodService;
 
     public RelationInstanceManager(SessionContext<?, Entity, ?, EntityDiscriminator, RelationId, Relation, ?, RelationDiscriminator, ?> sessionContext) {
-        super(sessionContext.getRelationCache(), sessionContext.getInstanceListenerService(), sessionContext.getProxyFactory());
+        super(sessionContext.getRelationCache(), sessionContext.getInstanceListenerService(), sessionContext.getProxyFactory(), new RelationProxyMethodService<>(sessionContext));
         this.sessionContext = sessionContext;
-        this.proxyMethodService = new RelationProxyMethodService<>(sessionContext);
     }
 
     @Override
@@ -48,8 +46,4 @@ public class RelationInstanceManager<Entity, EntityDiscriminator, RelationId, Re
                 discriminator, datastoreSession.getDatastoreEntityManager().getEntityDiscriminators(target));
     }
 
-    @Override
-    protected ProxyMethodService<Relation> getProxyMethodService() {
-        return proxyMethodService;
-    }
 }

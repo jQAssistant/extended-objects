@@ -8,18 +8,16 @@ public abstract class AbstractResultIterable<T> implements ResultIterable<T> {
 
     @Override
     public T getSingleResult() {
-        ResultIterator<T> iterator = iterator();
-        if (!iterator.hasNext()) {
-            throw new XOException("No result available.");
-        }
-        try {
+        try (ResultIterator<T> iterator = iterator()) {
+            if (!iterator.hasNext()) {
+                throw new XOException("No result available.");
+            }
             T singleResult = iterator.next();
             if (iterator.hasNext()) {
-                throw new XOException("More than one result available.");
+                T nextResult = iterator.next();
+                throw new XOException("Expected exactly one result, but got '" + singleResult + "' and '" + nextResult + "'");
             }
             return singleResult;
-        } finally {
-            iterator.close();
         }
     }
 
