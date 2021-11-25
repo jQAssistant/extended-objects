@@ -7,8 +7,10 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.impl.AbstractPropertyManager;
 
+import com.google.common.primitives.Primitives;
+
 public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, PropertyManager extends AbstractPropertyManager<DatastoreType>>
-        extends AbstractPropertyMethod<DatastoreType, PropertyManager, PrimitivePropertyMethodMetadata> {
+    extends AbstractPropertyMethod<DatastoreType, PropertyManager, PrimitivePropertyMethodMetadata> {
 
     public AbstractPrimitivePropertyGetMethod(PropertyManager propertyManager, PrimitivePropertyMethodMetadata metadata) {
         super(propertyManager, metadata);
@@ -36,9 +38,13 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Property
             } else if (propertyType.isArray()) {
                 if (Collection.class.isAssignableFrom(value.getClass())) {
                     return toArray((Collection<?>) value, propertyType.getComponentType());
+                } else if (value.getClass().isArray()) {
+                    return toArray(value, propertyType.getComponentType());
                 }
             } else if (propertyType.isPrimitive()) {
                 return convertPrimitive(value, propertyType);
+            } else if (Primitives.isWrapperType(propertyType)) {
+                return convertPrimitive(value, Primitives.unwrap(propertyType));
             }
             throw new XOException("Cannot convert value of type " + value.getClass() + " to type " + propertyType);
         } else if (boolean.class.equals(propertyType)) {
@@ -59,6 +65,15 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Property
             return 0;
         }
         return null;
+    }
+
+    private Object toArray(Object values, Class<?> componentType) {
+        int length = Array.getLength(values);
+        Object array = Array.newInstance(componentType, length);
+        for (int index = 0; index < length; index++) {
+            Array.set(array, index, convert(Array.get(values, index), componentType));
+        }
+        return array;
     }
 
     private Object toArray(Collection<?> values, Class<?> componentType) {

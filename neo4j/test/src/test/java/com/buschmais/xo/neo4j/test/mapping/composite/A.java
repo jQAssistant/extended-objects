@@ -25,61 +25,117 @@ public interface A extends Version {
 
     void setStringArray(String[] stringArray);
 
-    char getCharacter();
+    char getPrimitiveCharacter();
 
-    void setCharacter(char characterValue);
+    void setPrimitiveCharacter(char characterValue);
 
-    char[] getCharacterArray();
+    char[] getPrimitiveCharacterArray();
 
-    void setCharacterArray(char[] characterValues);
+    void setPrimitiveCharacterArray(char[] characterValues);
 
-    byte getByte();
+    Character getCharacter();
 
-    void setByte(byte byteValue);
+    void setCharacter(Character characterValue);
 
-    byte[] getByteArray();
+    Character[] getCharacterArray();
 
-    void setByteArray(byte[] byteValues);
+    void setCharacterArray(Character[] characterValues);
 
-    short getShort();
+    byte getPrimitiveByte();
 
-    void setShort(short shortValue);
+    void setPrimitiveByte(byte byteValue);
 
-    short[] getShortArray();
+    byte[] getPrimitiveByteArray();
 
-    void setShortArray(short[] shortValues);
+    void setPrimitiveByteArray(byte[] byteValues);
 
-    int getInteger();
+    Byte getByte();
 
-    void setInteger(int integerValue);
+    void setByte(Byte byteValue);
 
-    int[] getIntegerArray();
+    Byte[] getByteArray();
 
-    void setIntegerArray(int[] integerValues);
+    void setByteArray(Byte[] byteValues);
 
-    long getLong();
+    short getPrimitiveShort();
 
-    void setLong(long longValue);
+    void setPrimitiveShort(short shortValue);
 
-    long[] getLongArray();
+    short[] getPrimitiveShortArray();
 
-    void setLongArray(long[] longValues);
+    void setPrimitiveShortArray(short[] shortValues);
 
-    float getFloat();
+    Short getShort();
 
-    void setFloat(float floatValue);
+    void setShort(Short shortValue);
 
-    float[] getFloatArray();
+    Short[] getShortArray();
 
-    void setFloatArray(float[] floatValues);
+    void setShortArray(Short[] shortValues);
 
-    double getDouble();
+    int getPrimitiveInteger();
 
-    void setDouble(double doubleValue);
+    void setPrimitiveInteger(int integerValue);
 
-    double[] getDoubleArray();
+    int[] getPrimitiveIntegerArray();
 
-    void setDoubleArray(double[] doubleValues);
+    void setPrimitiveIntegerArray(int[] integerValues);
+
+    Integer getInteger();
+
+    void setInteger(Integer integerValue);
+
+    Integer[] getIntegerArray();
+
+    void setIntegerArray(Integer[] integerValues);
+
+    long getPrimitiveLong();
+
+    void setPrimitiveLong(long longValue);
+
+    long[] getPrimitiveLongArray();
+
+    void setPrimitiveLongArray(long[] longValues);
+
+    Long getLong();
+
+    void setLong(Long longValue);
+
+    Long[] getLongArray();
+
+    void setLongArray(Long[] longValues);
+
+    float getPrimitiveFloat();
+
+    void setPrimitiveFloat(float floatValue);
+
+    float[] getPrimitiveFloatArray();
+
+    void setPrimitiveFloatArray(float[] floatValues);
+
+    Float getFloat();
+
+    void setFloat(Float floatValue);
+
+    Float[] getFloatArray();
+
+    void setFloatArray(Float[] floatValues);
+
+    double getPrimitiveDouble();
+
+    void setPrimitiveDouble(double doubleValue);
+
+    double[] getPrimitiveDoubleArray();
+
+    void setPrimitiveDoubleArray(double[] doubleValues);
+
+    Double getDouble();
+
+    void setDouble(Double doubleValue);
+
+    Double[] getDoubleArray();
+
+    void setDoubleArray(Double[] doubleValues);
 
     @Property("MAPPED_STRING")
     String getMappedString();
