@@ -4,10 +4,10 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 import com.buschmais.xo.api.Query;
-import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.annotation.ResultOf;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.impl.SessionContext;
+import com.buschmais.xo.impl.converter.ValueConverter;
 import com.buschmais.xo.impl.query.XOQueryImpl;
 import com.buschmais.xo.api.metadata.method.ResultOfMethodMetadata;
 
@@ -47,13 +47,10 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
         Query.Result<?> result = query.execute();
         if (void.class.equals(returnType)) {
             result.close();
+            return null;
         } else if (resultOfMethodMetadata.isSingleResult()) {
             if (result.hasResult()) {
-                Object singleResult = result.getSingleResult();
-                if (!returnType.isAssignableFrom(singleResult.getClass())) {
-                    throw new XOException("Expected an instance of " + returnType + " but got an instance of " + singleResult.getClass() + ": " + singleResult);
-                }
-                return singleResult;
+                return ValueConverter.convert(result.getSingleResult(), returnType);
             }
             return null;
         }

@@ -7,6 +7,7 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.impl.AbstractPropertyManager;
 
+import com.buschmais.xo.impl.converter.ValueConverter;
 import com.google.common.primitives.Primitives;
 
 public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, PropertyManager extends AbstractPropertyManager<DatastoreType>>
@@ -26,88 +27,7 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Property
         } else {
             value = propertyManager.getProperty(datastoreType, metadata);
         }
-        return convert(value, metadata.getAnnotatedMethod().getType());
-    }
-
-    private Object convert(Object value, Class<?> propertyType) {
-        if (value != null) {
-            if (propertyType.isAssignableFrom(value.getClass())) {
-                return value;
-            } else if (Enum.class.isAssignableFrom(propertyType)) {
-                return Enum.valueOf((Class<Enum>) propertyType, (String) value);
-            } else if (propertyType.isArray()) {
-                if (Collection.class.isAssignableFrom(value.getClass())) {
-                    return toArray((Collection<?>) value, propertyType.getComponentType());
-                } else if (value.getClass().isArray()) {
-                    return toArray(value, propertyType.getComponentType());
-                }
-            } else if (propertyType.isPrimitive()) {
-                return convertPrimitive(value, propertyType);
-            } else if (Primitives.isWrapperType(propertyType)) {
-                return convertPrimitive(value, Primitives.unwrap(propertyType));
-            }
-            throw new XOException("Cannot convert value of type " + value.getClass() + " to type " + propertyType);
-        } else if (boolean.class.equals(propertyType)) {
-            return false;
-        } else if (short.class.equals(propertyType)) {
-            return 0;
-        } else if (int.class.equals(propertyType)) {
-            return 0;
-        } else if (long.class.equals(propertyType)) {
-            return 0L;
-        } else if (float.class.equals(propertyType)) {
-            return 0f;
-        } else if (double.class.equals(propertyType)) {
-            return 0d;
-        } else if (char.class.equals(propertyType)) {
-            return 0;
-        } else if (byte.class.equals(propertyType)) {
-            return 0;
-        }
-        return null;
-    }
-
-    private Object toArray(Object values, Class<?> componentType) {
-        int length = Array.getLength(values);
-        Object array = Array.newInstance(componentType, length);
-        for (int index = 0; index < length; index++) {
-            Array.set(array, index, convert(Array.get(values, index), componentType));
-        }
-        return array;
-    }
-
-    private Object toArray(Collection<?> values, Class<?> componentType) {
-        Object array = Array.newInstance(componentType, values.size());
-        int index = 0;
-        for (Object value : values) {
-            Array.set(array, index, convert(value, componentType));
-            index++;
-        }
-        return array;
-    }
-
-    private Object convertPrimitive(Object value, Class<?> propertyType) {
-        if (Number.class.isAssignableFrom(value.getClass())) {
-            Number number = (Number) value;
-            if (byte.class.equals(propertyType)) {
-                return number.byteValue();
-            } else if (short.class.equals(propertyType)) {
-                return number.shortValue();
-            } else if (int.class.equals(propertyType)) {
-                return number.intValue();
-            } else if (long.class.equals(propertyType)) {
-                return number.longValue();
-            } else if (float.class.equals(propertyType)) {
-                return number.floatValue();
-            } else if (double.class.equals(propertyType)) {
-                return number.doubleValue();
-            }
-        } else if (String.class.isAssignableFrom(value.getClass())) {
-            if (Character.class.equals(propertyType) || char.class.equals(propertyType)) {
-                return ((String) value).charAt(0);
-            }
-        }
-        return value;
+        return ValueConverter.convert(value, metadata.getAnnotatedMethod().getType());
     }
 
 }
