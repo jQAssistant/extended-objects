@@ -51,4 +51,8 @@ public abstract class AbstractEmbeddedDatastore extends AbstractNeo4jDatastore<E
     public EmbeddedDatastoreSessionImpl createSession() {
         return new EmbeddedDatastoreSessionImpl(graphDatabaseService);
     }
+
+    public GraphDatabaseService getGraphDatabaseService() {
+        return graphDatabaseService;
+    }
 }
