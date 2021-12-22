@@ -1,5 +1,6 @@
 package com.buschmais.xo.neo4j.test.mapping;
 
+import java.time.ZonedDateTime;
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOManager;
@@ -11,12 +12,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
 @RunWith(Parameterized.class)
 public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
+
+    public static final ZonedDateTime ZONED_DATE_TIME = ZonedDateTime.now();
 
     public PrimitivePropertyMappingIT(XOUnit xoUnit) {
         super(xoUnit);
@@ -33,14 +37,14 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
-        setPropertyValues(a, 'v', "value", 0);
+        setPropertyValues(a, 'v', "value", 0, ZONED_DATE_TIME);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        verifyPropertyValues(a, 'v', "value", 0);
-        setPropertyValues(a, 'u', "updatedValue", 1);
+        verifyPropertyValues(a, 'v', "value", 0, ZONED_DATE_TIME);
+        setPropertyValues(a, 'u', "updatedValue", 1, ZONED_DATE_TIME.plus(1, DAYS));
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        verifyPropertyValues(a, 'u', "updatedValue", 1);
+        verifyPropertyValues(a, 'u', "updatedValue", 1, ZONED_DATE_TIME.plus(1, DAYS));
         a.setString(null);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
@@ -48,7 +52,7 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().commit();
     }
 
-    private void setPropertyValues(A a, char characterValue, String stringValue, int value) {
+    private void setPropertyValues(A a, char characterValue, String stringValue, int value, ZonedDateTime zonedDateTimeValue) {
         a.setCharacter(characterValue);
         a.setPrimitiveCharacter(characterValue);
         a.setString(stringValue);
@@ -64,9 +68,11 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
         a.setPrimitiveFloat(value);
         a.setDouble(Double.valueOf(value));
         a.setPrimitiveDouble(value);
+        a.setZonedDateTime(zonedDateTimeValue);
     }
 
-    private void verifyPropertyValues(A a, char expectedCharacterValue, String expectedStringValue, int expectedValue) {
+    private void verifyPropertyValues(A a, char expectedCharacterValue, String expectedStringValue, int expectedValue,
+        ZonedDateTime expectedZonedDateTimeValue) {
         assertThat(a.getCharacter(), equalTo(expectedCharacterValue));
         assertThat(a.getPrimitiveCharacter(), equalTo(expectedCharacterValue));
         assertThat(a.getString(), equalTo(expectedStringValue));
@@ -82,6 +88,7 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
         assertThat(a.getPrimitiveFloat(), equalTo((float) expectedValue));
         assertThat(a.getDouble(), equalTo((double) expectedValue));
         assertThat(a.getPrimitiveDouble(), equalTo((double) expectedValue));
+        assertThat(a.getZonedDateTime(), equalTo(expectedZonedDateTimeValue));
     }
 
     @Test

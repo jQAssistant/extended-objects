@@ -1,5 +1,6 @@
 package com.buschmais.xo.neo4j.test.mapping.composite;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -136,6 +137,10 @@ public interface A extends Version {
     Double[] getDoubleArray();
 
     void setDoubleArray(Double[] doubleValues);
+
+    ZonedDateTime getZonedDateTime();
+
+    void setZonedDateTime(ZonedDateTime zonedDateTime);
 
     @Property("MAPPED_STRING")
     String getMappedString();
