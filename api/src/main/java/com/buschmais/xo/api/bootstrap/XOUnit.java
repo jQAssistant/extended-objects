@@ -1,8 +1,5 @@
 package com.buschmais.xo.api.bootstrap;
 
-import static com.buschmais.xo.api.Transaction.TransactionAttribute;
-import static lombok.AccessLevel.PRIVATE;
-
 import java.net.URI;
 import java.util.*;
 
@@ -11,6 +8,10 @@ import com.buschmais.xo.api.ValidationMode;
 
 import lombok.*;
 import lombok.Builder.Default;
+
+import static com.buschmais.xo.api.Transaction.TransactionAttribute;
+import static java.util.Optional.empty;
+import static lombok.AccessLevel.PRIVATE;
 
 /**
  * Represents a XO unit, i.e. a configuration for a
@@ -61,6 +62,12 @@ public class XOUnit {
      * The provider class to use.
      */
     private Class<?> provider;
+
+    /**
+     * The classloader to be used for creating proxy instances (default: TCCL if available, otherwise CL of this XOUnit).
+     */
+    @Default
+    private Optional<ClassLoader> classLoader = empty();
 
     /**
      * The entity types to register.
