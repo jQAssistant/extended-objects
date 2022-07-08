@@ -82,7 +82,7 @@
         <org.asciidoctor.maven_version>1.5.8</org.asciidoctor.maven_version>
         <org.asciidoctor_version>1.5.8</org.asciidoctor_version>
         <org.asciidoctorj.pdf_version>1.5.0-alpha.16</org.asciidoctorj.pdf_version>
-        <org.neo4j_version>3.5.30</org.neo4j_version>
+        <org.neo4j_version>3.5.31</org.neo4j_version>
         <org.slf4j_version>1.7.30</org.slf4j_version>
         <org.hamcrest_version>2.2</org.hamcrest_version>
 
