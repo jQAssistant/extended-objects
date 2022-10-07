@@ -5,8 +5,12 @@ import java.lang.reflect.Method;
 
 import com.buschmais.xo.api.XOException;
 
+import lombok.ToString;
+
+@ToString(onlyExplicitlyIncluded = true)
 public class InstanceInvocationHandler<DatastoreType> implements InvocationHandler {
 
+    @ToString.Include
     private DatastoreType datastoreType;
     private final ProxyMethodService<DatastoreType> proxyMethodService;
 

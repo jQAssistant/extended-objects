@@ -47,15 +47,11 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
                 .cast(ClassHelper.newInstance(providerType));
         this.datastore = xoDatastoreProvider.createDatastore(xoUnit);
         this.pluginRepositoryManager = new PluginRepositoryManager(new QueryLanguagePluginRepository(datastore));
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        final ClassLoader parentClassLoader = contextClassLoader != null ? contextClassLoader : xoUnit.getClass().getClassLoader();
-        LOGGER.debug("Using class loader '{}'.", parentClassLoader);
-        classLoader = new ClassLoader() {
-            @Override
-            public Class<?> loadClass(String name) throws ClassNotFoundException {
-                return parentClassLoader.loadClass(name);
-            }
-        };
+        classLoader = xoUnit.getClassLoader().orElseGet(() -> {
+            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+            return contextClassLoader != null ? contextClassLoader : xoUnit.getClass().getClassLoader();
+        });
+        LOGGER.debug("Using class loader '{}'.", classLoader);
         metadataProvider = new MetadataProviderImpl(xoUnit.getTypes(), datastore, xoUnit.getMappingConfiguration());
         this.validatorFactory = getValidatorFactory();
         datastore.init(metadataProvider.getRegisteredMetadata());

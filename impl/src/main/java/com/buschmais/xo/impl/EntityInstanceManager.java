@@ -3,19 +3,16 @@ package com.buschmais.xo.impl;
 import java.util.Set;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.impl.proxy.ProxyMethodService;
-import com.buschmais.xo.impl.proxy.entity.EntityProxyMethodService;
 import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.impl.proxy.entity.EntityProxyMethodService;
 
 public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extends AbstractInstanceManager<EntityId, Entity> {
 
     private final SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?, ?> sessionContext;
-    private final ProxyMethodService<Entity> proxyMethodService;
 
     public EntityInstanceManager(SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?, ?> sessionContext) {
-        super(sessionContext.getEntityCache(), sessionContext.getInstanceListenerService(), sessionContext.getProxyFactory());
+        super(sessionContext.getEntityCache(), sessionContext.getInstanceListenerService(), sessionContext.getProxyFactory(), new EntityProxyMethodService<>(sessionContext));
         this.sessionContext = sessionContext;
-        this.proxyMethodService = new EntityProxyMethodService<>(sessionContext);
     }
 
     @Override
@@ -37,8 +34,4 @@ public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extend
         return sessionContext.getMetadataProvider().getTypes(discriminators);
     }
 
-    @Override
-    protected ProxyMethodService<Entity> getProxyMethodService() {
-        return proxyMethodService;
-    }
 }

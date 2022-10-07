@@ -9,6 +9,8 @@ import com.buschmais.xo.impl.proxy.ProxyMethodService;
 import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
 import com.buschmais.xo.spi.session.InstanceManager;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Abstract base implementation of an instance manager.
  * <p>
@@ -21,25 +23,13 @@ import com.buschmais.xo.spi.session.InstanceManager;
  * @param <DatastoreType>
  *            The datastore type.
  */
+@RequiredArgsConstructor
 public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implements InstanceManager<DatastoreId, DatastoreType> {
 
     private final TransactionalCache<DatastoreId> cache;
     private final InstanceListenerService instanceListenerService;
     private final ProxyFactory proxyFactory;
-
-    /**
-     * Constructor.
-     *
-     * @param cache
-     *            The transactional cache.
-     * @param proxyFactory
-     *            The proxy factory.
-     */
-    public AbstractInstanceManager(TransactionalCache<DatastoreId> cache, InstanceListenerService instanceListenerService, ProxyFactory proxyFactory) {
-        this.cache = cache;
-        this.instanceListenerService = instanceListenerService;
-        this.proxyFactory = proxyFactory;
-    }
+    private final ProxyMethodService<DatastoreType> proxyMethodService;
 
     /**
      * Return the proxy instance which corresponds to the given datastore type for
@@ -110,7 +100,7 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
      */
     private <T> T newInstance(DatastoreId id, DatastoreType datastoreType, CompositeTypeMetadata<?> types, TransactionalCache.Mode cacheMode) {
         validateType(types);
-        InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(datastoreType, getProxyMethodService());
+        InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(datastoreType, proxyMethodService);
         T instance = proxyFactory.createInstance(invocationHandler, types.getCompositeType());
         cache.put(id, instance, cacheMode);
         return instance;
@@ -222,11 +212,4 @@ public abstract class AbstractInstanceManager<DatastoreId, DatastoreType> implem
      */
     protected abstract CompositeTypeMetadata<?> getTypes(DatastoreType datastoreType);
 
-    /**
-     * Return the {@link com.buschmais.xo.impl.proxy.ProxyMethodService} associated
-     * with this manager.
-     *
-     * @return The {@link com.buschmais.xo.impl.proxy.ProxyMethodService}.
-     */
-    protected abstract ProxyMethodService<DatastoreType> getProxyMethodService();
 }

@@ -7,6 +7,7 @@ import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.annotation.ResultOf;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.impl.SessionContext;
+import com.buschmais.xo.impl.converter.ValueConverter;
 import com.buschmais.xo.impl.query.XOQueryImpl;
 import com.buschmais.xo.api.metadata.method.ResultOfMethodMetadata;
 
@@ -32,8 +33,8 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
 
     @Override
     public Object invoke(DatastoreType datastoreType, Object instance, Object[] args) {
-        XOQueryImpl<?, ?, AnnotatedElement, ?, ?> query = new XOQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(),
-                resultOfMethodMetadata.getReturnType());
+        Class<?> returnType = resultOfMethodMetadata.getReturnType();
+        XOQueryImpl<?, ?, AnnotatedElement, ?, ?> query = new XOQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(), returnType);
         Object thisInstance = getThisInstance(datastoreType, sessionContext);
         if (thisInstance != null) {
             String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
@@ -44,10 +45,14 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
             query.withParameter(parameters.get(i).value(), args[i]);
         }
         Query.Result<?> result = query.execute();
-        if (void.class.equals(resultOfMethodMetadata.getReturnType())) {
+        if (void.class.equals(returnType)) {
             result.close();
+            return null;
         } else if (resultOfMethodMetadata.isSingleResult()) {
-            return result.hasResult() ? result.getSingleResult() : null;
+            if (result.hasResult()) {
+                return ValueConverter.convert(result.getSingleResult(), returnType);
+            }
+            return null;
         }
         return result;
     }
