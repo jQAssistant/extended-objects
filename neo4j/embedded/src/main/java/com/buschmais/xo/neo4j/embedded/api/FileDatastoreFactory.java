@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.embedded.api;
 
-import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
-
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -12,11 +10,14 @@ import java.util.Properties;
 
 import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastore;
 
+import org.neo4j.configuration.GraphDatabaseInternalSettings;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
 
 public class FileDatastoreFactory implements DatastoreFactory<EmbeddedDatastore> {
 
@@ -36,6 +37,7 @@ public class FileDatastoreFactory implements DatastoreFactory<EmbeddedDatastore>
         DatabaseManagementServiceBuilder databaseManagementServiceBuilder = new DatabaseManagementServiceBuilder(storeDir);
         Map<String, String> neo4jProperties = Neo4jPropertyHelper.getNeo4jProperties(properties);
         databaseManagementServiceBuilder.setConfigRaw(neo4jProperties);
+        databaseManagementServiceBuilder.setConfig(GraphDatabaseInternalSettings.track_cursor_close, false);
         DatabaseManagementService managementService = databaseManagementServiceBuilder.build();
         GraphDatabaseService graphDatabaseService = managementService.database(DEFAULT_DATABASE_NAME);
         LOGGER.debug("Graph database service for directory '{}' created.", storeDir.getAbsolutePath());

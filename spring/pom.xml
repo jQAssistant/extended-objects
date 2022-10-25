@@ -10,7 +10,7 @@
     <name>eXtended Objects - Spring Framework Integration</name>
 
     <properties>
-        <spring.boot.version>2.3.8.RELEASE</spring.boot.version>
+        <spring.boot.version>2.6.2</spring.boot.version>
     </properties>
 
     <dependencyManagement>
@@ -21,11 +21,6 @@
                 <type>pom</type>
                 <version>${spring.boot.version}</version>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-all</artifactId>
-                <version>4.1.68.Final</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

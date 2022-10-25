@@ -39,11 +39,11 @@ public class EmbeddedDatastoreSessionImpl extends
 
     public EmbeddedDatastoreSessionImpl(EmbeddedDatastoreTransaction transaction, GraphDatabaseService graphDatabaseService) {
         this.graphDatabaseService = graphDatabaseService;
-        this.entityManager = new EmbeddedEntityManager(graphDatabaseService);
-        this.relationManager = new EmbeddedRelationManager(graphDatabaseService);
+        this.entityManager = new EmbeddedEntityManager(transaction);
+        this.relationManager = new EmbeddedRelationManager(transaction);
         this.parameterConverter = new Converter(singletonList(new EmbeddedParameterConverter()));
-        this.valueConverter = new Converter(singletonList(new EmbeddedValueConverter()));
-        datastoreTransaction = new EmbeddedDatastoreTransaction(graphDatabaseService);
+        this.valueConverter = new Converter(singletonList(new EmbeddedValueConverter(transaction)));
+        this.datastoreTransaction = transaction;
     }
 
     @Override
