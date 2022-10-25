@@ -33,7 +33,8 @@ public class EmbeddedNeo4jXOProvider implements XODatastoreProvider {
         LOG.debug("try to lookup provider-class {}", factoryClass);
 
         try {
-            return ((Class<? extends DatastoreFactory>) Class.forName(factoryClass)).newInstance();
+            return ((Class<? extends DatastoreFactory>) Class.forName(factoryClass)).getDeclaredConstructor()
+                .newInstance();
         } catch (ReflectiveOperationException e) {
             throw new XOException("Cannot create datastore factory.", e);
         }
