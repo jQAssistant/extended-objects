@@ -26,8 +26,7 @@ public abstract class AbstractNeo4jDatastoreSession<N extends Neo4jNode, L exten
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNeo4jDatastoreSession.class);
 
     public Set<Index> getIndexes() {
-        String neo4jVersion = getNeo4jVersion();
-        return neo4jVersion.startsWith("4.") ? getIndexes("labelsOrTypes", "properties") : getIndexes("tokenNames", "properties");
+        return getIndexes("labelsOrTypes", "properties");
     }
 
     /**
