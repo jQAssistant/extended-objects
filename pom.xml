@@ -78,16 +78,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.jacoco_version>0.8.5</org.jacoco_version>
-        <org.asciidoctor.maven_version>1.5.8</org.asciidoctor.maven_version>
-        <org.asciidoctor_version>1.5.8</org.asciidoctor_version>
-        <org.asciidoctorj.pdf_version>1.5.0-alpha.16</org.asciidoctorj.pdf_version>
+        <org.jacoco_version>0.8.8</org.jacoco_version>
+        <org.asciidoctor.maven_version>2.2.2</org.asciidoctor.maven_version>
         <org.neo4j_version>4.4.12</org.neo4j_version>
         <org.slf4j_version>1.7.36</org.slf4j_version>
         <org.hamcrest_version>2.2</org.hamcrest_version>
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
-        <bundle.name>com.buschmais.${project.artifactId}</bundle.name>
         <jqassistant.version>1.11.1</jqassistant.version>
     </properties>
 
@@ -323,13 +320,6 @@
                             </configuration>
                         </execution>
                     </executions>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.asciidoctor</groupId>
-                            <artifactId>asciidoctorj</artifactId>
-                            <version>${org.asciidoctor_version}</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
@@ -649,7 +639,6 @@
         <module>test</module>
         <module>neo4j</module>
         <module>doc</module>
-        <module>inject</module>
         <module>spring</module>
     </modules>
 
