@@ -13,7 +13,13 @@ Please refer to the http://buschmais.github.io/extended-objects/doc/0.8.0/neo4j/
 
 == Changelog
 
-=== 1.1.0 (not released yet)
+=== 2.0.0
+
+- Upgraded Neo4j embedded to 4.4.12
+- Removed guice support
+- Added experimental support for Spring Framework
+
+=== 1.1.0
 
 - Added support for connecting to Neo4j 4.x via bolt/neo4j protocol schemes
 - Improved caching of of node/relationship states after flush or transaction commit

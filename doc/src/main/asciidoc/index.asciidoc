@@ -216,43 +216,8 @@ XOTransaction::
 Query::
   A user defined query which may be executed against the datastore.
 
-== XO Bootstrapping in OSGi environments
-
-[source,java]
-.Activator.java
-----
-public class Activator implements BundleActivator {
-
-  public void start(BundleContext context) throws Exception {
-
-    // performs a lookup in the OSGi service registry
-    XOManagerFactory xmf = XOSGi.createXOManagerFactory("movies");
-
-    XOManager xm = xmf.createXOManager();
-    xm.currentTransaction.begin();
-    Actor harrison = xm.create(Actor.class);
-    harrison.setName("Harrison Ford");
-
-    xm.currentTransaction.commit();
-    xmf.close();
-  }
-}
-----
-
 == Available Datastore Implementations
 
 === Neo4j
 https://github.com/buschmais/extended-objects (part of the core distribution)
-
-=== Titan Datastore
-
-https://github.com/PureSolTechnologies/extended-objects-titan
-
-=== TinkerPop Blueprints Datastore
-
-https://github.com/BluWings/xo-tinkerpop-blueprints
-
-=== OrientDb Datastore
-
-https://github.com/BluWings/xo-orientdb
 
