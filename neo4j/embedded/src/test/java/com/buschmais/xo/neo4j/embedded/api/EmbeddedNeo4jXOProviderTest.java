@@ -15,8 +15,8 @@ public class EmbeddedNeo4jXOProviderTest {
 
     @Test
     public void lookupTests() throws Exception {
-        assertEquals(FileDatastoreFactory.class, provider.lookupFactory(new URI("file://foo/")).getClass());
-        assertEquals(MemoryDatastoreFactory.class, provider.lookupFactory(new URI("memory:///")).getClass());
+        assertEquals(FileDatabaseManagementServiceBuilderFactory.class, provider.lookupFactory(new URI("file://foo/")).getClass());
+        assertEquals(MemoryDatabaseManagementServiceBuilderFactory.class, provider.lookupFactory(new URI("memory:///")).getClass());
     }
 
     @Test
