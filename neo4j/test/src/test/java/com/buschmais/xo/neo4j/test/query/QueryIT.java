@@ -1,19 +1,16 @@
 package com.buschmais.xo.neo4j.test.query;
 
-import static com.buschmais.xo.api.Query.Result;
-import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import static com.buschmais.xo.neo4j.test.query.CustomQueryLanguagePlugin.CustomQueryLanguage;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.fail;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
+import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
+import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 import com.buschmais.xo.neo4j.test.AbstractNeo4JXOManagerIT;
 import com.buschmais.xo.neo4j.test.query.composite.A;
 import com.buschmais.xo.neo4j.test.query.composite.InstanceByValue;
@@ -23,6 +20,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static com.buschmais.xo.api.Query.Result;
+import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
+import static com.buschmais.xo.neo4j.test.query.CustomQueryLanguagePlugin.CustomQueryLanguage;
+import static java.util.stream.Collectors.toSet;
+import static java.util.stream.StreamSupport.stream;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class QueryIT extends AbstractNeo4JXOManagerIT {
@@ -139,6 +146,28 @@ public class QueryIT extends AbstractNeo4JXOManagerIT {
         Result<CompositeRowObject> row = getXOManager().createQuery("A:value=A1").using(CustomQueryLanguage.class).execute();
         A a = row.getSingleResult().get("A", A.class);
         assertThat(a, equalTo(a1));
+        xoManager.currentTransaction().commit();
+    }
+
+    @Test
+    public void nonTransactionalQuery() {
+        XOManager xoManager = getXOManager();
+
+        A a = xoManager.createQuery(
+            "MATCH (a:A{value:$value}) CALL { WITH a SET a:Custom } IN TRANSACTIONS RETURN a")
+            .withParameter("value", "A1")
+            .execute()
+            .getSingleResult()
+            .get("a", A.class);
+
+        assertThat(a, equalTo(a1));
+        xoManager.currentTransaction().begin();
+        assertThat(a.getValue(), equalTo("A1"));
+        Neo4jNode<Neo4jLabel, ?, ?, ?> delegate = ((CompositeObject) a).getDelegate();
+        Set<String> labels = stream(delegate.getLabels()
+            .spliterator(), false).map(neo4jLabel -> neo4jLabel.getName())
+            .collect(toSet());
+        assertThat(labels, containsInAnyOrder("A", "Custom"));
         xoManager.currentTransaction().commit();
     }
 

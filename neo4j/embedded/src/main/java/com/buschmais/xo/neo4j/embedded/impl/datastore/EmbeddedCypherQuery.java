@@ -1,5 +1,6 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
 
 import org.neo4j.graphdb.Result;
+
+import static java.util.stream.Collectors.toList;
 
 public class EmbeddedCypherQuery implements DatastoreQuery<Cypher> {
 
@@ -27,9 +30,20 @@ public class EmbeddedCypherQuery implements DatastoreQuery<Cypher> {
     @Override
     public ResultIterator<Map<String, Object>> execute(String expression, Map<String, Object> parameters) {
         Map<String, Object> convertedParameters = (Map<String, Object>) embeddedNeo4jDatastoreSession.convertParameter(parameters);
-        Result executionResult = embeddedNeo4jDatastoreSession.getDatastoreTransaction().getTransaction().execute(expression, convertedParameters);
-        final List<String> columns = executionResult.columns();
-        return new ResultIterator<Map<String, Object>>() {
+        EmbeddedDatastoreTransaction datastoreTransaction = embeddedNeo4jDatastoreSession.getDatastoreTransaction();
+        if (datastoreTransaction.isActive()) {
+            return executeTransactional(expression, convertedParameters, datastoreTransaction);
+        } else {
+            return executeNonTransactional(expression, convertedParameters);
+        }
+    }
+
+    private ResultIterator<Map<String, Object>> executeTransactional(String expression, Map<String, Object> parameters,
+        EmbeddedDatastoreTransaction datastoreTransaction) {
+        Result executionResult = datastoreTransaction.getTransaction()
+            .execute(expression, parameters);
+        List<String> columns = executionResult.columns();
+        return new ResultIterator<>() {
 
             @Override
             public boolean hasNext() {
@@ -38,12 +52,7 @@ public class EmbeddedCypherQuery implements DatastoreQuery<Cypher> {
 
             @Override
             public Map<String, Object> next() {
-                Map<String, Object> next = executionResult.next();
-                Map<String, Object> result = new LinkedHashMap<>(next.size(), 1);
-                for (String column : columns) {
-                    result.put(column, embeddedNeo4jDatastoreSession.convertValue(next.get(column)));
-                }
-                return result;
+                return convertRow(executionResult.next(), columns);
             }
 
             @Override
@@ -56,5 +65,45 @@ public class EmbeddedCypherQuery implements DatastoreQuery<Cypher> {
                 executionResult.close();
             }
         };
+    }
+
+    private ResultIterator<Map<String, Object>> executeNonTransactional(String expression, Map<String, Object> parameters) {
+        ResultIterator<Map<String, Object>> resultIterator = embeddedNeo4jDatastoreSession.getGraphDatabaseService()
+            .executeTransactionally(expression, parameters, result -> {
+                List<String> columns = result.columns();
+                List<Map<String, Object>> rows = result.stream()
+                    .map(row -> convertRow(row, columns))
+                    .collect(toList());
+                Iterator<Map<String, Object>> iterator = rows.iterator();
+                return new ResultIterator<Map<String, Object>>() {
+
+                    @Override
+                    public boolean hasNext() {
+                        return iterator.hasNext();
+                    }
+
+                    @Override
+                    public Map<String, Object> next() {
+                        return iterator.next();
+                    }
+
+                    public void remove() {
+                        throw new XOException("Remove operation is not supported for query results.");
+                    }
+
+                    @Override
+                    public void close() {
+                    }
+                };
+            });
+        return resultIterator;
+    }
+
+    private Map<String, Object> convertRow(Map<String, Object> row, List<String> columns) {
+        Map<String, Object> result = new LinkedHashMap<>(row.size(), 1);
+        for (String column : columns) {
+            result.put(column, embeddedNeo4jDatastoreSession.convertValue(row.get(column)));
+        }
+        return result;
     }
 }

@@ -19,7 +19,7 @@ public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
     public EmbeddedNode(EmbeddedDatastoreTransaction transaction, Node node) {
         super(transaction, node);
         this.labels = new HashSet<>();
-        for (Label label : getDelegate().getLabels()) {
+        for (Label label : node.getLabels()) {
             labels.add(new EmbeddedLabel(label));
         }
     }
