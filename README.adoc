@@ -13,6 +13,11 @@ Please refer to the http://buschmais.github.io/extended-objects/doc/0.8.0/neo4j/
 
 == Changelog
 
+=== 2.1.0
+
+- Upgraded Neo4j embedded to 4.4.18
+- Added support for non-transactional Neo4j queries
+
 === 2.0.0
 
 - Upgraded Neo4j embedded to 4.4.12
