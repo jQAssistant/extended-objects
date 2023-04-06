@@ -19,6 +19,8 @@ import lombok.*;
 public interface Neo4jDatastoreSession<N extends Neo4jNode, L extends Neo4jLabel, R extends Neo4jRelationship, T extends Neo4jRelationshipType>
         extends DatastoreSession<Long, N, NodeMetadata<L>, L, Long, R, RelationshipMetadata<T>, T, PropertyMetadata> {
 
+    String getNeo4jVersion();
+
     Object convertValue(Object value);
 
     Object convertParameter(Object value);

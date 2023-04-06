@@ -36,7 +36,7 @@ public abstract class AbstractNeo4jDatastoreSession<N extends Neo4jNode, L exten
     public void createIndexes(Set<Index> indexes) {
         LOGGER.debug("Creating indexes {}.", indexes);
         for (Index index : indexes) {
-            String statement = format("CREATE INDEX ON :%s(%s)", index.getLabels().stream().collect(joining(":")),
+            String statement = format("CREATE INDEX FOR (n:%s) ON (n.%s)", index.getLabels().stream().collect(joining(":")),
                     index.getProperties().stream().collect(joining(",")));
             try (ResultIterator<Map<String, Object>> iterator = createQuery(Cypher.class).execute(statement, emptyMap())) {
                 while (iterator.hasNext()) {
@@ -65,7 +65,7 @@ public abstract class AbstractNeo4jDatastoreSession<N extends Neo4jNode, L exten
      */
     private Set<Index> getIndexes(String labelsColumn, String propertiesColumn) {
         Set<Index> indexes = new HashSet<>();
-        String query = format("CALL db.indexes() YIELD %s AS labels, %s AS properties RETURN labels, properties", labelsColumn, propertiesColumn);
+        String query = format("SHOW INDEXES YIELD %s AS labels, %s AS properties WHERE labels is not null RETURN labels, properties", labelsColumn, propertiesColumn);
         try (ResultIterator<Map<String, Object>> iterator = createQuery(Cypher.class).execute(query, emptyMap())) {
             while (iterator.hasNext()) {
                 Map<String, Object> row = iterator.next();

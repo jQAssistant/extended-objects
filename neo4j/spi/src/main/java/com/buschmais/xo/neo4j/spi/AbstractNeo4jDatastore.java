@@ -19,6 +19,9 @@ import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreTransaction;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public abstract class AbstractNeo4jDatastore<L extends Neo4jLabel, R extends Neo4jRelationshipType, DS extends Neo4jDatastoreSession>
         implements Neo4jDatastore<L, R, DS> {
 
@@ -40,6 +43,7 @@ public abstract class AbstractNeo4jDatastore<L extends Neo4jLabel, R extends Neo
             Set<Index> existingIndexes = inTransaction(session, () -> session.getIndexes());
             indexes.removeAll(existingIndexes);
             inTransaction(session, () -> session.createIndexes(indexes));
+            log.debug("Detected Neo4j {}.", session.getNeo4jVersion());
         }
     }
 
