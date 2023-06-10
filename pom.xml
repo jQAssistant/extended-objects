@@ -80,7 +80,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.jacoco_version>0.8.8</org.jacoco_version>
         <org.asciidoctor.maven_version>2.2.2</org.asciidoctor.maven_version>
-        <org.neo4j_version>4.4.18</org.neo4j_version>
+        <org.neo4j_version>4.4.21</org.neo4j_version>
         <org.slf4j_version>1.7.36</org.slf4j_version>
         <org.hamcrest_version>2.2</org.hamcrest_version>
 
@@ -563,7 +563,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>30.0-jre</version>
+                <version>32.0.1-jre</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
