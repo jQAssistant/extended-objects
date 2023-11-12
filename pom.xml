@@ -79,8 +79,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.jacoco_version>0.8.8</org.jacoco_version>
-        <org.asciidoctor.maven_version>2.2.2</org.asciidoctor.maven_version>
-        <org.neo4j_version>4.4.21</org.neo4j_version>
+        <org.asciidoctor.maven_version>2.2.4</org.asciidoctor.maven_version>
+        <org.neo4j_version>4.4.27</org.neo4j_version>
         <org.slf4j_version>1.7.36</org.slf4j_version>
         <org.hamcrest_version>2.2</org.hamcrest_version>
 
