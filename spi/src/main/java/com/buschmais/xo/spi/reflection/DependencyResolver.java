@@ -12,7 +12,6 @@ public class DependencyResolver<T> {
 
     private final Collection<T> elements;
     private final DependencyProvider<T> dependencyProvider;
-    private Map<T, Set<T>> blockedBy;
 
     /**
      * Private constructor.
@@ -48,42 +47,34 @@ public class DependencyResolver<T> {
      * @return The resolved list.
      */
     public List<T> resolve() {
-        blockedBy = new HashMap<>();
-        Set<T> queue = new LinkedHashSet<>();
-        Set<T> allElements = new HashSet<>();
-        queue.addAll(elements);
-        while (!queue.isEmpty()) {
-            T element = queue.iterator().next();
-            Set<T> dependencies = dependencyProvider.getDependencies(element);
-            queue.addAll(dependencies);
-            blockedBy.put(element, dependencies);
-            queue.remove(element);
-            allElements.add(element);
-        }
-        List<T> result = new LinkedList<>();
-        for (T element : allElements) {
-            resolve(element, result);
-        }
-        return result;
-    }
+        Set<T> resolved = new LinkedHashSet<>();
+        Set<T> path = new LinkedHashSet<>();
 
-    /**
-     * Resolves an element.
-     *
-     * @param element
-     *            The element.
-     * @param result
-     *            The result list.
-     */
-    private void resolve(T element, List<T> result) {
-        Set<T> dependencies = blockedBy.get(element);
-        if (dependencies != null) {
-            for (T dependency : dependencies) {
-                resolve(dependency, result);
+        Deque<Queue<T>> stack = new LinkedList<>();
+        stack.push(new LinkedList<>(elements));
+
+        do {
+            Queue<T> currentElements = stack.peek();
+            if (!currentElements.isEmpty()) {
+                T currentElement = currentElements.peek();
+                if (!(resolved.contains(currentElement) || path.contains(currentElement))) {
+                    path.add(currentElement);
+                    Set<T> dependencies = dependencyProvider.getDependencies(currentElement);
+                    stack.push(new LinkedList<>(dependencies));
+                } else {
+                    currentElements.remove();
+                }
+            } else {
+                stack.pop();
+                if (!stack.isEmpty()) {
+                    T resolvedElement = stack.peek()
+                        .remove();
+                    path.remove(resolvedElement);
+                    resolved.add(resolvedElement);
+                }
             }
-            blockedBy.remove(element);
-            result.add(element);
-        }
+        } while (!stack.isEmpty());
+        return new ArrayList<>(resolved);
     }
 
     /**
