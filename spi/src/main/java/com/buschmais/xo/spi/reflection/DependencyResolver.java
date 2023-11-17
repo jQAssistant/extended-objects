@@ -42,31 +42,37 @@ public class DependencyResolver<T> {
     }
 
     /**
-     * Resolves the dependencies to a list.
+     * Resolves the dependencies to a list using a depth-first search.
      *
      * @return The resolved list.
      */
     public List<T> resolve() {
+        // the already resolved elements
         Set<T> resolved = new LinkedHashSet<>();
+        // the current path in depth-first search, used to detect cycles
         Set<T> path = new LinkedHashSet<>();
 
         Deque<Queue<T>> stack = new LinkedList<>();
         stack.push(new LinkedList<>(elements));
-
         do {
             Queue<T> currentElements = stack.peek();
             if (!currentElements.isEmpty()) {
+                // if current level provides more elements then evaluate the first one for non-resolved children
                 T currentElement = currentElements.peek();
                 if (!(resolved.contains(currentElement) || path.contains(currentElement))) {
-                    path.add(currentElement);
+                    // if current element is not yet resolved then push its children (i.e. dependencies) to the stack to be processed next
                     Set<T> dependencies = dependencyProvider.getDependencies(currentElement);
                     stack.push(new LinkedList<>(dependencies));
+                    path.add(currentElement);
                 } else {
+                    // element is resolved, remove it from current level to evaluate the next one
                     currentElements.remove();
                 }
             } else {
+                // no more elements in current level, go up to previous level
                 stack.pop();
                 if (!stack.isEmpty()) {
+                    // the current element has been resolved
                     T resolvedElement = stack.peek()
                         .remove();
                     path.remove(resolvedElement);
