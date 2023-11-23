@@ -8,8 +8,17 @@ import org.neo4j.graphdb.Relationship;
 public class EmbeddedRelationship extends AbstractEmbeddedPropertyContainer<Relationship>
         implements Neo4jRelationship<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {
 
+    private final EmbeddedNode startNode;
+
+    private final EmbeddedRelationshipType type;
+
+    private final EmbeddedNode endNode;
+
     public EmbeddedRelationship(EmbeddedDatastoreTransaction transaction, Relationship relationship) {
         super(transaction, relationship);
+        this.startNode = new EmbeddedNode(transaction, getDelegate().getStartNode());
+        this.type = new EmbeddedRelationshipType(getDelegate().getType());
+        this.endNode = new EmbeddedNode(transaction, getDelegate().getEndNode());
     }
 
     @Override
@@ -23,21 +32,17 @@ public class EmbeddedRelationship extends AbstractEmbeddedPropertyContainer<Rela
 
     @Override
     public EmbeddedNode getStartNode() {
-        return getEmbeddedNode();
-    }
-
-    private EmbeddedNode getEmbeddedNode() {
-        return new EmbeddedNode(transaction, getDelegate().getStartNode());
+        return startNode;
     }
 
     @Override
     public EmbeddedNode getEndNode() {
-        return new EmbeddedNode(transaction, getDelegate().getEndNode());
+        return endNode;
     }
 
     @Override
     public EmbeddedRelationshipType getType() {
-        return new EmbeddedRelationshipType(getDelegate().getType());
+        return type;
     }
 
 }
