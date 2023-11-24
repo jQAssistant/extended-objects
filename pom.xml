@@ -81,6 +81,9 @@
         <org.jacoco_version>0.8.8</org.jacoco_version>
         <org.asciidoctor.maven_version>2.2.4</org.asciidoctor.maven_version>
         <org.neo4j_version>4.4.28</org.neo4j_version>
+        <!--
+        <org.neo4j_version>5.13.0</org.neo4j_version>
+        -->
         <org.slf4j_version>1.7.36</org.slf4j_version>
         <org.hamcrest_version>2.2</org.hamcrest_version>
 
@@ -577,7 +580,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.10</version>
+                <version>1.18.28</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

@@ -14,9 +14,8 @@ import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import com.buschmais.xo.spi.datastore.Datastore;
 
 import com.google.common.base.CaseFormat;
-import org.neo4j.configuration.GraphDatabaseInternalSettings;
+import org.neo4j.configuration.Config;
 import org.neo4j.dbms.api.DatabaseManagementService;
-import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,22 +30,22 @@ public class EmbeddedNeo4jXOProvider implements XODatastoreProvider {
     @Override
     public Datastore<?, ?, ?, ?, ?> createDatastore(XOUnit xoUnit) {
         URI uri = xoUnit.getUri();
-        DatabaseManagementServiceBuilderFactory databaseManagementServiceBuilderFactory = lookupFactory(uri);
-        DatabaseManagementServiceBuilder databaseManagementServiceBuilder = databaseManagementServiceBuilderFactory.createDatabaseManagementServiceBuilder(uri);
         Map<String, String> neo4jProperties = getNeo4jProperties(xoUnit.getProperties());
-        databaseManagementServiceBuilder.setConfigRaw(neo4jProperties);
-        databaseManagementServiceBuilder.setConfig(GraphDatabaseInternalSettings.track_cursor_close, false);
-        DatabaseManagementService managementService = databaseManagementServiceBuilder.build();
-        return new EmbeddedDatastore(managementService, managementService.database(DEFAULT_DATABASE_NAME));
+        Config config = Config.newBuilder()
+            .setRaw(neo4jProperties)
+            .build();
+        DatabaseManagementServiceFactory databaseManagementServiceFactory = lookupFactory(uri);
+        DatabaseManagementService databaseManagementService = databaseManagementServiceFactory.createDatabaseManagementService(uri, config);
+        return new EmbeddedDatastore(databaseManagementService, databaseManagementService.database(DEFAULT_DATABASE_NAME));
     }
 
     @SuppressWarnings("unchecked")
-    DatabaseManagementServiceBuilderFactory lookupFactory(URI uri) {
+    DatabaseManagementServiceFactory lookupFactory(URI uri) {
         String factoryClass = getFactoryClassName(uri);
         LOG.debug("try to lookup provider-class {}", factoryClass);
 
         try {
-            return ((Class<? extends DatabaseManagementServiceBuilderFactory>) Class.forName(factoryClass)).getDeclaredConstructor()
+            return ((Class<? extends DatabaseManagementServiceFactory>) Class.forName(factoryClass)).getDeclaredConstructor()
                 .newInstance();
         } catch (ReflectiveOperationException e) {
             throw new XOException("Cannot create datastore factory.", e);
@@ -55,8 +54,8 @@ public class EmbeddedNeo4jXOProvider implements XODatastoreProvider {
 
     private String getFactoryClassName(URI uri) {
         String protocol = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, uri.getScheme());
-        return DatabaseManagementServiceBuilderFactory.class.getPackage()
-            .getName() + "." + protocol + DatabaseManagementServiceBuilderFactory.class.getSimpleName();
+        return DatabaseManagementServiceFactory.class.getPackage()
+            .getName() + "." + protocol + DatabaseManagementServiceFactory.class.getSimpleName();
     }
 
     @Override

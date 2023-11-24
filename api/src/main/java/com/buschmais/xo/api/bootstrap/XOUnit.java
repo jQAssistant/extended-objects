@@ -73,13 +73,13 @@ public class XOUnit {
      * The entity types to register.
      */
     @Singular
-    private Set<? extends Class<?>> types = new HashSet<>();
+    private Set<? extends Class<?>> types;
 
     /**
      * The instance listener types.
      */
     @Singular
-    private List<? extends Class<?>> instanceListeners = new ArrayList<>();
+    private List<? extends Class<?>> instanceListeners;
 
     /**
      * The {@link com.buschmais.xo.api.ValidationMode} to use.
