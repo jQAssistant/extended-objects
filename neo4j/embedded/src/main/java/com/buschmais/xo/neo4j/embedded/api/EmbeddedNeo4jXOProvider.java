@@ -10,25 +10,34 @@ import java.util.regex.Pattern;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastore;
+import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedLabel;
+import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedRelationshipType;
+import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.bootstrap.XODatastoreProvider;
 import com.buschmais.xo.spi.datastore.Datastore;
 
 import com.google.common.base.CaseFormat;
 import org.neo4j.configuration.Config;
 import org.neo4j.dbms.api.DatabaseManagementService;
+import org.neo4j.graphdb.config.Setting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
 
-public class EmbeddedNeo4jXOProvider implements XODatastoreProvider {
+public class EmbeddedNeo4jXOProvider
+    implements XODatastoreProvider<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType> {
 
-    Pattern NEO4J_PROPERTY_PATTERN = Pattern.compile("neo4j\\.(.*)");
+    private static final String NEO4J_PROPERTY_PREFIX = "neo4j.";
+
+    private static final Pattern NEO4J_PROPERTY_PATTERN = Pattern.compile("neo4j\\.(.*)");
 
     private static final Logger LOG = LoggerFactory.getLogger(EmbeddedNeo4jXOProvider.class);
 
     @Override
-    public Datastore<?, ?, ?, ?, ?> createDatastore(XOUnit xoUnit) {
+    public Datastore<?, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType> createDatastore(
+        XOUnit xoUnit) {
         URI uri = xoUnit.getUri();
         Map<String, String> neo4jProperties = getNeo4jProperties(xoUnit.getProperties());
         Config config = Config.newBuilder()
@@ -75,4 +84,24 @@ public class EmbeddedNeo4jXOProvider implements XODatastoreProvider {
         return neo4jProperties;
     }
 
+    public static PropertiesBuilder propertiesBuilder() {
+        return new PropertiesBuilder();
+    }
+
+    public static class PropertiesBuilder {
+
+        private final Properties properties = new Properties();
+
+        private PropertiesBuilder() {
+        }
+
+        public <T> PropertiesBuilder property(Setting<T> setting, T value) {
+            properties.setProperty(NEO4J_PROPERTY_PREFIX + setting.name(), value.toString());
+            return this;
+        }
+
+        public Properties build() {
+            return properties;
+        }
+    }
 }
