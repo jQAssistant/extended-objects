@@ -46,28 +46,6 @@
         </repository>
     </distributionManagement>
 
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <developers>
         <developer>
             <id>dirk-mahler</id>
@@ -81,9 +59,6 @@
         <org.jacoco_version>0.8.8</org.jacoco_version>
         <org.asciidoctor.maven_version>2.2.4</org.asciidoctor.maven_version>
         <org.neo4j_version>4.4.28</org.neo4j_version>
-        <!--
-        <org.neo4j_version>5.13.0</org.neo4j_version>
-        -->
         <org.slf4j_version>1.7.36</org.slf4j_version>
         <org.hamcrest_version>2.2</org.hamcrest_version>
 
@@ -92,6 +67,12 @@
     </properties>
 
     <profiles>
+        <profile>
+            <id>neo4jv5</id>
+            <properties>
+                <org.neo4j_version>5.13.0</org.neo4j_version>
+            </properties>
+        </profile>
         <profile>
             <id>IT</id>
             <build>
