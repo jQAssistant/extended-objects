@@ -16,9 +16,9 @@ public class EmbeddedRelationship extends AbstractEmbeddedPropertyContainer<Rela
 
     public EmbeddedRelationship(EmbeddedDatastoreTransaction transaction, Relationship relationship) {
         super(transaction, relationship);
-        this.startNode = new EmbeddedNode(transaction, getDelegate().getStartNode());
-        this.type = new EmbeddedRelationshipType(getDelegate().getType());
-        this.endNode = new EmbeddedNode(transaction, getDelegate().getEndNode());
+        this.startNode = new EmbeddedNode(transaction, relationship.getStartNode());
+        this.type = new EmbeddedRelationshipType(relationship.getType());
+        this.endNode = new EmbeddedNode(transaction, relationship.getEndNode());
     }
 
     @Override
