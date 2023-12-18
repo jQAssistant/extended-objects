@@ -106,12 +106,6 @@
         </profile>
         <profile>
             <id>sonar</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <properties>
                 <sonar.organization>buschmais</sonar.organization>
                 <sonar.projectKey>buschmais_extended-objects</sonar.projectKey>
@@ -139,12 +133,6 @@
         </profile>
         <profile>
             <id>release</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -416,6 +404,8 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <tagNameFormat>@{version}</tagNameFormat>
                     <arguments>-DskipTests</arguments>
+                    <preparationProfiles>release,sonar</preparationProfiles>
+                    <releaseProfiles>release,sonar</releaseProfiles>
                 </configuration>
             </plugin>
             <plugin>
