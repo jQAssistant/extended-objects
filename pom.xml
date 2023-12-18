@@ -355,8 +355,9 @@
                 <executions>
                     <execution>
                         <id>attach-javadoc</id>
+                        <phase>verify</phase>
                         <goals>
-                            <goal>javadoc-no-fork</goal>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
