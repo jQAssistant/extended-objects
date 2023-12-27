@@ -85,30 +85,4 @@
             <artifactId>neo4j-server</artifactId>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>Neo4j_2.x</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.neo4j.app</groupId>
-                    <artifactId>neo4j-server</artifactId>
-                    <classifier>static-web</classifier>
-                    <version>${org.neo4j_version}</version>
-                    <scope>test</scope>
-                    <exclusions>
-                        <exclusion>
-                            <groupId>ch.qos.logback</groupId>
-                            <artifactId>logback-access</artifactId>
-                        </exclusion>
-                        <exclusion>
-                            <groupId>ch.qos.logback</groupId>
-                            <artifactId>logback-classic</artifactId>
-                        </exclusion>
-                    </exclusions>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
-
-</project>
+ </project>

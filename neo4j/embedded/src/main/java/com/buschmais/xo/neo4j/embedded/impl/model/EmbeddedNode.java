@@ -1,15 +1,14 @@
 package com.buschmais.xo.neo4j.embedded.impl.model;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastoreTransaction;
 
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.neo4j.graphdb.*;
+import org.neo4j.kernel.impl.core.NodeEntity;
 
 public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
         implements Neo4jNode<EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {
@@ -18,7 +17,7 @@ public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
 
     public EmbeddedNode(EmbeddedDatastoreTransaction transaction, Node node) {
         super(transaction, node);
-        this.labels = new HashSet<>();
+        this.labels = new UnifiedSet<>();
         for (Label label : node.getLabels()) {
             labels.add(new EmbeddedLabel(label));
         }
@@ -35,20 +34,25 @@ public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
 
     @Override
     public Iterable<EmbeddedRelationship> getRelationships(EmbeddedRelationshipType type, EmbeddedDirection dir) {
-        Iterable<Relationship> relationships = getDelegate().getRelationships(dir.getDelegate(), type.getDelegate());
-        return () -> {
-            Iterator<Relationship> iterator = relationships.iterator();
-            return new Iterator<EmbeddedRelationship>() {
-                @Override
-                public boolean hasNext() {
-                    return iterator.hasNext();
-                }
+        // using NodeEntity instead of Node because return type of getRelationships() in Node interface changed from
+        // Iterable to ResourceIterable between Neo4j v4 and v5 breaking bytecode compatibility
+        NodeEntity node = (NodeEntity) getDelegate();
+        ResourceIterator<Relationship> iterator = node.getRelationships(dir.getDelegate(), type.getDelegate()).iterator();
+        return () -> new Iterator<>() {
 
-                @Override
-                public EmbeddedRelationship next() {
-                    return getEmbeddedRelationship(iterator.next());
+            @Override
+            public boolean hasNext() {
+                boolean hasNext = iterator.hasNext();
+                if (!hasNext) {
+                    iterator.close();
                 }
-            };
+                return hasNext;
+            }
+
+            @Override
+            public EmbeddedRelationship next() {
+                return getEmbeddedRelationship(iterator.next());
+            }
         };
     }
 

@@ -70,7 +70,7 @@
         <profile>
             <id>neo4jv5</id>
             <properties>
-                <org.neo4j_version>5.13.0</org.neo4j_version>
+                <org.neo4j_version>5.15.0</org.neo4j_version>
             </properties>
         </profile>
         <profile>
