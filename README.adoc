@@ -13,6 +13,10 @@ Please refer to the http://buschmais.github.io/extended-objects/doc/0.8.0/neo4j/
 
 == Changelog
 
+=== 2.2.2
+
+- Enabled binary compatibility with embedded Neo4j 5.x
+
 === 2.1.0
 
 - Upgraded Neo4j embedded to 4.4.18
