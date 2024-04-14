@@ -61,7 +61,9 @@
         <org.neo4j_version/>
         <org.slf4j_version>1.7.36</org.slf4j_version>
         <org.hamcrest_version>2.2</org.hamcrest_version>
-
+        <org.neo4jv4_version>4.4.32</org.neo4jv4_version>
+        <org.neo4jv5_version>5.19.0</org.neo4jv5_version>
+        <org.neo4j_version>${org.neo4jv4_version}</org.neo4j_version>
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
         <jqassistant.version>2.1.0</jqassistant.version>
     </properties>
@@ -73,7 +75,7 @@
                 <jdk>11</jdk>
             </activation>
             <properties>
-                <org.neo4j_version>4.4.32</org.neo4j_version>
+                <org.neo4j_version>${org.neo4jv4_version}</org.neo4j_version>
             </properties>
         </profile>
         <profile>
@@ -82,7 +84,7 @@
             </activation>
             <id>neo4jv5</id>
             <properties>
-                <org.neo4j_version>5.19.0</org.neo4j_version>
+                <org.neo4j_version>${org.neo4jv5_version}</org.neo4j_version>
             </properties>
         </profile>
         <profile>
