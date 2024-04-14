@@ -8,13 +8,15 @@ import java.util.Map;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
-import com.buschmais.xo.spi.datastore.DatastoreQuery;
+import com.buschmais.xo.neo4j.spi.CypherQuery;
+import com.buschmais.xo.neo4j.spi.CypherQueryResultIterator;
 
 import org.neo4j.graphdb.Result;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 
-public class EmbeddedCypherQuery implements DatastoreQuery<Cypher> {
+public class EmbeddedCypherQuery implements CypherQuery {
 
     private EmbeddedDatastoreSessionImpl embeddedNeo4jDatastoreSession;
 
@@ -68,14 +70,14 @@ public class EmbeddedCypherQuery implements DatastoreQuery<Cypher> {
     }
 
     private ResultIterator<Map<String, Object>> executeNonTransactional(String expression, Map<String, Object> parameters) {
-        ResultIterator<Map<String, Object>> resultIterator = embeddedNeo4jDatastoreSession.getGraphDatabaseService()
+        return embeddedNeo4jDatastoreSession.getGraphDatabaseService()
             .executeTransactionally(expression, parameters, result -> {
                 List<String> columns = result.columns();
                 List<Map<String, Object>> rows = result.stream()
                     .map(row -> convertRow(row, columns))
                     .collect(toList());
                 Iterator<Map<String, Object>> iterator = rows.iterator();
-                return new ResultIterator<Map<String, Object>>() {
+                return new CypherQueryResultIterator() {
 
                     @Override
                     public boolean hasNext() {
@@ -87,16 +89,31 @@ public class EmbeddedCypherQuery implements DatastoreQuery<Cypher> {
                         return iterator.next();
                     }
 
+                    @Override
                     public void remove() {
                         throw new XOException("Remove operation is not supported for query results.");
                     }
 
                     @Override
-                    public void close() {
+                    public List<Notification> dispose() {
+                        return stream(result.getNotifications()
+                            .spliterator(), false).map(n -> Notification.builder()
+                                .title(n.getTitle())
+                                .description(n.getDescription())
+                                .code(n.getCode())
+                                .severity(n.getSeverity()
+                                    .name())
+                                .offset(n.getPosition()
+                                    .getOffset())
+                                .line(n.getPosition()
+                                    .getLine())
+                                .column(n.getPosition()
+                                    .getColumn())
+                                .build())
+                            .collect(toList());
                     }
                 };
             });
-        return resultIterator;
     }
 
     private Map<String, Object> convertRow(Map<String, Object> row, List<String> columns) {

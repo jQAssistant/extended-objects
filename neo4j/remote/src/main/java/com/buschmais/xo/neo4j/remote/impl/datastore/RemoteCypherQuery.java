@@ -6,13 +6,19 @@ import java.util.NoSuchElementException;
 
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
+import com.buschmais.xo.neo4j.spi.CypherQuery;
+import com.buschmais.xo.neo4j.spi.CypherQueryResultIterator;
 import com.buschmais.xo.neo4j.spi.helper.Converter;
-import com.buschmais.xo.spi.datastore.DatastoreQuery;
 
+import lombok.extern.slf4j.Slf4j;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
+import org.neo4j.driver.summary.ResultSummary;
 
-public class RemoteCypherQuery implements DatastoreQuery<Cypher> {
+import static java.util.stream.Collectors.toList;
+
+@Slf4j
+public class RemoteCypherQuery implements CypherQuery {
 
     private final StatementExecutor statementExecutor;
 
@@ -33,8 +39,8 @@ public class RemoteCypherQuery implements DatastoreQuery<Cypher> {
 
     @Override
     public ResultIterator<Map<String, Object>> execute(String query, Map<String, Object> parameters) {
-        Result result = statementExecutor.execute(query, parameterConverter.<Map<String, Object>> convert(parameters));
-        return new ResultIterator<Map<String, Object>>() {
+        Result result = statementExecutor.execute(query, parameterConverter.<Map<String, Object>>convert(parameters));
+        return new CypherQueryResultIterator() {
 
             @Override
             public boolean hasNext() {
@@ -58,8 +64,23 @@ public class RemoteCypherQuery implements DatastoreQuery<Cypher> {
             }
 
             @Override
-            public void close() {
-                result.consume();
+            public Iterable<Notification> dispose() {
+                ResultSummary resultSummary = result.consume();
+                return resultSummary.notifications()
+                    .stream()
+                    .map(n -> Notification.builder()
+                        .title(n.title())
+                        .description(n.description())
+                        .code(n.code())
+                        .severity(n.severity())
+                        .offset(n.position()
+                            .offset())
+                        .line(n.position()
+                            .line())
+                        .column(n.position()
+                            .column())
+                        .build())
+                    .collect(toList());
             }
         };
     }
