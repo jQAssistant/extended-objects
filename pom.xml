@@ -58,19 +58,31 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.jacoco_version>0.8.8</org.jacoco_version>
         <org.asciidoctor.maven_version>2.2.4</org.asciidoctor.maven_version>
-        <org.neo4j_version>4.4.28</org.neo4j_version>
+        <org.neo4j_version/>
         <org.slf4j_version>1.7.36</org.slf4j_version>
         <org.hamcrest_version>2.2</org.hamcrest_version>
 
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
-        <jqassistant.version>1.11.1</jqassistant.version>
+        <jqassistant.version>2.1.0</jqassistant.version>
     </properties>
 
     <profiles>
         <profile>
+            <id>neo4jv4</id>
+            <activation>
+                <jdk>11</jdk>
+            </activation>
+            <properties>
+                <org.neo4j_version>4.4.32</org.neo4j_version>
+            </properties>
+        </profile>
+        <profile>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
             <id>neo4jv5</id>
             <properties>
-                <org.neo4j_version>5.15.0</org.neo4j_version>
+                <org.neo4j_version>5.19.0</org.neo4j_version>
             </properties>
         </profile>
         <profile>
@@ -446,16 +458,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <failOnSeverity>CRITICAL</failOnSeverity>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>de.kontext-e.jqassistant.plugin</groupId>
-                        <artifactId>jqassistant.plugin.git</artifactId>
-                        <version>1.8.0</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.asciidoctor</groupId>
