@@ -18,7 +18,7 @@ import static java.util.stream.StreamSupport.stream;
 
 public class EmbeddedCypherQuery implements CypherQuery {
 
-    private EmbeddedDatastoreSessionImpl embeddedNeo4jDatastoreSession;
+    private final EmbeddedDatastoreSessionImpl embeddedNeo4jDatastoreSession;
 
     public EmbeddedCypherQuery(EmbeddedDatastoreSessionImpl embeddedNeo4jDatastoreSession) {
         this.embeddedNeo4jDatastoreSession = embeddedNeo4jDatastoreSession;
@@ -101,8 +101,8 @@ public class EmbeddedCypherQuery implements CypherQuery {
                                 .title(n.getTitle())
                                 .description(n.getDescription())
                                 .code(n.getCode())
-                                .severity(n.getSeverity()
-                                    .name())
+                                .severity(Notification.Severity.valueOf(n.getSeverity()
+                                    .name()))
                                 .offset(n.getPosition()
                                     .getOffset())
                                 .line(n.getPosition()

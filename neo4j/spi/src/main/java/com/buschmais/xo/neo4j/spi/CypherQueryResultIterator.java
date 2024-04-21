@@ -7,16 +7,19 @@ import com.buschmais.xo.api.ResultIterator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public abstract class CypherQueryResultIterator implements ResultIterator<Map<String, Object>> {
 
     @Override
     public final void close() {
         for (Notification notification : dispose()) {
-            LoggerFactory.getLogger(CypherQuery.class)
-                .info("{} - {} ({}): {} (at {}:{})", notification.getCode(), notification.getTitle(), notification.getSeverity(), notification.getDescription(),
-                    notification.getLine(), notification.getColumn());
+            Notification.Severity severity = notification.getSeverity();
+            if (severity.equals(Notification.Severity.WARNING)) {
+                log.warn("{} - {}: {} (at {}:{})", notification.getCode(), notification.getTitle(), notification.getDescription(), notification.getLine(),
+                    notification.getColumn());
+            }
         }
     }
 
@@ -30,9 +33,9 @@ public abstract class CypherQueryResultIterator implements ResultIterator<Map<St
     @Builder
     @Getter
     @ToString
-    protected static class Notification {
+    public static class Notification {
 
-        String severity;
+        Severity severity;
 
         String code;
 
@@ -45,6 +48,11 @@ public abstract class CypherQueryResultIterator implements ResultIterator<Map<St
         int line;
 
         int column;
+
+        public enum Severity {
+            WARNING,
+            INFORMATION;
+        }
     }
 
 }

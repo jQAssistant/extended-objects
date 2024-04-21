@@ -72,7 +72,7 @@ public class RemoteCypherQuery implements CypherQuery {
                         .title(n.title())
                         .description(n.description())
                         .code(n.code())
-                        .severity(n.severity())
+                        .severity(Notification.Severity.valueOf(n.severity()))
                         .offset(n.position()
                             .offset())
                         .line(n.position()
