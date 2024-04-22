@@ -10,12 +10,16 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.spi.CypherQuery;
 import com.buschmais.xo.neo4j.spi.CypherQueryResultIterator;
+import com.buschmais.xo.neo4j.spi.Notification;
 
+import lombok.extern.slf4j.Slf4j;
 import org.neo4j.graphdb.Result;
+import org.slf4j.Logger;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 
+@Slf4j
 public class EmbeddedCypherQuery implements CypherQuery {
 
     private final EmbeddedDatastoreSessionImpl embeddedNeo4jDatastoreSession;
@@ -80,6 +84,11 @@ public class EmbeddedCypherQuery implements CypherQuery {
                 return new CypherQueryResultIterator() {
 
                     @Override
+                    protected Logger getLogger() {
+                        return log;
+                    }
+
+                    @Override
                     public boolean hasNext() {
                         return iterator.hasNext();
                     }
@@ -101,7 +110,7 @@ public class EmbeddedCypherQuery implements CypherQuery {
                                 .title(n.getTitle())
                                 .description(n.getDescription())
                                 .code(n.getCode())
-                                .severity(Notification.Severity.valueOf(n.getSeverity()
+                                .severity(Notification.Severity.from(n.getSeverity()
                                     .name()))
                                 .offset(n.getPosition()
                                     .getOffset())

@@ -8,12 +8,14 @@ import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.spi.CypherQuery;
 import com.buschmais.xo.neo4j.spi.CypherQueryResultIterator;
+import com.buschmais.xo.neo4j.spi.Notification;
 import com.buschmais.xo.neo4j.spi.helper.Converter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.summary.ResultSummary;
+import org.slf4j.Logger;
 
 import static java.util.stream.Collectors.toList;
 
@@ -41,6 +43,11 @@ public class RemoteCypherQuery implements CypherQuery {
     public ResultIterator<Map<String, Object>> execute(String query, Map<String, Object> parameters) {
         Result result = statementExecutor.execute(query, parameterConverter.<Map<String, Object>>convert(parameters));
         return new CypherQueryResultIterator() {
+
+            @Override
+            protected Logger getLogger() {
+                return log;
+            }
 
             @Override
             public boolean hasNext() {
@@ -72,7 +79,7 @@ public class RemoteCypherQuery implements CypherQuery {
                         .title(n.title())
                         .description(n.description())
                         .code(n.code())
-                        .severity(Notification.Severity.valueOf(n.severity()))
+                        .severity(Notification.Severity.from(n.severity()))
                         .offset(n.position()
                             .offset())
                         .line(n.position()
