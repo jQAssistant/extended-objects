@@ -1,6 +1,6 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
-import static java.util.Arrays.asList;
+import static java.lang.Boolean.parseBoolean;
 
 import java.io.File;
 import java.net.URI;
@@ -29,9 +29,9 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoteDatastore.class);
 
-    private Driver driver;
+    private final Driver driver;
 
-    private StatementConfig statementConfig;
+    private final StatementConfig statementConfig;
 
     public RemoteDatastore(XOUnit xoUnit) {
         URI uri = xoUnit.getUri();
@@ -47,7 +47,7 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
         String trustStrategy = RemoteNeo4jXOProvider.Property.TRUST_STRATEGY.get(properties);
         String trustCertificate = RemoteNeo4jXOProvider.Property.TRUST_CERTIFICATE.get(properties);
         Config.ConfigBuilder configBuilder = Config.builder();
-        if (encryption == null || Boolean.valueOf(encryption)) {
+        if (encryption == null || parseBoolean(encryption)) {
             configBuilder.withEncryption();
         }
         if (trustStrategy != null) {
@@ -77,7 +77,7 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
         }
         String batchableDefault = RemoteNeo4jXOProvider.Property.STATEMENT_BATCHABLE_DEFAULT.get(properties);
         if (batchableDefault != null) {
-            statementConfigBuilder.batchableDefault(Boolean.valueOf(batchableDefault));
+            statementConfigBuilder.batchableDefault(parseBoolean(batchableDefault));
         }
         StatementConfig config = statementConfigBuilder.build();
         LOGGER.debug("Using statement configuration {}.", config);
@@ -86,7 +86,7 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
 
     @Override
     public DatastoreMetadataFactory<NodeMetadata<RemoteLabel>, RemoteLabel, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType> getMetadataFactory() {
-        return new AbstractNeo4jMetadataFactory<RemoteLabel, RemoteRelationshipType>() {
+        return new AbstractNeo4jMetadataFactory<>() {
             @Override
             protected RemoteRelationshipType createRelationshipType(String name) {
                 return new RemoteRelationshipType(name);
@@ -112,7 +112,7 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
 
     @Override
     public void close() {
-        driver.closeAsync();
+        driver.close();
     }
 
     private <E extends Enum<E>> E getEnumOption(Class<E> enumType, String value) {
@@ -121,7 +121,7 @@ public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteR
             return Enum.valueOf(enumType, normalizedValue);
         } catch (IllegalArgumentException e) {
             List<String> allowedValues = new ArrayList<>();
-            for (E allowedValue : asList(enumType.getEnumConstants())) {
+            for (E allowedValue : enumType.getEnumConstants()) {
                 allowedValues.add(CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, allowedValue.name()));
             }
             throw new XOException("Unknown value '" + value + "', allowed values are " + allowedValues);
