@@ -1,5 +1,6 @@
 package com.buschmais.xo.neo4j.test;
 
+import static org.neo4j.configuration.GraphDatabaseInternalSettings.netty_server_shutdown_quiet_period;
 import static org.neo4j.configuration.connectors.BoltConnector.encryption_level;
 import static org.neo4j.configuration.connectors.BoltConnector.listen_address;
 
@@ -25,7 +26,7 @@ public abstract class AbstractNeo4JXOManagerIT extends AbstractXOManagerIT {
     // This rule starts a Neo4j instance
     @ClassRule
     public static Neo4jRule neo4j = new Neo4jRule().withConfig(listen_address, new SocketAddress("localhost", 6001)).withConfig(encryption_level,
-            EncryptionLevel.OPTIONAL);
+            EncryptionLevel.OPTIONAL).withConfig(netty_server_shutdown_quiet_period, 0);
 
     protected AbstractNeo4JXOManagerIT(XOUnit xoUnit) {
         super(xoUnit);
