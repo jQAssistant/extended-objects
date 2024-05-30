@@ -5,16 +5,14 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.buschmais.xo.api.XOException;
 
 import org.neo4j.configuration.Config;
 import org.neo4j.configuration.GraphDatabaseInternalSettings;
+import org.neo4j.configuration.GraphDatabaseSettings;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
-import org.neo4j.graphdb.config.Setting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +36,7 @@ public class FileDatabaseManagementServiceFactory implements DatabaseManagementS
         DatabaseManagementServiceBuilder databaseManagementServiceBuilder = new DatabaseManagementServiceBuilder(storeDir.toPath());
         databaseManagementServiceBuilder.setConfig(toSettings(config));
         databaseManagementServiceBuilder.setConfig(GraphDatabaseInternalSettings.track_cursor_close, false);
+        databaseManagementServiceBuilder.setConfig(GraphDatabaseSettings.debug_log_enabled, false);
         return databaseManagementServiceBuilder.build();
     }
 }
