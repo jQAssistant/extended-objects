@@ -4,7 +4,6 @@ import java.net.URI;
 
 import org.neo4j.configuration.Config;
 import org.neo4j.configuration.GraphDatabaseInternalSettings;
-import org.neo4j.configuration.GraphDatabaseSettings;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.test.TestDatabaseManagementServiceBuilder;
 
@@ -15,7 +14,6 @@ public class MemoryDatabaseManagementServiceFactory implements DatabaseManagemen
         return new TestDatabaseManagementServiceBuilder().impermanent()
             .setConfig(config)
             .setConfig(GraphDatabaseInternalSettings.track_cursor_close, false)
-            .setConfig(GraphDatabaseSettings.debug_log_enabled, false)
             .build();
     }
 

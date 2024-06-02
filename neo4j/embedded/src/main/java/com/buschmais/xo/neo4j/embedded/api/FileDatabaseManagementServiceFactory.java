@@ -10,7 +10,6 @@ import com.buschmais.xo.api.XOException;
 
 import org.neo4j.configuration.Config;
 import org.neo4j.configuration.GraphDatabaseInternalSettings;
-import org.neo4j.configuration.GraphDatabaseSettings;
 import org.neo4j.dbms.api.DatabaseManagementService;
 import org.neo4j.dbms.api.DatabaseManagementServiceBuilder;
 import org.slf4j.Logger;
@@ -36,7 +35,6 @@ public class FileDatabaseManagementServiceFactory implements DatabaseManagementS
         DatabaseManagementServiceBuilder databaseManagementServiceBuilder = new DatabaseManagementServiceBuilder(storeDir.toPath());
         databaseManagementServiceBuilder.setConfig(toSettings(config));
         databaseManagementServiceBuilder.setConfig(GraphDatabaseInternalSettings.track_cursor_close, false);
-        databaseManagementServiceBuilder.setConfig(GraphDatabaseSettings.debug_log_enabled, false);
         return databaseManagementServiceBuilder.build();
     }
 }
