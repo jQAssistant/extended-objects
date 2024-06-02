@@ -14,6 +14,7 @@ public class MemoryDatabaseManagementServiceFactory implements DatabaseManagemen
         return new TestDatabaseManagementServiceBuilder().impermanent()
             .setConfig(config)
             .setConfig(GraphDatabaseInternalSettings.track_cursor_close, false)
+            .setUserLogProvider(Slf4jLogProvider.INSTANCE)
             .build();
     }
 

@@ -35,6 +35,7 @@ public class FileDatabaseManagementServiceFactory implements DatabaseManagementS
         DatabaseManagementServiceBuilder databaseManagementServiceBuilder = new DatabaseManagementServiceBuilder(storeDir.toPath());
         databaseManagementServiceBuilder.setConfig(toSettings(config));
         databaseManagementServiceBuilder.setConfig(GraphDatabaseInternalSettings.track_cursor_close, false);
+        databaseManagementServiceBuilder.setUserLogProvider(Slf4jLogProvider.INSTANCE);
         return databaseManagementServiceBuilder.build();
     }
 }
