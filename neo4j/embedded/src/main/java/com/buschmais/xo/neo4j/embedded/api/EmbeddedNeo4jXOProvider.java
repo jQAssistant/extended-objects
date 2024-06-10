@@ -96,7 +96,11 @@ public class EmbeddedNeo4jXOProvider
         }
 
         public <T> PropertiesBuilder property(Setting<T> setting, T value) {
-            properties.setProperty(NEO4J_PROPERTY_PREFIX + setting.name(), value.toString());
+            return property(setting.name(), value);
+        }
+
+        public <T> PropertiesBuilder property(String setting, T value) {
+            properties.setProperty(NEO4J_PROPERTY_PREFIX + setting, value.toString());
             return this;
         }
 
