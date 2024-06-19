@@ -1,6 +1,7 @@
 package com.buschmais.xo.neo4j.embedded.api;
 
 import java.net.URI;
+import java.util.List;
 
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastore;
@@ -37,7 +38,9 @@ public class EmbeddedNeo4jXOProviderTest {
         assertThat(EmbeddedNeo4jXOProvider.propertiesBuilder()
             .property(GraphDatabaseSettings.log_queries, GraphDatabaseSettings.LogQueryLevel.INFO)
             .build()).containsEntry("neo4j.db.logs.query.enabled", "INFO");
-
+        assertThat(EmbeddedNeo4jXOProvider.propertiesBuilder()
+            .property(GraphDatabaseSettings.procedure_unrestricted, List.of("graph.*", "apoc.*"))
+            .build()).containsEntry("neo4j.dbms.security.procedures.unrestricted", "graph.*,apoc.*");
     }
 
     private XOUnit unit(String uri) throws Exception {

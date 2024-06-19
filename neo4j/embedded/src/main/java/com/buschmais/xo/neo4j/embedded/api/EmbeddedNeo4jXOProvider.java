@@ -2,6 +2,7 @@ package com.buschmais.xo.neo4j.embedded.api;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -24,6 +25,7 @@ import org.neo4j.graphdb.config.Setting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.stream.Collectors.joining;
 import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAME;
 
 public class EmbeddedNeo4jXOProvider
@@ -96,6 +98,11 @@ public class EmbeddedNeo4jXOProvider
         }
 
         public <T> PropertiesBuilder property(Setting<T> setting, T value) {
+            if (value instanceof List<?>) {
+                return property(setting.name(), ((List<?>) value).stream()
+                    .map(Object::toString)
+                    .collect(joining(",")));
+            }
             return property(setting.name(), value);
         }
 
