@@ -6,6 +6,8 @@ import org.neo4j.logging.LogProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Consumer;
+
 import static lombok.AccessLevel.PRIVATE;
 
 /**
@@ -87,6 +89,7 @@ public class Slf4jLogProvider implements LogProvider {
             }
         }
 
+
         @Override
         public void error(String message) {
             logger.error(message);
@@ -102,6 +105,28 @@ public class Slf4jLogProvider implements LogProvider {
             if (logger.isErrorEnabled()) {
                 logger.error(String.format(format, arguments));
             }
+        }
+
+        // TODO to be removed after support for Neo4jv4 has been dropped
+
+        public org.neo4j.logging.Logger debugLogger() {
+            return null;
+        }
+
+        public org.neo4j.logging.Logger infoLogger() {
+            return null;
+        }
+
+        public org.neo4j.logging.Logger warnLogger() {
+            return null;
+        }
+
+        public org.neo4j.logging.Logger errorLogger() {
+            return null;
+        }
+
+        public void bulk(Consumer<Log> consumer) {
+
         }
     }
 }
