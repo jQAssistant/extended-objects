@@ -106,27 +106,5 @@ public class Slf4jLogProvider implements LogProvider {
                 logger.error(String.format(format, arguments));
             }
         }
-
-        // TODO to be removed after support for Neo4jv4 has been dropped
-
-        public org.neo4j.logging.Logger debugLogger() {
-            return null;
-        }
-
-        public org.neo4j.logging.Logger infoLogger() {
-            return null;
-        }
-
-        public org.neo4j.logging.Logger warnLogger() {
-            return null;
-        }
-
-        public org.neo4j.logging.Logger errorLogger() {
-            return null;
-        }
-
-        public void bulk(Consumer<Log> consumer) {
-
-        }
     }
 }
