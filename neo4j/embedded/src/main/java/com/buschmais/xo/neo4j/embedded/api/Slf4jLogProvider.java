@@ -6,6 +6,8 @@ import org.neo4j.logging.LogProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Consumer;
+
 import static lombok.AccessLevel.PRIVATE;
 
 /**
@@ -86,6 +88,7 @@ public class Slf4jLogProvider implements LogProvider {
                 logger.warn(String.format(format, arguments));
             }
         }
+
 
         @Override
         public void error(String message) {
