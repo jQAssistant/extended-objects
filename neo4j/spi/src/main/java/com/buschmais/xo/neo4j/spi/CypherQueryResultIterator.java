@@ -13,8 +13,8 @@ public abstract class CypherQueryResultIterator implements ResultIterator<Map<St
     @Override
     public final void close() {
         for (Notification notification : dispose()) {
-            getLogger().debug("{} - {}: {} (at {}:{})", notification.getCode(), notification.getTitle(), notification.getDescription(), notification.getLine(),
-                notification.getColumn());
+            getLogger().debug("{} {} - {}: {} (at {}:{})", notification.getSeverity(), notification.getCode(), notification.getTitle(),
+                notification.getDescription(), notification.getLine(), notification.getColumn());
         }
     }
 

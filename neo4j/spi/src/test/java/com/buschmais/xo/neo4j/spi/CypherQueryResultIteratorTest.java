@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import com.buschmais.xo.neo4j.spi.Notification.Severity;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 
+import static com.buschmais.xo.neo4j.spi.Notification.Severity.WARNING;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -64,7 +63,7 @@ public class CypherQueryResultIteratorTest {
         doReturn(List.of(Notification.builder()
             .code("0000")
             .title("A warning")
-            .severity(Severity.WARNING)
+            .severity(WARNING)
             .description("The description")
             .line(1)
             .column(42)
@@ -74,6 +73,6 @@ public class CypherQueryResultIteratorTest {
         iterator.close();
 
         verify(notificationSupplier).get();
-        verify(logger).debug(anyString(), eq("0000"), eq("A warning"), eq("The description"), eq(1), eq(42));
+        verify(logger).debug(anyString(), eq(WARNING), eq("0000"), eq("A warning"), eq("The description"), eq(1), eq(42));
     }
 }
