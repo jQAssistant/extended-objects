@@ -74,6 +74,6 @@ public class CypherQueryResultIteratorTest {
         iterator.close();
 
         verify(notificationSupplier).get();
-        verify(logger).warn(anyString(), eq("0000"), eq("A warning"), eq("The description"), eq(1), eq(42));
+        verify(logger).debug(anyString(), eq("0000"), eq("A warning"), eq("The description"), eq(1), eq(42));
     }
 }
