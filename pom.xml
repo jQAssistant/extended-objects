@@ -59,7 +59,7 @@
         <org.jacoco_version>0.8.12</org.jacoco_version>
         <org.asciidoctor.maven_version>3.0.0</org.asciidoctor.maven_version>
         <org.neo4j_version />
-        <org.slf4j_version>1.7.36</org.slf4j_version>
+        <org.slf4j_version>2.0.16</org.slf4j_version>
         <org.hamcrest_version>3.0</org.hamcrest_version>
         <org.neo4jv4_version>4.4.34</org.neo4jv4_version>
         <org.neo4jv5_version>5.21.0</org.neo4jv5_version>
