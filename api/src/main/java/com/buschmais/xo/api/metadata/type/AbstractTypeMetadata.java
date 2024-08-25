@@ -17,7 +17,7 @@ public abstract class AbstractTypeMetadata implements TypeMetadata {
     private final IndexedPropertyMethodMetadata indexedProperty;
 
     protected AbstractTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties,
-            IndexedPropertyMethodMetadata indexedProperty) {
+        IndexedPropertyMethodMetadata indexedProperty) {
         this.annotatedType = annotatedType;
         this.superTypes = superTypes;
         this.properties = properties;

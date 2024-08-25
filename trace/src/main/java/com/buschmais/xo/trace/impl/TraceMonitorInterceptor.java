@@ -21,7 +21,8 @@ public class TraceMonitorInterceptor implements XOInterceptor {
 
     @Override
     public Object invoke(InvocationContext invocationContext) throws Throwable {
-        traceMonitor.log("Entering '" + invocationContext.getMethod().toString() + "'");
+        traceMonitor.log("Entering '" + invocationContext.getMethod()
+            .toString() + "'");
         long start = System.currentTimeMillis();
         try {
             return invocationContext.proceed();
@@ -29,7 +30,8 @@ public class TraceMonitorInterceptor implements XOInterceptor {
             long end = System.currentTimeMillis();
             long time = end - start;
             traceMonitor.recordInvocation(invocationContext.getMethod(), time);
-            traceMonitor.log("Leaving '" + invocationContext.getMethod().toString() + "' [" + time + "ms]");
+            traceMonitor.log("Leaving '" + invocationContext.getMethod()
+                .toString() + "' [" + time + "ms]");
         }
     }
 }

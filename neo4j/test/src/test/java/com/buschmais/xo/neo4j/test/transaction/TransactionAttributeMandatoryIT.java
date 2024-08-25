@@ -1,8 +1,5 @@
 package com.buschmais.xo.neo4j.test.transaction;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +15,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RunWith(Parameterized.class)
 public class TransactionAttributeMandatoryIT extends AbstractNeo4JXOManagerIT {
 
@@ -27,18 +27,21 @@ public class TransactionAttributeMandatoryIT extends AbstractNeo4JXOManagerIT {
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() {
-        return xoUnits(asList(Neo4jDatabase.MEMORY, Neo4jDatabase.BOLT), Arrays.asList(A.class), Collections.<Class<?>> emptyList(), ValidationMode.AUTO,
-                ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
+        return xoUnits(asList(Neo4jDatabase.MEMORY, Neo4jDatabase.BOLT), Arrays.asList(A.class), Collections.<Class<?>>emptyList(), ValidationMode.AUTO,
+            ConcurrencyMode.SINGLETHREADED, Transaction.TransactionAttribute.MANDATORY);
     }
 
     @Test
     public void withoutTransactionContext() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setValue("value1");
-        xoManager.currentTransaction().commit();
-        assertThat(xoManager.currentTransaction().isActive()).isFalse();
+        xoManager.currentTransaction()
+            .commit();
+        assertThat(xoManager.currentTransaction()
+            .isActive()).isFalse();
         try {
             a.getValue();
             Assert.fail("A XOException is expected.");

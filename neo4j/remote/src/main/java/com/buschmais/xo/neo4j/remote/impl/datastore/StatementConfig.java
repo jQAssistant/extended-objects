@@ -1,10 +1,10 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import com.buschmais.xo.spi.logging.LogLevel;
 
 import lombok.*;
+
+import static lombok.AccessLevel.PRIVATE;
 
 @Builder(toBuilder = true)
 @Getter

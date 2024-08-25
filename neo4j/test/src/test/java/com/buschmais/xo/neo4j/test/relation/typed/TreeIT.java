@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.test.relation.typed;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOManager;
@@ -13,6 +11,8 @@ import com.buschmais.xo.neo4j.test.relation.typed.composite.TreeNodeRelation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class TreeIT extends AbstractNeo4JXOManagerIT {
@@ -29,7 +29,8 @@ public class TreeIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void tree() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         TreeNode parent = xoManager.create(TreeNode.class);
         parent.setName("parent");
         TreeNode child1 = xoManager.create(TreeNode.class);
@@ -40,8 +41,10 @@ public class TreeIT extends AbstractNeo4JXOManagerIT {
         relation1.setVersion(1);
         TreeNodeRelation relation2 = xoManager.create(parent, TreeNodeRelation.class, child2);
         relation2.setVersion(1);
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
         assertThat(parent.getParent()).isNull();
         assertThat(parent.getChildren()).contains(relation1, relation2);
         assertThat(relation1.getParent()).isEqualTo(parent);

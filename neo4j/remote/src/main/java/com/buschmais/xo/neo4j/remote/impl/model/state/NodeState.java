@@ -58,7 +58,7 @@ public class NodeState extends AbstractPropertyContainerState {
     }
 
     public void setRelationships(RemoteDirection remoteDirection, RemoteRelationshipType type,
-            StateTracker<RemoteRelationship, Set<RemoteRelationship>> relationships) {
+        StateTracker<RemoteRelationship, Set<RemoteRelationship>> relationships) {
         switch (remoteDirection) {
         case OUTGOING:
             outgoingRelationships.put(type, relationships);

@@ -7,11 +7,14 @@ import com.buschmais.xo.neo4j.api.model.Neo4jNode;
 import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastoreTransaction;
 
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.kernel.impl.core.NodeEntity;
 
 public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
-        implements Neo4jNode<EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {
+    implements Neo4jNode<EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {
 
     private final Set<EmbeddedLabel> labels;
 
@@ -25,7 +28,8 @@ public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
 
     @Override
     public Node getDelegate() {
-        return transaction.getTransaction().getNodeById(id);
+        return transaction.getTransaction()
+            .getNodeById(id);
     }
 
     public void delete() {
@@ -37,7 +41,8 @@ public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
         // using NodeEntity instead of Node because return type of getRelationships() in Node interface changed from
         // Iterable to ResourceIterable between Neo4j v4 and v5 breaking bytecode compatibility
         NodeEntity node = (NodeEntity) getDelegate();
-        ResourceIterator<Relationship> iterator = node.getRelationships(dir.getDelegate(), type.getDelegate()).iterator();
+        ResourceIterator<Relationship> iterator = node.getRelationships(dir.getDelegate(), type.getDelegate())
+            .iterator();
         return () -> new Iterator<>() {
 
             @Override
@@ -66,7 +71,6 @@ public class EmbeddedNode extends AbstractEmbeddedPropertyContainer<Node>
         Relationship relationship = getDelegate().getSingleRelationship(type.getDelegate(), dir.getDelegate());
         return relationship != null ? getEmbeddedRelationship(relationship) : null;
     }
-
 
     public EmbeddedRelationship createRelationshipTo(EmbeddedNode otherNode, EmbeddedRelationshipType type) {
         return getEmbeddedRelationship(getDelegate().createRelationshipTo(otherNode.getDelegate(), type.getDelegate()));

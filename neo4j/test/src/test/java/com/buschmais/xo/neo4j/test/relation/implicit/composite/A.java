@@ -1,8 +1,8 @@
 package com.buschmais.xo.neo4j.test.relation.implicit.composite;
 
-import static com.buschmais.xo.neo4j.api.annotation.Relation.Outgoing;
-
 import com.buschmais.xo.neo4j.api.annotation.Label;
+
+import static com.buschmais.xo.neo4j.api.annotation.Relation.Outgoing;
 
 @Label
 public interface A {

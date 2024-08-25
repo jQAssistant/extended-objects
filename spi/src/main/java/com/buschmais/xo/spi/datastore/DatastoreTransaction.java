@@ -27,7 +27,7 @@ public interface DatastoreTransaction {
      * Determine if the transaction is currently active.
      *
      * @return <code>true</code> if the transaction is currently active,
-     *         <code>false</code> otherwise.
+     * <code>false</code> otherwise.
      */
     boolean isActive();
 }

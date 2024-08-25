@@ -8,7 +8,7 @@ import java.util.Iterator;
  * {@link Closeable}.
  *
  * @param <T>
- *            The type returned by the {@link Iterator}.
+ *     The type returned by the {@link Iterator}.
  */
 public interface ResultIterator<T> extends Iterator<T>, AutoCloseable, Closeable {
 

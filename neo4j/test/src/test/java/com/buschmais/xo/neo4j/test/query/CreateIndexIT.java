@@ -36,12 +36,12 @@ public class CreateIndexIT extends AbstractNeo4JXOManagerIT {
             .begin();
         Set<Index> indexes = ((Neo4jDatastoreSession<?, ?, ?, ?>) xoManager.getDatastoreSession(Neo4jDatastoreSession.class)).getIndexes();
         assertThat(indexes).contains(Index.builder()
-                .label("A")
-                .property("value")
-                .build(), Index.builder()
-                .label("C")
-                .property("value")
-                .build());
+            .label("A")
+            .property("value")
+            .build(), Index.builder()
+            .label("C")
+            .property("value")
+            .build());
         xoManager.currentTransaction()
             .commit();
     }

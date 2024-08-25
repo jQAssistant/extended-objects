@@ -7,7 +7,7 @@ public interface Neo4jRelationshipType {
 
     /**
      * Return the name of the relationship type.
-     * 
+     *
      * @return The name.
      */
     String getName();

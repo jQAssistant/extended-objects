@@ -22,10 +22,10 @@ public @interface Label {
 
     /**
      * @return The (super) type containing an indexed property ({@link Indexed}).
-     *         <p>
-     *         An index will be created for this label and the indexed property and
-     *         used by {@link com.buschmais.xo.api.XOManager#find(Class, Object)}.
-     *         </p>
+     * <p>
+     * An index will be created for this label and the indexed property and
+     * used by {@link com.buschmais.xo.api.XOManager#find(Class, Object)}.
+     * </p>
      */
     Class<?> usingIndexedPropertyOf() default Object.class;
 }

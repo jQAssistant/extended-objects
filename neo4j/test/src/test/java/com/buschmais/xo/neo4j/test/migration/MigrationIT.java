@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.test.migration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 
 import com.buschmais.xo.api.CompositeObject;
@@ -16,6 +14,8 @@ import com.buschmais.xo.neo4j.test.migration.composite.D;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class MigrationIT extends AbstractNeo4JXOManagerIT {
@@ -32,60 +32,85 @@ public class MigrationIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void downCast() {
         XOManager xoManager = getXOManagerFactory().createXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setValue("Value");
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
-        B b = xoManager.migrate(a).add(B.class).as(B.class);
-        assertThat(a ).isNotSameAs(b);
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
+        B b = xoManager.migrate(a)
+            .add(B.class)
+            .as(B.class);
+        assertThat(a).isNotSameAs(b);
         assertThat(a.getValue()).isEqualTo("Value");
         assertThat(b.getValue()).isEqualTo("Value");
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
         xoManager.close();
     }
 
     @Test
     public void compositeObject() {
         XOManager xoManager = getXOManagerFactory().createXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setValue("Value");
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
-        B b = xoManager.migrate(a).add(B.class, D.class).as(B.class);
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
+        B b = xoManager.migrate(a)
+            .add(B.class, D.class)
+            .as(B.class);
         assertThat(b.getValue()).isEqualTo("Value");
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
         xoManager.close();
     }
 
     @Test
     public void addType() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setValue("Value");
-        assertThat(a).isInstanceOf(A.class).isNotInstanceOf(C.class);
-        CompositeObject compositeObject = xoManager.migrate(a).add(C.class);
-        assertThat(compositeObject).isInstanceOf(A.class).isInstanceOf(C.class);
+        assertThat(a).isInstanceOf(A.class)
+            .isNotInstanceOf(C.class);
+        CompositeObject compositeObject = xoManager.migrate(a)
+            .add(C.class);
+        assertThat(compositeObject).isInstanceOf(A.class)
+            .isInstanceOf(C.class);
         assertThat(a.getValue()).isEqualTo("Value");
-        assertThat(compositeObject.as(A.class).getValue()).isEqualTo("Value");
-        xoManager.currentTransaction().commit();
+        assertThat(compositeObject.as(A.class)
+            .getValue()).isEqualTo("Value");
+        xoManager.currentTransaction()
+            .commit();
         xoManager.close();
     }
 
     @Test
     public void removeType() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         CompositeObject compositeObject = xoManager.create(A.class, C.class);
-        assertThat(compositeObject).isInstanceOf(A.class).isInstanceOf(C.class);
-        compositeObject.as(A.class).setValue("Value");
-        A a = xoManager.migrate(compositeObject).remove(C.class).as(A.class);
-        assertThat(a).isInstanceOf(A.class).isNotInstanceOf(C.class);
-        assertThat((Object)compositeObject.getId()).isEqualTo(((CompositeObject) a).getId());
+        assertThat(compositeObject).isInstanceOf(A.class)
+            .isInstanceOf(C.class);
+        compositeObject.as(A.class)
+            .setValue("Value");
+        A a = xoManager.migrate(compositeObject)
+            .remove(C.class)
+            .as(A.class);
+        assertThat(a).isInstanceOf(A.class)
+            .isNotInstanceOf(C.class);
+        assertThat((Object) compositeObject.getId()).isEqualTo(((CompositeObject) a).getId());
         assertThat(a.getValue()).isEqualTo("Value");
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
         xoManager.close();
     }
 }

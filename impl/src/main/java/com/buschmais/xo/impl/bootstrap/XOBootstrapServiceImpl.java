@@ -43,7 +43,8 @@ public class XOBootstrapServiceImpl implements XOBootstrapService {
 
     private Map<String, XOUnit> readXODescriptors() {
         Map<String, XOUnit> result = new HashMap<>();
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classLoader = Thread.currentThread()
+            .getContextClassLoader();
         if (classLoader == null) {
             classLoader = XOUnitFactory.class.getClassLoader();
         }

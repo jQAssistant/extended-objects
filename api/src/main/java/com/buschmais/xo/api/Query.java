@@ -9,7 +9,7 @@ import java.util.Map;
  * Defines a query using a fluent API.
  *
  * @param <T>
- *            The return type of the query.
+ *     The return type of the query.
  */
 public interface Query<T> {
 
@@ -17,7 +17,7 @@ public interface Query<T> {
      * Specify the query language.
      *
      * @param queryLanguage
-     *            The annotation class representing the query language.
+     *     The annotation class representing the query language.
      * @return The query.
      */
     Query<T> using(Class<? extends Annotation> queryLanguage);
@@ -26,9 +26,9 @@ public interface Query<T> {
      * Bind a parameter value to the query.
      *
      * @param name
-     *            The parameter name.
+     *     The parameter name.
      * @param value
-     *            The parameter value.
+     *     The parameter value.
      * @return The query.
      */
     Query<T> withParameter(String name, Object value);
@@ -37,8 +37,8 @@ public interface Query<T> {
      * Bind a map of parameter values to the query.
      *
      * @param parameters
-     *            The map of parameters consisting of names as keys and their
-     *            values.
+     *     The map of parameters consisting of names as keys and their
+     *     values.
      * @return The query.
      */
     Query<T> withParameters(Map<String, Object> parameters);
@@ -47,8 +47,8 @@ public interface Query<T> {
      * Set the flush behavior.
      *
      * @param flush
-     *            if <code>true</code> any modified instances will be flushed to the
-     *            datastore before executing the query.
+     *     if <code>true</code> any modified instances will be flushed to the
+     *     datastore before executing the query.
      */
     Query<T> flush(boolean flush);
 
@@ -63,7 +63,7 @@ public interface Query<T> {
      * Defines the result of a query.
      *
      * @param <T>
-     *            The type of the elements contained in the result.
+     *     The type of the elements contained in the result.
      */
     interface Result<T> extends ResultIterable<T>, Closeable {
 
@@ -87,11 +87,11 @@ public interface Query<T> {
              * Return the value of column in row.
              *
              * @param name
-             *            The column name.
+             *     The column name.
              * @param type
-             *            The type to be returned.
+             *     The type to be returned.
              * @param <C>
-             *            The generic type to be returned.
+             *     The generic type to be returned.
              * @return The value.
              */
             <C> C get(String name, Class<C> type);

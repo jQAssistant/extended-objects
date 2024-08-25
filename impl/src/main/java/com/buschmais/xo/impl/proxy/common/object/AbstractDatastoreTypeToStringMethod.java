@@ -4,11 +4,11 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
-import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
 import com.buschmais.xo.api.metadata.method.MethodMetadata;
 import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
 import com.buschmais.xo.api.metadata.type.TypeMetadata;
+import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 
 public abstract class AbstractDatastoreTypeToStringMethod<T> extends AbstractToStringMethod<T> {
 
@@ -27,7 +27,8 @@ public abstract class AbstractDatastoreTypeToStringMethod<T> extends AbstractToS
                 PrimitivePropertyMethodMetadata propertyMethodMetadata = (PrimitivePropertyMethodMetadata) methodMetadata;
                 Object value = getProperty(datastoreType, propertyMethodMetadata);
                 if (value != null) {
-                    properties.put(propertyMethodMetadata.getAnnotatedMethod().getName(), value);
+                    properties.put(propertyMethodMetadata.getAnnotatedMethod()
+                        .getName(), value);
                 }
             }
         }
@@ -38,9 +39,9 @@ public abstract class AbstractDatastoreTypeToStringMethod<T> extends AbstractToS
 
     private final Object getProperty(T datastoreType, PrimitivePropertyMethodMetadata propertyMethodMetadata) {
         DatastorePropertyManager<T, ?> datastorePropertyManager = getDatastorePropertyManager();
-        return datastorePropertyManager.hasProperty(datastoreType, propertyMethodMetadata)
-                ? datastorePropertyManager.getProperty(datastoreType, propertyMethodMetadata)
-                : null;
+        return datastorePropertyManager.hasProperty(datastoreType, propertyMethodMetadata) ?
+            datastorePropertyManager.getProperty(datastoreType, propertyMethodMetadata) :
+            null;
     }
 
     protected abstract CompositeTypeMetadata<?> getDynamicType(T datastoreType);

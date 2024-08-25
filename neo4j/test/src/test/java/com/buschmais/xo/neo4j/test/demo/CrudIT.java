@@ -1,8 +1,5 @@
 package com.buschmais.xo.neo4j.test.demo;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOException;
@@ -15,6 +12,9 @@ import com.buschmais.xo.neo4j.test.AbstractNeo4JXOManagerIT;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class CrudIT extends AbstractNeo4JXOManagerIT {
@@ -31,26 +31,40 @@ public class CrudIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void create() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setName("Foo");
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
-        a = xoManager.find(A.class, "Foo").getSingleResult();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
+        a = xoManager.find(A.class, "Foo")
+            .getSingleResult();
         assertThat(a.getName()).isEqualTo("Foo");
         a.setName("Bar");
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
-        xoManager.createQuery("match (a:A) where a.name=$name return a").withParameter("name", "Bar").execute().getSingleResult();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
+        xoManager.createQuery("match (a:A) where a.name=$name return a")
+            .withParameter("name", "Bar")
+            .execute()
+            .getSingleResult();
         xoManager.delete(a);
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
         try {
-            xoManager.createQuery("match (a:A) return a").execute().getSingleResult();
+            xoManager.createQuery("match (a:A) return a")
+                .execute()
+                .getSingleResult();
             fail("An exception is expected.");
         } catch (XOException e) {
         }
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Label("A")

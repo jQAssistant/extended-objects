@@ -1,9 +1,9 @@
 package com.buschmais.xo.neo4j.test.bootstrap.composite;
 
+import com.buschmais.xo.neo4j.api.annotation.Label;
+
 import static com.buschmais.xo.neo4j.api.annotation.Relation.Incoming;
 import static com.buschmais.xo.neo4j.api.annotation.Relation.Outgoing;
-
-import com.buschmais.xo.neo4j.api.annotation.Label;
 
 @Label("B")
 public interface B {

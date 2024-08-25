@@ -6,7 +6,8 @@ import org.neo4j.graphdb.Direction;
 
 public enum EmbeddedDirection implements Neo4jDirection {
 
-    INCOMING(Direction.INCOMING), OUTGOING(Direction.OUTGOING);
+    INCOMING(Direction.INCOMING),
+    OUTGOING(Direction.OUTGOING);
 
     private Direction delegate;
 

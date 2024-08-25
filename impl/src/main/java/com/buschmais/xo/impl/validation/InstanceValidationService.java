@@ -38,7 +38,7 @@ public class InstanceValidationService {
 
     public Set<ConstraintViolation<Object>> validate(Object instance) {
         Validator validator = getValidator();
-        return validator != null ? validator.validate(instance) : Collections.<ConstraintViolation<Object>> emptySet();
+        return validator != null ? validator.validate(instance) : Collections.<ConstraintViolation<Object>>emptySet();
     }
 
     private Validator getValidator() {

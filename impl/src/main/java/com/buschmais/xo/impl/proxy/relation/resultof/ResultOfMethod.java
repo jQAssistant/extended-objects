@@ -1,16 +1,16 @@
 package com.buschmais.xo.impl.proxy.relation.resultof;
 
+import com.buschmais.xo.api.metadata.method.ResultOfMethodMetadata;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.common.resultof.AbstractResultOfMethod;
-import com.buschmais.xo.api.metadata.method.ResultOfMethodMetadata;
 
 /**
  * Implementation of a result of method for entities.
  *
  * @param <Entity>
- *            The entity type.
+ *     The entity type.
  * @param <Relation>
- *            The relation type.
+ *     The relation type.
  */
 public class ResultOfMethod<Entity, Relation> extends AbstractResultOfMethod<Relation, Entity, Relation> {
 
@@ -20,6 +20,7 @@ public class ResultOfMethod<Entity, Relation> extends AbstractResultOfMethod<Rel
 
     @Override
     protected Object getThisInstance(Relation datastoreType, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
-        return sessionContext.getRelationInstanceManager().readInstance(datastoreType);
+        return sessionContext.getRelationInstanceManager()
+            .readInstance(datastoreType);
     }
 }

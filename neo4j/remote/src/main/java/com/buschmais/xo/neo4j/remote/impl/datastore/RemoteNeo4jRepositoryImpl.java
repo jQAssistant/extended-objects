@@ -31,7 +31,7 @@ public class RemoteNeo4jRepositoryImpl extends AbstractNeo4jRepository<RemoteLab
     private final Converter valueConverter;
 
     public RemoteNeo4jRepositoryImpl(XOSession<NodeMetadata<RemoteLabel>, RemoteLabel, ?, ?> xoSession, StatementExecutor statementExecutor,
-            RemoteDatastoreSessionCache sessionCache) {
+        RemoteDatastoreSessionCache sessionCache) {
         super(xoSession);
         this.statementExecutor = statementExecutor;
         this.parameterConverter = new Converter(Arrays.asList(new RemoteParameterConverter()));
@@ -52,7 +52,8 @@ public class RemoteNeo4jRepositoryImpl extends AbstractNeo4jRepository<RemoteLab
             @Override
             public RemoteNode next() {
                 Record record = statementResult.next();
-                return valueConverter.convert(record.get("n").asNode());
+                return valueConverter.convert(record.get("n")
+                    .asNode());
             }
 
             @Override

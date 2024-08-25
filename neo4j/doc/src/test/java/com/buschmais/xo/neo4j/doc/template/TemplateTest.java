@@ -16,9 +16,11 @@ public class TemplateTest extends AbstractDocumentationTest {
 
     @Test
     public void template() throws URISyntaxException {
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         xoManager.create(Person.class);
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
 }

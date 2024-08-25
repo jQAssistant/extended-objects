@@ -5,8 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.bootstrap.XOUnit;
-import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
 import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
 import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
 import com.buschmais.xo.api.metadata.type.TypeMetadata;
 
@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
  * datastores.
  *
  * @param <Discriminator>
- *            The discriminator type of the datastore (e.g. Neo4j labels or
- *            strings for JSON stores).
+ *     The discriminator type of the datastore (e.g. Neo4j labels or
+ *     strings for JSON stores).
  */
 public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata<Discriminator>, Discriminator> {
 
@@ -37,7 +37,7 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * Constructor.
      *
      * @param metadataByType
-     *            A map of all types with their metadata.
+     *     A map of all types with their metadata.
      */
     public EntityTypeMetadataResolver(Map<Class<?>, TypeMetadata> metadataByType, XOUnit.MappingConfiguration mappingConfiguration) {
         LOGGER.debug("Type metadata = '{}'", metadataByType);
@@ -81,7 +81,8 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
         LOGGER.debug("Type metadata by discriminators: '{}'", typeMetadataByDiscriminator);
         List<String> messages = new ArrayList<>();
         for (Map.Entry<Set<Discriminator>, Set<EntityTypeMetadata<EntityMetadata>>> entry : entityMetadataByDiscriminators.entrySet()) {
-            if (entry.getValue().size() > 1) {
+            if (entry.getValue()
+                .size() > 1) {
                 String message = String.format("%s use the same set of discriminators %s.", entry.getValue(), entry.getKey());
                 messages.add(message);
 
@@ -126,18 +127,20 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * the type itself and of all it's super types.
      *
      * @param typeMetadata
-     *            The type.
+     *     The type.
      * @return The set of discriminators.
      */
     private Set<Discriminator> getAggregatedDiscriminators(EntityTypeMetadata<EntityMetadata> typeMetadata) {
         return aggregatedDiscriminators.computeIfAbsent(typeMetadata, k -> {
             Set<Discriminator> discriminators = new HashSet<>();
-            Discriminator discriminator = typeMetadata.getDatastoreMetadata().getDiscriminator();
+            Discriminator discriminator = typeMetadata.getDatastoreMetadata()
+                .getDiscriminator();
             if (discriminator != null) {
                 discriminators.add(discriminator);
             }
             for (EntityTypeMetadata<EntityMetadata> superTypeMetadata : aggregatedSuperTypes.get(typeMetadata)) {
-                discriminator = superTypeMetadata.getDatastoreMetadata().getDiscriminator();
+                discriminator = superTypeMetadata.getDatastoreMetadata()
+                    .getDiscriminator();
                 if (discriminator != null) {
                     discriminators.add(discriminator);
                 }
@@ -151,11 +154,13 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * entity discriminators.
      *
      * @param discriminators
-     *            The discriminators.
+     *     The discriminators.
      * @return The {@link CompositeTypeMetadata}.
      */
     public CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> getDynamicType(Set<Discriminator> discriminators) {
-        return cache.computeIfAbsent(ImmutableSet.<Discriminator> builderWithExpectedSize(discriminators.size()).addAll(discriminators).build(), key -> {
+        return cache.computeIfAbsent(ImmutableSet.<Discriminator>builderWithExpectedSize(discriminators.size())
+            .addAll(discriminators)
+            .build(), key -> {
             LOGGER.debug("Cache miss for discriminators {}.", key);
             Set<EntityTypeMetadata<EntityMetadata>> metadata = new HashSet<>();
             for (Discriminator discriminator : key) {
@@ -183,9 +188,9 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
      * this set.
      *
      * @param set
-     *            The set.
+     *     The set.
      * @param other
-     *            The other {@link Collection}.
+     *     The other {@link Collection}.
      * @return <code>true</code> if any other element is contained.
      */
     public <T> boolean containsAny(Set<T> set, Collection<T> other) {
@@ -199,6 +204,6 @@ public class EntityTypeMetadataResolver<EntityMetadata extends DatastoreEntityMe
 
     public Set<Discriminator> getDiscriminators(EntityTypeMetadata<EntityMetadata> entityTypeMetadata) {
         Set<Discriminator> discriminators = aggregatedDiscriminators.get(entityTypeMetadata);
-        return discriminators != null ? discriminators : Collections.<Discriminator> emptySet();
+        return discriminators != null ? discriminators : Collections.<Discriminator>emptySet();
     }
 }

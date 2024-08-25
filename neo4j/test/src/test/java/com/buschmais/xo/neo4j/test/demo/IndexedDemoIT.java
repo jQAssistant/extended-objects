@@ -29,13 +29,18 @@ public class IndexedDemoIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void test() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         Person person1 = xoManager.create(Person.class);
         person1.setName("Peter");
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
-        Person person2 = xoManager.find(Person.class, "Peter").getSingleResult();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
+        Person person2 = xoManager.find(Person.class, "Peter")
+            .getSingleResult();
         assertThat(person2).isEqualTo(person1);
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 }

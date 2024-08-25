@@ -17,7 +17,7 @@ public interface PluginRepository<Key, Plugin> {
      * Register a plugin.
      *
      * @param plugin
-     *            The plugin instance.
+     *     The plugin instance.
      * @return The key used to identify the plugin.
      */
     Key register(Plugin plugin);
@@ -26,7 +26,7 @@ public interface PluginRepository<Key, Plugin> {
      * Register a plugin by its type.
      *
      * @param pluginType
-     *            The plugin type.
+     *     The plugin type.
      * @return The key used to identify the plugin.
      */
     Key register(Class<Plugin> pluginType);
@@ -35,7 +35,7 @@ public interface PluginRepository<Key, Plugin> {
      * Unregister a plugin.
      *
      * @param key
-     *            The key.
+     *     The key.
      */
     void unregister(Key key);
 
@@ -43,7 +43,7 @@ public interface PluginRepository<Key, Plugin> {
      * Lookup a plugin.
      *
      * @param key
-     *            The key.
+     *     The key.
      * @return The plugin.
      */
     Plugin get(Key key);

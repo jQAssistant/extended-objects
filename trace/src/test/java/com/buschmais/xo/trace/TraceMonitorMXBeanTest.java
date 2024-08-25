@@ -1,7 +1,5 @@
 package com.buschmais.xo.trace;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,6 +23,8 @@ import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Verifies the functionality of {@link TraceMonitorMXBean}.
  */
@@ -43,19 +43,26 @@ public class TraceMonitorMXBeanTest {
     public void methodStatistics() throws URISyntaxException, JMException {
         Properties properties = new Properties();
         properties.setProperty("com.buschmais.xo.trace.api.DelegateProvider", EmbeddedNeo4jXOProvider.class.getName());
-        XOUnit xoUnit = XOUnit.builder().uri(new URI("memory:///")).provider(TraceDatastoreProvider.class).types(ImmutableList.of(A.class))
-                .properties(properties).build();
+        XOUnit xoUnit = XOUnit.builder()
+            .uri(new URI("memory:///"))
+            .provider(TraceDatastoreProvider.class)
+            .types(ImmutableList.of(A.class))
+            .properties(properties)
+            .build();
         XOManagerFactory xoManagerFactory = XO.createXOManagerFactory(xoUnit);
         assertThat(mbeanServer.getMBeanInfo(objectName)).isNotNull();
         XOManager xoManager = xoManagerFactory.createXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setName("Test");
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
         xoManager.close();
 
         CompositeData[] statistics = (CompositeData[]) mbeanServer.getAttribute(objectName, "MethodStatistics");
-        assertThat(statistics).isNotNull().isNotEmpty();
+        assertThat(statistics).isNotNull()
+            .isNotEmpty();
         CompositeData methodStatistic = statistics[0];
         assertThat((Long) methodStatistic.get("totalTime")).isPositive();
         assertThat((Long) methodStatistic.get("invocations")).isPositive();

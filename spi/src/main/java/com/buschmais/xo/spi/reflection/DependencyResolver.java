@@ -6,7 +6,7 @@ import java.util.*;
  * Resolvers dependencies between elements.
  *
  * @param <T>
- *            The element type.
+ *     The element type.
  */
 public class DependencyResolver<T> {
 
@@ -17,9 +17,9 @@ public class DependencyResolver<T> {
      * Private constructor.
      *
      * @param elements
-     *            The elements to resolver.
+     *     The elements to resolver.
      * @param dependencyProvider
-     *            The dependency provider.
+     *     The dependency provider.
      */
     private DependencyResolver(Collection<T> elements, DependencyProvider<T> dependencyProvider) {
         this.elements = elements;
@@ -30,11 +30,11 @@ public class DependencyResolver<T> {
      * Creates an instance of the resolver.
      *
      * @param elements
-     *            The elements to resolve.
+     *     The elements to resolve.
      * @param dependencyProvider
-     *            The dependency provider.
+     *     The dependency provider.
      * @param <T>
-     *            The element type.
+     *     The element type.
      * @return The resolver.
      */
     public static <T> DependencyResolver<T> newInstance(Collection<T> elements, DependencyProvider<T> dependencyProvider) {
@@ -87,7 +87,7 @@ public class DependencyResolver<T> {
      * Provides dependencies for an element.
      *
      * @param <T>
-     *            The element type.
+     *     The element type.
      */
     @FunctionalInterface
     public interface DependencyProvider<T> {
@@ -96,7 +96,7 @@ public class DependencyResolver<T> {
          * Return the dependencies of an element.
          *
          * @param dependent
-         *            The element.
+         *     The element.
          * @return The dependencies.
          */
         Set<T> getDependencies(T dependent);

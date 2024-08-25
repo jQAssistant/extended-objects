@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.test.generics;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -13,6 +11,8 @@ import com.buschmais.xo.neo4j.test.generics.composite.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class GenericTypeIT extends AbstractNeo4JXOManagerIT {
@@ -29,27 +29,36 @@ public class GenericTypeIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void boundPropertyType() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         BoundType b = xoManager.create(BoundType.class);
         b.setValue("value");
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
         assertThat(b.getValue()).isEqualTo("value");
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void boundCollectionTypeVariable() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         StringValue stringValue = xoManager.create(StringValue.class);
         StringValueContainer stringValueContainer = xoManager.create(StringValueContainer.class);
-        stringValueContainer.getValues().add(stringValue);
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
+        stringValueContainer.getValues()
+            .add(stringValue);
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
         List<StringValue> values = stringValueContainer.getValues();
         assertThat(values).hasSize(1);
         assertThat(values.get(0)).isEqualTo(stringValue);
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 }

@@ -20,7 +20,7 @@ public @interface ResultOf {
 
     /**
      * @return The name of the parameter passed to the query representing the
-     *         containing instance ("this").
+     * containing instance ("this").
      */
     String usingThisAs() default "this";
 

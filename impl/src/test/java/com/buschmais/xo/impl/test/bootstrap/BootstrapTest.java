@@ -1,10 +1,5 @@
 package com.buschmais.xo.impl.test.bootstrap;
 
-import static com.buschmais.xo.api.ConcurrencyMode.MULTITHREADED;
-import static com.buschmais.xo.api.Transaction.TransactionAttribute.MANDATORY;
-import static com.buschmais.xo.api.ValidationMode.NONE;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Set;
 
 import com.buschmais.xo.api.XOManagerFactory;
@@ -15,6 +10,11 @@ import com.buschmais.xo.impl.test.bootstrap.composite.A;
 import com.buschmais.xo.impl.test.bootstrap.provider.TestXOProvider;
 
 import org.junit.Test;
+
+import static com.buschmais.xo.api.ConcurrencyMode.MULTITHREADED;
+import static com.buschmais.xo.api.Transaction.TransactionAttribute.MANDATORY;
+import static com.buschmais.xo.api.ValidationMode.NONE;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BootstrapTest {
 

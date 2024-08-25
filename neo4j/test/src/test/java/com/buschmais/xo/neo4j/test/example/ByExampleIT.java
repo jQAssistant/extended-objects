@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.test.example;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 
 import com.buschmais.xo.api.CompositeObject;
@@ -16,6 +14,8 @@ import com.buschmais.xo.neo4j.test.example.composite.Parent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class ByExampleIT extends AbstractNeo4JXOManagerIT {
@@ -32,7 +32,8 @@ public class ByExampleIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void createByExample() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         // java 7: anonymous inner class
         A a1 = xoManager.create(A.class, new Example<A>() {
             @Override
@@ -54,26 +55,35 @@ public class ByExampleIT extends AbstractNeo4JXOManagerIT {
         Parent parent = xoManager.create(a1, Parent.class, a2, example -> example.setName("Name of A1->A2"));
         assertThat(parent.getName()).isEqualTo("Name of A1->A2");
 
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
 
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         // java 7: anonymous inner class
         assertThat(xoManager.find(new Example<A>() {
-            @Override
-            public void prepare(A example) {
-                example.setValue("A1");
-            }
-        }, A.class).getSingleResult()).isEqualTo(a1);
+                @Override
+                public void prepare(A example) {
+                    example.setValue("A1");
+                }
+            }, A.class)
+            .getSingleResult()).isEqualTo(a1);
         // java 8: lambda expression
-        assertThat(xoManager.find(example -> example.setValue("A1"), A.class).getSingleResult()).isEqualTo(a1);
-        assertThat(xoManager.find(example -> example.setValue("A2"), A.class).getSingleResult().getParent().getName()).isEqualTo("Name of A1->A2");
-        xoManager.currentTransaction().commit();
+        assertThat(xoManager.find(example -> example.setValue("A1"), A.class)
+            .getSingleResult()).isEqualTo(a1);
+        assertThat(xoManager.find(example -> example.setValue("A2"), A.class)
+            .getSingleResult()
+            .getParent()
+            .getName()).isEqualTo("Name of A1->A2");
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void findCompositeByExample() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         // java 7: anonymous inner class
         A compositeObject1 = xoManager.create(A.class, new Example<A>() {
             @Override
@@ -85,20 +95,27 @@ public class ByExampleIT extends AbstractNeo4JXOManagerIT {
         xoManager.create(A.class, example -> example.setValue("A2"), B.class);
         // java 8: lambda expression, alternative
         xoManager.create(A.class, example -> example.setValue("A3"));
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
 
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         // java 7: anonymous inner class
         assertThat(xoManager.find(new Example<CompositeObject>() {
-            @Override
-            public void prepare(CompositeObject example) {
-                example.as(A.class).setValue("A1");
-            }
-        }, A.class, B.class).getSingleResult()).isEqualTo(compositeObject1);
+                @Override
+                public void prepare(CompositeObject example) {
+                    example.as(A.class)
+                        .setValue("A1");
+                }
+            }, A.class, B.class)
+            .getSingleResult()).isEqualTo(compositeObject1);
         // java 8: lambda expression
-        assertThat(xoManager.find(example -> example.as(A.class).setValue("A1"), A.class, B.class).getSingleResult()).isEqualTo(compositeObject1);
+        assertThat(xoManager.find(example -> example.as(A.class)
+                .setValue("A1"), A.class, B.class)
+            .getSingleResult()).isEqualTo(compositeObject1);
         // java 8: lambda expression, alternative
-        assertThat(xoManager.find(A.class, example -> example.setValue("A1")).getSingleResult()).isEqualTo(compositeObject1);
+        assertThat(xoManager.find(A.class, example -> example.setValue("A1"))
+            .getSingleResult()).isEqualTo(compositeObject1);
     }
 
 }

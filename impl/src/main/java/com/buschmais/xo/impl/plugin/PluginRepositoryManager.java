@@ -18,9 +18,9 @@ public class PluginRepositoryManager {
 
     /**
      * Constructor.
-     * 
+     *
      * @param pluginRepositories
-     *            The plugin repositories to manage.
+     *     The plugin repositories to manage.
      */
     public <Plugin> PluginRepositoryManager(PluginRepository<?, Plugin>... pluginRepositories) {
         for (PluginRepository<?, Plugin> pluginRepository : pluginRepositories) {
@@ -34,11 +34,11 @@ public class PluginRepositoryManager {
 
     /**
      * Return a plugin repository identified by the plugin interface type.
-     * 
+     *
      * @param pluginType
-     *            The plugin interface.
+     *     The plugin interface.
      * @param <P>
-     *            The plugin type
+     *     The plugin type
      * @return The {@link com.buschmais.xo.impl.plugin.PluginRepository}.
      */
     public <P extends PluginRepository<?, ?>> P getPluginManager(Class<?> pluginType) {

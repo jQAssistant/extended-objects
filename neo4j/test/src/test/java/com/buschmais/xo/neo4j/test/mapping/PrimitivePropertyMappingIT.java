@@ -33,21 +33,29 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
     public void primitiveProperty() {
 
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         setPropertyValues(a, 'v', "value", 0, ZONED_DATE_TIME);
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
         verifyPropertyValues(a, 'v', "value", 0, ZONED_DATE_TIME);
         setPropertyValues(a, 'u', "updatedValue", 1, ZONED_DATE_TIME.plus(1, DAYS));
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
         verifyPropertyValues(a, 'u', "updatedValue", 1, ZONED_DATE_TIME.plus(1, DAYS));
         a.setString(null);
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
         assertThat(a.getString()).isNull();
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     private void setPropertyValues(A a, char characterValue, String stringValue, int value, ZonedDateTime zonedDateTimeValue) {
@@ -92,20 +100,25 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void mappedPrimitiveProperty() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setMappedString("mappedValue");
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
         TestResult result = executeQuery("match (a:A) return a.MAPPED_STRING as v");
         assertThat(result.getColumn("v")).contains("mappedValue");
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void primitiveArrayProperty() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setCharacterArray(new Character[] { 'A', 'B' });
         a.setPrimitiveCharacterArray(new char[] { 'A', 'B' });
@@ -122,23 +135,26 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
         a.setPrimitiveFloatArray(new float[] { 0f, 1f });
         a.setDoubleArray(new Double[] { 0d, 1d });
         a.setPrimitiveDoubleArray(new double[] { 0d, 1d });
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
-        assertThat(a.getCharacterArray()).isEqualTo(new Character[]{'A', 'B'});
-        assertThat(a.getPrimitiveCharacterArray()).isEqualTo(new char[]{'A', 'B'});
-        assertThat(a.getStringArray()).isEqualTo(new String[]{"A", "B"});
-        assertThat(a.getByteArray()).isEqualTo(new Byte[]{(byte) 0, (byte) 1});
-        assertThat(a.getPrimitiveByteArray()).isEqualTo(new byte[]{(byte) 0, (byte) 1});
-        assertThat(a.getShortArray()).isEqualTo(new Short[]{(short) 0, (short) 1});
-        assertThat(a.getPrimitiveShortArray()).isEqualTo(new short[]{(short) 0, (short) 1});
-        assertThat(a.getIntegerArray()).isEqualTo(new Integer[]{0, 1});
-        assertThat(a.getPrimitiveIntegerArray()).isEqualTo(new int[]{0, 1});
-        assertThat(a.getLongArray()).isEqualTo(new Long[]{0l, 1l});
-        assertThat(a.getPrimitiveLongArray()).isEqualTo(new long[]{0l, 1l});
-        assertThat(a.getFloatArray()).isEqualTo(new Float[]{0f, 1f});
-        assertThat(a.getPrimitiveFloatArray()).isEqualTo(new float[]{0f, 1f});
-        assertThat(a.getDoubleArray()).isEqualTo(new Double[]{0d, 1d});
-        assertThat(a.getPrimitiveDoubleArray()).isEqualTo(new double[]{0d, 1d});
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
+        assertThat(a.getCharacterArray()).isEqualTo(new Character[] { 'A', 'B' });
+        assertThat(a.getPrimitiveCharacterArray()).isEqualTo(new char[] { 'A', 'B' });
+        assertThat(a.getStringArray()).isEqualTo(new String[] { "A", "B" });
+        assertThat(a.getByteArray()).isEqualTo(new Byte[] { (byte) 0, (byte) 1 });
+        assertThat(a.getPrimitiveByteArray()).isEqualTo(new byte[] { (byte) 0, (byte) 1 });
+        assertThat(a.getShortArray()).isEqualTo(new Short[] { (short) 0, (short) 1 });
+        assertThat(a.getPrimitiveShortArray()).isEqualTo(new short[] { (short) 0, (short) 1 });
+        assertThat(a.getIntegerArray()).isEqualTo(new Integer[] { 0, 1 });
+        assertThat(a.getPrimitiveIntegerArray()).isEqualTo(new int[] { 0, 1 });
+        assertThat(a.getLongArray()).isEqualTo(new Long[] { 0l, 1l });
+        assertThat(a.getPrimitiveLongArray()).isEqualTo(new long[] { 0l, 1l });
+        assertThat(a.getFloatArray()).isEqualTo(new Float[] { 0f, 1f });
+        assertThat(a.getPrimitiveFloatArray()).isEqualTo(new float[] { 0f, 1f });
+        assertThat(a.getDoubleArray()).isEqualTo(new Double[] { 0d, 1d });
+        assertThat(a.getPrimitiveDoubleArray()).isEqualTo(new double[] { 0d, 1d });
+        xoManager.currentTransaction()
+            .commit();
     }
 }

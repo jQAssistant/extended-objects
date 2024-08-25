@@ -4,6 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.metadata.method.IndexedPropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedElement;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedType;
+import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
 import com.buschmais.xo.neo4j.api.annotation.Batchable;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Property;
@@ -15,12 +21,6 @@ import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.neo4j.spi.metadata.RelationshipMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
-import com.buschmais.xo.api.metadata.method.IndexedPropertyMethodMetadata;
-import com.buschmais.xo.api.metadata.type.TypeMetadata;
-import com.buschmais.xo.api.metadata.reflection.AnnotatedElement;
-import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
-import com.buschmais.xo.api.metadata.reflection.AnnotatedType;
-import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
 
 import com.google.common.base.CaseFormat;
 
@@ -29,7 +29,7 @@ import com.google.common.base.CaseFormat;
  * implementation for Neo4j datastores.
  */
 public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R extends Neo4jRelationshipType>
-        implements DatastoreMetadataFactory<NodeMetadata<L>, L, RelationshipMetadata<R>, R> {
+    implements DatastoreMetadataFactory<NodeMetadata<L>, L, RelationshipMetadata<R>, R> {
 
     @Override
     public NodeMetadata createEntityMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes, Map<Class<?>, TypeMetadata> metadataByType) {
@@ -89,7 +89,8 @@ public abstract class AbstractNeo4jMetadataFactory<L extends Neo4jLabel, R exten
         } else if (annotatedElement instanceof AnnotatedType) {
             AnnotatedType annotatedType = (AnnotatedType) annotatedElement;
             relationAnnotation = annotatedType.getAnnotation(Relation.class);
-            batchable = annotatedType.getAnnotatedElement().isAnnotation() || isBatchable(annotatedElement);
+            batchable = annotatedType.getAnnotatedElement()
+                .isAnnotation() || isBatchable(annotatedElement);
         } else {
             throw new XOException("Annotated element is not supported: " + annotatedElement);
         }

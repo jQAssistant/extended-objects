@@ -3,13 +3,13 @@ package com.buschmais.xo.spi.datastore;
 import java.util.List;
 import java.util.Map;
 
-import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
-import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
-import com.buschmais.xo.api.metadata.type.TypeMetadata;
 import com.buschmais.xo.api.metadata.reflection.AnnotatedElement;
 import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
 import com.buschmais.xo.api.metadata.reflection.AnnotatedType;
 import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
 
 /**
  * The metadata factory of the datastore.
@@ -19,13 +19,13 @@ import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
  * </p>
  *
  * @param <EntityMetadata>
- *            The type of entities used by the datastore.
+ *     The type of entities used by the datastore.
  * @param <EntityDiscriminator>
- *            The type of entity discriminators used by the datastore.
+ *     The type of entity discriminators used by the datastore.
  * @param <RelationMetadata>
- *            The type of relations used by the datastore.
+ *     The type of relations used by the datastore.
  * @param <RelationDiscriminator>
- *            The type of relations discriminators used by the datastore.
+ *     The type of relations discriminators used by the datastore.
  */
 public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> {
 
@@ -33,11 +33,11 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * Create the datastore specific entity metadata for the given type.
      *
      * @param annotatedType
-     *            The type.
+     *     The type.
      * @param superTypes
-     *            The super types.
+     *     The super types.
      * @param metadataByType
-     *            A map containing all registered type and their generic metadata.
+     *     A map containing all registered type and their generic metadata.
      * @return An instance of datastore specific entity metadata.
      */
     EntityMetadata createEntityMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes, Map<Class<?>, TypeMetadata> metadataByType);
@@ -47,7 +47,7 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * {@link com.buschmais.xo.api.annotation.ImplementedBy}.
      *
      * @param annotatedMethod
-     *            The method.
+     *     The method.
      * @return An instance of datastore specific method metadata.
      */
     <ImplementedByMetadata> ImplementedByMetadata createImplementedByMetadata(AnnotatedMethod annotatedMethod);
@@ -57,7 +57,7 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * collection of entities.
      *
      * @param propertyMethod
-     *            The method.
+     *     The method.
      * @return An instance of datastore specific method metadata.
      */
     <CollectionPropertyMetadata> CollectionPropertyMetadata createCollectionPropertyMetadata(PropertyMethod propertyMethod);
@@ -67,7 +67,7 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * reference to an entity.
      *
      * @param propertyMethod
-     *            The method.
+     *     The method.
      * @return An instance of datastore specific method metadata.
      */
     <ReferencePropertyMetadata> ReferencePropertyMetadata createReferencePropertyMetadata(PropertyMethod propertyMethod);
@@ -77,7 +77,7 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * value.
      *
      * @param propertyMethod
-     *            The method.
+     *     The method.
      * @return An instance of datastore specific method metadata.
      */
     <PrimitivePropertyMetadata> PrimitivePropertyMetadata createPropertyMetadata(PropertyMethod propertyMethod);
@@ -87,7 +87,7 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * property.
      *
      * @param propertyMethod
-     *            The method.
+     *     The method.
      * @return An instance of datastore specific method metadata.
      */
     <IndexedPropertyMetadata> IndexedPropertyMetadata createIndexedPropertyMetadata(PropertyMethod propertyMethod);
@@ -96,10 +96,10 @@ public interface DatastoreMetadataFactory<EntityMetadata extends DatastoreEntity
      * Create the datastore specific metadata for a relation.
      *
      * @param annotatedElement
-     *            The annotated element, i.e. a {@link AnnotatedType} or
-     *            {@link AnnotatedMethod}.
+     *     The annotated element, i.e. a {@link AnnotatedType} or
+     *     {@link AnnotatedMethod}.
      * @param metadataByType
-     *            A map containing all registered type and their generic metadata.
+     *     A map containing all registered type and their generic metadata.
      * @return An instance of datastore specific method metadata.
      */
     RelationMetadata createRelationMetadata(AnnotatedElement<?> annotatedElement, Map<Class<?>, TypeMetadata> metadataByType);

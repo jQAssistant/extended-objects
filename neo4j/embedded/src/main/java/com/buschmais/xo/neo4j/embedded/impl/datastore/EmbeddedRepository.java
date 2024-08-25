@@ -19,8 +19,7 @@ public class EmbeddedRepository extends AbstractNeo4jRepository<EmbeddedLabel> {
 
     private final EmbeddedDatastoreTransaction datastoreTransaction;
 
-    protected EmbeddedRepository(EmbeddedDatastoreTransaction datastoreTransaction,
-            XOSession<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?> xoSession) {
+    protected EmbeddedRepository(EmbeddedDatastoreTransaction datastoreTransaction, XOSession<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, ?, ?> xoSession) {
         super(xoSession);
         this.datastoreTransaction = datastoreTransaction;
     }
@@ -28,7 +27,8 @@ public class EmbeddedRepository extends AbstractNeo4jRepository<EmbeddedLabel> {
     @Override
     protected <T> ResultIterable<T> find(EmbeddedLabel label, PropertyMetadata datastoreMetadata, Object datastoreValue) {
         String propertyName = datastoreMetadata.getName();
-        ResourceIterator<Node> iterator = datastoreTransaction.getTransaction().findNodes(label.getDelegate(), propertyName, datastoreValue);
+        ResourceIterator<Node> iterator = datastoreTransaction.getTransaction()
+            .findNodes(label.getDelegate(), propertyName, datastoreValue);
         return xoSession.toResult(new ResultIterator<EmbeddedNode>() {
 
             @Override

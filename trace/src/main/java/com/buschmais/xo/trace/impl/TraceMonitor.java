@@ -60,7 +60,11 @@ public class TraceMonitor implements TraceMonitorMXBean {
      * The levels which can be used for tracing.
      */
     public enum Level {
-        TRACE, DEBUG, INFO, WARN, ERROR;
+        TRACE,
+        DEBUG,
+        INFO,
+        WARN,
+        ERROR;
     }
 
     private XOUnit xoUnit;
@@ -71,7 +75,7 @@ public class TraceMonitor implements TraceMonitorMXBean {
      * Constructor.
      *
      * @param xoUnit
-     *            The {@link com.buschmais.xo.api.bootstrap.XOUnit} to be monitored.
+     *     The {@link com.buschmais.xo.api.bootstrap.XOUnit} to be monitored.
      */
     public TraceMonitor(XOUnit xoUnit) {
         this.xoUnit = xoUnit;
@@ -113,7 +117,7 @@ public class TraceMonitor implements TraceMonitorMXBean {
      * Log a message using the configured log level.
      *
      * @param message
-     *            The message.
+     *     The message.
      */
     public void log(String message) {
         switch (level) {

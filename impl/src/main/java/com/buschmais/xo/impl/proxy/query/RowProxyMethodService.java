@@ -1,13 +1,14 @@
 package com.buschmais.xo.impl.proxy.query;
 
-import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.SortedSet;
 
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
+import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
+import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
 import com.buschmais.xo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.xo.impl.proxy.common.composite.GetDelegateMethod;
 import com.buschmais.xo.impl.proxy.query.composite.AsMethod;
@@ -16,10 +17,9 @@ import com.buschmais.xo.impl.proxy.query.object.HashCodeMethod;
 import com.buschmais.xo.impl.proxy.query.object.ToStringMethod;
 import com.buschmais.xo.impl.proxy.query.property.GetMethod;
 import com.buschmais.xo.impl.proxy.query.row.GetColumnsMethod;
-import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
 import com.buschmais.xo.spi.reflection.BeanMethodProvider;
-import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
-import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
+
+import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 
 public class RowProxyMethodService extends AbstractProxyMethodService<Map<String, Object>> {
 
@@ -29,7 +29,8 @@ public class RowProxyMethodService extends AbstractProxyMethodService<Map<String
             Collection<AnnotatedMethod> typeMethodsOfType = beanMethodProvider.getMethods();
             for (AnnotatedMethod typeMethod : typeMethodsOfType) {
                 if (!(typeMethod instanceof GetPropertyMethod)) {
-                    throw new XOException("Only get methods are supported for projections: '" + typeMethod.getAnnotatedElement().getName() + "'.");
+                    throw new XOException("Only get methods are supported for projections: '" + typeMethod.getAnnotatedElement()
+                        .getName() + "'.");
                 }
                 PropertyMethod propertyMethod = (PropertyMethod) typeMethod;
                 GetMethod proxyMethod = new GetMethod(propertyMethod.getName(), propertyMethod.getType());

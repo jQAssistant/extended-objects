@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 import com.buschmais.xo.api.bootstrap.XOUnit;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedElement;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedType;
+import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
 import com.buschmais.xo.impl.test.bootstrap.provider.metadata.TestEntityMetadata;
 import com.buschmais.xo.impl.test.bootstrap.provider.metadata.TestRelationMetadata;
 import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
-import com.buschmais.xo.api.metadata.type.TypeMetadata;
-import com.buschmais.xo.api.metadata.reflection.AnnotatedElement;
-import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
-import com.buschmais.xo.api.metadata.reflection.AnnotatedType;
-import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
 
 public class TestXODatastore<D extends DatastoreSession> implements Datastore<D, TestEntityMetadata, String, TestRelationMetadata, String> {
 
@@ -28,8 +28,9 @@ public class TestXODatastore<D extends DatastoreSession> implements Datastore<D,
         return new DatastoreMetadataFactory<TestEntityMetadata, String, TestRelationMetadata, String>() {
             @Override
             public TestEntityMetadata createEntityMetadata(AnnotatedType annotatedType, List<TypeMetadata> superTypes,
-                    Map<Class<?>, TypeMetadata> metadataByType) {
-                return new TestEntityMetadata(annotatedType.getAnnotatedElement().getName());
+                Map<Class<?>, TypeMetadata> metadataByType) {
+                return new TestEntityMetadata(annotatedType.getAnnotatedElement()
+                    .getName());
             }
 
             @Override

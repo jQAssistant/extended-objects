@@ -1,8 +1,5 @@
 package com.buschmais.xo.spring;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +7,9 @@ import org.neo4j.configuration.GraphDatabaseInternalSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { TransactionalService.class, XOConfiguration.class, XOAutoConfiguration.class, XOTransactionManager.class })
@@ -20,7 +20,6 @@ public class TransactionalXOManagerTest {
 
     @BeforeEach
     void cleanUp() {
-        System.out.println(GraphDatabaseInternalSettings.track_cursor_close);
         transactionalService.cleanUp();
     }
 

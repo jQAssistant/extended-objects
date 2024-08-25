@@ -17,7 +17,7 @@ public class QueryLanguagePluginRepository extends AbstractPluginRepository<Clas
      * Constructor.
      *
      * @param datastore
-     *            The datastore to be used.
+     *     The datastore to be used.
      */
     public QueryLanguagePluginRepository(Datastore<?, ?, ?, ?, ?> datastore) {
         this.datastore = datastore;

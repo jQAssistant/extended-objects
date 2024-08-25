@@ -1,13 +1,13 @@
 package com.buschmais.xo.neo4j.test.concurrency.composite;
 
-import static org.junit.Assert.fail;
-
 import java.util.concurrent.TimeUnit;
 
 import com.buschmais.xo.api.annotation.ImplementedBy;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.embedded.impl.model.EmbeddedNode;
+
+import static org.junit.Assert.fail;
 
 @Label("A")
 public interface A {

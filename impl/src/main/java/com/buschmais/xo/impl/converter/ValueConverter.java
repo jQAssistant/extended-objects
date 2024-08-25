@@ -1,15 +1,14 @@
 package com.buschmais.xo.impl.converter;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import java.lang.reflect.Array;
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOException;
 
 import com.google.common.primitives.Primitives;
-
 import lombok.NoArgsConstructor;
+
+import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class ValueConverter {
@@ -23,7 +22,8 @@ public final class ValueConverter {
             } else if (propertyType.isArray()) {
                 if (Collection.class.isAssignableFrom(value.getClass())) {
                     return toArray((Collection<?>) value, propertyType.getComponentType());
-                } else if (value.getClass().isArray()) {
+                } else if (value.getClass()
+                    .isArray()) {
                     return toArray(value, propertyType.getComponentType());
                 }
             } else if (propertyType.isPrimitive()) {

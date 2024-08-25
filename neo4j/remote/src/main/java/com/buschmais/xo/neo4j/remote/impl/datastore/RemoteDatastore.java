@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.remote.impl.datastore;
 
-import static java.lang.Boolean.parseBoolean;
-
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -24,6 +22,8 @@ import com.google.common.base.CaseFormat;
 import org.neo4j.driver.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.lang.Boolean.parseBoolean;
 
 public class RemoteDatastore extends AbstractNeo4jDatastore<RemoteLabel, RemoteRelationshipType, RemoteDatastoreSession> {
 

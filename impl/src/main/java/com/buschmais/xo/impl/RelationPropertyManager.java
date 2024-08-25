@@ -1,10 +1,10 @@
 package com.buschmais.xo.impl;
 
+import com.buschmais.xo.api.metadata.method.EntityReferencePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
+import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
-import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
-import com.buschmais.xo.api.metadata.method.EntityReferencePropertyMethodMetadata;
-import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
 
 public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyManager<Relation> {
 
@@ -14,7 +14,7 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
      * Constructor.
      *
      * @param sessionContext
-     *            The {@link SessionContext}.
+     *     The {@link SessionContext}.
      */
     public RelationPropertyManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         this.sessionContext = sessionContext;
@@ -22,7 +22,8 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
 
     @Override
     protected DatastorePropertyManager<Relation, ?> getDatastorePropertyManager() {
-        return sessionContext.getDatastoreSession().getDatastoreRelationManager();
+        return sessionContext.getDatastoreSession()
+            .getDatastoreRelationManager();
     }
 
     @Override
@@ -31,12 +32,13 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
     }
 
     public Entity getEntityReference(Relation relation, EntityReferencePropertyMethodMetadata metadata) {
-        return sessionContext.getEntityInstanceManager().readInstance(getReferencedEntity(relation, metadata.getDirection()));
+        return sessionContext.getEntityInstanceManager()
+            .readInstance(getReferencedEntity(relation, metadata.getDirection()));
     }
 
     private Entity getReferencedEntity(Relation relation, RelationTypeMetadata.Direction direction) {
         DatastoreRelationManager<Entity, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> relationManager = sessionContext.getDatastoreSession()
-                .getDatastoreRelationManager();
+            .getDatastoreRelationManager();
         switch (direction) {
         case TO:
             return relationManager.getTo(relation);

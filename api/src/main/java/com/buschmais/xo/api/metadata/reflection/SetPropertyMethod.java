@@ -17,19 +17,19 @@ public class SetPropertyMethod extends AbstractPropertyMethod {
      * Constructor.
      *
      * @param setter
-     *            The set method.
+     *     The set method.
      * @param getter
-     *            The corresponding {@link GetPropertyMethod}.
+     *     The corresponding {@link GetPropertyMethod}.
      * @param name
-     *            The name of the property.
+     *     The name of the property.
      * @param type
-     *            The type of the property.
+     *     The type of the property.
      */
     public SetPropertyMethod(Method setter, GetPropertyMethod getter, String name, Class<?> type, Type genericType) {
         super(setter, name, type, genericType);
         if (getter == null) {
-            throw new XOException(
-                    "No getter defined for property '" + name + "' of type '" + type.getName() + "' in type '" + setter.getDeclaringClass().getName() + "'.");
+            throw new XOException("No getter defined for property '" + name + "' of type '" + type.getName() + "' in type '" + setter.getDeclaringClass()
+                .getName() + "'.");
         }
         this.getter = getter;
     }
@@ -41,7 +41,6 @@ public class SetPropertyMethod extends AbstractPropertyMethod {
         }
         return getter.getAnnotation(type);
     }
-
 
     @Override
     public <T extends Annotation, M extends Annotation> T getByMetaAnnotation(Class<M> type) {

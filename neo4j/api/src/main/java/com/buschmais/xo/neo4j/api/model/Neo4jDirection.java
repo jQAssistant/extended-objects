@@ -7,7 +7,7 @@ public interface Neo4jDirection {
 
     /**
      * Return the {@link String} representation of the direction.
-     * 
+     *
      * @return The {@link String} representation.
      */
     String getName();

@@ -21,11 +21,11 @@ public final class ClassHelper {
 
     /**
      * Load a class.
-     * 
+     *
      * @param name
-     *            The class name.
+     *     The class name.
      * @param <T>
-     *            The expected class type.
+     *     The expected class type.
      * @return The class.
      */
     public static <T> Class<T> getType(String name) {
@@ -40,9 +40,9 @@ public final class ClassHelper {
 
     /**
      * Load a collection of classes.
-     * 
+     *
      * @param typeNames
-     *            The class names.
+     *     The class names.
      * @return The collection of classes.
      */
     public static Collection<Class<?>> getTypes(Collection<String> typeNames) {
@@ -55,11 +55,11 @@ public final class ClassHelper {
 
     /**
      * Create an instance of a class.
-     * 
+     *
      * @param type
-     *            The class.
+     *     The class.
      * @param <T>
-     *            The class type.
+     *     The class type.
      * @return The instance.
      */
     public static <T> T newInstance(Class<T> type) {
@@ -75,11 +75,11 @@ public final class ClassHelper {
     /**
      * Determines the type of a class implementing a generic interface with one type
      * parameter.
-     * 
+     *
      * @param genericType
-     *            The generic interface type.
+     *     The generic interface type.
      * @param type
-     *            The type to determine the parameter from.
+     *     The type to determine the parameter from.
      * @return The type parameter.
      */
     public static Class<?> getTypeParameter(Class<?> genericType, Class<?> type) {

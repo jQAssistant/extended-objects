@@ -3,12 +3,8 @@ package com.buschmais.xo.impl;
 import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOTransaction;
+import com.buschmais.xo.api.metadata.type.*;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
-import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
-import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
-import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
-import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
-import com.buschmais.xo.api.metadata.type.RepositoryTypeMetadata;
 import com.buschmais.xo.spi.session.InstanceManager;
 import com.buschmais.xo.spi.session.XOSession;
 
@@ -16,7 +12,7 @@ import com.buschmais.xo.spi.session.XOSession;
  * Implementation of the {@link XOSession} interface.
  */
 public class XOSessionImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata>
-        implements XOSession<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
+    implements XOSession<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
 
     private SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext;
 
@@ -24,10 +20,10 @@ public class XOSessionImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
      * Constructor.
      *
      * @param sessionContext
-     *            The session context.
+     *     The session context.
      */
     public XOSessionImpl(
-            SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext) {
+        SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext) {
         this.sessionContext = sessionContext;
     }
 
@@ -47,24 +43,29 @@ public class XOSessionImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <T> EntityTypeMetadata<EntityMetadata> getEntityMetadata(Class<T> type) {
-        return sessionContext.getMetadataProvider().getEntityMetadata(type);
+        return sessionContext.getMetadataProvider()
+            .getEntityMetadata(type);
     }
 
     @Override
     public <T> RelationTypeMetadata<RelationMetadata> getRelationMetadata(Class<T> type) {
-        return sessionContext.getMetadataProvider().getRelationMetadata(type);
+        return sessionContext.getMetadataProvider()
+            .getRelationMetadata(type);
     }
 
     @Override
     public <R> RepositoryTypeMetadata getRepositoryMetadata(Class<R> type) {
-        return sessionContext.getMetadataProvider().getRepositoryMetadata(type);
+        return sessionContext.getMetadataProvider()
+            .getRepositoryMetadata(type);
     }
 
     @Override
     public <D> InstanceManager<?, D> getInstanceManager(D datastoreType) {
-        if (sessionContext.getEntityInstanceManager().isDatastoreType(datastoreType)) {
+        if (sessionContext.getEntityInstanceManager()
+            .isDatastoreType(datastoreType)) {
             return (InstanceManager<?, D>) sessionContext.getEntityInstanceManager();
-        } else if (sessionContext.getRelationInstanceManager().isDatastoreType(datastoreType)) {
+        } else if (sessionContext.getRelationInstanceManager()
+            .isDatastoreType(datastoreType)) {
             return (InstanceManager<?, D>) sessionContext.getRelationInstanceManager();
         }
         return null;
@@ -96,23 +97,26 @@ public class XOSessionImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
             }
         };
         XOTransaction xoTransaction = sessionContext.getXOTransaction();
-        final ResultIterator<T> transactionalIterator = xoTransaction != null ? new TransactionalResultIterator<>(resultIterator, xoTransaction)
-                : resultIterator;
-        return sessionContext.getInterceptorFactory().addInterceptor(new AbstractResultIterable<T>() {
-            @Override
-            public ResultIterator<T> iterator() {
-                return transactionalIterator;
-            }
-        }, ResultIterable.class);
+        final ResultIterator<T> transactionalIterator =
+            xoTransaction != null ? new TransactionalResultIterator<>(resultIterator, xoTransaction) : resultIterator;
+        return sessionContext.getInterceptorFactory()
+            .addInterceptor(new AbstractResultIterable<T>() {
+                @Override
+                public ResultIterator<T> iterator() {
+                    return transactionalIterator;
+                }
+            }, ResultIterable.class);
     }
 
     @Override
     public void flush() {
-        sessionContext.getCacheSynchronizationService().flush();
+        sessionContext.getCacheSynchronizationService()
+            .flush();
     }
 
     @Override
     public void clear() {
-        sessionContext.getCacheSynchronizationService().clear();
+        sessionContext.getCacheSynchronizationService()
+            .clear();
     }
 }

@@ -1,11 +1,11 @@
 package com.buschmais.xo.neo4j.test.mapping.composite;
 
-import static com.buschmais.xo.neo4j.api.annotation.Relation.Incoming;
-
 import java.util.List;
 
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.annotation.Relation;
+
+import static com.buschmais.xo.neo4j.api.annotation.Relation.Incoming;
 
 @Label("H")
 public interface H {

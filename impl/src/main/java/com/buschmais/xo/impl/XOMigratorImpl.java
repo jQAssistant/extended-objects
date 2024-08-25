@@ -6,26 +6,26 @@ import java.util.Set;
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOMigrator;
 import com.buschmais.xo.api.metadata.MetadataProvider;
-import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
 import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
 import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
-import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
 import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 
 /**
  * Implementation of the {@link com.buschmais.xo.api.XOMigrator} interface.
  *
  * @param <EntityId>
- *            The type of entity ids as provided by the datastore.
+ *     The type of entity ids as provided by the datastore.
  * @param <Entity>
- *            The type of entities as provided by the datastore.
+ *     The type of entities as provided by the datastore.
  * @param <EntityMetadata>
- *            The type of entity metadata as provided by the datastore.
+ *     The type of entity metadata as provided by the datastore.
  * @param <EntityDiscriminator>
- *            The type of discriminators as provided by the datastore.
+ *     The type of discriminators as provided by the datastore.
  */
 public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator>
-        implements XOMigrator {
+    implements XOMigrator {
 
     private T instance;
 
@@ -37,14 +37,15 @@ public class XOMigratorImpl<T, EntityId, Entity, EntityMetadata extends Datastor
      * Constructor.
      *
      * @param instance
-     *            The instance to migrate.
+     *     The instance to migrate.
      * @param sessionContext
-     *            The session context.
+     *     The session context.
      */
     XOMigratorImpl(T instance, SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, ?, ?, ?, ?, ?> sessionContext) {
         this.instance = instance;
         metadataProvider = sessionContext.getMetadataProvider();
-        this.datastoreEntityManager = sessionContext.getDatastoreSession().getDatastoreEntityManager();
+        this.datastoreEntityManager = sessionContext.getDatastoreSession()
+            .getDatastoreEntityManager();
         this.entityInstanceManager = sessionContext.getEntityInstanceManager();
     }
 

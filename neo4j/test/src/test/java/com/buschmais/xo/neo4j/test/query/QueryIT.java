@@ -47,125 +47,166 @@ public class QueryIT extends AbstractNeo4JXOManagerIT {
     @Before
     public void createData() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         a1 = xoManager.create(A.class);
         a1.setValue("A1");
         a2_1 = xoManager.create(A.class);
         a2_1.setValue("A2");
         a2_2 = xoManager.create(A.class);
         a2_2.setValue("A2");
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void typedQuery() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
-        Result<InstanceByValue> result = xoManager.createQuery(InstanceByValue.class).withParameter("value", "A1").execute();
-        A a = result.getSingleResult().getA();
+        xoManager.currentTransaction()
+            .begin();
+        Result<InstanceByValue> result = xoManager.createQuery(InstanceByValue.class)
+            .withParameter("value", "A1")
+            .execute();
+        A a = result.getSingleResult()
+            .getA();
         assertThat(a.getValue()).isEqualTo("A1");
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void compositeRow() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         CompositeRowObject result = xoManager.createQuery("match (a:A) where a.value=$value return a, count(a) as count", ResultPart1.class, ResultPart2.class)
-                .withParameter("value", "A1").execute().getSingleResult();
-        A a = result.as(ResultPart1.class).getA();
+            .withParameter("value", "A1")
+            .execute()
+            .getSingleResult();
+        A a = result.as(ResultPart1.class)
+            .getA();
         assertThat(a.getValue()).isEqualTo("A1");
-        Number count = result.as(ResultPart2.class).getCount();
+        Number count = result.as(ResultPart2.class)
+            .getCount();
         assertThat(count.intValue()).isEqualTo(1);
         try {
-            xoManager.createQuery(ResultPart1.class, ResultPart2.class).withParameter("value", "A2").execute().getSingleResult();
+            xoManager.createQuery(ResultPart1.class, ResultPart2.class)
+                .withParameter("value", "A2")
+                .execute()
+                .getSingleResult();
             fail("Expecting a " + XOException.class.getName());
         } catch (XOException e) {
         }
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void compositeRowAsMap() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         Result<CompositeRowObject> result = xoManager.createQuery("match (a:A) where a.value=$value return a, a.value as value, id(a) as id")
-                .withParameter("value", "A1").execute();
+            .withParameter("value", "A1")
+            .execute();
         CompositeRowObject singleResult = result.getSingleResult();
         List<String> columns = singleResult.getColumns();
         assertThat(columns).isEqualTo(Arrays.asList("a", "value", "id"));
         A a = singleResult.get("a", A.class);
         assertThat(a.getValue()).isEqualTo("A1");
-        result = xoManager.createQuery("match (a:A) where a.Value=$value return a").withParameter("value", "A2").execute();
+        result = xoManager.createQuery("match (a:A) where a.Value=$value return a")
+            .withParameter("value", "A2")
+            .execute();
         try {
-            result.getSingleResult().get("a", A.class);
+            result.getSingleResult()
+                .get("a", A.class);
             fail("Expecting a " + XOException.class.getName());
         } catch (XOException e) {
         }
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void instanceParameter() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where id(a)=$instance return a").withParameter("instance", a1).execute();
-        A a = row.getSingleResult().get("a", A.class);
+        xoManager.currentTransaction()
+            .begin();
+        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where id(a)=$instance return a")
+            .withParameter("instance", a1)
+            .execute();
+        A a = row.getSingleResult()
+            .get("a", A.class);
         assertThat(a).isEqualTo(a1);
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void instanceParameterCollection() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where a.value in $values return a").withParameter("values", Arrays.asList("A1"))
-                .execute();
-        A a = row.getSingleResult().get("a", A.class);
+        xoManager.currentTransaction()
+            .begin();
+        Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) where a.value in $values return a")
+            .withParameter("values", Arrays.asList("A1"))
+            .execute();
+        A a = row.getSingleResult()
+            .get("a", A.class);
         assertThat(a).isEqualTo(a1);
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void optionalMatch() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> row = getXOManager().createQuery("OPTIONAL MATCH (a:A) WHERE a.name = 'X' return a").execute();
-        A a = row.getSingleResult().get("a", A.class);
+        xoManager.currentTransaction()
+            .begin();
+        Result<CompositeRowObject> row = getXOManager().createQuery("OPTIONAL MATCH (a:A) WHERE a.name = 'X' return a")
+            .execute();
+        A a = row.getSingleResult()
+            .get("a", A.class);
         assertThat(a).isNull();
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void customQueryLanguage() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
-        Result<CompositeRowObject> row = getXOManager().createQuery("A:value=A1").using(CustomQueryLanguage.class).execute();
-        A a = row.getSingleResult().get("A", A.class);
+        xoManager.currentTransaction()
+            .begin();
+        Result<CompositeRowObject> row = getXOManager().createQuery("A:value=A1")
+            .using(CustomQueryLanguage.class)
+            .execute();
+        A a = row.getSingleResult()
+            .get("A", A.class);
         assertThat(a).isEqualTo(a1);
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void nonTransactionalQuery() {
         XOManager xoManager = getXOManager();
 
-        A a = xoManager.createQuery(
-            "MATCH (a:A{value:$value}) CALL { WITH a SET a:Custom } IN TRANSACTIONS RETURN a")
+        A a = xoManager.createQuery("MATCH (a:A{value:$value}) CALL { WITH a SET a:Custom } IN TRANSACTIONS RETURN a")
             .withParameter("value", "A1")
             .execute()
             .getSingleResult()
             .get("a", A.class);
 
         assertThat(a).isEqualTo(a1);
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         assertThat(a.getValue()).isEqualTo("A1");
         Neo4jNode<Neo4jLabel, ?, ?, ?> delegate = ((CompositeObject) a).getDelegate();
         Set<String> labels = stream(delegate.getLabels()
             .spliterator(), false).map(neo4jLabel -> neo4jLabel.getName())
             .collect(toSet());
         assertThat(labels).containsExactlyInAnyOrder("A", "Custom");
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     public interface ResultPart1 {

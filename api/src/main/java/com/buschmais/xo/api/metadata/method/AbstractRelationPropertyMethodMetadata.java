@@ -1,9 +1,9 @@
 package com.buschmais.xo.api.metadata.method;
 
-import static com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction;
-
 import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
 import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
+
+import static com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction;
 
 public abstract class AbstractRelationPropertyMethodMetadata<DatastoreMetadata> extends AbstractPropertyMethodMetadata<DatastoreMetadata> {
 
@@ -12,7 +12,7 @@ public abstract class AbstractRelationPropertyMethodMetadata<DatastoreMetadata> 
     private final Direction direction;
 
     public AbstractRelationPropertyMethodMetadata(PropertyMethod propertyMethod, RelationTypeMetadata relationTypeMetadata, Direction direction,
-            DatastoreMetadata datastoreMetadata) {
+        DatastoreMetadata datastoreMetadata) {
         super(propertyMethod, datastoreMetadata);
         this.relationTypeMetadata = relationTypeMetadata;
         this.direction = direction;

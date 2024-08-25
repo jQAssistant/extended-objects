@@ -11,7 +11,7 @@ public interface TypedNeo4jRepository<T> {
      * Find all instances from an indexed property.
      *
      * @param value
-     *            The value.
+     *     The value.
      * @return An {@link Iterable} returning the instances.
      */
     ResultIterable<T> find(Object value);

@@ -12,13 +12,17 @@ public class TypedRelationTest extends AbstractDocumentationTest {
 
     @Override
     protected void configure(XOUnit.XOUnitBuilder builder) {
-        builder.type(Person.class).type(Director.class).type(Movie.class).type(Directed.class);
+        builder.type(Person.class)
+            .type(Director.class)
+            .type(Movie.class)
+            .type(Directed.class);
     }
 
     @Test
     public void typedRelation() throws URISyntaxException {
         // tag::Create[]
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
 
         Director director = xoManager.create(Director.class);
         Movie movie = xoManager.create(Movie.class);
@@ -26,7 +30,8 @@ public class TypedRelationTest extends AbstractDocumentationTest {
         Directed directed = xoManager.create(director, Directed.class, movie);
         directed.setYear(2017);
 
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
         // end::Create[]
     }
 

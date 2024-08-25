@@ -10,7 +10,7 @@ public interface CompositeObject {
      * Return the id of the object.
      *
      * @param <I>
-     *            The id type.
+     *     The id type.
      * @return The id of the object.
      */
     <I> I getId();
@@ -19,9 +19,9 @@ public interface CompositeObject {
      * Cast the instance to a specific type.
      *
      * @param type
-     *            The type.
+     *     The type.
      * @param <T>
-     *            The type.
+     *     The type.
      * @return The instance.
      */
     <T> T as(Class<T> type);
@@ -30,7 +30,7 @@ public interface CompositeObject {
      * Return the underlying datastore delegate.
      *
      * @param <D>
-     *            The expected type.
+     *     The expected type.
      * @return The datastore delegate.
      */
     <D> D getDelegate();

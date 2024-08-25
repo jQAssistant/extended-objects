@@ -1,8 +1,5 @@
 package com.buschmais.xo.neo4j.test.validation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
 import java.util.Collection;
 import java.util.Set;
 
@@ -20,6 +17,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+
 @RunWith(Parameterized.class)
 public class ValidationIT extends AbstractNeo4JXOManagerIT {
 
@@ -35,11 +35,13 @@ public class ValidationIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void validationOnCommitAfterInsert() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         Set<ConstraintViolation<?>> constraintViolations = null;
         try {
-            xoManager.currentTransaction().commit();
+            xoManager.currentTransaction()
+                .commit();
             fail("Validation must fail.");
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
@@ -48,53 +50,62 @@ public class ValidationIT extends AbstractNeo4JXOManagerIT {
         B b = xoManager.create(B.class);
         a.setB(b);
         a.setName("Indiana Jones");
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void validationOnCommitAfterQuery() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         B b = xoManager.create(B.class);
         for (int i = 0; i < 2; i++) {
             A a = xoManager.create(A.class);
             a.setName("Miller");
             a.setB(b);
         }
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
         closeXOmanager();
         xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         for (A miller : xoManager.find(A.class, "Miller")) {
             miller.setName(null);
         }
         Set<ConstraintViolation<?>> constraintViolations = null;
         try {
-            xoManager.currentTransaction().commit();
+            xoManager.currentTransaction()
+                .commit();
             fail("Validation must fail.");
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
         }
         assertThat(constraintViolations).hasSize(1);
-        xoManager.currentTransaction().rollback();
+        xoManager.currentTransaction()
+            .rollback();
     }
 
     @Test
     public void validationAfterPreUpdate() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         B b = xoManager.create(B.class);
         A a = xoManager.create(A.class);
         a.setB(b);
         Set<ConstraintViolation<?>> constraintViolations = null;
         try {
-            xoManager.currentTransaction().commit();
+            xoManager.currentTransaction()
+                .commit();
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
         }
         assertThat(constraintViolations).hasSize(1);
         xoManager.registerInstanceListener(new InstanceListener());
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     public static final class InstanceListener {

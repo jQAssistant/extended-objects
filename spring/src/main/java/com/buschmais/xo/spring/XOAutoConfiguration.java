@@ -29,7 +29,7 @@ public class XOAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(PlatformTransactionManager.class)
     public XOTransactionManager transactionManager(XOManagerFactory<?, ?, ?, ?> xoManagerFactory,
-            ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
+        ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
         XOTransactionManager transactionManager = new XOTransactionManager(xoManagerFactory);
         transactionManagerCustomizers.ifAvailable((customizers) -> customizers.customize(transactionManager));
         return transactionManager;
@@ -38,7 +38,7 @@ public class XOAutoConfiguration {
     @Bean
     public XOManager getXOManager(XOManagerFactory<?, ?, ?, ?> xoManagerFactory) {
         return (XOManager) Proxy.newProxyInstance(XOAutoConfiguration.class.getClassLoader(), new Class<?>[] { XOManager.class },
-                new XOInvocationHandler(xoManagerFactory));
+            new XOInvocationHandler(xoManagerFactory));
     }
 
     private static class XOInvocationHandler implements InvocationHandler {

@@ -11,7 +11,7 @@ public class UserMethod extends AbstractAnnotatedElement<Method> implements Anno
      * Constructor.
      *
      * @param method
-     *            The method.
+     *     The method.
      */
     public UserMethod(Method method) {
         super(method);

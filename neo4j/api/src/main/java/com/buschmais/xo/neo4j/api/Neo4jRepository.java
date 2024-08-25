@@ -12,11 +12,11 @@ public interface Neo4jRepository {
      * property.
      *
      * @param <T>
-     *            The type.
+     *     The type.
      * @param type
-     *            The type.
+     *     The type.
      * @param value
-     *            The value.
+     *     The value.
      * @return An {@link Iterable} returning the instances.
      */
     <T> ResultIterable<T> find(Class<T> type, Object value);

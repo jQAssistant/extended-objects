@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.api.proxy.ProxyMethod;
-import com.buschmais.xo.impl.proxy.common.UnsupportedOperationMethod;
 import com.buschmais.xo.api.metadata.method.ImplementedByMethodMetadata;
 import com.buschmais.xo.api.metadata.method.MethodMetadata;
 import com.buschmais.xo.api.metadata.method.UnsupportedOperationMethodMetadata;
 import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
+import com.buschmais.xo.api.proxy.ProxyMethod;
+import com.buschmais.xo.impl.proxy.common.UnsupportedOperationMethod;
 
 public abstract class AbstractProxyMethodService<E> implements ProxyMethodService<E> {
 

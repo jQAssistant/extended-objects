@@ -11,13 +11,15 @@ public class TypedSelfRelationTest extends AbstractDocumentationTest {
 
     @Override
     protected void configure(XOUnit.XOUnitBuilder builder) {
-        builder.type(Movie.class).type(References.class);
+        builder.type(Movie.class)
+            .type(References.class);
     }
 
     @Test
     public void typedSelfRelation() throws URISyntaxException {
         // tag::Create[]
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         Movie movie1 = xoManager.create(Movie.class);
         Movie movie2 = xoManager.create(Movie.class);
 
@@ -25,7 +27,8 @@ public class TypedSelfRelationTest extends AbstractDocumentationTest {
         references.setMinute(42);
         references.setSecond(42);
 
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
         // end::Create[]
     }
 

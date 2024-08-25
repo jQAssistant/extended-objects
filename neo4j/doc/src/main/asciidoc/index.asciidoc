@@ -5,9 +5,9 @@ This document describes the Neo4j datastore for http://github.com/buschmais/exte
 
 == Introduction
 
-As a graph database Neo4j provides very powerful capabilities to store and query highly interconnected data structures
-consisting of nodes and relationships between them. With release 2.0 the concept of labels has been introduced. One or
-more labels can be added to a single node:
+As a graph database Neo4j provides very powerful capabilities to store and query highly interconnected data structures consisting of nodes and relationships between them.
+With release 2.0 the concept of labels has been introduced.
+One or more labels can be added to a single node:
 
 [source]
 ----
@@ -29,9 +29,8 @@ return
   a.name;
 ----
 
-If a node has a label it can be assumed that it represents some type of data which requires the presence of specific
-properties and relationships (e.g. property "name" for persons, "ACTED_IN" relations to movies). This implies that a
-Neo4j label can be represented as a Java interface and vice versa.
+If a node has a label it can be assumed that it represents some type of data which requires the presence of specific properties and relationships (e.g. property "name" for persons, "ACTED_IN" relations to movies).
+This implies that a Neo4j label can be represented as a Java interface and vice versa.
 
 [source,java]
 .Person.java
@@ -44,6 +43,7 @@ public interface Person {
 ----
 
 == Maven Dependencies
+
 The Neo4j datastore for eXtended Objects is available from Maven Central and can be specified as dependency in pom.xml files:
 
 [source,xml]
@@ -54,7 +54,8 @@ include::{basedir}/pom.xml[tags=Dependencies,indent=0]
 
 == Bootstrapping
 
-For a XOManagerFactory to be constructed a so called XO unit must be defined. There are two ways:
+For a XOManagerFactory to be constructed a so called XO unit must be defined.
+There are two ways:
 
 - Using a descriptor META-INF/xo.xml
 - By using an instance of the class "com.buschmais.xo.XOUnit"
@@ -62,8 +63,9 @@ For a XOManagerFactory to be constructed a so called XO unit must be defined. Th
 === XOUnit via XML
 
 An XO descriptor is a XML file located as classpath resource under "/META-INF/xo.xml" and defines one or more XO units.
-Each must be uniquely identified by a name. This is similar to the persistence unit approach defined by the Java Persistence
-API (JPA). The following snippet shows a minimum setups
+Each must be uniquely identified by a name.
+This is similar to the persistence unit approach defined by the Java Persistence API (JPA).
+The following snippet shows a minimum setups
 
 [source,xml]
 .META-INF/xo.xml (embedded database)
@@ -80,16 +82,17 @@ include::{basedir}/src/test/resources/remote/META-INF/xo.xml[]
 NOTE: Support for remote databases is experimental.
 
 provider::
-  The class name of the datastore provider
-  - `com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider` for embedded Neo4j databases
-  - `com.buschmais.xo.neo4j.remote.api.RemoteNeo4jXOProvider` for remote Neo4j databases via bolt protocol
+The class name of the datastore provider
+- `com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider` for embedded Neo4j databases
+- `com.buschmais.xo.neo4j.remote.api.RemoteNeo4jXOProvider` for remote Neo4j databases via bolt protocol
 url::
-  The URL to pass to the Neo4j datastore. The following protocols are currently supported:
-  - "file:///C:/neo4j/movies": embedded local database using the specified directory as location for the Neo4j database
-  - "memory:///": embedded non-persistent in-memory database
-  - "bolt://localhost:7687": remote database
+The URL to pass to the Neo4j datastore.
+The following protocols are currently supported:
+- "file:///C:/neo4j/movies": embedded local database using the specified directory as location for the Neo4j database
+- "memory:///": embedded non-persistent in-memory database
+- "bolt://localhost:7687": remote database
 types::
-  A list of all persistent types representing labels, relations or repositories
+A list of all persistent types representing labels, relations or repositories
 
 An XOManagerFactory instance can now be obtained as demonstrated in the following snippet:
 
@@ -114,19 +117,21 @@ Note: The class XOUnit builder provides a fluent interface for the parameters wh
 The Neo4j database provides the following native datastore concepts:
 
 Node::
-  An entity, e.g. a Person, Movie, etc. A node might have labels and properties.
+An entity, e.g. a Person, Movie, etc.
+A node might have labels and properties.
 Relationship::
-  A directed relation between two nodes, might have properties. The lifecycle of relation depends on the lifecycle of the
-  nodes it connects.
+A directed relation between two nodes, might have properties.
+The lifecycle of relation depends on the lifecycle of the nodes it connects.
 
 The eXtended Objects datastore for Neo4j allows mapping of all these concepts to Java interfaces.
 
 === Nodes
+
 ==== Labeled Types
 
-Neo4j allows adding one or more labels to a node. These labels are used by eXtended Objects to identify the corresponding Java
-type(s) a node is representing. Thus for each label that shall be used by the application a corresponding interface type must be created
-which is annotated with @Label.
+Neo4j allows adding one or more labels to a node.
+These labels are used by eXtended Objects to identify the corresponding Java type(s) a node is representing.
+Thus for each label that shall be used by the application a corresponding interface type must be created which is annotated with @Label.
 
 [source,java]
 .Person.java
@@ -134,12 +139,12 @@ which is annotated with @Label.
 include::{srcBaseDir}/label/Person.java[tags=Class,indent=0]
 ----
 
-The name of the label defaults to the name of the interface, in this case 'Person'. A specific value can be enforced by adding a
-value to the @Label annotation.
+The name of the label defaults to the name of the interface, in this case 'Person'.
+A specific value can be enforced by adding a value to the @Label annotation.
 
-It can also be seen that a label usually enforces the presence of specific properties (or relations) on a node. The name of a
-property - starting with a lower case letter - is used to store its value in the database, this can be overwritten using @Property. The
-following example demonstrates explicit mappings for a label and a property:
+It can also be seen that a label usually enforces the presence of specific properties (or relations) on a node.
+The name of a property - starting with a lower case letter - is used to store its value in the database, this can be overwritten using @Property.
+The following example demonstrates explicit mappings for a label and a property:
 
 [source,java]
 .Person.java
@@ -159,15 +164,15 @@ A labeled type can extend from one or more labeled types.
 include::{srcBaseDir}/label/Actor.java[tags=Class,indent=0]
 ----
 
-In this case a node created using the type Actor would be labeled with both 'Person' and 'Actor'. This way of combining types is referred to
-as 'static composition'.
+In this case a node created using the type Actor would be labeled with both 'Person' and 'Actor'.
+This way of combining types is referred to as 'static composition'.
 
 [[TemplateTypes]]
 ==== Template Types
 
-There might be situations where the same properties or relations shall be re-used between various labels. In this case template types can be
-used, these are just interfaces specifying properties and relations which shall be shared. The following example demonstrates how the
-property name of the labeled type Person is extracted to a template type:
+There might be situations where the same properties or relations shall be re-used between various labels.
+In this case template types can be used, these are just interfaces specifying properties and relations which shall be shared.
+The following example demonstrates how the property name of the labeled type Person is extracted to a template type:
 
 [source,java]
 .Named.java
@@ -182,9 +187,11 @@ include::{srcBaseDir}/template/Person.java[tags=Class,indent=0]
 ----
 
 === Relations
+
 ==== Unidirectional Relations
-A node can directly reference other nodes using relation properties. A property of a labeled type or template type is treated as such if it
-references another labeled type or a collection thereof.
+
+A node can directly reference other nodes using relation properties.
+A property of a labeled type or template type is treated as such if it references another labeled type or a collection thereof.
 
 [source,java]
 .Movie.java
@@ -198,9 +205,9 @@ include::{srcBaseDir}/relation/unidirectional/Movie.java[tags=Class,indent=0]
 include::{srcBaseDir}/relation/unidirectional/Actor.java[tags=Class,indent=0]
 ----
 
-If no further mapping information is provided an outgoing unidirectional relation using the fully capitalized name of
-the property is assumed. The name may be specified using the @Relation annotation with the desired value. Furthermore
-using one of the annotations @Outgoing or @Incoming the direction of the relation can be specified.
+If no further mapping information is provided an outgoing unidirectional relation using the fully capitalized name of the property is assumed.
+The name may be specified using the @Relation annotation with the desired value.
+Furthermore using one of the annotations @Outgoing or @Incoming the direction of the relation can be specified.
 
 [source,java]
 .Actor.java
@@ -211,22 +218,19 @@ include::{srcBaseDir}/relation/unidirectional/explicit/Actor.java[tags=Class,ind
 Note on multi-valued relations (i.e. collections):
 
 * Only the following types are supported: 'java.util.Collection', 'java.util.List' or 'java.util.Set'.
-* It is recommend to only specify the getter method of the property, as add or remove operations can be performed using the corresponding
-collection methods
-* The provided 'java.util.Set' implementation ensures uniqueness of the relation to the referenced node, if this is not necessary
-'java.util.List' should be prefered for faster add-operations.
+* It is recommend to only specify the getter method of the property, as add or remove operations can be performed using the corresponding collection methods
+* The provided 'java.util.Set' implementation ensures uniqueness of the relation to the referenced node, if this is not necessary 'java.util.List' should be prefered for faster add-operations.
 
 ==== Bidirectional Qualified Relations
 
-Relations in many case shall be accessible from both directions. One possible way is to use two independent
-unidirectional relations which map to the same relation type; one of them annotated with @Outgoing, the other with
-@Incoming. There are some problems with this approach:
+Relations in many case shall be accessible from both directions.
+One possible way is to use two independent unidirectional relations which map to the same relation type; one of them annotated with @Outgoing, the other with @Incoming.
+There are some problems with this approach:
 
 - it is not explicitly visible that the two relation properties are mapped to the same type
 - renaming of the type or of one the properties might break the mapping
 
-The recommended way is to use an annotation which qualifies the relation and holds the mapping information at a single
-point:
+The recommended way is to use an annotation which qualifies the relation and holds the mapping information at a single point:
 
 [source,java]
 .ActedIn.java
@@ -234,13 +238,11 @@ point:
 include::{srcBaseDir}/relation/qualified/ActedIn.java[tags=Class,indent=0]
 ----
 
-
 [source,java]
 .Actor.java
 ----
 include::{srcBaseDir}/relation/qualified/Actor.java[tags=Class,indent=0]
 ----
-
 
 [source,java]
 .Movie.java
@@ -278,9 +280,7 @@ The relation is created explicitly:
 include::{srcBaseDir}/relation/typed/TypedRelationTest.java[tags=Create,indent=0]
 ----
 
-
-Note: If the typed relation references the same labeled type at both ends then the according properties of the latter
-must be annotated with @Outgoing and @Incoming:
+Note: If the typed relation references the same labeled type at both ends then the according properties of the latter must be annotated with @Outgoing and @Incoming:
 
 [source,java]
 .References.java
@@ -330,8 +330,9 @@ include::{srcBaseDir}/implementedby/Person.java[tags=Class,indent=0]
 
 == Repositories
 
-eXtended Objects supports the concepts of repositories. Similar to nodes and relationships they are also represented
-by Java interfaces and must be registered in the XOUnit. They allow the definition of <<DynamicProperty,dynamic properties>>:
+eXtended Objects supports the concepts of repositories.
+Similar to nodes and relationships they are also represented by Java interfaces and must be registered in the XOUnit.
+They allow the definition of <<DynamicProperty,dynamic properties>>:
 
 [[source,java]]
 .PersonRepository.java

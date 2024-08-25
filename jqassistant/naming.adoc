@@ -30,7 +30,6 @@ RETURN
   project as Project, collect(type) as TypeWithWrongName
 ----
 
-
 [[naming:AbstractClassNamePrefix]]
 [source,cypher,role=constraint]
 .All abstract classes must have a name that starts with the prefix `Abstract`.

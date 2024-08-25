@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.test.issues.not_a_proxy;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOManager;
@@ -14,6 +12,8 @@ import com.buschmais.xo.neo4j.test.issues.not_a_proxy.composite.C;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * https://github.com/buschmais/cdo-neo4j/issues/57
@@ -33,14 +33,19 @@ public class NotAProxyIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void test() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         C c = xoManager.create(C.class);
-        a.getB().add(c);
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
+        a.getB()
+            .add(c);
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
         assertThat(a).isNotEqualTo(a.getB());
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
 }

@@ -12,7 +12,7 @@ import com.buschmais.xo.api.metadata.reflection.AnnotatedType;
 public class SimpleTypeMetadata extends AbstractTypeMetadata {
 
     public SimpleTypeMetadata(AnnotatedType annotatedType, Collection<TypeMetadata> superTypes, Collection<MethodMetadata<?, ?>> properties,
-            IndexedPropertyMethodMetadata indexedProperty) {
+        IndexedPropertyMethodMetadata indexedProperty) {
         super(annotatedType, superTypes, properties, indexedProperty);
     }
 }

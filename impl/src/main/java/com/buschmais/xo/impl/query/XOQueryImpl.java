@@ -1,7 +1,5 @@
 package com.buschmais.xo.impl.query;
 
-import static java.util.Comparator.comparing;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.*;
@@ -11,29 +9,31 @@ import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOTransaction;
 import com.buschmais.xo.api.annotation.Flush;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.plugin.QueryLanguagePluginRepository;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
-import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreQuery;
-import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.plugin.QueryLanguagePlugin;
 import com.buschmais.xo.spi.session.InstanceManager;
+
+import static java.util.Comparator.comparing;
 
 /**
  * Implementation of a {@link com.buschmais.xo.api.Query}.
  *
  * @param <T>
- *            The result type.
+ *     The result type.
  * @param <QL>
- *            The query language type.
+ *     The query language type.
  * @param <QE>
- *            The query expression type.
+ *     The query expression type.
  * @param <Entity>
- *            The entity type.
+ *     The entity type.
  * @param <Relation>
- *            The relation type.
+ *     The relation type.
  */
 public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> implements Query<T> {
 
@@ -49,11 +49,12 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     private Map<String, Object> parameters = null;
 
     public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression, Class<?> returnType,
-            Collection<? extends Class<?>> returnTypes) {
+        Collection<? extends Class<?>> returnTypes) {
         this.sessionContext = sessionContext;
         this.entityInstanceManager = sessionContext.getEntityInstanceManager();
         this.relationInstanceManager = sessionContext.getRelationInstanceManager();
-        this.queryLanguagePluginManager = sessionContext.getPluginRepositoryManager().getPluginManager(QueryLanguagePlugin.class);
+        this.queryLanguagePluginManager = sessionContext.getPluginRepositoryManager()
+            .getPluginManager(QueryLanguagePlugin.class);
         this.expression = expression;
         this.returnType = returnType;
         this.returnTypes = returnTypes;
@@ -70,7 +71,8 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     @Override
     public Query<T> using(Class<? extends Annotation> queryLanguage) {
         this.queryLanguage = queryLanguage;
-        return sessionContext.getInterceptorFactory().addInterceptor(this, Query.class);
+        return sessionContext.getInterceptorFactory()
+            .addInterceptor(this, Query.class);
     }
 
     @Override
@@ -82,7 +84,8 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         if (oldValue != null) {
             throw new XOException("Parameter '" + name + "' has already been assigned to value '" + value + "'.");
         }
-        return sessionContext.getInterceptorFactory().addInterceptor(this, Query.class);
+        return sessionContext.getInterceptorFactory()
+            .addInterceptor(this, Query.class);
     }
 
     @Override
@@ -101,7 +104,8 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
             convertedParameters.put(name, value);
         }
         this.parameters = convertedParameters;
-        return sessionContext.getInterceptorFactory().addInterceptor(this, Query.class);
+        return sessionContext.getInterceptorFactory()
+            .addInterceptor(this, Query.class);
     }
 
     @Override
@@ -112,8 +116,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
 
     @Override
     public Result<T> execute() {
-        DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> datastoreSession = sessionContext
-                .getDatastoreSession();
+        DatastoreSession<?, Entity, ? extends DatastoreEntityMetadata<?>, ?, ?, Relation, ? extends DatastoreRelationMetadata<?>, ?, ?> datastoreSession = sessionContext.getDatastoreSession();
         if (queryLanguage == null) {
             queryLanguage = datastoreSession.getDefaultQueryLanguage();
         }
@@ -122,7 +125,8 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         if (queryLanguagePlugin != null) {
             query = queryLanguagePlugin.createQuery(sessionContext.getDatastoreSession());
         } else {
-            query = (DatastoreQuery<QL>) sessionContext.getDatastoreSession().createQuery(queryLanguage);
+            query = (DatastoreQuery<QL>) sessionContext.getDatastoreSession()
+                .createQuery(queryLanguage);
         }
         Map<String, Object> effectiveParameters = parameters != null ? parameters : Collections.emptyMap();
         ResultIterator<Map<String, Object>> iterator;
@@ -131,7 +135,8 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
             iterator = query.execute((String) expression, effectiveParameters);
         } else if (expression instanceof AnnotatedElement) {
             AnnotatedElement annotatedElement = (AnnotatedElement) expression;
-            QL queryAnnotation = sessionContext.getMetadataProvider().getQuery(annotatedElement);
+            QL queryAnnotation = sessionContext.getMetadataProvider()
+                .getQuery(annotatedElement);
             if (queryAnnotation == null) {
                 throw new XOException("Cannot find query annotation on element " + expression.toString());
             }
@@ -142,8 +147,10 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         }
         SortedSet<Class<?>> resultTypes = getResultTypes();
         XOTransaction xoTransaction = sessionContext.getXOTransaction();
-        return sessionContext.getInterceptorFactory().addInterceptor(new QueryResultIterableImpl(sessionContext,
-                xoTransaction != null ? new TransactionalResultIterator<>(iterator, xoTransaction) : iterator, resultTypes), Result.class);
+        return sessionContext.getInterceptorFactory()
+            .addInterceptor(
+                new QueryResultIterableImpl(sessionContext, xoTransaction != null ? new TransactionalResultIterator<>(iterator, xoTransaction) : iterator,
+                    resultTypes), Result.class);
     }
 
     private void flush(AnnotatedElement annotatedElement) {
@@ -155,7 +162,8 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
             doFlush = autoFlushAnnotation == null || autoFlushAnnotation.value();
         }
         if (doFlush) {
-            sessionContext.getCacheSynchronizationService().flush();
+            sessionContext.getCacheSynchronizationService()
+                .flush();
         }
     }
 
@@ -164,7 +172,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
      * datastore.
      *
      * @param value
-     *            The value.
+     *     The value.
      * @return The converted value.
      */
     private Object convertParameter(Object value) {

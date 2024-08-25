@@ -1,9 +1,5 @@
 package com.buschmais.xo.neo4j.test.performance;
 
-import static com.buschmais.xo.api.Transaction.TransactionAttribute;
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,15 +21,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.buschmais.xo.api.Transaction.TransactionAttribute;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 @RunWith(Parameterized.class)
 public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
@@ -49,13 +43,14 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
 
     public XoVsNativePerformancePT(XOUnit xoUnit) {
         super(xoUnit);
-        LOGGER.info("Running using URI " + xoUnit.getUri().toString());
+        LOGGER.info("Running using URI " + xoUnit.getUri()
+            .toString());
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() {
         return xoUnits(singletonList(Neo4jDatabase.MEMORY), asList(TreeNode.class, TreeNodeRelation.class), Collections.emptyList(), ValidationMode.NONE,
-                ConcurrencyMode.SINGLETHREADED, TransactionAttribute.NONE);
+            ConcurrencyMode.SINGLETHREADED, TransactionAttribute.NONE);
     }
 
     private class Measurement {
@@ -115,12 +110,14 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
         ApiUnderTest<TreeNode, TreeNodeRelation> xoApi = new ApiUnderTest<TreeNode, TreeNodeRelation>() {
             @Override
             public void begin() {
-                xoManager.currentTransaction().begin();
+                xoManager.currentTransaction()
+                    .begin();
             }
 
             @Override
             public void commit() {
-                xoManager.currentTransaction().commit();
+                xoManager.currentTransaction()
+                    .commit();
             }
 
             @Override
@@ -147,7 +144,8 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
     }
 
     private List<Measurement> runNative(final XOManager xoManager) {
-        final GraphDatabaseService graphDatabaseService = xoManager.getDatastoreSession(EmbeddedNeo4jDatastoreSession.class).getGraphDatabaseService();
+        final GraphDatabaseService graphDatabaseService = xoManager.getDatastoreSession(EmbeddedNeo4jDatastoreSession.class)
+            .getGraphDatabaseService();
         ApiUnderTest<Node, Relationship> nativeApi = new ApiUnderTest<Node, Relationship>() {
 
             private Transaction transaction;
@@ -178,7 +176,8 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
             public Relationship createRelation(Node parent, Node child) {
                 RelationshipType relationshipType = RelationshipType.withName(RELATIONSHIPTYPE);
                 if (child.hasRelationship(Direction.INCOMING, relationshipType)) {
-                    child.getSingleRelationship(relationshipType, Direction.INCOMING).delete();
+                    child.getSingleRelationship(relationshipType, Direction.INCOMING)
+                        .delete();
                 }
                 Relationship relationshipTo = parent.createRelationshipTo(child, relationshipType);
                 return relationshipTo;
@@ -209,7 +208,7 @@ public class XoVsNativePerformancePT extends AbstractNeo4JXOManagerIT {
 
             Measurement measurement = new Measurement(counter, start, stop);
             LOGGER.info(
-                    "counter=" + measurement.getCounter() + ", time=" + measurement.getDuration() + "ms" + ", speed=" + measurement.getSpeed() + " vertices/s");
+                "counter=" + measurement.getCounter() + ", time=" + measurement.getDuration() + "ms" + ", speed=" + measurement.getSpeed() + " vertices/s");
             measurements.add(measurement);
         }
         LOGGER.info("Finished run with API " + apiUnderTest);

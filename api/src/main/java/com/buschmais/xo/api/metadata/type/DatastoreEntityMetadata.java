@@ -4,7 +4,7 @@ package com.buschmais.xo.api.metadata.type;
  * Defines the interface for entity metadata produced and used by the datastore.
  *
  * @param <EntityDiscriminator>
- *            The type of entity discriminators.
+ *     The type of entity discriminators.
  */
 public interface DatastoreEntityMetadata<EntityDiscriminator> {
 

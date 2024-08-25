@@ -2,12 +2,12 @@ package com.buschmais.xo.impl.proxy.entity.property;
 
 import java.util.Collection;
 
+import com.buschmais.xo.api.metadata.method.EntityCollectionPropertyMethodMetadata;
 import com.buschmais.xo.impl.EntityPropertyManager;
 import com.buschmais.xo.impl.proxy.common.property.AbstractPropertyMethod;
-import com.buschmais.xo.api.metadata.method.EntityCollectionPropertyMethodMetadata;
 
 public class EntityCollectionPropertySetMethod<Entity, Relation>
-        extends AbstractPropertyMethod<Entity, EntityPropertyManager<Entity, Relation, ?>, EntityCollectionPropertyMethodMetadata> {
+    extends AbstractPropertyMethod<Entity, EntityPropertyManager<Entity, Relation, ?>, EntityCollectionPropertyMethodMetadata> {
 
     public EntityCollectionPropertySetMethod(EntityPropertyManager<Entity, Relation, ?> propertyManager, EntityCollectionPropertyMethodMetadata metadata) {
         super(propertyManager, metadata);

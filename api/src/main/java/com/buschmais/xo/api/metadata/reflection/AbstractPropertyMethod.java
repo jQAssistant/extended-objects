@@ -17,11 +17,11 @@ public abstract class AbstractPropertyMethod extends AbstractAnnotatedElement<Me
      * Constructor.
      *
      * @param method
-     *            The method.
+     *     The method.
      * @param name
-     *            The name of the property.
+     *     The name of the property.
      * @param type
-     *            The type of the property.
+     *     The type of the property.
      */
     protected AbstractPropertyMethod(Method method, String name, Class<?> type, Type genericType) {
         super(method);

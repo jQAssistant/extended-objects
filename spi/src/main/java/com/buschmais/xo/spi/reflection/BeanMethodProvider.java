@@ -5,11 +5,11 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 import com.buschmais.xo.api.XOException;
-
 import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
 import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
 import com.buschmais.xo.api.metadata.reflection.SetPropertyMethod;
 import com.buschmais.xo.api.metadata.reflection.UserMethod;
+
 import com.google.common.base.CaseFormat;
 
 /**
@@ -41,11 +41,13 @@ public final class BeanMethodProvider {
         abstract boolean matches(Class<?>[] parameterTypes, Class<?> returnType);
 
         public boolean matches(Method method) {
-            return method.getName().startsWith(name().toLowerCase()) && matches(method.getParameterTypes(), method.getReturnType());
+            return method.getName()
+                .startsWith(name().toLowerCase()) && matches(method.getParameterTypes(), method.getReturnType());
         }
 
         String getName(Method method) {
-            return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, method.getName().substring(name().length()));
+            return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, method.getName()
+                .substring(name().length()));
         }
     }
 
@@ -133,12 +135,13 @@ public final class BeanMethodProvider {
         Class<?> existingType = types.put(name, type);
         if (existingType != null && !existingType.equals(type)) {
             throw new XOException("Get and set methods for property '" + name + "' of type '" + declaringType.getName() + "' do not declare the same type: "
-                    + existingType.getName() + " <> " + type.getName());
+                + existingType.getName() + " <> " + type.getName());
         }
         Type existingGenericType = genericTypes.put(name, genericType);
         if (existingGenericType != null && !existingGenericType.equals(genericType)) {
-            throw new XOException("Get and set methods for property '" + name + "' of type '" + declaringType.getName()
-                    + "' do not declare the same generic type: " + existingGenericType + " <> " + type.getName());
+            throw new XOException(
+                "Get and set methods for property '" + name + "' of type '" + declaringType.getName() + "' do not declare the same generic type: "
+                    + existingGenericType + " <> " + type.getName());
         }
     }
 }

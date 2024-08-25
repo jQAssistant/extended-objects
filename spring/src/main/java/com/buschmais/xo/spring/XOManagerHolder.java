@@ -21,7 +21,8 @@ public class XOManagerHolder extends ResourceHolderSupport {
     }
 
     protected boolean isTransactionActive() {
-        return this.xoManager.currentTransaction().isActive();
+        return this.xoManager.currentTransaction()
+            .isActive();
     }
 
 }

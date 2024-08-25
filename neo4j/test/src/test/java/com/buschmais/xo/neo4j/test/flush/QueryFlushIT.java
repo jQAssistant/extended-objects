@@ -34,34 +34,60 @@ public class QueryFlushIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void flush() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         FlushRepository repository = xoManager.getRepository(FlushRepository.class);
         A a = xoManager.create(A.class);
         a.setName("1");
-        assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a").execute().getSingleResult().get("a", A.class)).isEqualTo(a);
+        assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a")
+            .execute()
+            .getSingleResult()
+            .get("a", A.class)).isEqualTo(a);
         a.setName("2");
-        assertThat(xoManager.createQuery(FindByNameQuery.class).withParameter("name", "1").execute().hasResult()).isTrue();
+        assertThat(xoManager.createQuery(FindByNameQuery.class)
+            .withParameter("name", "1")
+            .execute()
+            .hasResult()).isTrue();
         assertThat(repository.findByName("1")).isEqualTo(a);
         assertThat(a.findByName("1")).isEqualTo(a);
-        assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a").flush(false).execute().hasResult()).isTrue();
+        assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a")
+            .flush(false)
+            .execute()
+            .hasResult()).isTrue();
         xoManager.flush();
-        assertThat(xoManager.createQuery(FindByNameQuery.class).withParameter("name", "1").execute().hasResult()).isFalse();
+        assertThat(xoManager.createQuery(FindByNameQuery.class)
+            .withParameter("name", "1")
+            .execute()
+            .hasResult()).isFalse();
         assertThat(repository.findByName("1")).isNull();
         assertThat(a.findByName("1")).isNull();
-        assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a").flush(false).execute().hasResult()).isFalse();
-        xoManager.currentTransaction().commit();
+        assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a")
+            .flush(false)
+            .execute()
+            .hasResult()).isFalse();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void overwriteFlush() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setName("1");
-        assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a").execute().getSingleResult().get("a", A.class)).isEqualTo(a);
+        assertThat(xoManager.createQuery("MATCH (a:A) WHERE a.name='1' RETURN a")
+            .execute()
+            .getSingleResult()
+            .get("a", A.class)).isEqualTo(a);
         a.setName("2");
-        assertThat(xoManager.createQuery(FindByNameQuery.class).flush(true).withParameter("name", "2").execute().hasResult()).isTrue();
-        xoManager.currentTransaction().commit();
+        assertThat(xoManager.createQuery(FindByNameQuery.class)
+            .flush(true)
+            .withParameter("name", "2")
+            .execute()
+            .hasResult()).isTrue();
+        xoManager.currentTransaction()
+            .commit();
     }
 
 }

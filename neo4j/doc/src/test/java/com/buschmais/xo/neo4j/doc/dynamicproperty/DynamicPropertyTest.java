@@ -9,22 +9,27 @@ public class DynamicPropertyTest extends AbstractDocumentationTest {
 
     @Override
     protected void configure(XOUnit.XOUnitBuilder builder) {
-        builder.type(Person.class).type(Actor.class).type(Movie.class);
+        builder.type(Person.class)
+            .type(Actor.class)
+            .type(Movie.class);
     }
 
     @Test
     public void dynamicProperty() {
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
 
         Movie movie = xoManager.create(Movie.class);
         Actor actor = xoManager.create(Actor.class);
         actor.setAge(42);
-        movie.getActors().add(actor);
+        movie.getActors()
+            .add(actor);
 
         Long totalActors = movie.getActorCount();
         Long actorsWithAge42 = movie.getActorCountByAge(42);
 
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
 }

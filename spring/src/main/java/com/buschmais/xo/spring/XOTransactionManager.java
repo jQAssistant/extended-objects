@@ -80,13 +80,15 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
         XOTransactionObject txObject = (XOTransactionObject) transaction;
 
         try {
-            if (txObject.getXOManagerHolder() == null || txObject.getXOManagerHolder().isSynchronizedWithTransaction()) {
+            if (txObject.getXOManagerHolder() == null || txObject.getXOManagerHolder()
+                .isSynchronizedWithTransaction()) {
                 XOManager xoManager = xoManagerFactory.createXOManager();
                 logger.debug("Opened new XOManager {}.", xoManager);
                 txObject.setXOManagerHolder(new XOManagerHolder(xoManager), true);
             }
 
-            XOManager xoManager = txObject.getXOManagerHolder().getXOManager();
+            XOManager xoManager = txObject.getXOManagerHolder()
+                .getXOManager();
 
             if (definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT) {
                 // We should set a specific isolation level but are not allowed to...
@@ -97,7 +99,8 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
                 throw new IllegalTransactionStateException("XOTransactionManager only supports 'required' propagation.");
             }
 
-            XOTransaction xoTransaction = xoManager.currentTransaction().begin();
+            XOTransaction xoTransaction = xoManager.currentTransaction()
+                .begin();
 
             txObject.setXOTransaction(xoTransaction);
             logger.debug("Beginning Transaction {} on XOManager {}", xoTransaction, xoManager);
@@ -110,7 +113,8 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
                 TransactionSynchronizationManager.setCurrentTransactionReadOnly(true);
             }
 
-            txObject.getXOManagerHolder().setSynchronizedWithTransaction(true);
+            txObject.getXOManagerHolder()
+                .setSynchronizedWithTransaction(true);
         } catch (TransactionException ex) {
             closeAfterFailedBegin(txObject);
             throw ex;
@@ -122,10 +126,13 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
 
     private void closeAfterFailedBegin(XOTransactionObject txObject) {
         if (txObject.isNewXOManagerHolder()) {
-            XOManager xoManager = txObject.getXOManagerHolder().getXOManager();
+            XOManager xoManager = txObject.getXOManagerHolder()
+                .getXOManager();
             try {
-                if (xoManager.currentTransaction().isActive()) {
-                    xoManager.currentTransaction().rollback();
+                if (xoManager.currentTransaction()
+                    .isActive()) {
+                    xoManager.currentTransaction()
+                        .rollback();
                 }
             } catch (Throwable ex) {
                 logger.debug("Could not rollback XOTransaction after failed transaction begin", ex);
@@ -165,7 +172,8 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
 
     private void doComplete(DefaultTransactionStatus status, boolean commit) {
         XOTransactionObject txObject = (XOTransactionObject) status.getTransaction();
-        XOManager xoManager = txObject.getXOManagerHolder().getXOManager();
+        XOManager xoManager = txObject.getXOManagerHolder()
+            .getXOManager();
         XOTransaction xoTransaction = xoManager.currentTransaction();
         try {
             if (xoTransaction.isActive()) {
@@ -187,7 +195,8 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
     @Override
     protected void doSetRollbackOnly(DefaultTransactionStatus status) {
         XOTransactionObject txObject = (XOTransactionObject) status.getTransaction();
-        txObject.getXOTransaction().setRollbackOnly();
+        txObject.getXOTransaction()
+            .setRollbackOnly();
         status.setRollbackOnly();
     }
 
@@ -202,13 +211,15 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
             xoTransaction.rollback();
         }
         if (txObject.isNewXOManagerHolder()) {
-            XOManager xoManager = txObject.getXOManagerHolder().getXOManager();
+            XOManager xoManager = txObject.getXOManagerHolder()
+                .getXOManager();
             logger.debug("Closing XOManager {} after transaction.", xoManager);
         } else {
             logger.debug("Not closing pre-bound XOManager after transaction.");
         }
 
-        txObject.getXOManagerHolder().clear();
+        txObject.getXOManagerHolder()
+            .clear();
     }
 
     private static class XOTransactionObject {

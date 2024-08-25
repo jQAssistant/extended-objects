@@ -9,7 +9,7 @@ import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
  * Defines the factory interfaces for {@link XOManager} instances.
  */
 public interface XOManagerFactory<EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator>
-        extends AutoCloseable, CloseSupport {
+    extends AutoCloseable, CloseSupport {
 
     /**
      * Create a {@link XOManager} instance.
@@ -34,9 +34,9 @@ public interface XOManagerFactory<EntityMetadata extends DatastoreEntityMetadata
      * Reutrn the underlying configured datastore.
      *
      * @param datastoreType
-     *            The expected datastore type.
+     *     The expected datastore type.
      * @param <DS>
-     *            The datastore type.
+     *     The datastore type.
      * @return The datastore.
      */
     <DS> DS getDatastore(Class<DS> datastoreType);

@@ -8,9 +8,9 @@ import com.buschmais.xo.api.metadata.method.ResultOfMethodMetadata;
  * Implementation of a result of method for relations.
  *
  * @param <Entity>
- *            The entity type.
+ *     The entity type.
  * @param <Relation>
- *            The relation type.
+ *     The relation type.
  */
 public class ResultOfMethod<Entity, Relation> extends AbstractResultOfMethod<Entity, Entity, Relation> {
 
@@ -20,7 +20,8 @@ public class ResultOfMethod<Entity, Relation> extends AbstractResultOfMethod<Ent
 
     @Override
     protected Object getThisInstance(Entity datastoreType, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
-        return sessionContext.getEntityInstanceManager().readInstance(datastoreType);
+        return sessionContext.getEntityInstanceManager()
+            .readInstance(datastoreType);
     }
 
 }

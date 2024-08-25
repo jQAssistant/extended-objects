@@ -4,24 +4,24 @@ import java.util.Map;
 import java.util.Set;
 
 import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
-import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
 import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
 import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
 
 /**
  * Defines the interface for all entity related datastore operations.
  */
 public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, PropertyMetadata>
-        extends DatastorePropertyManager<Entity, PropertyMetadata> {
+    extends DatastorePropertyManager<Entity, PropertyMetadata> {
 
     /**
      * Determine if the given object is an entity.
      *
      * @param o
-     *            The object.
+     *     The object.
      * @return <code>true</code> if the object is an entity, <code>false</code>
-     *         otherwise.
+     * otherwise.
      */
     boolean isEntity(Object o);
 
@@ -29,7 +29,7 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      * Return the type discriminators of an entity.
      *
      * @param entity
-     *            The entity.
+     *     The entity.
      * @return The set of all type discriminators associated with the entity.
      */
     Set<EntityDiscriminator> getEntityDiscriminators(Entity entity);
@@ -38,7 +38,7 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      * Return the id of an entity.
      *
      * @param entity
-     *            The entity.
+     *     The entity.
      * @return The id of the entity.
      */
     EntityId getEntityId(Entity entity);
@@ -48,21 +48,21 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      * representing these types.
      *
      * @param types
-     *            The types.
+     *     The types.
      * @param discriminators
-     *            The set of discriminators.
+     *     The set of discriminators.
      * @param exampleEntity
-     *            The example entity.
+     *     The example entity.
      * @return The created entity.
      */
     Entity createEntity(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> discriminators,
-                        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity);
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity);
 
     /**
      * Delete an entity.
      *
      * @param entity
-     *            The entity to deleteEntity.
+     *     The entity to deleteEntity.
      */
     void deleteEntity(Entity entity);
 
@@ -70,11 +70,11 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      * Find an entity using its id.
      *
      * @param metadata
-     *            The metadata of the type.
+     *     The metadata of the type.
      * @param discriminator
-     *            The discriminator to find the entity.
+     *     The discriminator to find the entity.
      * @param id
-     *            The id.
+     *     The id.
      * @return The entity.
      */
     Entity findEntityById(EntityTypeMetadata<EntityMetadata> metadata, EntityDiscriminator discriminator, EntityId id);
@@ -83,22 +83,22 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      * Find entities using given primitive property values.
      *
      * @param type
-     *            The type of the instances.
+     *     The type of the instances.
      * @param discriminator
-     *            The discriminator to find the entities.
+     *     The discriminator to find the entities.
      * @param values
-     *            The primitive value.
+     *     The primitive value.
      * @return An iterator returning matching entities.
      */
     ResultIterator<Entity> findEntity(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator discriminator,
-            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values);
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values);
 
     /**
      * Add a set of discriminators to an entity.
      *
      * @param types
      * @param entity
-     *            The entity.
+     *     The entity.
      * @param discriminators
      */
     void addDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> types, Entity entity, Set<EntityDiscriminator> discriminators);
@@ -108,7 +108,7 @@ public interface DatastoreEntityManager<EntityId, Entity, EntityMetadata extends
      *
      * @param removedTypes
      * @param entity
-     *            The entity.
+     *     The entity.
      * @param discriminators
      */
     void removeDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> removedTypes, Entity entity, Set<EntityDiscriminator> discriminators);

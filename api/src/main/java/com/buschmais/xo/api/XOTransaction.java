@@ -19,8 +19,8 @@ public interface XOTransaction extends AutoCloseable {
          * Called after the transaction has been completed.
          *
          * @param committed
-         *            <code>true</code> if the transaction as been committed,
-         *            <code>false</code> if the transaction was rolled back.
+         *     <code>true</code> if the transaction as been committed,
+         *     <code>false</code> if the transaction was rolled back.
          */
         void afterCompletion(boolean committed);
     }
@@ -62,9 +62,9 @@ public interface XOTransaction extends AutoCloseable {
 
     /**
      * Returns if the current transaction is marked as rollback only.
-     * 
+     *
      * @return <code>true</code> if the current transaction is marked as rollback
-     *         only.
+     * only.
      */
     boolean isRollbackOnly();
 
@@ -72,7 +72,7 @@ public interface XOTransaction extends AutoCloseable {
      * Register a {@link Synchronization}.
      *
      * @param synchronization
-     *            The a {@link Synchronization}.
+     *     The a {@link Synchronization}.
      */
     void registerSynchronization(Synchronization synchronization);
 
@@ -80,7 +80,7 @@ public interface XOTransaction extends AutoCloseable {
      * Unregister a {@link Synchronization}.
      *
      * @param synchronization
-     *            The a {@link Synchronization}.
+     *     The a {@link Synchronization}.
      */
     void unregisterSynchronization(Synchronization synchronization);
 }

@@ -1,10 +1,5 @@
 package com.buschmais.xo.trace;
 
-import static com.buschmais.xo.api.Transaction.TransactionAttribute.NONE;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.typeCompatibleWith;
-
 import java.util.Set;
 
 import com.buschmais.xo.api.XOManagerFactory;
@@ -15,6 +10,11 @@ import com.buschmais.xo.trace.api.TraceDatastoreProvider;
 import com.buschmais.xo.trace.composite.A;
 
 import org.junit.Test;
+
+import static com.buschmais.xo.api.Transaction.TransactionAttribute.NONE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.typeCompatibleWith;
 
 public class BootstrapTest {
 

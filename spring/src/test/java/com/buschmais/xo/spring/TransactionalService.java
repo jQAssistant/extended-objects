@@ -14,7 +14,9 @@ public class TransactionalService {
 
     @Transactional
     public void cleanUp() {
-        xoManager.createQuery("MATCH (p:Person) DELETE p").execute().close();
+        xoManager.createQuery("MATCH (p:Person) DELETE p")
+            .execute()
+            .close();
     }
 
     @Transactional
@@ -27,6 +29,9 @@ public class TransactionalService {
 
     @Transactional
     public Long countPersons() {
-        return xoManager.createQuery("MATCH (p:Person) RETURN count(p) as count").execute().getSingleResult().get("count", Long.class);
+        return xoManager.createQuery("MATCH (p:Person) RETURN count(p) as count")
+            .execute()
+            .getSingleResult()
+            .get("count", Long.class);
     }
 }

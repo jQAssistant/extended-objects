@@ -6,7 +6,7 @@ import com.buschmais.xo.neo4j.embedded.impl.datastore.EmbeddedDatastoreTransacti
 import org.neo4j.graphdb.Relationship;
 
 public class EmbeddedRelationship extends AbstractEmbeddedPropertyContainer<Relationship>
-        implements Neo4jRelationship<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {
+    implements Neo4jRelationship<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType, EmbeddedDirection> {
 
     private final EmbeddedNode startNode;
 
@@ -23,7 +23,8 @@ public class EmbeddedRelationship extends AbstractEmbeddedPropertyContainer<Rela
 
     @Override
     public Relationship getDelegate() {
-        return transaction.getTransaction().getRelationshipById(id);
+        return transaction.getTransaction()
+            .getRelationshipById(id);
     }
 
     public void delete() {

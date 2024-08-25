@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.test.repository.composite;
 
-import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
-
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.annotation.ImplementedBy;
 import com.buschmais.xo.api.annotation.Repository;
@@ -9,6 +7,8 @@ import com.buschmais.xo.api.annotation.ResultOf;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.neo4j.api.Neo4jRepository;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
+
+import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
 
 @Repository
 public interface CustomNeo4jRepository extends Neo4jRepository {
@@ -25,7 +25,8 @@ public interface CustomNeo4jRepository extends Neo4jRepository {
         @Override
         public Object invoke(XOManager xoManager, Object instance, Object[] args) {
             Object arg = args[0];
-            return xoManager.find(A.class, arg).getSingleResult();
+            return xoManager.find(A.class, arg)
+                .getSingleResult();
         }
     }
 }

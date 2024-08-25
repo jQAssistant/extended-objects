@@ -11,13 +11,16 @@ public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extend
     private final SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?, ?> sessionContext;
 
     public EntityInstanceManager(SessionContext<EntityId, Entity, ?, EntityDiscriminator, ?, ?, ?, ?, ?> sessionContext) {
-        super(sessionContext.getEntityCache(), sessionContext.getInstanceListenerService(), sessionContext.getProxyFactory(), new EntityProxyMethodService<>(sessionContext));
+        super(sessionContext.getEntityCache(), sessionContext.getInstanceListenerService(), sessionContext.getProxyFactory(),
+            new EntityProxyMethodService<>(sessionContext));
         this.sessionContext = sessionContext;
     }
 
     @Override
     public boolean isDatastoreType(Object o) {
-        return sessionContext.getDatastoreSession().getDatastoreEntityManager().isEntity(o);
+        return sessionContext.getDatastoreSession()
+            .getDatastoreEntityManager()
+            .isEntity(o);
     }
 
     @Override
@@ -25,13 +28,18 @@ public class EntityInstanceManager<EntityId, Entity, EntityDiscriminator> extend
         if (entity == null) {
             throw new XOException("No entity provided.");
         }
-        return sessionContext.getDatastoreSession().getDatastoreEntityManager().getEntityId(entity);
+        return sessionContext.getDatastoreSession()
+            .getDatastoreEntityManager()
+            .getEntityId(entity);
     }
 
     @Override
     protected CompositeTypeMetadata<?> getTypes(Entity entity) {
-        Set<EntityDiscriminator> discriminators = sessionContext.getDatastoreSession().getDatastoreEntityManager().getEntityDiscriminators(entity);
-        return sessionContext.getMetadataProvider().getTypes(discriminators);
+        Set<EntityDiscriminator> discriminators = sessionContext.getDatastoreSession()
+            .getDatastoreEntityManager()
+            .getEntityDiscriminators(entity);
+        return sessionContext.getMetadataProvider()
+            .getTypes(discriminators);
     }
 
 }

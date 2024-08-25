@@ -5,22 +5,18 @@ This document describes the core concepts of eXtended Objects.
 
 == Introduction
 
-Modeling data objects for datastores (i.e. databases) in various domains often requires common properties
-(e.g. lastChangedBy, created, name, etc.) to be present in several data types. This is commonly solved by defining
-abstract base types representing a specific aspect or role and defining these properties here. Concrete data types may
-derive from these base types if the information is needed. This approach comes to its limits if more than one aspect
-shall be re-used in one POJO as multiple inheritance is not supported for classes in the Java language.
+Modeling data objects for datastores (i.e. databases) in various domains often requires common properties (e.g. lastChangedBy, created, name, etc.) to be present in several data types.
+This is commonly solved by defining abstract base types representing a specific aspect or role and defining these properties here.
+Concrete data types may derive from these base types if the information is needed.
+This approach comes to its limits if more than one aspect shall be re-used in one POJO as multiple inheritance is not supported for classes in the Java language.
 
-eXtended Objects (XO) allows modeling types as interfaces by specifying the required accessor methods
-(i.e. getter and setter) and composing these types either statically or dynamically. The XO API uses well-known
-concepts from existing persistence APIs (e.g. JPA, JDO) but extends them with functionality which is enabled by using
-interfaces to define the data objects, e.g. type migration at runtime.
-The XO implementation itself is datastore-agnostic, i.e. it does not depend on specific datastore concepts like
-relational or graph databases, document stores etc. but allows using them. Datastore specific implementations can be
-provided by implementing the SPI (Service Provider Interface), the reference implementation is based on the
-graph database Neo4j.
+eXtended Objects (XO) allows modeling types as interfaces by specifying the required accessor methods (i.e. getter and setter) and composing these types either statically or dynamically.
+The XO API uses well-known concepts from existing persistence APIs (e.g. JPA, JDO) but extends them with functionality which is enabled by using interfaces to define the data objects, e.g. type migration at runtime.
+The XO implementation itself is datastore-agnostic, i.e. it does not depend on specific datastore concepts like relational or graph databases, document stores etc. but allows using them.
+Datastore specific implementations can be provided by implementing the SPI (Service Provider Interface), the reference implementation is based on the graph database Neo4j.
 
 == Core Concepts
+
 === Static vs. Dynamic Composition
 
 A simple example shall be used to explain the difference between both concepts of composition:
@@ -113,8 +109,9 @@ public class RaidersOfTheLostArk {
 }
 ----
 
-The types Actor and Director use static composition by extending from the type Person. But what happens if a person
-works in both roles: actor and director? A new type extending from both would be required if static composition was used:
+The types Actor and Director use static composition by extending from the type Person.
+But what happens if a person works in both roles: actor and director?
+A new type extending from both would be required if static composition was used:
 
 [source,java]
 .DirectingActor.java
@@ -125,7 +122,8 @@ public interface DirectingActor extends Director, Actor {
 ----
 
 The situation gets even more complex if other roles (like screenwriter, editor, etc.) are added to the domain model.
-Each combination of roles must be represented by such a type. Dynamic composition helps getting around this problem:
+Each combination of roles must be represented by such a type.
+Dynamic composition helps getting around this problem:
 
 [source,java]
 .TempleOfDoom.java
@@ -162,10 +160,9 @@ public class TempleOfDoom {
 
 === Entity Migration At Runtime
 
-There may be situations where an existing data object needs to be migrated to also represent other types. Using the
-above example the fact that the director also acted in the movie might have been discovered after the data object
-has been created using the type Director. XO offers a way to perform a migration at runtime and allows adding (or
-removing) roles (i.e. types):
+There may be situations where an existing data object needs to be migrated to also represent other types.
+Using the above example the fact that the director also acted in the movie might have been discovered after the data object has been created using the type Director.
+XO offers a way to perform a migration at runtime and allows adding (or removing) roles (i.e. types):
 
 [source,java]
 .TempleOfDoom.java
@@ -202,22 +199,23 @@ public class TempleOfDoom {
 eXtended Objects provides an API which re-uses concepts of other frameworks and standards like JPA or JDO:
 
 XOUnit::
-  A configuration defining a datastore configuration, the managed entity and relation types and several settings
-  like validation and concurrency management. Can either be defined as XML descriptor by providing a concrete instance.
+A configuration defining a datastore configuration, the managed entity and relation types and several settings like validation and concurrency management.
+Can either be defined as XML descriptor by providing a concrete instance.
 XOManagerFactory::
-  Factory for XOManager instances which is configured using a XOUnit.
+Factory for XOManager instances which is configured using a XOUnit.
 XOManager::
-  Represents an active session with the datastore, provides
-  - operations to create, find, delete entities or relations
-  - a query factory
-  - access to the associated XOTransation object.
+Represents an active session with the datastore, provides
+- operations to create, find, delete entities or relations
+- a query factory
+- access to the associated XOTransation object.
 XOTransaction::
-  Allows control of datastore transactions if supported by the underlying datastore.
+Allows control of datastore transactions if supported by the underlying datastore.
 Query::
-  A user defined query which may be executed against the datastore.
+A user defined query which may be executed against the datastore.
 
 == Available Datastore Implementations
 
 === Neo4j
+
 https://github.com/buschmais/extended-objects (part of the core distribution)
 

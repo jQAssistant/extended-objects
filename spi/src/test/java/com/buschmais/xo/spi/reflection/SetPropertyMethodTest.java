@@ -1,8 +1,5 @@
 package com.buschmais.xo.spi.reflection;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
 import java.lang.annotation.Annotation;
 
 import com.buschmais.xo.api.XOException;
@@ -11,6 +8,9 @@ import com.buschmais.xo.api.metadata.reflection.SetPropertyMethod;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 public class SetPropertyMethodTest {
 
@@ -22,11 +22,11 @@ public class SetPropertyMethodTest {
     public void setUp() throws NoSuchMethodException {
         GetPropertyMethod getPropertyMethod = new GetPropertyMethod(TestClass.class.getMethod("getProperty"), "property", String.class, String.class);
         setPropertyMethod = new SetPropertyMethod(TestClass.class.getMethod("setProperty", String.class), getPropertyMethod, "property", String.class,
-                String.class);
+            String.class);
         GetPropertyMethod getInvalidPropertyMethod = new GetPropertyMethod(TestClass.class.getMethod("getInvalidProperty"), "invalidProperty", String.class,
-                String.class);
+            String.class);
         setInvalidPropertyMethod = new SetPropertyMethod(TestClass.class.getMethod("setInvalidProperty", String.class), getInvalidPropertyMethod,
-                "invalidProperty", String.class, String.class);
+            "invalidProperty", String.class, String.class);
     }
 
     @Test
@@ -64,7 +64,8 @@ public class SetPropertyMethodTest {
     @Test
     public void getAnnotations() {
         Annotation[] annotations = setPropertyMethod.getAnnotations();
-        assertThat(annotations).isNotNull().hasSize(1);
+        assertThat(annotations).isNotNull()
+            .hasSize(1);
         assertThat(annotations[0]).isInstanceOf(TestAnnotation.class);
     }
 

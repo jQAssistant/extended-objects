@@ -1,12 +1,12 @@
 package com.buschmais.xo.neo4j.spi.helper;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
-import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
-import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.api.metadata.method.IndexedPropertyMethodMetadata;
 import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.neo4j.api.model.Neo4jLabel;
+import com.buschmais.xo.neo4j.spi.metadata.NodeMetadata;
+import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 
 public class MetadataHelper {
 
@@ -14,11 +14,14 @@ public class MetadataHelper {
     }
 
     public static <L extends Neo4jLabel> PropertyMetadata getIndexedPropertyMetadata(EntityTypeMetadata<NodeMetadata<L>> type,
-            PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata) {
+        PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata) {
         if (propertyMethodMetadata == null) {
-            IndexedPropertyMethodMetadata<?> indexedProperty = type.getDatastoreMetadata().getUsingIndexedPropertyOf();
+            IndexedPropertyMethodMetadata<?> indexedProperty = type.getDatastoreMetadata()
+                .getUsingIndexedPropertyOf();
             if (indexedProperty == null) {
-                throw new XOException("Type " + type.getAnnotatedType().getAnnotatedElement().getName() + " has no indexed property.");
+                throw new XOException("Type " + type.getAnnotatedType()
+                    .getAnnotatedElement()
+                    .getName() + " has no indexed property.");
             }
             propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
         }

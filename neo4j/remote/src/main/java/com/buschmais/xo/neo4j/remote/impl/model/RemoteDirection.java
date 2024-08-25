@@ -4,7 +4,8 @@ import com.buschmais.xo.neo4j.api.model.Neo4jDirection;
 
 public enum RemoteDirection implements Neo4jDirection {
 
-    INCOMING, OUTGOING;
+    INCOMING,
+    OUTGOING;
 
     @Override
     public String getName() {

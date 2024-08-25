@@ -3,6 +3,12 @@ package com.buschmais.xo.impl.proxy.relation;
 import java.lang.reflect.Method;
 
 import com.buschmais.xo.api.CompositeObject;
+import com.buschmais.xo.api.metadata.method.*;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
+import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
+import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
+import com.buschmais.xo.api.metadata.reflection.SetPropertyMethod;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
 import com.buschmais.xo.impl.RelationPropertyManager;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.AbstractProxyMethodService;
@@ -14,17 +20,13 @@ import com.buschmais.xo.impl.proxy.relation.object.HashCodeMethod;
 import com.buschmais.xo.impl.proxy.relation.object.ToStringMethod;
 import com.buschmais.xo.impl.proxy.relation.property.*;
 import com.buschmais.xo.impl.proxy.relation.resultof.ResultOfMethod;
-import com.buschmais.xo.api.metadata.method.*;
-import com.buschmais.xo.api.metadata.type.TypeMetadata;
-import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
-import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
-import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
-import com.buschmais.xo.api.metadata.reflection.SetPropertyMethod;
 
 public class RelationProxyMethodService<Entity, Relation> extends AbstractProxyMethodService<Relation> {
 
     public RelationProxyMethodService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
-        for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata().values()) {
+        for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider()
+            .getRegisteredMetadata()
+            .values()) {
             for (MethodMetadata<?, ?> methodMetadata : typeMetadata.getProperties()) {
                 AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
                 addUnsupportedOperationMethod(methodMetadata, typeMethod);
@@ -51,7 +53,7 @@ public class RelationProxyMethodService<Entity, Relation> extends AbstractProxyM
                         }
                     } else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata && propertyMethod instanceof GetPropertyMethod) {
                         addProxyMethod(new EntityReferencePropertyGetMethod<>(relationPropertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata),
-                                method);
+                            method);
                     }
                 }
             }

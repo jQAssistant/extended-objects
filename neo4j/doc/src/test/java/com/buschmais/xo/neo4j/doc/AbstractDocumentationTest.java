@@ -20,8 +20,12 @@ public abstract class AbstractDocumentationTest {
 
     @Before
     public void setUp() throws URISyntaxException {
-        XOUnit.XOUnitBuilder builder = XOUnit.builder().provider(EmbeddedNeo4jXOProvider.class).uri(new URI("memory:///"));
-        builder.mappingConfiguration(XOUnit.MappingConfiguration.builder().strictValidation(true).build());
+        XOUnit.XOUnitBuilder builder = XOUnit.builder()
+            .provider(EmbeddedNeo4jXOProvider.class)
+            .uri(new URI("memory:///"));
+        builder.mappingConfiguration(XOUnit.MappingConfiguration.builder()
+            .strictValidation(true)
+            .build());
         configure(builder);
         XOUnit xoUnit = builder.build();
         xoManagerFactory = XO.createXOManagerFactory(xoUnit);

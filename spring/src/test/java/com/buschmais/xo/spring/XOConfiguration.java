@@ -24,7 +24,11 @@ public class XOConfiguration {
 
     @PostConstruct
     void init() throws URISyntaxException {
-        XOUnit xoUnit = XOUnit.builder().provider(EmbeddedNeo4jXOProvider.class).uri(new URI("file:" + NEO4J_DIRECTORY)).type(Person.class).build();
+        XOUnit xoUnit = XOUnit.builder()
+            .provider(EmbeddedNeo4jXOProvider.class)
+            .uri(new URI("file:" + NEO4J_DIRECTORY))
+            .type(Person.class)
+            .build();
         this.xoManagerFactory = XO.createXOManagerFactory(xoUnit);
     }
 

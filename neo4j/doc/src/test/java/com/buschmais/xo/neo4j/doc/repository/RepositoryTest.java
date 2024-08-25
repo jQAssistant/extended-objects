@@ -14,13 +14,16 @@ public class RepositoryTest extends AbstractDocumentationTest {
 
     @Override
     protected void configure(XOUnit.XOUnitBuilder builder) {
-        builder.type(Person.class).type(PersonRepository.class).type(TypedPersonRepository.class);
+        builder.type(Person.class)
+            .type(PersonRepository.class)
+            .type(TypedPersonRepository.class);
     }
 
     @Test
     public void repository() throws URISyntaxException, IOException {
         // tag::Repository[]
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         Person person = xoManager.create(Person.class);
         person.setName("Indiana Jones");
 
@@ -28,13 +31,15 @@ public class RepositoryTest extends AbstractDocumentationTest {
         Result<Person> personsByName = personRepository.getPersonsByName("Indiana Jones");
         Person indy = personsByName.getSingleResult();
 
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
         // end::Repository[]
     }
 
     @Test
     public void typedRepository() throws URISyntaxException, IOException {
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         Person person = xoManager.create(Person.class);
         person.setName("Indiana Jones");
 
@@ -44,7 +49,8 @@ public class RepositoryTest extends AbstractDocumentationTest {
         Person indy = persons.getSingleResult();
         // end::TypedRepository[]
 
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
 }

@@ -4,7 +4,7 @@ package com.buschmais.xo.api.metadata.type;
  * Defines metadata for datastore types.
  *
  * @param <DatastoreMetadata>
- *            The datastore specific metadata type.
+ *     The datastore specific metadata type.
  */
 public interface DatastoreTypeMetadata<DatastoreMetadata> extends TypeMetadata {
 

@@ -1,11 +1,11 @@
 package com.buschmais.xo.impl.proxy.common.property;
 
+import com.buschmais.xo.api.metadata.method.AbstractMethodMetadata;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.impl.AbstractPropertyManager;
-import com.buschmais.xo.api.metadata.method.AbstractMethodMetadata;
 
 public abstract class AbstractPropertyMethod<DatastoreType, PropertyManager extends AbstractPropertyManager<DatastoreType>, M extends AbstractMethodMetadata>
-        implements ProxyMethod<DatastoreType> {
+    implements ProxyMethod<DatastoreType> {
 
     private final M metadata;
 

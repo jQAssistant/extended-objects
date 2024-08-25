@@ -19,7 +19,7 @@ public interface XOBootstrapService {
      * </p>
      *
      * @param unit
-     *            The name of the XO unit.
+     *     The name of the XO unit.
      * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
      */
     XOManagerFactory<?, ?, ?, ?> createXOManagerFactory(String unit);
@@ -29,7 +29,7 @@ public interface XOBootstrapService {
      * unit.
      *
      * @param xoUnit
-     *            The XO unit.
+     *     The XO unit.
      * @return The {@link com.buschmais.xo.api.XOManagerFactory}.
      */
     XOManagerFactory<?, ?, ?, ?> createXOManagerFactory(XOUnit xoUnit);

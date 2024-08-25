@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata>
-        implements XOManagerFactory<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
+    implements XOManagerFactory<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XOManagerFactoryImpl.class);
 
@@ -43,14 +43,19 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
         if (!XODatastoreProvider.class.isAssignableFrom(providerType)) {
             throw new XOException(providerType.getName() + " specified as XO provider must implement " + XODatastoreProvider.class.getName());
         }
-        XODatastoreProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> xoDatastoreProvider = XODatastoreProvider.class
-                .cast(ClassHelper.newInstance(providerType));
+        XODatastoreProvider<EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> xoDatastoreProvider = XODatastoreProvider.class.cast(
+            ClassHelper.newInstance(providerType));
         this.datastore = xoDatastoreProvider.createDatastore(xoUnit);
         this.pluginRepositoryManager = new PluginRepositoryManager(new QueryLanguagePluginRepository(datastore));
-        classLoader = xoUnit.getClassLoader().orElseGet(() -> {
-            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            return contextClassLoader != null ? contextClassLoader : xoUnit.getClass().getClassLoader();
-        });
+        classLoader = xoUnit.getClassLoader()
+            .orElseGet(() -> {
+                ClassLoader contextClassLoader = Thread.currentThread()
+                    .getContextClassLoader();
+                return contextClassLoader != null ?
+                    contextClassLoader :
+                    xoUnit.getClass()
+                        .getClassLoader();
+            });
         LOGGER.debug("Using class loader '{}'.", classLoader);
         metadataProvider = new MetadataProviderImpl(xoUnit.getTypes(), datastore, xoUnit.getMappingConfiguration());
         this.validatorFactory = getValidatorFactory();
@@ -75,13 +80,13 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
 
     @Override
     public XOManager createXOManager() {
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = datastore
-                .createSession();
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> datastoreSession = datastore.createSession();
         SessionContext<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> sessionContext = new SessionContext<>(
-                metadataProvider, pluginRepositoryManager, datastoreSession, validatorFactory, xoUnit, classLoader);
+            metadataProvider, pluginRepositoryManager, datastoreSession, validatorFactory, xoUnit, classLoader);
         XOManagerImpl<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> xoManager = new XOManagerImpl<>(
-                sessionContext);
-        return sessionContext.getInterceptorFactory().addInterceptor(xoManager, XOManager.class);
+            sessionContext);
+        return sessionContext.getInterceptorFactory()
+            .addInterceptor(xoManager, XOManager.class);
     }
 
     @Override

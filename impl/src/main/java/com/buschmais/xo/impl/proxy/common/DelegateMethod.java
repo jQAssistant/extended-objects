@@ -9,7 +9,7 @@ import com.buschmais.xo.api.proxy.ProxyMethod;
  * Implementation of delegate method.
  *
  * @param <T>
- *            The proxy type.
+ *     The proxy type.
  */
 public class DelegateMethod<T> implements ProxyMethod<T> {
 
@@ -21,9 +21,9 @@ public class DelegateMethod<T> implements ProxyMethod<T> {
      * Constructor.
      *
      * @param delegate
-     *            The delegate instance.
+     *     The delegate instance.
      * @param method
-     *            The method to delegate.
+     *     The method to delegate.
      */
     public DelegateMethod(T delegate, Method method) {
         this.delegate = delegate;

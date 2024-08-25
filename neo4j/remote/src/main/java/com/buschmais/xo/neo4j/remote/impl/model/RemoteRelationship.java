@@ -4,7 +4,7 @@ import com.buschmais.xo.neo4j.api.model.Neo4jRelationship;
 import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
 
 public class RemoteRelationship extends AbstractRemotePropertyContainer<RelationshipState>
-        implements Neo4jRelationship<RemoteNode, RemoteLabel, RemoteRelationship, RemoteRelationshipType, RemoteDirection> {
+    implements Neo4jRelationship<RemoteNode, RemoteLabel, RemoteRelationship, RemoteRelationshipType, RemoteDirection> {
 
     private RemoteNode startNode;
 

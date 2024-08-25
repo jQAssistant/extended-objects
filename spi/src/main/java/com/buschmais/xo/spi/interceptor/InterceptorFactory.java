@@ -27,7 +27,8 @@ public class InterceptorFactory {
             return instance;
         }
         InterceptorInvocationHandler invocationHandler = new InterceptorInvocationHandler(instance, chain);
-        return (T) Proxy.newProxyInstance(instance.getClass().getClassLoader(), interfaces, invocationHandler);
+        return (T) Proxy.newProxyInstance(instance.getClass()
+            .getClassLoader(), interfaces, invocationHandler);
     }
 
     public <T> boolean hasInterceptor(T instance) {
@@ -37,8 +38,8 @@ public class InterceptorFactory {
     public <T> T removeInterceptor(T instance) {
         InvocationHandler invocationHandler = Proxy.getInvocationHandler(instance);
         if (!InterceptorInvocationHandler.class.isAssignableFrom(invocationHandler.getClass())) {
-            throw new XOException(invocationHandler + " implementing " + Arrays.asList(invocationHandler.getClass().getInterfaces())
-                    + " is not of expected type " + InterceptorInvocationHandler.class.getName());
+            throw new XOException(invocationHandler + " implementing " + Arrays.asList(invocationHandler.getClass()
+                .getInterfaces()) + " is not of expected type " + InterceptorInvocationHandler.class.getName());
         }
         return (T) ((InterceptorInvocationHandler) invocationHandler).getInstance();
     }

@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
-import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -20,12 +18,14 @@ import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
 
+import static com.buschmais.xo.neo4j.spi.helper.MetadataHelper.getIndexedPropertyMetadata;
+
 /**
  * Implementation of a
  * {@link com.buschmais.xo.spi.datastore.DatastoreEntityManager} for Neo4j.
  */
 public class EmbeddedEntityManager extends AbstractEmbeddedPropertyManager<EmbeddedNode>
-        implements DatastoreEntityManager<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, PropertyMetadata> {
+    implements DatastoreEntityManager<Long, EmbeddedNode, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, PropertyMetadata> {
 
     private final EmbeddedDatastoreTransaction datastoreTransaction;
 
@@ -50,13 +50,14 @@ public class EmbeddedEntityManager extends AbstractEmbeddedPropertyManager<Embed
 
     @Override
     public EmbeddedNode createEntity(CompositeTypeMetadata<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> types, Set<EmbeddedLabel> discriminators,
-                                     Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
         Label[] labels = new Label[discriminators.size()];
         int i = 0;
         for (EmbeddedLabel discriminator : discriminators) {
             labels[i++] = discriminator.getDelegate();
         }
-        Node delegate = datastoreTransaction.getTransaction().createNode(labels);
+        Node delegate = datastoreTransaction.getTransaction()
+            .createNode(labels);
         EmbeddedNode node = new EmbeddedNode(datastoreTransaction, delegate);
         setProperties(node, example);
         return node;
@@ -69,19 +70,23 @@ public class EmbeddedEntityManager extends AbstractEmbeddedPropertyManager<Embed
 
     @Override
     public EmbeddedNode findEntityById(EntityTypeMetadata<NodeMetadata<EmbeddedLabel>> metadata, EmbeddedLabel label, Long id) {
-        return new EmbeddedNode(datastoreTransaction, datastoreTransaction.getTransaction().getNodeById(id));
+        return new EmbeddedNode(datastoreTransaction, datastoreTransaction.getTransaction()
+            .getNodeById(id));
     }
 
     @Override
     public ResultIterator<EmbeddedNode> findEntity(EntityTypeMetadata<NodeMetadata<EmbeddedLabel>> entityTypeMetadata, EmbeddedLabel discriminator,
-            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
         if (values.size() > 1) {
             throw new XOException("Only one property value is supported for find operation");
         }
-        Map.Entry<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entry = values.entrySet().iterator().next();
+        Map.Entry<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> entry = values.entrySet()
+            .iterator()
+            .next();
         Object value = entry.getValue();
         PropertyMetadata propertyMetadata = getIndexedPropertyMetadata(entityTypeMetadata, entry.getKey());
-        ResourceIterator<Node> iterator = datastoreTransaction.getTransaction().findNodes(discriminator.getDelegate(), propertyMetadata.getName(), value);
+        ResourceIterator<Node> iterator = datastoreTransaction.getTransaction()
+            .findNodes(discriminator.getDelegate(), propertyMetadata.getName(), value);
         return new ResultIterator<EmbeddedNode>() {
             @Override
             public boolean hasNext() {
@@ -113,7 +118,8 @@ public class EmbeddedEntityManager extends AbstractEmbeddedPropertyManager<Embed
     }
 
     @Override
-    public void removeDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> removedTypes, EmbeddedNode node, Set<EmbeddedLabel> labels) {
+    public void removeDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<NodeMetadata<EmbeddedLabel>>> removedTypes, EmbeddedNode node,
+        Set<EmbeddedLabel> labels) {
         for (EmbeddedLabel label : labels) {
             node.removeLabel(label);
         }

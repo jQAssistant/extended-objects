@@ -6,7 +6,7 @@ import java.lang.annotation.Annotation;
  * Abstract base implementation for annotated elements.
  *
  * @param <AE>
- *            The annotated element type.
+ *     The annotated element type.
  */
 public abstract class AbstractAnnotatedElement<AE extends java.lang.reflect.AnnotatedElement> implements AnnotatedElement<AE> {
 
@@ -16,7 +16,7 @@ public abstract class AbstractAnnotatedElement<AE extends java.lang.reflect.Anno
      * Constructor.
      *
      * @param annotated
-     *            The annotated element.
+     *     The annotated element.
      */
     protected AbstractAnnotatedElement(AE annotated) {
         this.annotated = annotated;
@@ -40,7 +40,8 @@ public abstract class AbstractAnnotatedElement<AE extends java.lang.reflect.Anno
     @Override
     public <T extends Annotation, M extends Annotation> T getByMetaAnnotation(Class<M> type) {
         for (Annotation annotation : annotated.getAnnotations()) {
-            if (annotation.annotationType().isAnnotationPresent(type)) {
+            if (annotation.annotationType()
+                .isAnnotationPresent(type)) {
                 return (T) annotation;
             }
         }
@@ -71,6 +72,7 @@ public abstract class AbstractAnnotatedElement<AE extends java.lang.reflect.Anno
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "{" + "annotated=" + annotated + '}';
+        return this.getClass()
+            .getSimpleName() + "{" + "annotated=" + annotated + '}';
     }
 }

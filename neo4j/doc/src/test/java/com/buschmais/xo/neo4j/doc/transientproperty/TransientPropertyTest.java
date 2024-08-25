@@ -17,10 +17,12 @@ public class TransientPropertyTest extends AbstractDocumentationTest {
 
     @Test
     public void transientProperty() throws URISyntaxException, IOException {
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         Person person = xoManager.create(Person.class);
         person.setName("Indiana Jones");
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
 }

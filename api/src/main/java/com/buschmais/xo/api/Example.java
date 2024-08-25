@@ -5,7 +5,7 @@ package com.buschmais.xo.api;
  * {@link com.buschmais.xo.api.XOManager#find(Example, Class)}.
  *
  * @param <T>
- *            The type to be prepared.
+ *     The type to be prepared.
  */
 @FunctionalInterface
 public interface Example<T> {

@@ -18,11 +18,11 @@ import com.buschmais.xo.impl.proxy.repository.object.ToStringMethod;
  * Proxy method service for repositories.
  *
  * @param <T>
- *            The repository type.
+ *     The repository type.
  * @param <Entity>
- *            The entity type.
+ *     The entity type.
  * @param <Relation>
- *            The relation type.
+ *     The relation type.
  */
 public class RepositoryProxyMethodService<T, Entity, Relation> extends AbstractProxyMethodService<T> {
 
@@ -30,13 +30,14 @@ public class RepositoryProxyMethodService<T, Entity, Relation> extends AbstractP
      * Constructor for datastore repository instances.
      *
      * @param datastoreRepository
-     *            The datastore repository.
+     *     The datastore repository.
      * @param repositoryType
-     *            The repository type.
+     *     The repository type.
      */
     public RepositoryProxyMethodService(T datastoreRepository, Class<?> repositoryType) {
         for (Method method : repositoryType.getMethods()) {
-            if (method.getDeclaringClass().isAssignableFrom(datastoreRepository.getClass())) {
+            if (method.getDeclaringClass()
+                .isAssignableFrom(datastoreRepository.getClass())) {
                 DelegateMethod<T> proxyMethod = new DelegateMethod<>(datastoreRepository, method);
                 addProxyMethod(proxyMethod, method);
             }
@@ -50,15 +51,16 @@ public class RepositoryProxyMethodService<T, Entity, Relation> extends AbstractP
      * Constructor for repositories with custom method declaration
      *
      * @param datastoreRepository
-     *            The datastore repository.
+     *     The datastore repository.
      * @param repositoryMetadata
-     *            The repository metadata.
+     *     The repository metadata.
      * @param sessionContext
-     *            The session context.
+     *     The session context.
      */
     public RepositoryProxyMethodService(T datastoreRepository, RepositoryTypeMetadata repositoryMetadata,
-            SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
-        this(datastoreRepository, repositoryMetadata.getAnnotatedType().getAnnotatedElement());
+        SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
+        this(datastoreRepository, repositoryMetadata.getAnnotatedType()
+            .getAnnotatedElement());
         for (MethodMetadata<?, ?> methodMetadata : repositoryMetadata.getProperties()) {
             AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
             addUnsupportedOperationMethod(methodMetadata, typeMethod);

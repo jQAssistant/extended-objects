@@ -1,11 +1,11 @@
 package com.buschmais.xo.api;
 
-import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import static com.buschmais.xo.api.Transaction.TransactionAttribute.NOT_SUPPORTED;
-
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
+
+import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
+import static com.buschmais.xo.api.Transaction.TransactionAttribute.NOT_SUPPORTED;
 
 /**
  * Defines methods to manage the lifecycle of property instances, query
@@ -17,7 +17,7 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Return the {@link XOTransaction} associated with the manager.
      *
      * @return The {@link XOTransaction} or <code>null</code> if the datastore does
-     *         not support transactions.
+     * not support transactions.
      */
     @Transaction(NOT_SUPPORTED)
     XOTransaction currentTransaction();
@@ -33,13 +33,13 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Find an entity or relation using its it.
      *
      * @param type
-     *            The type of the instance.
+     *     The type of the instance.
      * @param id
-     *            The id.
+     *     The id.
      * @param <T>
-     *            The type of the instance
+     *     The type of the instance
      * @param <I>
-     *            The type of the id.
+     *     The type of the id.
      * @return The instance.
      */
     <T, I> T findById(Class<T> type, I id);
@@ -49,11 +49,11 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * property.
      *
      * @param <T>
-     *            The property type.
+     *     The property type.
      * @param type
-     *            The interface of the property type.
+     *     The interface of the property type.
      * @param value
-     *            The value.
+     *     The value.
      * @return An {@link Iterable} returning the property instance.
      */
     <T> ResultIterable<T> find(Class<T> type, Object value);
@@ -62,11 +62,11 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Find all instances according to the given type and and {@link Example}.
      *
      * @param <T>
-     *            The property type.
+     *     The property type.
      * @param type
-     *            The interface of the property type.
+     *     The interface of the property type.
      * @param example
-     *            The {@link Example}.
+     *     The {@link Example}.
      * @return An {@link Iterable} returning the property instance.
      */
     <T> ResultIterable<T> find(Example<T> example, Class<T> type);
@@ -75,9 +75,9 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Find all instances according to the given type and and {@link Example}.
      *
      * @param type
-     *            The interface of the property type.
+     *     The interface of the property type.
      * @param example
-     *            The {@link Example}.
+     *     The {@link Example}.
      * @return An {@link Iterable} returning the property instance.
      */
     ResultIterable<CompositeObject> find(Example<CompositeObject> example, Class<?> type, Class<?>... types);
@@ -86,9 +86,9 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Find all instances according to the given type and and {@link Example}.
      *
      * @param type
-     *            The interface of the property type.
+     *     The interface of the property type.
      * @param example
-     *            The {@link Example}.
+     *     The {@link Example}.
      * @return An {@link Iterable} returning the property instance.
      */
     <T> ResultIterable<T> find(Class<T> type, Example<T> example);
@@ -97,9 +97,9 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Create a new {@link CompositeObject} instance.
      *
      * @param type
-     *            The interface the property type shall implement.
+     *     The interface the property type shall implement.
      * @param types
-     *            Additional interfaces the entity type shall implement.
+     *     Additional interfaces the entity type shall implement.
      * @return The {@link CompositeObject} instance.
      */
     CompositeObject create(Class<?> type, Class<?>... types);
@@ -108,10 +108,10 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Create a new property instance.
      *
      * @param <T>
-     *            The expected return type. Note that it must be assignable to at
-     *            least one of the interfaces specified for the types.
+     *     The expected return type. Note that it must be assignable to at
+     *     least one of the interfaces specified for the types.
      * @param type
-     *            The interface the property type shall implement.
+     *     The interface the property type shall implement.
      * @return The property instance.
      */
     <T> T create(Class<T> type);
@@ -120,11 +120,11 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Create a new {@link CompositeObject} instance using an example.
      *
      * @param type
-     *            The interface the property type shall implement.
+     *     The interface the property type shall implement.
      * @param example
-     *            The example instance.
+     *     The example instance.
      * @param types
-     *            Additional interfaces the entity type shall implement.
+     *     Additional interfaces the entity type shall implement.
      * @return The {@link CompositeObject} instance.
      */
     <T> T create(Class<T> type, Example<T> example, Class<?>... types);
@@ -134,17 +134,17 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * instance.
      *
      * @param source
-     *            The source instance.
+     *     The source instance.
      * @param relationType
-     *            The relation type.
+     *     The relation type.
      * @param target
-     *            The target instance.
+     *     The target instance.
      * @param <S>
-     *            The source type.
+     *     The source type.
      * @param <R>
-     *            The relation type.
+     *     The relation type.
      * @param <T>
-     *            The target type.
+     *     The target type.
      * @return The created relation instance.
      */
     <S, R, T> R create(S source, Class<R> relationType, T target);
@@ -154,19 +154,19 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * instance using an example.
      *
      * @param source
-     *            The source instance.
+     *     The source instance.
      * @param relationType
-     *            The relation type.
+     *     The relation type.
      * @param target
-     *            The target instance.
+     *     The target instance.
      * @param <S>
-     *            The source type.
+     *     The source type.
      * @param <R>
-     *            The relation type.
+     *     The relation type.
      * @param <T>
-     *            The target type.
+     *     The target type.
      * @param example
-     *            The example instance.
+     *     The example instance.
      * @return The created relation instance.
      */
     <S, R, T> R create(S source, Class<R> relationType, T target, Example<R> example);
@@ -175,9 +175,9 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Return a repository instance for the given type.
      *
      * @param repositoryType
-     *            The repository type.
+     *     The repository type.
      * @param <T>
-     *            The repository type.
+     *     The repository type.
      * @return The repository instance.
      */
     <T> T getRepository(Class<T> repositoryType);
@@ -192,9 +192,9 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * migrations.
      *
      * @param instance
-     *            The instance to migrate.
+     *     The instance to migrate.
      * @param <T>
-     *            The instance type.
+     *     The instance type.
      * @return The migrator.
      */
     <T> XOMigrator migrate(T instance);
@@ -203,9 +203,9 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Deletes a property instance.
      *
      * @param <T>
-     *            The property type.
+     *     The property type.
      * @param instance
-     *            The instance.
+     *     The instance.
      */
     <T> void delete(T instance);
 
@@ -213,7 +213,7 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Creates a {@link Query}.
      *
      * @param query
-     *            The query expression.
+     *     The query expression.
      * @return The {@link Query}.
      */
     Query<CompositeRowObject> createQuery(String query);
@@ -222,11 +222,11 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Creates a typed {@link Query}.
      *
      * @param <T>
-     *            The type to be returned.
+     *     The type to be returned.
      * @param query
-     *            The query expression.
+     *     The query expression.
      * @param type
-     *            The type to be returned.
+     *     The type to be returned.
      * @return The {@link Query}.
      */
     <T> Query<T> createQuery(String query, Class<T> type);
@@ -235,11 +235,11 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Creates a typed {@link Query}.
      *
      * @param query
-     *            The query expression.
+     *     The query expression.
      * @param type
-     *            The type to be returned.
+     *     The type to be returned.
      * @param types
-     *            The types to be returned.
+     *     The types to be returned.
      * @return The {@link Query}.
      */
     Query<CompositeRowObject> createQuery(String query, Class<?> type, Class<?>... types);
@@ -248,9 +248,9 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Creates a typed {@link Query}.
      *
      * @param <T>
-     *            The type to be returned.
+     *     The type to be returned.
      * @param query
-     *            The query type.
+     *     The query type.
      * @return The {@link Query}.
      */
     <T> Query<T> createQuery(Class<T> query);
@@ -259,9 +259,9 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Creates a typed {@link Query}.
      *
      * @param query
-     *            The query type.
+     *     The query type.
      * @param types
-     *            The additional types to be returned.
+     *     The additional types to be returned.
      * @return The {@link Query}.
      */
     <Q> Query<CompositeRowObject> createQuery(Class<Q> query, Class<?>... types);
@@ -276,9 +276,9 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * Return the underlying datastore session.
      *
      * @param sessionType
-     *            The expected session type.
+     *     The expected session type.
      * @param <DS>
-     *            The expected session type.
+     *     The expected session type.
      * @return The expected session type.
      */
     @Transaction(NOT_SUPPORTED)
@@ -299,9 +299,9 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * with {@link com.buschmais.xo.api.annotation.PostCreate}.
      *
      * @param instanceListener
-     *            The instance listener.
+     *     The instance listener.
      * @param <I>
-     *            The instance listener type.
+     *     The instance listener type.
      */
     @Transaction(NOT_SUPPORTED)
     <I> void registerInstanceListener(I instanceListener);

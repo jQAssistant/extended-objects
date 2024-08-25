@@ -1,7 +1,10 @@
 package com.buschmais.xo.api.bootstrap;
 
 import java.net.URI;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
 
 import com.buschmais.xo.api.ConcurrencyMode;
 import com.buschmais.xo.api.ValidationMode;
@@ -116,6 +119,7 @@ public class XOUnit {
      * The mapping configuration.
      */
     @Default
-    private MappingConfiguration mappingConfiguration = MappingConfiguration.builder().build();
+    private MappingConfiguration mappingConfiguration = MappingConfiguration.builder()
+        .build();
 
 }

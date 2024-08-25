@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.test.transaction.composite;
 
-import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
-
 import java.util.List;
 
 import com.buschmais.xo.api.annotation.ImplementedBy;
@@ -11,6 +9,8 @@ import com.buschmais.xo.neo4j.api.annotation.Cypher;
 import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.api.model.Neo4jNode;
+
+import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
 
 @Label("A")
 public interface A {

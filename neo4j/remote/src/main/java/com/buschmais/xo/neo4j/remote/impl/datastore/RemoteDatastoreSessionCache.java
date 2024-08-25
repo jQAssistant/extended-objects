@@ -4,11 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import com.buschmais.xo.neo4j.remote.impl.model.AbstractRemotePropertyContainer;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteNode;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationship;
-import com.buschmais.xo.neo4j.remote.impl.model.RemoteRelationshipType;
+import com.buschmais.xo.neo4j.remote.impl.model.*;
 import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.NodeState;
 import com.buschmais.xo.neo4j.remote.impl.model.state.RelationshipState;
@@ -20,9 +16,13 @@ import org.neo4j.driver.types.Relationship;
 
 public class RemoteDatastoreSessionCache {
 
-    private Cache<Long, RemoteNode> nodeCache = Caffeine.newBuilder().weakValues().build();
+    private Cache<Long, RemoteNode> nodeCache = Caffeine.newBuilder()
+        .weakValues()
+        .build();
 
-    private Cache<Long, RemoteRelationship> relationshipCache = Caffeine.newBuilder().weakValues().build();
+    private Cache<Long, RemoteRelationship> relationshipCache = Caffeine.newBuilder()
+        .weakValues()
+        .build();
 
     public RemoteRelationship getRelationship(Long id) {
         return relationshipCache.getIfPresent(id);
@@ -41,7 +41,7 @@ public class RemoteDatastoreSessionCache {
     }
 
     public RemoteRelationship getRelationship(long id, RemoteNode source, RemoteRelationshipType type, RemoteNode target,
-            Supplier<RelationshipState> relationshipStateSupplier) {
+        Supplier<RelationshipState> relationshipStateSupplier) {
         return relationshipCache.get(id, key -> new RemoteRelationship(key, relationshipStateSupplier.get(), source, type, target));
     }
 
@@ -54,7 +54,8 @@ public class RemoteDatastoreSessionCache {
             for (String label : node.labels()) {
                 labels.add(new RemoteLabel(label));
             }
-            nodeState.getLabels().load(labels);
+            nodeState.getLabels()
+                .load(labels);
         }
         return remoteNode;
     }
@@ -75,8 +76,10 @@ public class RemoteDatastoreSessionCache {
 
     private RemoteRelationship getRelationship(Relationship relationship, RemoteNode startNode, RemoteNode endNode, RemoteRelationshipType type) {
         RemoteRelationship remoteRelationship = getRelationship(relationship.id(), startNode, type, endNode);
-        if (!remoteRelationship.getState().isLoaded()) {
-            remoteRelationship.getState().load(relationship.asMap());
+        if (!remoteRelationship.getState()
+            .isLoaded()) {
+            remoteRelationship.getState()
+                .load(relationship.asMap());
         }
         return remoteRelationship;
     }
@@ -90,7 +93,7 @@ public class RemoteDatastoreSessionCache {
     }
 
     private <C extends AbstractRemotePropertyContainer<S>, S extends AbstractPropertyContainerState> void update(long id, C propertyContainer,
-            Cache<Long, C> cache) {
+        Cache<Long, C> cache) {
         cache.invalidate(propertyContainer.getId());
         propertyContainer.updateId(id);
         cache.put(id, propertyContainer);

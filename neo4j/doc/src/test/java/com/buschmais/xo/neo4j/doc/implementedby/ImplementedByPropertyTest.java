@@ -14,10 +14,12 @@ public class ImplementedByPropertyTest extends AbstractDocumentationTest {
 
     @Test
     public void implementedBy() {
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         Person person = xoManager.create(Person.class);
         person.setName("Harrison", "Ford");
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
 }

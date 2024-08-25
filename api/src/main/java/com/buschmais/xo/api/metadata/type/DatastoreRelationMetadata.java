@@ -5,7 +5,7 @@ package com.buschmais.xo.api.metadata.type;
  * datastore.
  *
  * @param <RelationDiscriminator>
- *            The type of relation discriminators.
+ *     The type of relation discriminators.
  */
 public interface DatastoreRelationMetadata<RelationDiscriminator> {
 

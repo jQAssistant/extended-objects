@@ -16,7 +16,7 @@ public class TypedRemoteRepositoryImpl<T> extends RemoteNeo4jRepositoryImpl impl
     private final Class<T> type;
 
     public TypedRemoteRepositoryImpl(XOSession<NodeMetadata<RemoteLabel>, RemoteLabel, ?, ?> xoSession, Class<T> type, StatementExecutor statementExecutor,
-            RemoteDatastoreSessionCache sessionCache) {
+        RemoteDatastoreSessionCache sessionCache) {
         super(xoSession, statementExecutor, sessionCache);
         this.type = type;
     }

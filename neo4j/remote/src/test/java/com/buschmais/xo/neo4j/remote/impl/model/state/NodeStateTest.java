@@ -1,13 +1,13 @@
 package com.buschmais.xo.neo4j.remote.impl.model.state;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.HashMap;
 
 import com.buschmais.xo.neo4j.remote.impl.model.RemoteLabel;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NodeStateTest {
 
@@ -22,7 +22,8 @@ public class NodeStateTest {
     public void afterCompletionWithClear() {
         // Given
         nodeState.load(new HashMap<>());
-        nodeState.getLabels().add(new RemoteLabel("Test"));
+        nodeState.getLabels()
+            .add(new RemoteLabel("Test"));
 
         // When
         nodeState.afterCompletion(true);
@@ -36,7 +37,8 @@ public class NodeStateTest {
     public void afterCompletionWithoutClear() {
         // Given
         nodeState.load(new HashMap<>());
-        nodeState.getLabels().add(new RemoteLabel("Test"));
+        nodeState.getLabels()
+            .add(new RemoteLabel("Test"));
 
         // When
         nodeState.afterCompletion(false);

@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.embedded.impl.datastore;
 
-import static java.util.Collections.singletonList;
-
 import java.lang.annotation.Annotation;
 
 import com.buschmais.xo.api.XOException;
@@ -27,8 +25,10 @@ import com.buschmais.xo.spi.session.XOSession;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
-public class EmbeddedDatastoreSessionImpl extends
-        AbstractNeo4jDatastoreSession<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType> implements EmbeddedNeo4jDatastoreSession {
+import static java.util.Collections.singletonList;
+
+public class EmbeddedDatastoreSessionImpl extends AbstractNeo4jDatastoreSession<EmbeddedNode, EmbeddedLabel, EmbeddedRelationship, EmbeddedRelationshipType>
+    implements EmbeddedNeo4jDatastoreSession {
 
     private final GraphDatabaseService graphDatabaseService;
     private final EmbeddedDatastoreTransaction datastoreTransaction;

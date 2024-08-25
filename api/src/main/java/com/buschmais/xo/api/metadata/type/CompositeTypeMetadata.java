@@ -24,8 +24,10 @@ public final class CompositeTypeMetadata<TypeMetadata extends DatastoreTypeMetad
 
     public CompositeTypeMetadata(Set<TypeMetadata> metadata) {
         this.metadata = Collections.unmodifiableSet(metadata);
-        this.isFinal = metadata.stream().anyMatch(typeMetadata -> typeMetadata.isFinal());
-        this.isAbstract = metadata.stream().allMatch(typeMetadata -> typeMetadata.isAbstract());
+        this.isFinal = metadata.stream()
+            .anyMatch(typeMetadata -> typeMetadata.isFinal());
+        this.isAbstract = metadata.stream()
+            .allMatch(typeMetadata -> typeMetadata.isAbstract());
     }
 
     public Set<TypeMetadata> getMetadata() {
@@ -38,9 +40,11 @@ public final class CompositeTypeMetadata<TypeMetadata extends DatastoreTypeMetad
      * @return The composite type.
      */
     public CompositeType getCompositeType() {
-        CompositeType.Builder builder = CompositeType.builder().type(CompositeObject.class);
+        CompositeType.Builder builder = CompositeType.builder()
+            .type(CompositeObject.class);
         for (TypeMetadata typeMetadata : metadata) {
-            builder.type(typeMetadata.getAnnotatedType().getAnnotatedElement());
+            builder.type(typeMetadata.getAnnotatedType()
+                .getAnnotatedElement());
         }
         return builder.build();
     }

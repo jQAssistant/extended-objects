@@ -8,7 +8,7 @@ import java.lang.annotation.Annotation;
  * annotations.
  *
  * @param <AE>
- *            The annotated element type.
+ *     The annotated element type.
  */
 public interface AnnotatedElement<AE extends java.lang.reflect.AnnotatedElement> {
 
@@ -23,9 +23,9 @@ public interface AnnotatedElement<AE extends java.lang.reflect.AnnotatedElement>
      * Return if an annotation is present.
      *
      * @param annotation
-     *            The annotation type.
+     *     The annotation type.
      * @param <T>
-     *            The annotation type.
+     *     The annotation type.
      * @return The <code>true</code> if an annotation is present.
      */
     <T extends Annotation> boolean isAnnotationPresent(Class<T> annotation);
@@ -34,9 +34,9 @@ public interface AnnotatedElement<AE extends java.lang.reflect.AnnotatedElement>
      * Return an annotation identified by its type.
      *
      * @param annotation
-     *            The annotation type.
+     *     The annotation type.
      * @param <T>
-     *            The annotation type.
+     *     The annotation type.
      * @return The annotation or <code>null</code>.
      */
     <T extends Annotation> T getAnnotation(Class<T> annotation);
@@ -45,9 +45,9 @@ public interface AnnotatedElement<AE extends java.lang.reflect.AnnotatedElement>
      * Return an annotation identified by a meta annotation type.
      *
      * @param metaAnnotation
-     *            The meta annotation type.
+     *     The meta annotation type.
      * @param <T>
-     *            The meta annotation type.
+     *     The meta annotation type.
      * @return The annotation or <code>null</code>.
      */
     <T extends Annotation, M extends Annotation> T getByMetaAnnotation(Class<M> metaAnnotation);

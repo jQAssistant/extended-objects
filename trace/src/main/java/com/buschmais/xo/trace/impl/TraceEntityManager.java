@@ -4,11 +4,11 @@ import java.util.Map;
 import java.util.Set;
 
 import com.buschmais.xo.api.ResultIterator;
-import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
-import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
-import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
 import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
 import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
+import com.buschmais.xo.spi.datastore.DatastoreEntityManager;
 
 /**
  * Implementation of a
@@ -16,7 +16,7 @@ import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
  * to another implementation.
  */
 public class TraceEntityManager<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, PropertyMetadata>
-        implements DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> {
+    implements DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> {
 
     private DatastoreEntityManager<EntityId, Entity, EntityMetadata, EntityDiscriminator, PropertyMetadata> delegate;
 
@@ -39,7 +39,7 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
 
     @Override
     public Entity createEntity(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> types, Set<EntityDiscriminator> entityDiscriminators,
-                               Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> exampleEntity) {
         return delegate.createEntity(types, entityDiscriminators, exampleEntity);
     }
 
@@ -54,7 +54,7 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
 
     @Override
     public ResultIterator<Entity> findEntity(EntityTypeMetadata<EntityMetadata> type, EntityDiscriminator entityDiscriminator,
-            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> values) {
         return delegate.findEntity(type, entityDiscriminator, values);
     }
 
@@ -64,7 +64,8 @@ public class TraceEntityManager<EntityId, Entity, EntityMetadata extends Datasto
     }
 
     @Override
-    public void removeDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> removedTypes, Entity entity, Set<EntityDiscriminator> discriminators) {
+    public void removeDiscriminators(CompositeTypeMetadata<EntityTypeMetadata<EntityMetadata>> removedTypes, Entity entity,
+        Set<EntityDiscriminator> discriminators) {
         delegate.removeDiscriminators(removedTypes, entity, discriminators);
     }
 

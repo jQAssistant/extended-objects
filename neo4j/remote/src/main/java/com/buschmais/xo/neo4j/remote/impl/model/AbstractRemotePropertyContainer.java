@@ -6,6 +6,7 @@ import java.util.Map;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.neo4j.api.model.Neo4jPropertyContainer;
 import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerState;
+
 import lombok.ToString;
 
 /**
@@ -16,7 +17,7 @@ import lombok.ToString;
  * reference.
  *
  * @param <S>
- *            The state type.
+ *     The state type.
  */
 @ToString
 public abstract class AbstractRemotePropertyContainer<S extends AbstractPropertyContainerState> implements Neo4jPropertyContainer {
@@ -52,12 +53,14 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
 
     @Override
     public boolean hasProperty(String key) {
-        return state.getReadCache().containsKey(key);
+        return state.getReadCache()
+            .containsKey(key);
     }
 
     @Override
     public Object getProperty(String key) {
-        return state.getReadCache().get(key);
+        return state.getReadCache()
+            .get(key);
     }
 
     @Override
@@ -68,8 +71,10 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
     public void setProperty(String key, Object value) {
         Object existingValue = getProperty(key);
         if ((existingValue == null && value != null) || (existingValue != null && !existingValue.equals(value))) {
-            state.getOrCreateWriteCache().put(key, value);
-            state.getReadCache().put(key, value);
+            state.getOrCreateWriteCache()
+                .put(key, value);
+            state.getReadCache()
+                .put(key, value);
         }
     }
 
@@ -81,7 +86,8 @@ public abstract class AbstractRemotePropertyContainer<S extends AbstractProperty
     public final boolean equals(Object other) {
         if (this == other) {
             return true;
-        } else if (other != null && other.getClass().equals(this.getClass())) {
+        } else if (other != null && other.getClass()
+            .equals(this.getClass())) {
             AbstractRemotePropertyContainer<?> otherContainer = (AbstractRemotePropertyContainer<?>) other;
             return this.id == otherContainer.id || this.id == otherContainer.initialId || this.initialId == otherContainer.id;
         }

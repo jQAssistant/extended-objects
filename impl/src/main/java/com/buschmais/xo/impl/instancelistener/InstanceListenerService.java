@@ -25,7 +25,7 @@ public class InstanceListenerService {
      * Constructor.
      *
      * @param instanceListenerTypes
-     *            The statically registered instance listener types.
+     *     The statically registered instance listener types.
      */
     public InstanceListenerService(List<? extends Class<?>> instanceListenerTypes) {
         postCreateMethods = new IdentityHashMap<>();
@@ -44,9 +44,9 @@ public class InstanceListenerService {
      * Invoke all post-create methods for the given instance.
      *
      * @param instance
-     *            The instance.
+     *     The instance.
      * @param <T>
-     *            The instance type.
+     *     The instance type.
      */
     public <T> void postCreate(T instance) {
         invoke(postCreateMethods, instance);
@@ -56,9 +56,9 @@ public class InstanceListenerService {
      * Invoke all pre-update methods for the given instance.
      *
      * @param instance
-     *            The instance.
+     *     The instance.
      * @param <T>
-     *            The instance type.
+     *     The instance type.
      */
     public <T> void preUpdate(T instance) {
         invoke(preUpdateMethods, instance);
@@ -68,9 +68,9 @@ public class InstanceListenerService {
      * Invoke all post-update methods for the given instance.
      *
      * @param instance
-     *            The instance.
+     *     The instance.
      * @param <T>
-     *            The instance type.
+     *     The instance type.
      */
     public <T> void postUpdate(T instance) {
         invoke(postUpdateMethods, instance);
@@ -80,9 +80,9 @@ public class InstanceListenerService {
      * Invoke all pre-delete methods for the given instance.
      *
      * @param instance
-     *            The instance.
+     *     The instance.
      * @param <T>
-     *            The instance type.
+     *     The instance type.
      */
     public <T> void preDelete(T instance) {
         invoke(preDeleteMethods, instance);
@@ -92,9 +92,9 @@ public class InstanceListenerService {
      * Invoke all post-delete methods for the given instance.
      *
      * @param instance
-     *            The instance.
+     *     The instance.
      * @param <T>
-     *            The instance type.
+     *     The instance type.
      */
     public <T> void postDelete(T instance) {
         invoke(postDeleteMethods, instance);
@@ -104,9 +104,9 @@ public class InstanceListenerService {
      * Invoke all post-load methods for the given instance.
      *
      * @param instance
-     *            The instance.
+     *     The instance.
      * @param <T>
-     *            The instance type.
+     *     The instance type.
      */
     public <T> void postLoad(T instance) {
         invoke(postLoadMethods, instance);
@@ -116,10 +116,11 @@ public class InstanceListenerService {
      * Add an instance listener instance.
      *
      * @param instanceListener
-     *            The instance listener instance.
+     *     The instance listener instance.
      */
     public void registerInstanceListener(Object instanceListener) {
-        for (Method method : instanceListener.getClass().getMethods()) {
+        for (Method method : instanceListener.getClass()
+            .getMethods()) {
             evaluateMethod(instanceListener, PostCreate.class, method, postCreateMethods);
             evaluateMethod(instanceListener, PreUpdate.class, method, preUpdateMethods);
             evaluateMethod(instanceListener, PostUpdate.class, method, postUpdateMethods);
@@ -134,19 +135,19 @@ public class InstanceListenerService {
      * life cycle methods.
      *
      * @param listener
-     *            The listener instance.
+     *     The listener instance.
      * @param annotation
-     *            The annotation to check for.
+     *     The annotation to check for.
      * @param method
-     *            The method to evaluate.
+     *     The method to evaluate.
      * @param methods
-     *            The map of methods.
+     *     The map of methods.
      */
     private void evaluateMethod(Object listener, Class<? extends Annotation> annotation, Method method, Map<Object, Set<Method>> methods) {
         if (method.isAnnotationPresent(annotation)) {
             if (method.getParameterTypes().length != 1) {
                 throw new XOException("Life cycle method '" + method.toGenericString() + "' annotated with '" + annotation.getName()
-                        + "' must declare exactly one parameter but declares " + method.getParameterTypes().length + ".");
+                    + "' must declare exactly one parameter but declares " + method.getParameterTypes().length + ".");
             }
             Set<Method> listenerMethods = methods.computeIfAbsent(listener, k -> new HashSet<>());
             listenerMethods.add(method);
@@ -157,11 +158,11 @@ public class InstanceListenerService {
      * Invokes all registered lifecycle methods on a given instance.
      *
      * @param methods
-     *            The registered methods.
+     *     The registered methods.
      * @param instance
-     *            The instance.
+     *     The instance.
      * @param <T>
-     *            The instance type.
+     *     The instance type.
      */
     private <T> void invoke(Map<Object, Set<Method>> methods, T instance) {
         for (Map.Entry<Object, Set<Method>> entry : methods.entrySet()) {

@@ -15,7 +15,7 @@ public interface QueryLanguagePlugin<QL extends Annotation> {
      * Initialize the plugin.
      *
      * @param datastore
-     *            The datastore.
+     *     The datastore.
      * @return The query language.
      */
     Class<QL> init(Datastore<?, ?, ?, ?, ?> datastore);
@@ -24,7 +24,7 @@ public interface QueryLanguagePlugin<QL extends Annotation> {
      * Create a query.
      *
      * @param session
-     *            The session.
+     *     The session.
      * @return The query.
      */
     DatastoreQuery<QL> createQuery(DatastoreSession<?, ?, ?, ?, ?, ?, ?, ?, ?> session);

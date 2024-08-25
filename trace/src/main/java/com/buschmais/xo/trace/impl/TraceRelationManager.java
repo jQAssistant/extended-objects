@@ -2,10 +2,10 @@ package com.buschmais.xo.trace.impl;
 
 import java.util.Map;
 
-import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
-import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
 import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
+import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
 import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
+import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 
 /**
  * Implementation of a
@@ -13,7 +13,7 @@ import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
  * delegates to another implementation.
  */
 public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata>
-        implements DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> {
+    implements DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> {
 
     private DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> delegate;
 
@@ -21,7 +21,7 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
      * Constructor.
      *
      * @param delegate
-     *            The delegate.
+     *     The delegate.
      */
     public TraceRelationManager(DatastoreRelationManager<Entity, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> delegate) {
         this.delegate = delegate;
@@ -39,7 +39,7 @@ public class TraceRelationManager<Entity, RelationId, Relation, RelationMetadata
 
     @Override
     public Relation createRelation(Entity source, RelationTypeMetadata<RelationMetadata> metadata, RelationTypeMetadata.Direction direction, Entity target,
-            Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
+        Map<PrimitivePropertyMethodMetadata<PropertyMetadata>, Object> example) {
         return delegate.createRelation(source, metadata, direction, target, example);
     }
 

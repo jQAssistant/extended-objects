@@ -24,7 +24,7 @@ public interface InstanceManager<DatastoreId, DatastoreType> {
      * Return the unique id of a datastore type.
      *
      * @param datastoreType
-     *            The datastore type.
+     *     The datastore type.
      * @return The id.
      */
     DatastoreId getDatastoreId(DatastoreType datastoreType);

@@ -12,16 +12,16 @@ import com.buschmais.xo.spi.session.XOSession;
  * {@link DatastoreSession} implementation allowing tracing on delegates.
  */
 public class TraceDatastoreSession<EntityId, Entity, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationId, Relation, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator, PropertyMetadata>
-        implements
-        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> {
+    implements
+    DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> {
 
     private DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> delegate;
 
     private InterceptorFactory interceptorFactory;
 
     public TraceDatastoreSession(
-            DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> delegate,
-            InterceptorFactory interceptorFactory) {
+        DatastoreSession<EntityId, Entity, EntityMetadata, EntityDiscriminator, RelationId, Relation, RelationMetadata, RelationDiscriminator, PropertyMetadata> delegate,
+        InterceptorFactory interceptorFactory) {
         this.delegate = delegate;
         this.interceptorFactory = interceptorFactory;
     }
@@ -29,9 +29,9 @@ public class TraceDatastoreSession<EntityId, Entity, EntityMetadata extends Data
     @Override
     public DatastoreTransaction getDatastoreTransaction() {
         DatastoreTransaction delegateDatastoreTransaction = delegate.getDatastoreTransaction();
-        return delegateDatastoreTransaction != null
-                ? new TraceTransaction(interceptorFactory.addInterceptor(delegateDatastoreTransaction, DatastoreTransaction.class))
-                : null;
+        return delegateDatastoreTransaction != null ?
+            new TraceTransaction(interceptorFactory.addInterceptor(delegateDatastoreTransaction, DatastoreTransaction.class)) :
+            null;
     }
 
     @Override

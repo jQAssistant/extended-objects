@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.test.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOManager;
@@ -17,6 +15,8 @@ import com.buschmais.xo.neo4j.test.repository.composite.CustomTypedNeo4jReposito
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Provides tests for the Neo4j repository functionality.
@@ -39,13 +39,15 @@ public class RepositoryIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void customRepository() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setName("A1");
         CustomRepository repository = xoManager.getRepository(CustomRepository.class);
         assertThat(repository.findByName("A1")).isEqualTo(a);
         assertThat(repository.find("A1")).isEqualTo(a);
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     /**
@@ -54,14 +56,17 @@ public class RepositoryIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void customNeo4jRepository() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setName("A1");
         CustomNeo4jRepository repository = xoManager.getRepository(CustomNeo4jRepository.class);
-        assertThat(repository.find(A.class, "A1").getSingleResult()).isEqualTo(a);
+        assertThat(repository.find(A.class, "A1")
+            .getSingleResult()).isEqualTo(a);
         assertThat(repository.findByName("A1")).isEqualTo(a);
         assertThat(repository.find("A1")).isEqualTo(a);
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     /**
@@ -70,13 +75,16 @@ public class RepositoryIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void customTypedNeo4jRepository() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setName("A1");
         CustomTypedNeo4jRepository repository = xoManager.getRepository(CustomTypedNeo4jRepository.class);
-        assertThat(repository.find("A1").getSingleResult()).isEqualTo(a);
+        assertThat(repository.find("A1")
+            .getSingleResult()).isEqualTo(a);
         assertThat(repository.findByName("A1")).isEqualTo(a);
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     /**
@@ -85,11 +93,14 @@ public class RepositoryIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void neo4jRepository() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
         a.setName("A1");
         Neo4jRepository repository = xoManager.getRepository(Neo4jRepository.class);
-        assertThat(repository.find(A.class, "A1").getSingleResult()).isEqualTo(a);
-        xoManager.currentTransaction().commit();
+        assertThat(repository.find(A.class, "A1")
+            .getSingleResult()).isEqualTo(a);
+        xoManager.currentTransaction()
+            .commit();
     }
 }

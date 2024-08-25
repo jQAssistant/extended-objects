@@ -29,18 +29,22 @@ public class LabelIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void implicitLabel() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         ImplicitLabel implicitLabel = xoManager.create(ImplicitLabel.class);
         assertThat(executeQuery("MATCH (n:ImplicitLabel) RETURN n").getColumn("n")).contains(implicitLabel);
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void explicitLabel() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         ExplicitLabel explicitLabel = xoManager.create(ExplicitLabel.class);
         assertThat(executeQuery("MATCH (n:EXPLICIT_LABEL) RETURN n").getColumn("n")).contains(explicitLabel);
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 }

@@ -1,10 +1,5 @@
 package com.buschmais.xo.neo4j.test.concurrency;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assume.assumeThat;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.*;
@@ -22,6 +17,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assume.assumeThat;
+
 @RunWith(Parameterized.class)
 public class MultithreadedIT extends AbstractNeo4JXOManagerIT {
 
@@ -36,11 +36,14 @@ public class MultithreadedIT extends AbstractNeo4JXOManagerIT {
 
     @Test
     public void instance() throws ExecutionException, InterruptedException {
-        assumeThat(getXOManagerFactory().getXOUnit().getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
+        assumeThat(getXOManagerFactory().getXOUnit()
+            .getProvider(), equalTo(Neo4jDatabase.MEMORY.getProvider()));
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
         ExecutorService executorService = Executors.newCachedThreadPool();
         Future<Integer> future1 = executorService.submit(new Worker(a));
         TimeUnit.SECONDS.sleep(1);

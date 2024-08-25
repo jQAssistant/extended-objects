@@ -15,7 +15,8 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Property
     public Object invoke(DatastoreType datastoreType, Object instance, Object[] args) {
         PrimitivePropertyMethodMetadata<?> metadata = getMetadata();
         PropertyManager propertyManager = getPropertyManager();
-        Class<?> propertyType = metadata.getAnnotatedMethod().getType();
+        Class<?> propertyType = metadata.getAnnotatedMethod()
+            .getType();
         return ValueConverter.convert(propertyManager.hasProperty(datastoreType, metadata) ? propertyManager.getProperty(datastoreType, metadata) : null,
             propertyType);
     }

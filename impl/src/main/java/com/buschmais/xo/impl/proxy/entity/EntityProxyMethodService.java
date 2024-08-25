@@ -24,7 +24,9 @@ import com.buschmais.xo.api.metadata.reflection.SetPropertyMethod;
 public class EntityProxyMethodService<Entity, Relation> extends AbstractProxyMethodService<Entity> {
 
     public EntityProxyMethodService(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
-        for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider().getRegisteredMetadata().values()) {
+        for (TypeMetadata typeMetadata : sessionContext.getMetadataProvider()
+            .getRegisteredMetadata()
+            .values()) {
             for (MethodMetadata<?, ?> methodMetadata : typeMetadata.getProperties()) {
                 AnnotatedMethod typeMethod = methodMetadata.getAnnotatedMethod();
                 addUnsupportedOperationMethod(methodMetadata, typeMethod);
@@ -52,28 +54,28 @@ public class EntityProxyMethodService<Entity, Relation> extends AbstractProxyMet
                     } else if (methodMetadata instanceof EntityReferencePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
                             addProxyMethod(new EntityReferencePropertyGetMethod<>(propertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata),
-                                    method);
+                                method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new EntityReferencePropertySetMethod<>(propertyManager, (EntityReferencePropertyMethodMetadata) methodMetadata),
-                                    method);
+                                method);
                         }
                     } else if (methodMetadata instanceof RelationReferencePropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
                             addProxyMethod(new RelationReferencePropertyGetMethod<>(propertyManager, (RelationReferencePropertyMethodMetadata) methodMetadata),
-                                    method);
+                                method);
                         }
                     } else if (methodMetadata instanceof EntityCollectionPropertyMethodMetadata) {
                         if (propertyMethod instanceof GetPropertyMethod) {
                             EntityCollectionPropertyGetMethod<Entity, ?> proxyMethod = new EntityCollectionPropertyGetMethod<>(sessionContext,
-                                    (EntityCollectionPropertyMethodMetadata<?>) methodMetadata);
+                                (EntityCollectionPropertyMethodMetadata<?>) methodMetadata);
                             addProxyMethod(proxyMethod, method);
                         } else if (propertyMethod instanceof SetPropertyMethod) {
                             addProxyMethod(new EntityCollectionPropertySetMethod<>(propertyManager, (EntityCollectionPropertyMethodMetadata) methodMetadata),
-                                    method);
+                                method);
                         }
                     } else if (methodMetadata instanceof RelationCollectionPropertyMethodMetadata && propertyMethod instanceof GetPropertyMethod) {
                         RelationCollectionPropertyGetMethod<Entity, ?> proxyMethod = new RelationCollectionPropertyGetMethod<>(sessionContext,
-                                (RelationCollectionPropertyMethodMetadata<?>) methodMetadata);
+                            (RelationCollectionPropertyMethodMetadata<?>) methodMetadata);
                         addProxyMethod(proxyMethod, method);
                     }
                 }

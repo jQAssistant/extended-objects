@@ -19,7 +19,7 @@ public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMet
     private final boolean singleResult;
 
     public ResultOfMethodMetadata(AnnotatedMethod annotatedMethod, AnnotatedElement query, Class<?> returnType, String usingThisAs,
-            List<ResultOf.Parameter> parameters, boolean singleResult) {
+        List<ResultOf.Parameter> parameters, boolean singleResult) {
         super(annotatedMethod, null);
         this.query = query;
         this.returnType = returnType;

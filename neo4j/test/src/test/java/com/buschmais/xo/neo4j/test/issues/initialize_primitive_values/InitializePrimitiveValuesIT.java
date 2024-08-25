@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.test.issues.initialize_primitive_values;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 
 import com.buschmais.xo.api.XOManager;
@@ -12,6 +10,8 @@ import com.buschmais.xo.neo4j.test.issues.initialize_primitive_values.composite.
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * https://github.com/buschmais/cdo-neo4j/issues/61
@@ -31,14 +31,18 @@ public class InitializePrimitiveValuesIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void test() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
         assertThat(a.getB()).isNull();
         assertThat(a.isBoolean()).isFalse();
         assertThat(a.getInt()).isZero();
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
 }

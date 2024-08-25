@@ -9,7 +9,9 @@ import com.buschmais.xo.api.XOException;
  */
 public enum CollectionPropertyType {
 
-    LIST(java.util.List.class), SET(java.util.Set.class), COLLECTION(java.util.Collection.class);
+    LIST(java.util.List.class),
+    SET(java.util.Set.class),
+    COLLECTION(java.util.Collection.class);
 
     private Class<? extends Collection> collectionType;
 
@@ -17,7 +19,7 @@ public enum CollectionPropertyType {
      * Constructor.
      *
      * @param type
-     *            The collection type (i.e. interface).
+     *     The collection type (i.e. interface).
      */
     private CollectionPropertyType(Class<? extends java.util.Collection> type) {
         this.collectionType = type;
@@ -38,7 +40,7 @@ public enum CollectionPropertyType {
      * for a given class.
      *
      * @param type
-     *            The class.
+     *     The class.
      * @return The collection property type.
      */
     public static CollectionPropertyType getCollectionPropertyType(Class<?> type) {

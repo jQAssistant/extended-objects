@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class AbstractNeo4jDatastore<L extends Neo4jLabel, R extends Neo4jRelationshipType, DS extends Neo4jDatastoreSession>
-        implements Neo4jDatastore<L, R, DS> {
+    implements Neo4jDatastore<L, R, DS> {
 
     @Override
     public void init(Map<Class<?>, TypeMetadata> registeredMetadata) {
@@ -35,8 +35,8 @@ public abstract class AbstractNeo4jDatastore<L extends Neo4jLabel, R extends Neo
                 Optional<Index> labelIndex = getRequiredIndex(entityTypeMetadata, entityTypeMetadata.getIndexedProperty());
                 labelIndex.ifPresent(index -> indexes.add(index));
                 // check for inherited indexed property
-                getRequiredIndex(entityTypeMetadata, entityTypeMetadata.getDatastoreMetadata().getUsingIndexedPropertyOf())
-                        .ifPresent(index -> indexes.add(index));
+                getRequiredIndex(entityTypeMetadata, entityTypeMetadata.getDatastoreMetadata()
+                    .getUsingIndexedPropertyOf()).ifPresent(index -> indexes.add(index));
             }
         }
         try (DS session = createSession()) {
@@ -71,17 +71,22 @@ public abstract class AbstractNeo4jDatastore<L extends Neo4jLabel, R extends Neo
      * Determines if there's a required index defined for an entity.
      *
      * @param entityTypeMetadata
-     *            The entity.
+     *     The entity.
      * @param indexedProperty
-     *            The index metadata.
+     *     The index metadata.
      */
     private Optional<Index> getRequiredIndex(EntityTypeMetadata<NodeMetadata<L>> entityTypeMetadata,
-            IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedProperty) {
+        IndexedPropertyMethodMetadata<IndexedPropertyMetadata> indexedProperty) {
         if (indexedProperty != null) {
-            L label = entityTypeMetadata.getDatastoreMetadata().getDiscriminator();
+            L label = entityTypeMetadata.getDatastoreMetadata()
+                .getDiscriminator();
             PrimitivePropertyMethodMetadata<PropertyMetadata> propertyMethodMetadata = indexedProperty.getPropertyMethodMetadata();
             if (label != null && propertyMethodMetadata != null) {
-                return Optional.of(Index.builder().label(label.getName()).property(propertyMethodMetadata.getDatastoreMetadata().getName()).build());
+                return Optional.of(Index.builder()
+                    .label(label.getName())
+                    .property(propertyMethodMetadata.getDatastoreMetadata()
+                        .getName())
+                    .build());
             }
         }
         return Optional.empty();

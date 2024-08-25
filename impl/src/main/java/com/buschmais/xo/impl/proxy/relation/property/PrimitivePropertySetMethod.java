@@ -1,8 +1,8 @@
 package com.buschmais.xo.impl.proxy.relation.property;
 
+import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.impl.RelationPropertyManager;
 import com.buschmais.xo.impl.proxy.common.property.AbstractPrimitivePropertySetMethod;
-import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
 
 public class PrimitivePropertySetMethod<Entity, Relation> extends AbstractPrimitivePropertySetMethod<Relation, RelationPropertyManager<Entity, Relation>> {
 

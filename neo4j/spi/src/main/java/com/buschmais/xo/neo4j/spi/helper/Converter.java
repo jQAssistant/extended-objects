@@ -19,7 +19,8 @@ public class Converter {
         }
         Class<?> valueType = value.getClass();
         for (TypeConverter converter : converters) {
-            if (converter.getType().isAssignableFrom(valueType)) {
+            if (converter.getType()
+                .isAssignableFrom(valueType)) {
                 return (T) converter.convert(value);
             }
         }

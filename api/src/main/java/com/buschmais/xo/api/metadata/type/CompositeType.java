@@ -1,10 +1,10 @@
 package com.buschmais.xo.api.metadata.type;
 
-import static java.util.Arrays.asList;
-
 import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import static java.util.Arrays.asList;
 
 /**
  * Implementation of a {@link CompositeType}.
@@ -67,7 +67,8 @@ public class CompositeType {
             } else if (type2.isAssignableFrom(type1)) {
                 return -1;
             }
-            return type1.getName().compareTo(type2.getName());
+            return type1.getName()
+                .compareTo(type2.getName());
         });
 
         public Builder type(Class<?> type) {
@@ -90,7 +91,8 @@ public class CompositeType {
         }
 
         public Builder typeMetadata(TypeMetadata typeMetadata) {
-            types.add(typeMetadata.getAnnotatedType().getAnnotatedElement());
+            types.add(typeMetadata.getAnnotatedType()
+                .getAnnotatedElement());
             return this;
         }
 

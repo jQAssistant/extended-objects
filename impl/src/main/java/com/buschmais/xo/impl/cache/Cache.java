@@ -6,9 +6,9 @@ import java.util.Collection;
  * Defines the cache interface.
  *
  * @param <K>
- *            The key type.
+ *     The key type.
  * @param <V>
- *            The value type.
+ *     The value type.
  */
 public interface Cache<K, V> {
 

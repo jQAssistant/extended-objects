@@ -1,8 +1,5 @@
 package com.buschmais.xo.neo4j.test.validation;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collection;
 import java.util.Collections;
 
@@ -19,6 +16,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RunWith(Parameterized.class)
 public class ValidationModeNoneIT extends AbstractNeo4JXOManagerIT {
 
@@ -29,18 +29,22 @@ public class ValidationModeNoneIT extends AbstractNeo4JXOManagerIT {
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() {
         return xoUnits(asList(A.class, B.class), Collections.emptyList(), ValidationMode.NONE, ConcurrencyMode.SINGLETHREADED,
-                Transaction.TransactionAttribute.MANDATORY);
+            Transaction.TransactionAttribute.MANDATORY);
     }
 
     @Test
     public void validationOnCommitAfterInsert() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         A a = xoManager.create(A.class);
-        xoManager.currentTransaction().commit();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .commit();
+        xoManager.currentTransaction()
+            .begin();
         assertThat(a.getName()).isNull();
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
 }

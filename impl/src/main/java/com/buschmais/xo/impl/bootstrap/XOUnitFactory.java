@@ -61,7 +61,8 @@ public class XOUnitFactory {
                 XOUnitValidationHandler validationHandler = new XOUnitValidationHandler();
                 unmarshaller.setSchema(xoXsd);
                 unmarshaller.setEventHandler(validationHandler);
-                Xo xoXmlContent = unmarshaller.unmarshal(new StreamSource(is), Xo.class).getValue();
+                Xo xoXmlContent = unmarshaller.unmarshal(new StreamSource(is), Xo.class)
+                    .getValue();
                 if (validationHandler.isValid()) {
                     return xoXmlContent;
                 } else {
@@ -88,7 +89,8 @@ public class XOUnitFactory {
             String providerName = xoUnitType.getProvider();
             Class<? extends XODatastoreProvider> provider = ClassHelper.getType(providerName);
             Set<Class<?>> types = new HashSet<>();
-            for (String typeName : xoUnitType.getTypes().getType()) {
+            for (String typeName : xoUnitType.getTypes()
+                .getType()) {
                 types.add(ClassHelper.getType(typeName));
             }
             List<Class<?>> instanceListeners = new ArrayList<>();
@@ -108,9 +110,18 @@ public class XOUnitFactory {
                     properties.setProperty(propertyType.getName(), propertyType.getValue());
                 }
             }
-            XOUnit xoUnit = XOUnit.builder().name(name).description(description).uri(uri).provider(provider).types(types).instanceListeners(instanceListeners)
-                    .validationMode(validationMode).concurrencyMode(concurrencyMode).defaultTransactionAttribute(defaultTransactionAttribute)
-                    .properties(properties).build();
+            XOUnit xoUnit = XOUnit.builder()
+                .name(name)
+                .description(description)
+                .uri(uri)
+                .provider(provider)
+                .types(types)
+                .instanceListeners(instanceListeners)
+                .validationMode(validationMode)
+                .concurrencyMode(concurrencyMode)
+                .defaultTransactionAttribute(defaultTransactionAttribute)
+                .properties(properties)
+                .build();
             xoUnits.add(xoUnit);
         }
         return xoUnits;

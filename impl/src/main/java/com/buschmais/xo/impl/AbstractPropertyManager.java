@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.api.metadata.method.TransientPropertyMethodMetadata;
+import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 
 public abstract class AbstractPropertyManager<DatastoreType> {
 
@@ -31,11 +31,13 @@ public abstract class AbstractPropertyManager<DatastoreType> {
     }
 
     public void setTransientProperty(DatastoreType datastoreType, TransientPropertyMethodMetadata metadata, Object value) {
-        getTransientProperties(datastoreType).put(metadata.getAnnotatedMethod().getName(), value);
+        getTransientProperties(datastoreType).put(metadata.getAnnotatedMethod()
+            .getName(), value);
     }
 
     public Object getTransientProperty(DatastoreType datastoreType, TransientPropertyMethodMetadata metadata) {
-        return getTransientProperties(datastoreType).get(metadata.getAnnotatedMethod().getName());
+        return getTransientProperties(datastoreType).get(metadata.getAnnotatedMethod()
+            .getName());
     }
 
     protected abstract DatastorePropertyManager<DatastoreType, ?> getDatastorePropertyManager();

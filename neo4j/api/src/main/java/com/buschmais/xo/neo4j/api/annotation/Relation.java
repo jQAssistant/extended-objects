@@ -1,15 +1,15 @@
 package com.buschmais.xo.neo4j.api.annotation;
 
-import static com.buschmais.xo.spi.annotation.RelationDefinition.FromDefinition;
-import static com.buschmais.xo.spi.annotation.RelationDefinition.ToDefinition;
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.buschmais.xo.spi.annotation.RelationDefinition;
+
+import static com.buschmais.xo.spi.annotation.RelationDefinition.FromDefinition;
+import static com.buschmais.xo.spi.annotation.RelationDefinition.ToDefinition;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Defines a relationship. Can be used on the following java elements:

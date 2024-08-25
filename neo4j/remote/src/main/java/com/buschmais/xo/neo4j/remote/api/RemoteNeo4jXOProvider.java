@@ -15,11 +15,11 @@ import com.buschmais.xo.spi.logging.LogLevel;
 import org.neo4j.driver.Config;
 
 public class RemoteNeo4jXOProvider
-        implements XODatastoreProvider<NodeMetadata<RemoteLabel>, RemoteLabel, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType> {
+    implements XODatastoreProvider<NodeMetadata<RemoteLabel>, RemoteLabel, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType> {
 
     @Override
     public Datastore<?, NodeMetadata<RemoteLabel>, RemoteLabel, RelationshipMetadata<RemoteRelationshipType>, RemoteRelationshipType> createDatastore(
-            XOUnit xoUnit) {
+        XOUnit xoUnit) {
         return new RemoteDatastore(xoUnit);
     }
 
@@ -33,9 +33,13 @@ public class RemoteNeo4jXOProvider
      */
     public enum Property implements ConfigurationProperty {
 
-        USERNAME("username", String.class), PASSWORD("password", String.class), ENCRYPTION("encryption", Boolean.class), TRUST_STRATEGY("trust.strategy",
-                Config.TrustStrategy.class), TRUST_CERTIFICATE("trust.certificate", String.class), STATEMENT_LOG_LEVEL("statement.log.level",
-                        LogLevel.class), STATEMENT_BATCHABLE_DEFAULT("statement.batching.default", Boolean.class);
+        USERNAME("username", String.class),
+        PASSWORD("password", String.class),
+        ENCRYPTION("encryption", Boolean.class),
+        TRUST_STRATEGY("trust.strategy", Config.TrustStrategy.class),
+        TRUST_CERTIFICATE("trust.certificate", String.class),
+        STATEMENT_LOG_LEVEL("statement.log.level", LogLevel.class),
+        STATEMENT_BATCHABLE_DEFAULT("statement.batching.default", Boolean.class);
 
         public static final String NEO4J_REMOTE = "neo4j.remote.";
 

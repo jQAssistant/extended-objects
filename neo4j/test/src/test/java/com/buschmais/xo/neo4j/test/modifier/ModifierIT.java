@@ -1,8 +1,5 @@
 package com.buschmais.xo.neo4j.test.modifier;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-
 import java.util.Collection;
 
 import com.buschmais.xo.api.CompositeObject;
@@ -17,6 +14,9 @@ import com.buschmais.xo.neo4j.test.modifier.composite.FinalType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class ModifierIT extends AbstractNeo4JXOManagerIT {
@@ -33,21 +33,25 @@ public class ModifierIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void abstractModifier() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         try {
             xoManager.create(AbstractType.class);
             fail("Expecting an " + XOException.class.getName());
         } catch (XOException e) {
         }
         CompositeObject compositeObject = xoManager.create(AbstractType.class, ConcreteType.class);
-        assertThat(compositeObject).isInstanceOf(AbstractType.class).isInstanceOf(ConcreteType.class);
-        xoManager.currentTransaction().commit();
+        assertThat(compositeObject).isInstanceOf(AbstractType.class)
+            .isInstanceOf(ConcreteType.class);
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test
     public void finalModifier() {
         XOManager xoManager = getXOManager();
-        xoManager.currentTransaction().begin();
+        xoManager.currentTransaction()
+            .begin();
         FinalType finalType = xoManager.create(FinalType.class);
         assertThat(finalType).isInstanceOf(FinalType.class);
         try {
@@ -55,7 +59,8 @@ public class ModifierIT extends AbstractNeo4JXOManagerIT {
             fail("Expecting an " + XOException.class.getName());
         } catch (XOException e) {
         }
-        xoManager.currentTransaction().commit();
+        xoManager.currentTransaction()
+            .commit();
     }
 
 }

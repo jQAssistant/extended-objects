@@ -9,18 +9,18 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.spi.datastore.Datastore;
 import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
-import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
 import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
-import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 import com.buschmais.xo.api.metadata.type.TypeMetadata;
+import com.buschmais.xo.spi.datastore.Datastore;
+import com.buschmais.xo.spi.datastore.DatastoreMetadataFactory;
+import com.buschmais.xo.spi.interceptor.InterceptorFactory;
 
 /**
  * {@link Datastore} implementation allowing tracing on delegates.
  */
 public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datastore.DatastoreSession, EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator>
-        implements Datastore<TraceDatastoreSession, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
+    implements Datastore<TraceDatastoreSession, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> {
 
     private Datastore<DatastoreSession, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> delegate;
 
@@ -29,7 +29,7 @@ public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datast
     private TraceMonitor traceMonitor;
 
     public TraceDatastore(Datastore<DatastoreSession, EntityMetadata, EntityDiscriminator, RelationMetadata, RelationDiscriminator> delegate,
-            InterceptorFactory interceptorFactory, TraceMonitor traceMonitor) {
+        InterceptorFactory interceptorFactory, TraceMonitor traceMonitor) {
         this.delegate = delegate;
         this.interceptorFactory = interceptorFactory;
         this.traceMonitor = traceMonitor;
@@ -55,7 +55,7 @@ public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datast
     public TraceDatastoreSession createSession() {
         DatastoreSession delegateSession = delegate.createSession();
         return new TraceDatastoreSession(interceptorFactory.addInterceptor(delegateSession, com.buschmais.xo.spi.datastore.DatastoreSession.class),
-                interceptorFactory);
+            interceptorFactory);
     }
 
     @Override
@@ -74,7 +74,8 @@ public class TraceDatastore<DatastoreSession extends com.buschmais.xo.spi.datast
     }
 
     private ObjectName getObjectName() {
-        String name = traceMonitor.getXOUnit().getName();
+        String name = traceMonitor.getXOUnit()
+            .getName();
         try {
             return new ObjectName("com.buschmais.xo.trace", "xo-unit", name);
         } catch (MalformedObjectNameException e) {

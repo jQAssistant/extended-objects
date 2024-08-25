@@ -1,30 +1,25 @@
 package com.buschmais.xo.impl.metadata;
 
-import static com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import com.buschmais.xo.api.XOException;
-import com.buschmais.xo.api.metadata.type.DatastoreEntityMetadata;
-import com.buschmais.xo.api.metadata.type.DatastoreRelationMetadata;
-import com.buschmais.xo.api.metadata.type.CompositeTypeMetadata;
 import com.buschmais.xo.api.metadata.method.AbstractRelationPropertyMethodMetadata;
 import com.buschmais.xo.api.metadata.method.MethodMetadata;
-import com.buschmais.xo.api.metadata.type.EntityTypeMetadata;
-import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
-import com.buschmais.xo.api.metadata.type.TypeMetadata;
 import com.buschmais.xo.api.metadata.reflection.AnnotatedType;
+import com.buschmais.xo.api.metadata.type.*;
+
+import static com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction;
 
 /**
  * Allows resolving types from relation discriminators as provided by the
  * datastores.
  *
  * @param <RelationDiscriminator>
- *            The discriminator type of the datastore (e.g. Neo4j relationship
- *            types or strings for JSON stores).
+ *     The discriminator type of the datastore (e.g. Neo4j relationship
+ *     types or strings for JSON stores).
  */
 public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntityMetadata<EntityDiscriminator>, EntityDiscriminator, RelationMetadata extends DatastoreRelationMetadata<RelationDiscriminator>, RelationDiscriminator> {
 
@@ -35,7 +30,7 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
      * Constructor.
      *
      * @param metadataByType
-     *            A map of all types with their metadata.
+     *     A map of all types with their metadata.
      */
     public RelationTypeMetadataResolver(Map<Class<?>, TypeMetadata> metadataByType, EntityTypeMetadataResolver entityTypeMetadataResolver) {
         relationMappings = new HashMap<>();
@@ -50,12 +45,14 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
                 EntityTypeMetadata<EntityMetadata> incomingTypeMetadata = (EntityTypeMetadata<EntityMetadata>) metadataByType.get(incomingType);
                 Set incomingDiscriminators = entityTypeMetadataResolver.getDiscriminators(incomingTypeMetadata);
                 RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator> relationMapping = new RelationMapping<>(outgoingDiscriminators,
-                        relationTypeMetadata, incomingDiscriminators);
-                Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>> mappingSet = relationMappings
-                        .get(relationTypeMetadata.getDatastoreMetadata().getDiscriminator());
+                    relationTypeMetadata, incomingDiscriminators);
+                Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>> mappingSet = relationMappings.get(
+                    relationTypeMetadata.getDatastoreMetadata()
+                        .getDiscriminator());
                 if (mappingSet == null) {
                     mappingSet = new HashSet<>();
-                    relationMappings.put(relationTypeMetadata.getDatastoreMetadata().getDiscriminator(), mappingSet);
+                    relationMappings.put(relationTypeMetadata.getDatastoreMetadata()
+                        .getDiscriminator(), mappingSet);
                 }
                 mappingSet.add(relationMapping);
             } else if (typeMetadata instanceof EntityTypeMetadata) {
@@ -63,9 +60,11 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
                 for (MethodMetadata<?, ?> methodMetadata : entityTypeMetadata.getProperties()) {
                     if (methodMetadata instanceof AbstractRelationPropertyMethodMetadata<?>) {
                         AbstractRelationPropertyMethodMetadata<RelationMetadata> propertyMethodMetadata = (AbstractRelationPropertyMethodMetadata<RelationMetadata>) methodMetadata;
-                        AnnotatedType relationType = propertyMethodMetadata.getRelationshipMetadata().getAnnotatedType();
+                        AnnotatedType relationType = propertyMethodMetadata.getRelationshipMetadata()
+                            .getAnnotatedType();
                         if (relationType != null) {
-                            Class<?> entityType = entityTypeMetadata.getAnnotatedType().getAnnotatedElement();
+                            Class<?> entityType = entityTypeMetadata.getAnnotatedType()
+                                .getAnnotatedElement();
                             RelationTypeMetadata<?> relationTypeMetadata = (RelationTypeMetadata<?>) metadataByType.get(relationType.getAnnotatedElement());
                             Direction direction = propertyMethodMetadata.getDirection();
                             relationProperties.put(new RelationPropertyKey(entityType, relationTypeMetadata, direction), propertyMethodMetadata);
@@ -81,15 +80,15 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
      * descriminator and target discriminators.
      *
      * @param sourceDiscriminators
-     *            The source discriminators.
+     *     The source discriminators.
      * @param discriminator
-     *            The relation discriminator.
+     *     The relation discriminator.
      * @param targetDiscriminators
-     *            The target discriminators.
+     *     The target discriminators.
      * @return A set of matching relation types.
      */
     public CompositeTypeMetadata<RelationTypeMetadata<RelationMetadata>> getRelationTypes(Set<EntityDiscriminator> sourceDiscriminators,
-                                                                                          RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators) {
+        RelationDiscriminator discriminator, Set<EntityDiscriminator> targetDiscriminators) {
         CompositeTypeMetadata<RelationTypeMetadata<RelationMetadata>> compositeTypeMetadata = new CompositeTypeMetadata<>();
         Set<RelationMapping<EntityDiscriminator, RelationMetadata, RelationDiscriminator>> relations = relationMappings.get(discriminator);
         if (relations != null) {
@@ -122,8 +121,10 @@ public class RelationTypeMetadataResolver<EntityMetadata extends DatastoreEntity
         RelationPropertyKey relationPropertyKey = new RelationPropertyKey(containingType, relationTypeMetadata, direction);
         AbstractRelationPropertyMethodMetadata<?> propertyMethodMetadata = relationProperties.get(relationPropertyKey);
         if (propertyMethodMetadata == null) {
-            throw new XOException("Cannot resolve property in type '" + containingType.getName() + "' for relation type '"
-                    + relationTypeMetadata.getAnnotatedType().getAnnotatedElement().getName() + "'.");
+            throw new XOException(
+                "Cannot resolve property in type '" + containingType.getName() + "' for relation type '" + relationTypeMetadata.getAnnotatedType()
+                    .getAnnotatedElement()
+                    .getName() + "'.");
         }
         return propertyMethodMetadata;
     }

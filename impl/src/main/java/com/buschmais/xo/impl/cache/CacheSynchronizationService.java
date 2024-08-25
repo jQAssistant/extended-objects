@@ -30,13 +30,13 @@ public class CacheSynchronizationService<Entity, Relation> {
         DatastoreSession<?, Entity, ?, ?, ?, Relation, ?, ?, ?> datastoreSession = sessionContext.getDatastoreSession();
         InstanceListenerService instanceListenerService = sessionContext.getInstanceListenerService();
         flush(sessionContext.getRelationCache(), sessionContext.getRelationInstanceManager(), datastoreSession.getDatastoreRelationManager(),
-                instanceListenerService);
+            instanceListenerService);
         flush(sessionContext.getEntityCache(), sessionContext.getEntityInstanceManager(), datastoreSession.getDatastoreEntityManager(),
-                instanceListenerService);
+            instanceListenerService);
     }
 
     private <T> void flush(TransactionalCache<?> cache, AbstractInstanceManager<?, T> instanceManager, DatastorePropertyManager<T, ?> datastoreManager,
-            InstanceListenerService instanceListenerService) {
+        InstanceListenerService instanceListenerService) {
         Collection<?> writtenInstances = cache.writtenInstances();
         if (!writtenInstances.isEmpty()) {
             List<T> entities = new ArrayList<>(writtenInstances.size());
@@ -71,7 +71,8 @@ public class CacheSynchronizationService<Entity, Relation> {
 
     private void validateInstance(Object instance) {
         if (!ValidationMode.NONE.equals(xoUnit.getValidationMode())) {
-            Set<ConstraintViolation<Object>> constraintViolations = sessionContext.getInstanceValidationService().validate(instance);
+            Set<ConstraintViolation<Object>> constraintViolations = sessionContext.getInstanceValidationService()
+                .validate(instance);
             if (!constraintViolations.isEmpty()) {
                 throw new ConstraintViolationException(constraintViolations);
             }

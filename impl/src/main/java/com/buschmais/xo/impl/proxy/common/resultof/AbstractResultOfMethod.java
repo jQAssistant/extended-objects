@@ -5,21 +5,21 @@ import java.util.List;
 
 import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.annotation.ResultOf;
+import com.buschmais.xo.api.metadata.method.ResultOfMethodMetadata;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.converter.ValueConverter;
 import com.buschmais.xo.impl.query.XOQueryImpl;
-import com.buschmais.xo.api.metadata.method.ResultOfMethodMetadata;
 
 /**
  * Abstract base implementation for ResultOf methods.
  *
  * @param <DatastoreType>
- *            The datastore type to be used as "this" instance.
+ *     The datastore type to be used as "this" instance.
  * @param <Entity>
- *            The entity type.
+ *     The entity type.
  * @param <Relation>
- *            The relation type.
+ *     The relation type.
  */
 public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> implements ProxyMethod<DatastoreType> {
 
@@ -42,7 +42,8 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
         }
         List<ResultOf.Parameter> parameters = resultOfMethodMetadata.getParameters();
         for (int i = 0; i < parameters.size(); i++) {
-            query.withParameter(parameters.get(i).value(), args[i]);
+            query.withParameter(parameters.get(i)
+                .value(), args[i]);
         }
         Query.Result<?> result = query.execute();
         if (void.class.equals(returnType)) {

@@ -36,8 +36,8 @@ public class TransactionInterceptor implements XOInterceptor {
         switch (transactionAttribute) {
         case MANDATORY:
             if (!this.xoTransaction.isActive()) {
-                throw new XOException(
-                        "An active transaction is MANDATORY when calling method '" + method.getDeclaringClass().getName() + "#" + method.getName() + "'");
+                throw new XOException("An active transaction is MANDATORY when calling method '" + method.getDeclaringClass()
+                    .getName() + "#" + method.getName() + "'");
             }
             return context.proceed();
         case REQUIRES: {

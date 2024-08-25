@@ -15,7 +15,8 @@ public class XOUnitValidationHandler implements ValidationEventHandler {
         if (event.getSeverity() == ValidationEvent.ERROR || event.getSeverity() == ValidationEvent.FATAL_ERROR) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("line ");
-            stringBuilder.append(event.getLocator().getLineNumber());
+            stringBuilder.append(event.getLocator()
+                .getLineNumber());
             stringBuilder.append(": ");
             stringBuilder.append(event.getMessage());
             this.errorMessages.add(stringBuilder.toString());

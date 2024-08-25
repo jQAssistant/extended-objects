@@ -1,13 +1,13 @@
 package com.buschmais.xo.neo4j.test.mapping.composite;
 
+import com.buschmais.xo.api.annotation.ResultOf;
+import com.buschmais.xo.neo4j.api.annotation.Cypher;
+import com.buschmais.xo.neo4j.api.annotation.Relation;
+
 import static com.buschmais.xo.api.Query.Result;
 import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
 import static com.buschmais.xo.neo4j.api.annotation.Relation.Incoming;
 import static com.buschmais.xo.neo4j.api.annotation.Relation.Outgoing;
-
-import com.buschmais.xo.api.annotation.ResultOf;
-import com.buschmais.xo.neo4j.api.annotation.Cypher;
-import com.buschmais.xo.neo4j.api.annotation.Relation;
 
 @Relation("E2F")
 public interface E2F {

@@ -21,15 +21,17 @@ public class ProxyFactory {
 
     private final InterceptorFactory interceptorFactory;
     private final ClassLoader classLoader;
-    private final Cache<CompositeType, Constructor<?>> classCache = Caffeine.newBuilder().maximumSize(512).build();
+    private final Cache<CompositeType, Constructor<?>> classCache = Caffeine.newBuilder()
+        .maximumSize(512)
+        .build();
 
     /**
      * Constructor.
      *
      * @param interceptorFactory
-     *            The {@link com.buschmais.xo.spi.interceptor.InterceptorFactory}.
+     *     The {@link com.buschmais.xo.spi.interceptor.InterceptorFactory}.
      * @param classLoader
-     *            The class loader.
+     *     The class loader.
      */
     public ProxyFactory(InterceptorFactory interceptorFactory, ClassLoader classLoader) {
         this.interceptorFactory = interceptorFactory;
@@ -40,11 +42,11 @@ public class ProxyFactory {
      * Creates a proxy instance.
      *
      * @param invocationHandler
-     *            The {@link java.lang.reflect.InvocationHandler}.
+     *     The {@link java.lang.reflect.InvocationHandler}.
      * @param compositeType
-     *            The composite type to create an instance for.
+     *     The composite type to create an instance for.
      * @param <Instance>
-     *            The instance type.
+     *     The instance type.
      * @return The instance.
      */
     public <Instance> Instance createInstance(InvocationHandler invocationHandler, CompositeType compositeType) {
@@ -78,12 +80,12 @@ public class ProxyFactory {
      * from a proxy instance.
      *
      * @param instance
-     *            The proxy instance.
+     *     The proxy instance.
      * @param <DatastoreType>
-     *            The expected datastore type of the
-     *            {@link com.buschmais.xo.impl.proxy.InstanceInvocationHandler}
+     *     The expected datastore type of the
+     *     {@link com.buschmais.xo.impl.proxy.InstanceInvocationHandler}
      * @param <Instance>
-     *            The instance type.
+     *     The instance type.
      * @return The {@link com.buschmais.xo.impl.proxy.InstanceInvocationHandler} .
      */
     public <DatastoreType, Instance> InstanceInvocationHandler<DatastoreType> getInvocationHandler(Instance instance) {
@@ -95,8 +97,8 @@ public class ProxyFactory {
         }
         InvocationHandler invocationHandler = Proxy.getInvocationHandler(effectiveInstance);
         if (!(invocationHandler instanceof InstanceInvocationHandler)) {
-            throw new XOException("Instance " + instance + " implementing " + Arrays.asList(instance.getClass().getInterfaces()) + " is not a "
-                    + InstanceInvocationHandler.class.getName());
+            throw new XOException("Instance " + instance + " implementing " + Arrays.asList(instance.getClass()
+                .getInterfaces()) + " is not a " + InstanceInvocationHandler.class.getName());
         }
         return (InstanceInvocationHandler<DatastoreType>) invocationHandler;
     }
