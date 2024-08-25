@@ -1,10 +1,5 @@
 package com.buschmais.xo.impl;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-
 import com.buschmais.xo.api.ResultIterator;
 import com.buschmais.xo.api.XOTransaction;
 import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
@@ -13,7 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TransactionalResultIteratorTest {
