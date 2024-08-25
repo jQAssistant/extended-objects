@@ -56,16 +56,16 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.jacoco_version>0.8.8</org.jacoco_version>
-        <org.asciidoctor.maven_version>2.2.4</org.asciidoctor.maven_version>
+        <org.jacoco_version>0.8.12</org.jacoco_version>
+        <org.asciidoctor.maven_version>3.0.0</org.asciidoctor.maven_version>
         <org.neo4j_version />
-        <org.slf4j_version>1.7.36</org.slf4j_version>
-        <org.hamcrest_version>2.2</org.hamcrest_version>
-        <org.neo4jv4_version>4.4.34</org.neo4jv4_version>
-        <org.neo4jv5_version>5.21.0</org.neo4jv5_version>
+        <org.slf4j_version>2.0.16</org.slf4j_version>
+        <org.hamcrest_version>3.0</org.hamcrest_version>
+        <org.neo4jv4_version>4.4.36</org.neo4jv4_version>
+        <org.neo4jv5_version>5.23.0</org.neo4jv5_version>
         <org.neo4j_version>${org.neo4jv4_version}</org.neo4j_version>
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
-        <jqassistant.version>2.1.0</jqassistant.version>
+        <jqassistant.version>2.4.0</jqassistant.version>
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
     </properties>
 
@@ -237,12 +237,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.3.1</version>
+                    <version>3.4.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.12.1</version>
+                    <version>3.20.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -323,7 +323,7 @@
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
-                    <version>3.7.0.1746</version>
+                    <version>4.0.0.4121</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -404,7 +404,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.4.2</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -535,10 +535,9 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <!-- supports Java 7 -->
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
-                <version>1.1.0.Final</version>
+                <version>2.0.1.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -548,7 +547,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>32.0.1-jre</version>
+                <version>33.3.0-jre</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
@@ -574,7 +573,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>5.4.3.Final</version>
+                <version>6.2.5.Final</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -592,7 +591,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.13.1</version>
+                <version>4.13.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
