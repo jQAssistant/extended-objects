@@ -10,7 +10,7 @@
     <name>eXtended Objects - Spring Framework Integration</name>
 
     <properties>
-        <spring.boot.version>2.7.18</spring.boot.version>
+        <spring.boot.version>3.3.3</spring.boot.version>
     </properties>
 
     <dependencyManagement>
