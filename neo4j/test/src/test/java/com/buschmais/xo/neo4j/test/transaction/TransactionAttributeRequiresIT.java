@@ -1,8 +1,7 @@
 package com.buschmais.xo.neo4j.test.transaction;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,23 +39,23 @@ public class TransactionAttributeRequiresIT extends AbstractNeo4JXOManagerIT {
     @Test
     public void withoutTransactionContext() {
         XOManager xoManager = getXOManager();
-        assertThat(xoManager.currentTransaction().isActive(), equalTo(false));
+        assertThat(xoManager.currentTransaction().isActive()).isFalse();
         A a = createA(xoManager);
-        assertThat(a.getValue(), equalTo("value1"));
-        assertThat(xoManager.find(A.class, "value1").getSingleResult(), equalTo(a));
+        assertThat(a.getValue()).isEqualTo("value1");
+        assertThat(xoManager.find(A.class, "value1").getSingleResult()).isEqualTo(a);
         closeXOmanager();
         xoManager = getXOManager();
         a = xoManager.createQuery(A.ByValue.class).withParameter("value", "value1").execute().getSingleResult().getA();
-        assertThat(a.getValue(), equalTo("value1"));
-        assertThat(a.getByValue("value1").getA(), equalTo(a));
+        assertThat(a.getValue()).isEqualTo("value1");
+        assertThat(a.getByValue("value1").getA()).isEqualTo(a);
         a.setValue("value2");
-        assertThat(a.getValue(), equalTo("value2"));
-        assertThat(a.getListOfB().size(), equalTo(2));
+        assertThat(a.getValue()).isEqualTo("value2");
+        assertThat(a.getListOfB()).hasSize(2);
         List<B> listOfB = new ArrayList<>(a.getListOfB());
         Collections.sort(listOfB, (o1, o2) -> o1.getValue() - o2.getValue());
         int i = 1;
         for (B b : listOfB) {
-            assertThat(b.getValue(), equalTo(i));
+            assertThat(b.getValue()).isEqualTo(i);
             i++;
         }
     }
@@ -68,16 +67,16 @@ public class TransactionAttributeRequiresIT extends AbstractNeo4JXOManagerIT {
         A a = createA(xoManager);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(xoManager.currentTransaction().isActive(), equalTo(true));
-        assertThat(a.getValue(), equalTo("value1"));
+        assertThat(xoManager.currentTransaction().isActive()).isTrue();
+        assertThat(a.getValue()).isEqualTo("value1");
         a.setValue("value2");
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(xoManager.currentTransaction().isActive(), equalTo(true));
-        assertThat(a.getValue(), equalTo("value2"));
+        assertThat(xoManager.currentTransaction().isActive()).isTrue();
+        assertThat(a.getValue()).isEqualTo("value2");
         a.setValue("value3");
         xoManager.currentTransaction().rollback();
-        assertThat(a.getValue(), equalTo("value2"));
+        assertThat(a.getValue()).isEqualTo("value2");
     }
 
     @Test
@@ -86,14 +85,14 @@ public class TransactionAttributeRequiresIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().begin();
         A a = createA(xoManager);
         xoManager.currentTransaction().commit();
-        assertThat(a.getValue(), equalTo("value1"));
+        assertThat(a.getValue()).isEqualTo("value1");
         try {
             a.throwException("value2");
             Assert.fail("An Exception is expected.");
         } catch (Exception e) {
         }
-        assertThat(xoManager.currentTransaction().isActive(), equalTo(false));
-        assertThat(a.getValue(), equalTo("value2"));
+        assertThat(xoManager.currentTransaction().isActive()).isFalse();
+        assertThat(a.getValue()).isEqualTo("value2");
     }
 
     @Test
@@ -102,14 +101,14 @@ public class TransactionAttributeRequiresIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().begin();
         A a = createA(xoManager);
         xoManager.currentTransaction().commit();
-        assertThat(a.getValue(), equalTo("value1"));
+        assertThat(a.getValue()).isEqualTo("value1");
         try {
             a.throwRuntimeException("value2");
             Assert.fail("A RuntimeException is expected.");
         } catch (RuntimeException e) {
         }
-        assertThat(xoManager.currentTransaction().isActive(), equalTo(false));
-        assertThat(a.getValue(), equalTo("value1"));
+        assertThat(xoManager.currentTransaction().isActive()).isFalse();
+        assertThat(a.getValue()).isEqualTo("value1");
     }
 
     private A createA(XOManager xoManager) {

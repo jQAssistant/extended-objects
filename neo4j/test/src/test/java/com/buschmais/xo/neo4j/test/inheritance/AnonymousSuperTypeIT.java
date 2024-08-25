@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.inheritance;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -37,8 +36,8 @@ public class AnonymousSuperTypeIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         A a = xoManager.find(A.class, "1").iterator().next();
-        assertThat(b, equalTo(a));
-        assertThat(a.getVersion().longValue(), equalTo(1L));
+        assertThat(b).isEqualTo(a);
+        assertThat(a.getVersion().longValue()).isEqualTo(1L);
         xoManager.currentTransaction().commit();
     }
 }

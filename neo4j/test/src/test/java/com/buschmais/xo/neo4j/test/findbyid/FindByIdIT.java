@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.findbyid;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -38,8 +37,8 @@ public class FindByIdIT extends AbstractNeo4JXOManagerIT {
         Long id2 = xoManager.getId(a2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(xoManager.findById(A.class, id1), is(a1));
-        assertThat(xoManager.findById(A.class, id2), is(a2));
+        assertThat(xoManager.findById(A.class, id1)).isEqualTo(a1);
+        assertThat(xoManager.findById(A.class, id2)).isEqualTo(a2);
         xoManager.currentTransaction().commit();
     }
 
@@ -57,8 +56,8 @@ public class FindByIdIT extends AbstractNeo4JXOManagerIT {
         Long id2 = xoManager.getId(a2b2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(xoManager.findById(A2B.class, id1), is(a2b1));
-        assertThat(xoManager.findById(A2B.class, id2), is(a2b2));
+        assertThat(xoManager.findById(A2B.class, id1)).isEqualTo(a2b1);
+        assertThat(xoManager.findById(A2B.class, id2)).isEqualTo(a2b2);
         xoManager.currentTransaction().commit();
     }
 

@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.modifier;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Collection;
@@ -41,8 +40,7 @@ public class ModifierIT extends AbstractNeo4JXOManagerIT {
         } catch (XOException e) {
         }
         CompositeObject compositeObject = xoManager.create(AbstractType.class, ConcreteType.class);
-        assertThat(compositeObject, instanceOf(AbstractType.class));
-        assertThat(compositeObject, instanceOf(ConcreteType.class));
+        assertThat(compositeObject).isInstanceOf(AbstractType.class).isInstanceOf(ConcreteType.class);
         xoManager.currentTransaction().commit();
     }
 
@@ -51,7 +49,7 @@ public class ModifierIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         FinalType finalType = xoManager.create(FinalType.class);
-        assertThat(finalType, instanceOf(FinalType.class));
+        assertThat(finalType).isInstanceOf(FinalType.class);
         try {
             xoManager.create(FinalType.class, ConcreteType.class);
             fail("Expecting an " + XOException.class.getName());

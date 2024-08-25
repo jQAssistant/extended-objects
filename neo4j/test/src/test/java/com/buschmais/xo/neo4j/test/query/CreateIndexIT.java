@@ -15,8 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsIterableContaining.hasItems;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class CreateIndexIT extends AbstractNeo4JXOManagerIT {
@@ -36,13 +35,13 @@ public class CreateIndexIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction()
             .begin();
         Set<Index> indexes = ((Neo4jDatastoreSession<?, ?, ?, ?>) xoManager.getDatastoreSession(Neo4jDatastoreSession.class)).getIndexes();
-        assertThat(indexes, hasItems(Index.builder()
-            .label("A")
-            .property("value")
-            .build(), Index.builder()
-            .label("C")
-            .property("value")
-            .build()));
+        assertThat(indexes).contains(Index.builder()
+                .label("A")
+                .property("value")
+                .build(), Index.builder()
+                .label("C")
+                .property("value")
+                .build());
         xoManager.currentTransaction()
             .commit();
     }

@@ -1,8 +1,7 @@
 package com.buschmais.xo.neo4j.test.demo;
 
 import static com.buschmais.xo.neo4j.test.demo.composite.Group.MemberByName;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -44,12 +43,12 @@ public class QueryDemoIT extends AbstractNeo4JXOManagerIT {
         MemberByName memberByName = xoManager.createQuery(MemberByName.class).withParameter("this", group).withParameter("name", "Peter").execute()
                 .getSingleResult();
         Person peter = memberByName.getMember();
-        assertThat(peter, equalTo(person1));
+        assertThat(peter).isEqualTo(person1);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         memberByName = group.getMemberByName("Peter");
         peter = memberByName.getMember();
-        assertThat(peter, equalTo(person1));
+        assertThat(peter).isEqualTo(person1);
         xoManager.currentTransaction().commit();
     }
 }

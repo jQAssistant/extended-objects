@@ -1,9 +1,6 @@
 package com.buschmais.xo.neo4j.test.relation.qualified;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,23 +37,23 @@ public class QualifiedRelationIT extends AbstractNeo4JXOManagerIT {
         a.setOneToOne(b1);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getOneToOne(), equalTo(b1));
-        assertThat(b1.getOneToOne(), equalTo(a));
-        assertThat(executeQuery("MATCH (a:A)-[:OneToOne]->(b:B) RETURN b").getColumn("b"), hasItem(b1));
+        assertThat(a.getOneToOne()).isEqualTo(b1);
+        assertThat(b1.getOneToOne()).isEqualTo(a);
+        assertThat(executeQuery("MATCH (a:A)-[:OneToOne]->(b:B) RETURN b").getColumn("b")).contains(b1);
         B b2 = xoManager.create(B.class);
         a.setOneToOne(b2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getOneToOne(), equalTo(b2));
-        assertThat(b2.getOneToOne(), equalTo(a));
-        assertThat(b1.getOneToOne(), equalTo(null));
-        assertThat(executeQuery("MATCH (a:A)-[:OneToOne]->(b:B) RETURN b").getColumn("b"), hasItem(b2));
+        assertThat(a.getOneToOne()).isEqualTo(b2);
+        assertThat(b2.getOneToOne()).isEqualTo(a);
+        assertThat(b1.getOneToOne()).isNull();
+        assertThat(executeQuery("MATCH (a:A)-[:OneToOne]->(b:B) RETURN b").getColumn("b")).contains(b2);
         a.setOneToOne(null);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getOneToOne(), equalTo(null));
-        assertThat(b1.getOneToOne(), equalTo(null));
-        assertThat(b2.getOneToOne(), equalTo(null));
+        assertThat(a.getOneToOne()).isNull();
+        assertThat(b1.getOneToOne()).isNull();
+        assertThat(b2.getOneToOne()).isNull();
         xoManager.currentTransaction().commit();
     }
 
@@ -71,10 +68,10 @@ public class QualifiedRelationIT extends AbstractNeo4JXOManagerIT {
         a.getOneToMany().add(b2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getOneToMany(), hasItems(b1, b2));
-        assertThat(b1.getManyToOne(), equalTo(a));
-        assertThat(b2.getManyToOne(), equalTo(a));
-        assertThat(executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN b").<B> getColumn("b"), hasItems(b1, b2));
+        assertThat(a.getOneToMany()).contains(b1, b2);
+        assertThat(b1.getManyToOne()).isEqualTo(a);
+        assertThat(b2.getManyToOne()).isEqualTo(a);
+        assertThat(executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN b").<B>getColumn("b")).contains(b1, b2);
         a.getOneToMany().remove(b1);
         a.getOneToMany().remove(b2);
         B b3 = xoManager.create(B.class);
@@ -83,12 +80,12 @@ public class QualifiedRelationIT extends AbstractNeo4JXOManagerIT {
         a.getOneToMany().add(b4);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getOneToMany(), hasItems(b3, b4));
-        assertThat(b1.getManyToOne(), equalTo(null));
-        assertThat(b2.getManyToOne(), equalTo(null));
-        assertThat(b3.getManyToOne(), equalTo(a));
-        assertThat(b4.getManyToOne(), equalTo(a));
-        assertThat(executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN b").<B> getColumn("b"), hasItems(b3, b4));
+        assertThat(a.getOneToMany()).contains(b3, b4);
+        assertThat(b1.getManyToOne()).isNull();
+        assertThat(b2.getManyToOne()).isNull();
+        assertThat(b3.getManyToOne()).isEqualTo(a);
+        assertThat(b4.getManyToOne()).isEqualTo(a);
+        assertThat(executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN b").<B>getColumn("b")).contains(b3, b4);
         xoManager.currentTransaction().commit();
     }
 
@@ -106,21 +103,20 @@ public class QualifiedRelationIT extends AbstractNeo4JXOManagerIT {
         a2.getManyToMany().add(b2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a1.getManyToMany(), hasItems(b1, b2));
-        assertThat(a2.getManyToMany(), hasItems(b1, b2));
-        assertThat(b1.getManyToMany(), hasItems(a1, a2));
-        assertThat(b2.getManyToMany(), hasItems(a1, a2));
-        assertThat(executeQuery("MATCH (a:A)-[:ManyToMany]->(b:B) RETURN a, collect(b) as listOfB ORDER BY ID(a)").<A> getColumn("a"), hasItems(a1, a2));
-        assertThat(executeQuery("MATCH (a:A)-[:ManyToMany]->(b:B) RETURN a, collect(b) as listOfB ORDER BY ID(a)").<Iterable<B>> getColumn("listOfB"),
-                hasItems(hasItems(b1, b2), hasItems(b1, b2)));
+        assertThat(a1.getManyToMany()).contains(b1, b2);
+        assertThat(a2.getManyToMany()).contains(b1, b2);
+        assertThat(b1.getManyToMany()).contains(a1, a2);
+        assertThat(b2.getManyToMany()).contains(a1, a2);
+        assertThat(executeQuery("MATCH (a:A)-[:ManyToMany]->(b:B) RETURN a, collect(b) as listOfB ORDER BY ID(a)").<A>getColumn("a")).contains(a1, a2);
+        assertThat(executeQuery("MATCH (a:A)-[:ManyToMany]->(b:B) RETURN a, collect(b) as listOfB ORDER BY ID(a)").<Iterable<B>>getColumn("listOfB")).containsExactly(List.of(b1, b2), List.of(b1, b2));
         a1.getManyToMany().remove(b1);
         a2.getManyToMany().remove(b1);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a1.getManyToMany(), hasItems(b2));
-        assertThat(a2.getManyToMany(), hasItems(b2));
-        assertThat(b1.getManyToMany().isEmpty(), equalTo(true));
-        assertThat(b2.getManyToMany(), hasItems(a1, a2));
+        assertThat(a1.getManyToMany()).contains(b2);
+        assertThat(a2.getManyToMany()).contains(b2);
+        assertThat(b1.getManyToMany()).isEmpty();
+        assertThat(b2.getManyToMany()).contains(a1, a2);
         xoManager.currentTransaction().commit();
     }
 
@@ -131,16 +127,16 @@ public class QualifiedRelationIT extends AbstractNeo4JXOManagerIT {
         A a = xoManager.create(A.class);
         B b1 = xoManager.create(B.class);
         a.setOneToOne(b1);
-        assertThat(executeQuery("MATCH (a:A)-[:OneToOne]->(b:B) RETURN b").getColumn("b"), hasItem(b1));
+        assertThat(executeQuery("MATCH (a:A)-[:OneToOne]->(b:B) RETURN b").getColumn("b")).contains(b1);
         B b2 = xoManager.create(B.class);
         B b3 = xoManager.create(B.class);
         a.setOneToOne(b2);
         a.setOneToOne(b3);
         a.setOneToOne(null);
-        assertThat(a.getOneToOne(), equalTo(null));
+        assertThat(a.getOneToOne()).isNull();
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getOneToOne(), equalTo(null));
+        assertThat(a.getOneToOne()).isNull();
         xoManager.currentTransaction().commit();
     }
 
@@ -165,14 +161,14 @@ public class QualifiedRelationIT extends AbstractNeo4JXOManagerIT {
 
         xoManager.currentTransaction().begin();
         List<Long> count = executeQuery("MATCH (a:A)-[:OneToMany]->(b:B) RETURN count(b) as count").getColumn("count");
-        assertThat(count.get(0), equalTo(details));
+        assertThat(count.get(0)).isEqualTo(details);
         List<B> bs = executeQuery("MATCH (b:B) RETURN b").getColumn("b");
         for (B b : bs) {
             b.setManyToOne(null);
         }
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getOneToMany().size(), equalTo(0));
+        assertThat(a.getOneToMany()).isEmpty();
         xoManager.currentTransaction().commit();
     }
 
@@ -188,7 +184,7 @@ public class QualifiedRelationIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().commit();
 
         xoManager.currentTransaction().begin();
-        assertThat(a.getOneToMany().size(), equalTo(0));
+        assertThat(a.getOneToMany()).isEmpty();
         xoManager.currentTransaction().commit();
     }
 }

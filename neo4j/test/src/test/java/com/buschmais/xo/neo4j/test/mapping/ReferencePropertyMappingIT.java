@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.mapping;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -38,15 +36,15 @@ public class ReferencePropertyMappingIT extends AbstractNeo4JXOManagerIT {
         a.setB(b1);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getB(), equalTo(b1));
+        assertThat(a.getB()).isEqualTo(b1);
         a.setB(b2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getB(), equalTo(b2));
+        assertThat(a.getB()).isEqualTo(b2);
         a.setB(null);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getB(), equalTo(null));
+        assertThat(a.getB()).isNull();
         xoManager.currentTransaction().commit();
     }
 
@@ -60,7 +58,7 @@ public class ReferencePropertyMappingIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         TestResult result = executeQuery("match (a:A)-[:MAPPED_B]->(b) return b");
-        assertThat(result.getColumn("b"), hasItem(b));
+        assertThat(result.getColumn("b")).contains(b);
         xoManager.currentTransaction().commit();
     }
 

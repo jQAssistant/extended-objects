@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.inheritance;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -38,7 +37,7 @@ public class AnonymousSubTypeIT extends AbstractNeo4JXOManagerIT {
         xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.find(A.class, "1").iterator().next();
-        assertThat(a.getIndex(), equalTo("1"));
+        assertThat(a.getIndex()).isEqualTo("1");
         xoManager.currentTransaction().commit();
     }
 

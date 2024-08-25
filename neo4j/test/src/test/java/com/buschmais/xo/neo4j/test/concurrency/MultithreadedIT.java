@@ -1,7 +1,7 @@
 package com.buschmais.xo.neo4j.test.concurrency;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assume.assumeThat;
 
@@ -45,8 +45,8 @@ public class MultithreadedIT extends AbstractNeo4JXOManagerIT {
         Future<Integer> future1 = executorService.submit(new Worker(a));
         TimeUnit.SECONDS.sleep(1);
         Future<Integer> future2 = executorService.submit(new Worker(a));
-        assertThat(future1.get(), equalTo(1));
-        assertThat(future2.get(), equalTo(2));
+        assertThat(future1.get()).isEqualTo(1);
+        assertThat(future2.get()).isEqualTo(2);
     }
 
     private static class Worker implements Callable<Integer> {

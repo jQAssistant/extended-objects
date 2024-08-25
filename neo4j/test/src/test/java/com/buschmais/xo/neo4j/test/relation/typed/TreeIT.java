@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.relation.typed;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -44,15 +42,15 @@ public class TreeIT extends AbstractNeo4JXOManagerIT {
         relation2.setVersion(1);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(parent.getParent(), equalTo(null));
-        assertThat(parent.getChildren(), hasItems(relation1, relation2));
-        assertThat(relation1.getParent(), equalTo(parent));
-        assertThat(relation1.getChild(), equalTo(child1));
-        assertThat(relation2.getParent(), equalTo(parent));
-        assertThat(relation2.getChild(), equalTo(child2));
-        assertThat(child1.getParent(), equalTo(relation1));
-        assertThat(child1.getChildren().isEmpty(), equalTo(true));
-        assertThat(child2.getParent(), equalTo(relation2));
-        assertThat(child2.getChildren().isEmpty(), equalTo(true));
+        assertThat(parent.getParent()).isNull();
+        assertThat(parent.getChildren()).contains(relation1, relation2);
+        assertThat(relation1.getParent()).isEqualTo(parent);
+        assertThat(relation1.getChild()).isEqualTo(child1);
+        assertThat(relation2.getParent()).isEqualTo(parent);
+        assertThat(relation2.getChild()).isEqualTo(child2);
+        assertThat(child1.getParent()).isEqualTo(relation1);
+        assertThat(child1.getChildren()).isEmpty();
+        assertThat(child2.getParent()).isEqualTo(relation2);
+        assertThat(child2.getChildren()).isEmpty();
     }
 }

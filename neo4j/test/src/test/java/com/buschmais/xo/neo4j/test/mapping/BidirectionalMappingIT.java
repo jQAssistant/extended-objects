@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.mapping;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -37,15 +35,15 @@ public class BidirectionalMappingIT extends AbstractNeo4JXOManagerIT {
         g1.setOneToOneH(h);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(h.getOneToOneG(), equalTo(g1));
+        assertThat(h.getOneToOneG()).isEqualTo(g1);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         G g2 = xoManager.create(G.class);
         h.setOneToOneG(g2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(g1.getOneToOneH(), equalTo(null));
-        assertThat(g2.getOneToOneH(), equalTo(h));
+        assertThat(g1.getOneToOneH()).isNull();
+        assertThat(g2.getOneToOneH()).isEqualTo(h);
         xoManager.currentTransaction().commit();
     }
 
@@ -58,15 +56,15 @@ public class BidirectionalMappingIT extends AbstractNeo4JXOManagerIT {
         g1.getOneToManyH().add(h);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(h.getManyToOneG(), equalTo(g1));
+        assertThat(h.getManyToOneG()).isEqualTo(g1);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         G g2 = xoManager.create(G.class);
         h.setManyToOneG(g2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(g1.getOneToManyH().size(), equalTo(0));
-        assertThat(g2.getOneToManyH(), hasItems(h));
+        assertThat(g1.getOneToManyH()).isEmpty();
+        assertThat(g2.getOneToManyH()).contains(h);
         xoManager.currentTransaction().commit();
     }
 
@@ -79,16 +77,16 @@ public class BidirectionalMappingIT extends AbstractNeo4JXOManagerIT {
         g1.getManyToManyH().add(h);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(h.getManyToManyG(), hasItems(g1));
+        assertThat(h.getManyToManyG()).contains(g1);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         G g2 = xoManager.create(G.class);
-        assertThat(h.getManyToManyG().remove(g1), equalTo(true));
+        assertThat(h.getManyToManyG().remove(g1)).isTrue();
         h.getManyToManyG().add(g2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(g1.getManyToManyH().size(), equalTo(0));
-        assertThat(g2.getManyToManyH(), hasItems(h));
+        assertThat(g1.getManyToManyH()).isEmpty();
+        assertThat(g2.getManyToManyH()).contains(h);
         xoManager.currentTransaction().commit();
     }
 }

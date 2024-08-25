@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.bootstrap;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Collection;
@@ -38,7 +37,7 @@ public class NonRegisteredTypeIT extends AbstractNeo4JXOManagerIT {
             xoManager.create(A.class);
             fail("Expecting an " + XOException.class.getName());
         } catch (XOException e) {
-            assertThat("Exception message must contain name of non-registered type.", e.getMessage(), containsString(A.class.getName()));
+            assertThat(e.getMessage()).as("Exception message must contain name of non-registered type.").contains(A.class.getName());
         }
         xoManager.currentTransaction().commit();
     }
@@ -53,7 +52,7 @@ public class NonRegisteredTypeIT extends AbstractNeo4JXOManagerIT {
             xoManager.create(b1, B2B.class, b2);
             fail("Expecting an " + XOException.class.getName());
         } catch (XOException e) {
-            assertThat("Exception message must contain name of non-registered type.", e.getMessage(), containsString(B2B.class.getName()));
+            assertThat(e.getMessage()).as("Exception message must contain name of non-registered type.").contains(B2B.class.getName());
         }
         xoManager.currentTransaction().commit();
     }

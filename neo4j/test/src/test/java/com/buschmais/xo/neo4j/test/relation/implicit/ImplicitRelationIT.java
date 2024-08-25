@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.relation.implicit;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -37,23 +35,23 @@ public class ImplicitRelationIT extends AbstractNeo4JXOManagerIT {
         a.setOneToOne(b1);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getOneToOne(), equalTo(b1));
-        assertThat(b1.getOneToOne(), equalTo(a));
-        assertThat(executeQuery("MATCH (a:A)-[:IMPLICIT_ONE_TO_ONE]->(b:B) RETURN b").getColumn("b"), hasItem(b1));
+        assertThat(a.getOneToOne()).isEqualTo(b1);
+        assertThat(b1.getOneToOne()).isEqualTo(a);
+        assertThat(executeQuery("MATCH (a:A)-[:IMPLICIT_ONE_TO_ONE]->(b:B) RETURN b").getColumn("b")).contains(b1);
         B b2 = xoManager.create(B.class);
         a.setOneToOne(b2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getOneToOne(), equalTo(b2));
-        assertThat(b2.getOneToOne(), equalTo(a));
-        assertThat(b1.getOneToOne(), equalTo(null));
-        assertThat(executeQuery("MATCH (a:A)-[:IMPLICIT_ONE_TO_ONE]->(b:B) RETURN b").getColumn("b"), hasItem(b2));
+        assertThat(a.getOneToOne()).isEqualTo(b2);
+        assertThat(b2.getOneToOne()).isEqualTo(a);
+        assertThat(b1.getOneToOne()).isNull();
+        assertThat(executeQuery("MATCH (a:A)-[:IMPLICIT_ONE_TO_ONE]->(b:B) RETURN b").getColumn("b")).contains(b2);
         a.setOneToOne(null);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getOneToOne(), equalTo(null));
-        assertThat(b1.getOneToOne(), equalTo(null));
-        assertThat(b2.getOneToOne(), equalTo(null));
+        assertThat(a.getOneToOne()).isNull();
+        assertThat(b1.getOneToOne()).isNull();
+        assertThat(b2.getOneToOne()).isNull();
         xoManager.currentTransaction().commit();
     }
 }

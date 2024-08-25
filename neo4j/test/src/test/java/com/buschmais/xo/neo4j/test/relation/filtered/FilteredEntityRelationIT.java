@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.relation.filtered;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -45,14 +43,14 @@ public class FilteredEntityRelationIT extends AbstractNeo4JXOManagerIT {
         a.setB(b);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getB(), is(b));
-        assertThat(a.getC(), nullValue());
+        assertThat(a.getB()).isEqualTo(b);
+        assertThat(a.getC()).isNull();
         C c = xoManager.create(C.class);
         a.setC(c);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getB(), nullValue());
-        assertThat(a.getC(), is(c));
+        assertThat(a.getB()).isNull();
+        assertThat(a.getC()).isEqualTo(c);
         xoManager.currentTransaction().commit();
     }
 
@@ -71,20 +69,20 @@ public class FilteredEntityRelationIT extends AbstractNeo4JXOManagerIT {
         a.getListOfC().add(c2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getListOfB().size(), equalTo(2));
-        assertThat(a.getListOfB(), hasItems(b1, b2));
-        assertThat(a.getListOfC().size(), equalTo(2));
-        assertThat(a.getListOfC(), hasItems(c1, c2));
+        assertThat(a.getListOfB()).hasSize(2);
+        assertThat(a.getListOfB()).contains(b1, b2);
+        assertThat(a.getListOfC()).hasSize(2);
+        assertThat(a.getListOfC()).contains(c1, c2);
         B b3 = xoManager.create(B.class);
         a.getListOfB().add(b3);
         C c3 = xoManager.create(C.class);
         a.getListOfC().add(c3);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getListOfB().size(), equalTo(3));
-        assertThat(a.getListOfB(), hasItems(b1, b2, b3));
-        assertThat(a.getListOfC().size(), equalTo(3));
-        assertThat(a.getListOfC(), hasItems(c1, c2, c3));
+        assertThat(a.getListOfB()).hasSize(3);
+        assertThat(a.getListOfB()).contains(b1, b2, b3);
+        assertThat(a.getListOfC()).hasSize(3);
+        assertThat(a.getListOfC()).contains(c1, c2, c3);
         xoManager.currentTransaction().commit();
     }
 }

@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.bootstrap;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
@@ -18,9 +16,9 @@ public class EmbeddedNeo4jBootstrapTest {
     @Test
     public void bootstrap() {
         XOManagerFactory xoManagerFactory = XO.createXOManagerFactory("Neo4jEmbedded");
-        assertThat(xoManagerFactory, notNullValue());
+        assertThat(xoManagerFactory).isNotNull();
         XOManager xoManager = xoManagerFactory.createXOManager();
-        assertThat(xoManager.getDatastoreSession(DatastoreSession.class), instanceOf(EmbeddedNeo4jDatastoreSession.class));
+        assertThat(xoManager.getDatastoreSession(DatastoreSession.class)).isInstanceOf(EmbeddedNeo4jDatastoreSession.class);
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setName("Test");

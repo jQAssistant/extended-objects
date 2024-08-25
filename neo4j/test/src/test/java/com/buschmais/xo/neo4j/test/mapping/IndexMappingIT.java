@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.mapping;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -37,9 +36,9 @@ public class IndexMappingIT extends AbstractNeo4JXOManagerIT {
         a2.setIndex("2");
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(xoManager.find(A.class, "1").iterator().next(), equalTo(a1));
-        assertThat(xoManager.find(A.class, "2").iterator().next(), equalTo(a2));
-        assertThat(xoManager.find(A.class, "3").iterator().hasNext(), equalTo(false));
+        assertThat(xoManager.find(A.class, "1").iterator().next()).isEqualTo(a1);
+        assertThat(xoManager.find(A.class, "2").iterator().next()).isEqualTo(a2);
+        assertThat(xoManager.find(A.class, "3").iterator().hasNext()).isFalse();
         xoManager.currentTransaction().commit();
     }
 
@@ -51,7 +50,7 @@ public class IndexMappingIT extends AbstractNeo4JXOManagerIT {
         a1.setIndex("1");
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(xoManager.find(D.class, "1").iterator().next(), equalTo(a1));
+        assertThat(xoManager.find(D.class, "1").iterator().next()).isEqualTo(a1);
         xoManager.currentTransaction().commit();
     }
 }

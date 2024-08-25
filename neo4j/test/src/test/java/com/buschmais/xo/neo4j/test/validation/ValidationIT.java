@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.validation;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Collection;
@@ -45,7 +44,7 @@ public class ValidationIT extends AbstractNeo4JXOManagerIT {
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
         }
-        assertThat(constraintViolations.size(), equalTo(2));
+        assertThat(constraintViolations).hasSize(2);
         B b = xoManager.create(B.class);
         a.setB(b);
         a.setName("Indiana Jones");
@@ -76,7 +75,7 @@ public class ValidationIT extends AbstractNeo4JXOManagerIT {
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
         }
-        assertThat(constraintViolations.size(), equalTo(1));
+        assertThat(constraintViolations).hasSize(1);
         xoManager.currentTransaction().rollback();
     }
 
@@ -93,7 +92,7 @@ public class ValidationIT extends AbstractNeo4JXOManagerIT {
         } catch (ConstraintViolationException e) {
             constraintViolations = e.getConstraintViolations();
         }
-        assertThat(constraintViolations.size(), equalTo(1));
+        assertThat(constraintViolations).hasSize(1);
         xoManager.registerInstanceListener(new InstanceListener());
         xoManager.currentTransaction().commit();
     }

@@ -1,8 +1,7 @@
 package com.buschmais.xo.neo4j.test.validation;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -40,7 +39,7 @@ public class ValidationModeNoneIT extends AbstractNeo4JXOManagerIT {
         A a = xoManager.create(A.class);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getName(), nullValue());
+        assertThat(a.getName()).isNull();
         xoManager.currentTransaction().commit();
     }
 

@@ -1,7 +1,7 @@
 package com.buschmais.xo.neo4j.test.batchable;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assume.assumeThat;
 
 import java.util.Collection;
@@ -37,30 +37,30 @@ public class BatchableIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setName("A1");
-        assertThat(xoManager.getId(a), lessThan(0l));
+        assertThat((Long)xoManager.getId(a)).isNegative();
         B b = xoManager.create(B.class);
         b.setName("B");
-        assertThat(xoManager.getId(b), lessThan(0l));
+        assertThat((Long)xoManager.getId(b)).isNegative();
         A2B a2b = xoManager.create(a, A2B.class, b);
         a2b.setValue(1);
-        assertThat(xoManager.getId(a2b), lessThan(0l));
+        assertThat((Long)xoManager.getId(a2b)).isNegative();
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(xoManager.getId(a), greaterThanOrEqualTo(0l));
-        assertThat(xoManager.getId(a2b), greaterThanOrEqualTo(0l));
-        assertThat(xoManager.getId(b), greaterThanOrEqualTo(0l));
-        assertThat(a.getName(), equalTo("A1"));
-        assertThat(b.getName(), equalTo("B"));
-        assertThat(a2b.getValue(), equalTo(1));
+        assertThat((Long)xoManager.getId(a)).isNotNegative();
+        assertThat((Long)xoManager.getId(a2b)).isNotNegative();
+        assertThat((Long)xoManager.getId(b)).isNotNegative();
+        assertThat(a.getName()).isEqualTo("A1");
+        assertThat(b.getName()).isEqualTo("B");
+        assertThat(a2b.getValue()).isEqualTo(1);
         a.setName("A2");
         a2b.setValue(2);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         a = xoManager.find(A.class, "A2").getSingleResult();
         a2b = a.getA2B();
-        assertThat(a2b.getValue(), equalTo(2));
+        assertThat(a2b.getValue()).isEqualTo(2);
         b = xoManager.find(B.class, "B").getSingleResult();
-        assertThat(b.getA2B(), is(a2b));
+        assertThat(b.getA2B()).isEqualTo(a2b);
         xoManager.currentTransaction().commit();
     }
 

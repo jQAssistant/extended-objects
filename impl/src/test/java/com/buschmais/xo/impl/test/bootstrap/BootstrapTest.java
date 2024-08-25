@@ -3,9 +3,7 @@ package com.buschmais.xo.impl.test.bootstrap;
 import static com.buschmais.xo.api.ConcurrencyMode.MULTITHREADED;
 import static com.buschmais.xo.api.Transaction.TransactionAttribute.MANDATORY;
 import static com.buschmais.xo.api.ValidationMode.NONE;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
 
@@ -23,19 +21,19 @@ public class BootstrapTest {
     @Test
     public void testUnit() {
         XOManagerFactory XOManagerFactory = XO.createXOManagerFactory("testUnit");
-        assertThat(XOManagerFactory, not(equalTo(null)));
+        assertThat(XOManagerFactory).isNotNull();
         XOManagerFactoryImpl xoManagerFactoryImpl = (XOManagerFactoryImpl) XOManagerFactory;
         XOUnit xoUnit = xoManagerFactoryImpl.getXOUnit();
-        assertThat(xoUnit.getName(), equalTo("testUnit"));
-        assertThat(xoUnit.getDescription(), equalTo("This is a test unit."));
-        assertThat(xoUnit.getUri().toString(), equalTo("file://foo"));
-        assertThat(xoUnit.getProvider(), typeCompatibleWith(TestXOProvider.class));
+        assertThat(xoUnit.getName()).isEqualTo("testUnit");
+        assertThat(xoUnit.getDescription()).isEqualTo("This is a test unit.");
+        assertThat(xoUnit.getUri()).hasToString("file://foo");
+        assertThat(xoUnit.getProvider()).isEqualTo(TestXOProvider.class);
         Set<? extends Class<?>> types = xoUnit.getTypes();
-        assertThat(types.size(), equalTo(1));
-        assertThat(types.toArray(), hasItemInArray(A.class));
-        assertThat(xoUnit.getValidationMode(), equalTo(NONE));
-        assertThat(xoUnit.getConcurrencyMode(), equalTo(MULTITHREADED));
-        assertThat(xoUnit.getDefaultTransactionAttribute(), equalTo(MANDATORY));
-        assertThat(xoUnit.getProperties(), hasEntry(equalTo((Object) "foo"), equalTo((Object) "bar")));
+        assertThat(types).hasSize(1);
+        assertThat(types.toArray()).contains(A.class);
+        assertThat(xoUnit.getValidationMode()).isEqualTo(NONE);
+        assertThat(xoUnit.getConcurrencyMode()).isEqualTo(MULTITHREADED);
+        assertThat(xoUnit.getDefaultTransactionAttribute()).isEqualTo(MANDATORY);
+        assertThat(xoUnit.getProperties()).containsEntry("foo", "bar");
     }
 }

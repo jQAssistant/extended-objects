@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.issues.url_encoding;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.net.URI;
@@ -31,13 +30,13 @@ public class URLEncodingTest {
     public void setup() throws Exception {
         dbPath = new File(DATABASE_PATH_CONTAINING_SPACES);
         if (dbPath.exists()) {
-            assertThat(deleteRecursively(dbPath), is(true));
+            assertThat(deleteRecursively(dbPath)).isTrue();
         }
 
         String encoded = dbPath.toURI().toURL().getPath();
         File encodedDbPath = new File(encoded);
         if (encodedDbPath.exists()) {
-            assertThat(deleteRecursively(encodedDbPath), is(true));
+            assertThat(deleteRecursively(encodedDbPath)).isTrue();
         }
     }
 
@@ -48,7 +47,7 @@ public class URLEncodingTest {
         XOManager xoManager = xoManagerFactory.createXOManager();
         xoManager.close();
         xoManagerFactory.close();
-        assertThat(dbPath.exists(), is(true));
+        assertThat(dbPath).exists();
     }
 
     @Test(expected = URISyntaxException.class)

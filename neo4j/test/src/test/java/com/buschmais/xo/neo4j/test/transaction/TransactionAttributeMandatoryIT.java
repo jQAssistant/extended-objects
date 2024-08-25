@@ -1,8 +1,7 @@
 package com.buschmais.xo.neo4j.test.transaction;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,7 +38,7 @@ public class TransactionAttributeMandatoryIT extends AbstractNeo4JXOManagerIT {
         A a = xoManager.create(A.class);
         a.setValue("value1");
         xoManager.currentTransaction().commit();
-        assertThat(xoManager.currentTransaction().isActive(), equalTo(false));
+        assertThat(xoManager.currentTransaction().isActive()).isFalse();
         try {
             a.getValue();
             Assert.fail("A XOException is expected.");

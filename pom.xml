@@ -60,7 +60,6 @@
         <org.asciidoctor.maven_version>3.0.0</org.asciidoctor.maven_version>
         <org.neo4j_version />
         <org.slf4j_version>2.0.16</org.slf4j_version>
-        <org.hamcrest_version>3.0</org.hamcrest_version>
         <org.neo4jv4_version>4.4.36</org.neo4jv4_version>
         <org.neo4jv5_version>5.23.0</org.neo4jv5_version>
         <org.neo4j_version>${org.neo4jv4_version}</org.neo4j_version>
@@ -598,18 +597,6 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>5.12.0</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-core</artifactId>
-                <version>${org.hamcrest_version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-library</artifactId>
-                <version>${org.hamcrest_version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

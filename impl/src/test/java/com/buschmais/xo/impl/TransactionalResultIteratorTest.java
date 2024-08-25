@@ -10,8 +10,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -62,8 +61,8 @@ public class TransactionalResultIteratorTest {
         verify(resultIterator, times(2)).hasNext();
         verify(resultIterator).next();
 
-        assertThat(transactionalResultIterator.hasNext(), equalTo(true));
-        assertThat(transactionalResultIterator.next(), equalTo("value"));
-        assertThat(transactionalResultIterator.hasNext(), equalTo(false));
+        assertThat(transactionalResultIterator.hasNext()).isTrue();
+        assertThat(transactionalResultIterator.next()).isEqualTo("value");
+        assertThat(transactionalResultIterator.hasNext()).isFalse();
     }
 }

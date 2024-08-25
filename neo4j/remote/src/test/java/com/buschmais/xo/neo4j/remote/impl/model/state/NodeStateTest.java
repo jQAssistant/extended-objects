@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.remote.impl.model.state;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 
@@ -30,8 +28,8 @@ public class NodeStateTest {
         nodeState.afterCompletion(true);
 
         // Then
-        assertThat(nodeState.isLoaded(), equalTo(false));
-        assertThat(nodeState.getLabels(), notNullValue());
+        assertThat(nodeState.isLoaded()).isFalse();
+        assertThat(nodeState.getLabels()).isNotNull();
     }
 
     @Test
@@ -44,7 +42,7 @@ public class NodeStateTest {
         nodeState.afterCompletion(false);
 
         // Then
-        assertThat(nodeState.isLoaded(), equalTo(true));
-        assertThat(nodeState.getLabels(), notNullValue());
+        assertThat(nodeState.isLoaded()).isTrue();
+        assertThat(nodeState.getLabels()).isNotNull();
     }
 }

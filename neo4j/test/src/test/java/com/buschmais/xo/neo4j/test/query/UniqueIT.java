@@ -1,8 +1,7 @@
 package com.buschmais.xo.neo4j.test.query;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Collection;
@@ -66,7 +65,7 @@ public class UniqueIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         B a = xoManager.find(B.class, "A1").getSingleResult();
-        assertThat(a, equalTo(a1));
+        assertThat(a).isEqualTo(a1);
         try {
             xoManager.find(B.class, "A3").getSingleResult();
             fail("Expecting a " + XOException.class.getName());

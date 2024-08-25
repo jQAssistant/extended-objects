@@ -1,7 +1,6 @@
 package com.buschmais.xo.spi.reflection;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.lang.annotation.Annotation;
@@ -33,13 +32,13 @@ public class SetPropertyMethodTest {
     @Test
     public void getAnnotation() {
         TestAnnotation annotation = setPropertyMethod.getAnnotation(TestAnnotation.class);
-        assertThat(annotation, notNullValue());
+        assertThat(annotation).isNotNull();
     }
 
     @Test
     public void getByMetaAnnotation() {
         TestAnnotation annotation = setPropertyMethod.getByMetaAnnotation(TestMetaAnnotation.class);
-        assertThat(annotation, notNullValue());
+        assertThat(annotation).isNotNull();
     }
 
     @Test
@@ -48,7 +47,7 @@ public class SetPropertyMethodTest {
             TestAnnotation annotation = setInvalidPropertyMethod.getAnnotation(TestAnnotation.class);
             fail("Expecting " + XOException.class);
         } catch (XOException e) {
-            assertThat(e.getMessage(), containsString("setInvalidProperty"));
+            assertThat(e.getMessage()).contains("setInvalidProperty");
         }
     }
 
@@ -58,16 +57,15 @@ public class SetPropertyMethodTest {
             TestAnnotation annotation = setInvalidPropertyMethod.getByMetaAnnotation(TestMetaAnnotation.class);
             fail("Expecting " + XOException.class);
         } catch (XOException e) {
-            assertThat(e.getMessage(), containsString("setInvalidProperty"));
+            assertThat(e.getMessage()).contains("setInvalidProperty");
         }
     }
 
     @Test
     public void getAnnotations() {
         Annotation[] annotations = setPropertyMethod.getAnnotations();
-        assertThat(annotations, notNullValue());
-        assertThat(annotations.length, equalTo(1));
-        assertThat(annotations[0], instanceOf(TestAnnotation.class));
+        assertThat(annotations).isNotNull().hasSize(1);
+        assertThat(annotations[0]).isInstanceOf(TestAnnotation.class);
     }
 
 }

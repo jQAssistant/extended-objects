@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.generics;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,7 +34,7 @@ public class GenericTypeIT extends AbstractNeo4JXOManagerIT {
         b.setValue("value");
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(b.getValue(), equalTo("value"));
+        assertThat(b.getValue()).isEqualTo("value");
         xoManager.currentTransaction().commit();
     }
 
@@ -50,8 +48,8 @@ public class GenericTypeIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         List<StringValue> values = stringValueContainer.getValues();
-        assertThat(values.size(), equalTo(1));
-        assertThat(values.get(0), is(stringValue));
+        assertThat(values).hasSize(1);
+        assertThat(values.get(0)).isEqualTo(stringValue);
         xoManager.currentTransaction().commit();
     }
 }

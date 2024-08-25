@@ -1,8 +1,7 @@
 package com.buschmais.xo.neo4j.test.query;
 
 import static com.buschmais.xo.api.Query.Result;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import java.util.Map;
@@ -46,7 +45,7 @@ public class QueryReturnTypesIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<String> result = xoManager.createQuery("match (a:A) return a.value", String.class).execute();
-        assertThat(result.getSingleResult(), equalTo("A"));
+        assertThat(result.getSingleResult()).isEqualTo("A");
         xoManager.currentTransaction().commit();
     }
 
@@ -55,7 +54,7 @@ public class QueryReturnTypesIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<A> result = xoManager.createQuery("match (a:A) return a", A.class).execute();
-        assertThat(result.getSingleResult(), equalTo(a));
+        assertThat(result.getSingleResult()).isEqualTo(a);
         xoManager.currentTransaction().commit();
     }
 
@@ -64,7 +63,7 @@ public class QueryReturnTypesIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<Map> result = xoManager.createQuery("match (a:A) return {node: a}", Map.class).execute();
-        assertThat(result.getSingleResult().get("node"), equalTo(a));
+        assertThat(result.getSingleResult()).containsEntry("node", a);
         xoManager.currentTransaction().commit();
     }
 
@@ -73,7 +72,7 @@ public class QueryReturnTypesIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<InstanceByValue> result = xoManager.createQuery(InstanceByValue.class).withParameter("value", "A").execute();
-        assertThat(result.getSingleResult().getA(), equalTo(a));
+        assertThat(result.getSingleResult().getA()).isEqualTo(a);
         xoManager.currentTransaction().commit();
     }
 }

@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.example;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -42,18 +41,18 @@ public class ByExampleIT extends AbstractNeo4JXOManagerIT {
                 example.setName("Name of A1");
             }
         });
-        assertThat(a1.getValue(), equalTo("A1"));
-        assertThat(a1.getName(), equalTo("Name of A1"));
+        assertThat(a1.getValue()).isEqualTo("A1");
+        assertThat(a1.getName()).isEqualTo("Name of A1");
         // java 8: lambda expression
         A a2 = xoManager.create(A.class, example -> {
             example.setValue("A2");
             example.setName("Name of A2");
         });
-        assertThat(a2.getValue(), equalTo("A2"));
-        assertThat(a2.getName(), equalTo("Name of A2"));
+        assertThat(a2.getValue()).isEqualTo("A2");
+        assertThat(a2.getName()).isEqualTo("Name of A2");
         // Create a relation
         Parent parent = xoManager.create(a1, Parent.class, a2, example -> example.setName("Name of A1->A2"));
-        assertThat(parent.getName(), equalTo("Name of A1->A2"));
+        assertThat(parent.getName()).isEqualTo("Name of A1->A2");
 
         xoManager.currentTransaction().commit();
 
@@ -64,10 +63,10 @@ public class ByExampleIT extends AbstractNeo4JXOManagerIT {
             public void prepare(A example) {
                 example.setValue("A1");
             }
-        }, A.class).getSingleResult(), equalTo(a1));
+        }, A.class).getSingleResult()).isEqualTo(a1);
         // java 8: lambda expression
-        assertThat(xoManager.find(example -> example.setValue("A1"), A.class).getSingleResult(), equalTo(a1));
-        assertThat(xoManager.find(example -> example.setValue("A2"), A.class).getSingleResult().getParent().getName(), equalTo("Name of A1->A2"));
+        assertThat(xoManager.find(example -> example.setValue("A1"), A.class).getSingleResult()).isEqualTo(a1);
+        assertThat(xoManager.find(example -> example.setValue("A2"), A.class).getSingleResult().getParent().getName()).isEqualTo("Name of A1->A2");
         xoManager.currentTransaction().commit();
     }
 
@@ -95,11 +94,11 @@ public class ByExampleIT extends AbstractNeo4JXOManagerIT {
             public void prepare(CompositeObject example) {
                 example.as(A.class).setValue("A1");
             }
-        }, A.class, B.class).getSingleResult(), equalTo(compositeObject1));
+        }, A.class, B.class).getSingleResult()).isEqualTo(compositeObject1);
         // java 8: lambda expression
-        assertThat(xoManager.find(example -> example.as(A.class).setValue("A1"), A.class, B.class).getSingleResult(), equalTo(compositeObject1));
+        assertThat(xoManager.find(example -> example.as(A.class).setValue("A1"), A.class, B.class).getSingleResult()).isEqualTo(compositeObject1);
         // java 8: lambda expression, alternative
-        assertThat(xoManager.find(A.class, example -> example.setValue("A1")).getSingleResult(), equalTo(compositeObject1));
+        assertThat(xoManager.find(A.class, example -> example.setValue("A1")).getSingleResult()).isEqualTo(compositeObject1);
     }
 
 }

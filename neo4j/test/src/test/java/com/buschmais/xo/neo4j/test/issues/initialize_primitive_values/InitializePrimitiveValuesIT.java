@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.issues.initialize_primitive_values;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -37,9 +35,9 @@ public class InitializePrimitiveValuesIT extends AbstractNeo4JXOManagerIT {
         A a = xoManager.create(A.class);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getB(), nullValue());
-        assertThat(a.isBoolean(), is(false));
-        assertThat(a.getInt(), is(0));
+        assertThat(a.getB()).isNull();
+        assertThat(a.isBoolean()).isFalse();
+        assertThat(a.getInt()).isZero();
         xoManager.currentTransaction().commit();
     }
 

@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.label;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -32,7 +31,7 @@ public class LabelIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         ImplicitLabel implicitLabel = xoManager.create(ImplicitLabel.class);
-        assertThat(executeQuery("MATCH (n:ImplicitLabel) RETURN n").getColumn("n"), hasItem(implicitLabel));
+        assertThat(executeQuery("MATCH (n:ImplicitLabel) RETURN n").getColumn("n")).contains(implicitLabel);
         xoManager.currentTransaction().commit();
     }
 
@@ -41,7 +40,7 @@ public class LabelIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         ExplicitLabel explicitLabel = xoManager.create(ExplicitLabel.class);
-        assertThat(executeQuery("MATCH (n:EXPLICIT_LABEL) RETURN n").getColumn("n"), hasItem(explicitLabel));
+        assertThat(executeQuery("MATCH (n:EXPLICIT_LABEL) RETURN n").getColumn("n")).contains(explicitLabel);
         xoManager.currentTransaction().commit();
     }
 }

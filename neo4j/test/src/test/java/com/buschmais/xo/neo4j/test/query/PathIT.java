@@ -2,8 +2,7 @@ package com.buschmais.xo.neo4j.test.query;
 
 import static com.buschmais.xo.api.Query.Result;
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +14,6 @@ import com.buschmais.xo.neo4j.test.query.composite.A;
 import com.buschmais.xo.neo4j.test.query.composite.A2B;
 import com.buschmais.xo.neo4j.test.query.composite.B;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -43,10 +41,10 @@ public class PathIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().begin();
         Result<CompositeRowObject> result = xoManager.createQuery("match path=(a:A)-->(b:B) return path").execute();
         List<?> path = result.getSingleResult().get("path", List.class);
-        assertThat(path.size(), equalTo(3));
-        assertThat(path.get(0), Matchers.<Object> equalTo(a));
-        assertThat(path.get(1), Matchers.<Object> equalTo(a2b));
-        assertThat(path.get(2), Matchers.<Object> equalTo(b));
+        assertThat(path).hasSize(3);
+        assertThat(path.get(0)).isEqualTo(a);
+        assertThat(path.get(1)).isEqualTo(a2b);
+        assertThat(path.get(2)).isEqualTo(b);
         xoManager.currentTransaction().commit();
     }
 

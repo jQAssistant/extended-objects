@@ -1,9 +1,6 @@
 package com.buschmais.xo.neo4j.test.migration;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -41,9 +38,9 @@ public class MigrationIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         B b = xoManager.migrate(a).add(B.class).as(B.class);
-        assertThat(a == b, equalTo(false));
-        assertThat(a.getValue(), equalTo("Value"));
-        assertThat(b.getValue(), equalTo("Value"));
+        assertThat(a ).isNotSameAs(b);
+        assertThat(a.getValue()).isEqualTo("Value");
+        assertThat(b.getValue()).isEqualTo("Value");
         xoManager.currentTransaction().commit();
         xoManager.close();
     }
@@ -57,7 +54,7 @@ public class MigrationIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         B b = xoManager.migrate(a).add(B.class, D.class).as(B.class);
-        assertThat(b.getValue(), equalTo("Value"));
+        assertThat(b.getValue()).isEqualTo("Value");
         xoManager.currentTransaction().commit();
         xoManager.close();
     }
@@ -68,13 +65,11 @@ public class MigrationIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
         a.setValue("Value");
-        assertThat(a, instanceOf(A.class));
-        assertThat(a, not(instanceOf(C.class)));
+        assertThat(a).isInstanceOf(A.class).isNotInstanceOf(C.class);
         CompositeObject compositeObject = xoManager.migrate(a).add(C.class);
-        assertThat(compositeObject, instanceOf(A.class));
-        assertThat(compositeObject, instanceOf(C.class));
-        assertThat(a.getValue(), equalTo("Value"));
-        assertThat(compositeObject.as(A.class).getValue(), equalTo("Value"));
+        assertThat(compositeObject).isInstanceOf(A.class).isInstanceOf(C.class);
+        assertThat(a.getValue()).isEqualTo("Value");
+        assertThat(compositeObject.as(A.class).getValue()).isEqualTo("Value");
         xoManager.currentTransaction().commit();
         xoManager.close();
     }
@@ -84,14 +79,12 @@ public class MigrationIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         CompositeObject compositeObject = xoManager.create(A.class, C.class);
-        assertThat(compositeObject, instanceOf(A.class));
-        assertThat(compositeObject, instanceOf(C.class));
+        assertThat(compositeObject).isInstanceOf(A.class).isInstanceOf(C.class);
         compositeObject.as(A.class).setValue("Value");
         A a = xoManager.migrate(compositeObject).remove(C.class).as(A.class);
-        assertThat(a, instanceOf(A.class));
-        assertThat(a, not(instanceOf(C.class)));
-        assertThat(compositeObject.getId(), equalTo(((CompositeObject) a).getId()));
-        assertThat(a.getValue(), equalTo("Value"));
+        assertThat(a).isInstanceOf(A.class).isNotInstanceOf(C.class);
+        assertThat((Object)compositeObject.getId()).isEqualTo(((CompositeObject) a).getId());
+        assertThat(a.getValue()).isEqualTo("Value");
         xoManager.currentTransaction().commit();
         xoManager.close();
     }

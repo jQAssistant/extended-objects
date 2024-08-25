@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.id;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -38,13 +36,13 @@ public class IdIT extends AbstractNeo4JXOManagerIT {
         B b = xoManager.create(B.class);
         A2B a2b = xoManager.create(a, A2B.class, b);
         Object aId = xoManager.getId(a);
-        assertThat(aId, notNullValue());
-        assertThat(((CompositeObject) a).getId(), equalTo(aId));
+        assertThat(aId).isNotNull();
+        assertThat((Object)((CompositeObject) a).getId()).isEqualTo(aId);
         Object bId = xoManager.getId(b);
-        assertThat(bId, notNullValue());
-        assertThat(((CompositeObject) b).getId(), equalTo(bId));
+        assertThat(bId).isNotNull();
+        assertThat((Object)((CompositeObject) b).getId()).isEqualTo(bId);
         Object a2bId = xoManager.getId(a2b);
-        assertThat(a2bId, notNullValue());
-        assertThat(((CompositeObject) a2b).getId(), equalTo(a2bId));
+        assertThat(a2bId).isNotNull();
+        assertThat((Object)((CompositeObject) a2b).getId()).isEqualTo(a2bId);
     }
 }

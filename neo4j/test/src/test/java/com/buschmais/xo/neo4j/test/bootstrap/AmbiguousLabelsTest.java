@@ -14,9 +14,7 @@ import com.buschmais.xo.neo4j.test.bootstrap.composite.AmbiguousA;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 public class AmbiguousLabelsTest {
@@ -28,7 +26,7 @@ public class AmbiguousLabelsTest {
             .build())) {
             fail("Expecting an " + XOException.class.getName());
         } catch (XOException e) {
-            assertThat(e.getMessage(), containsString("AmbiguousA"));
+            assertThat(e.getMessage()).contains("AmbiguousA");
         }
     }
 
@@ -38,7 +36,7 @@ public class AmbiguousLabelsTest {
             .strictValidation(false)
             .build())) {
             XOManager xoManager = xoManagerFactory.createXOManager();
-            assertThat(xoManager, notNullValue());
+            assertThat(xoManager).isNotNull();
             xoManager.close();
         }
     }
@@ -47,7 +45,7 @@ public class AmbiguousLabelsTest {
     public void defaultSetting() throws URISyntaxException {
         try (XOManagerFactory xoManagerFactory = createFactory(null)) {
             XOManager xoManager = xoManagerFactory.createXOManager();
-            assertThat(xoManager, notNullValue());
+            assertThat(xoManager).isNotNull();
             xoManager.close();
         }
     }

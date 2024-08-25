@@ -13,9 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
@@ -48,7 +46,7 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
         a.setString(null);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getString(), equalTo(null));
+        assertThat(a.getString()).isNull();
         xoManager.currentTransaction().commit();
     }
 
@@ -73,22 +71,22 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
 
     private void verifyPropertyValues(A a, char expectedCharacterValue, String expectedStringValue, int expectedValue,
         ZonedDateTime expectedZonedDateTimeValue) {
-        assertThat(a.getCharacter(), equalTo(expectedCharacterValue));
-        assertThat(a.getPrimitiveCharacter(), equalTo(expectedCharacterValue));
-        assertThat(a.getString(), equalTo(expectedStringValue));
-        assertThat(a.getByte(), equalTo((byte) expectedValue));
-        assertThat(a.getPrimitiveByte(), equalTo((byte) expectedValue));
-        assertThat(a.getShort(), equalTo((short) expectedValue));
-        assertThat(a.getPrimitiveShort(), equalTo((short) expectedValue));
-        assertThat(a.getInteger(), equalTo(expectedValue));
-        assertThat(a.getPrimitiveInteger(), equalTo(expectedValue));
-        assertThat(a.getLong(), equalTo((long) expectedValue));
-        assertThat(a.getPrimitiveLong(), equalTo((long) expectedValue));
-        assertThat(a.getFloat(), equalTo((float) expectedValue));
-        assertThat(a.getPrimitiveFloat(), equalTo((float) expectedValue));
-        assertThat(a.getDouble(), equalTo((double) expectedValue));
-        assertThat(a.getPrimitiveDouble(), equalTo((double) expectedValue));
-        assertThat(a.getZonedDateTime(), equalTo(expectedZonedDateTimeValue));
+        assertThat(a.getCharacter()).isEqualTo(expectedCharacterValue);
+        assertThat(a.getPrimitiveCharacter()).isEqualTo(expectedCharacterValue);
+        assertThat(a.getString()).isEqualTo(expectedStringValue);
+        assertThat(a.getByte()).isEqualTo((byte) expectedValue);
+        assertThat(a.getPrimitiveByte()).isEqualTo((byte) expectedValue);
+        assertThat(a.getShort()).isEqualTo((short) expectedValue);
+        assertThat(a.getPrimitiveShort()).isEqualTo((short) expectedValue);
+        assertThat(a.getInteger()).isEqualTo(expectedValue);
+        assertThat(a.getPrimitiveInteger()).isEqualTo(expectedValue);
+        assertThat(a.getLong()).isEqualTo((long) expectedValue);
+        assertThat(a.getPrimitiveLong()).isEqualTo((long) expectedValue);
+        assertThat(a.getFloat()).isEqualTo((float) expectedValue);
+        assertThat(a.getPrimitiveFloat()).isEqualTo((float) expectedValue);
+        assertThat(a.getDouble()).isEqualTo((double) expectedValue);
+        assertThat(a.getPrimitiveDouble()).isEqualTo((double) expectedValue);
+        assertThat(a.getZonedDateTime()).isEqualTo(expectedZonedDateTimeValue);
     }
 
     @Test
@@ -100,7 +98,7 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         TestResult result = executeQuery("match (a:A) return a.MAPPED_STRING as v");
-        assertThat(result.getColumn("v"), hasItem("mappedValue"));
+        assertThat(result.getColumn("v")).contains("mappedValue");
         xoManager.currentTransaction().commit();
     }
 
@@ -126,21 +124,21 @@ public class PrimitivePropertyMappingIT extends AbstractNeo4JXOManagerIT {
         a.setPrimitiveDoubleArray(new double[] { 0d, 1d });
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getCharacterArray(), equalTo(new Character[] { 'A', 'B' }));
-        assertThat(a.getPrimitiveCharacterArray(), equalTo(new char[] { 'A', 'B' }));
-        assertThat(a.getStringArray(), equalTo(new String[] { "A", "B" }));
-        assertThat(a.getByteArray(), equalTo(new Byte[] { (byte) 0, (byte) 1 }));
-        assertThat(a.getPrimitiveByteArray(), equalTo(new byte[] { (byte) 0, (byte) 1 }));
-        assertThat(a.getShortArray(), equalTo(new Short[] { (short) 0, (short) 1 }));
-        assertThat(a.getPrimitiveShortArray(), equalTo(new short[] { (short) 0, (short) 1 }));
-        assertThat(a.getIntegerArray(), equalTo(new Integer[] { 0, 1 }));
-        assertThat(a.getPrimitiveIntegerArray(), equalTo(new int[] { 0, 1 }));
-        assertThat(a.getLongArray(), equalTo(new Long[] { 0l, 1l }));
-        assertThat(a.getPrimitiveLongArray(), equalTo(new long[] { 0l, 1l }));
-        assertThat(a.getFloatArray(), equalTo(new Float[] { 0f, 1f }));
-        assertThat(a.getPrimitiveFloatArray(), equalTo(new float[] { 0f, 1f }));
-        assertThat(a.getDoubleArray(), equalTo(new Double[] { 0d, 1d }));
-        assertThat(a.getPrimitiveDoubleArray(), equalTo(new double[] { 0d, 1d }));
+        assertThat(a.getCharacterArray()).isEqualTo(new Character[]{'A', 'B'});
+        assertThat(a.getPrimitiveCharacterArray()).isEqualTo(new char[]{'A', 'B'});
+        assertThat(a.getStringArray()).isEqualTo(new String[]{"A", "B"});
+        assertThat(a.getByteArray()).isEqualTo(new Byte[]{(byte) 0, (byte) 1});
+        assertThat(a.getPrimitiveByteArray()).isEqualTo(new byte[]{(byte) 0, (byte) 1});
+        assertThat(a.getShortArray()).isEqualTo(new Short[]{(short) 0, (short) 1});
+        assertThat(a.getPrimitiveShortArray()).isEqualTo(new short[]{(short) 0, (short) 1});
+        assertThat(a.getIntegerArray()).isEqualTo(new Integer[]{0, 1});
+        assertThat(a.getPrimitiveIntegerArray()).isEqualTo(new int[]{0, 1});
+        assertThat(a.getLongArray()).isEqualTo(new Long[]{0l, 1l});
+        assertThat(a.getPrimitiveLongArray()).isEqualTo(new long[]{0l, 1l});
+        assertThat(a.getFloatArray()).isEqualTo(new Float[]{0f, 1f});
+        assertThat(a.getPrimitiveFloatArray()).isEqualTo(new float[]{0f, 1f});
+        assertThat(a.getDoubleArray()).isEqualTo(new Double[]{0d, 1d});
+        assertThat(a.getPrimitiveDoubleArray()).isEqualTo(new double[]{0d, 1d});
         xoManager.currentTransaction().commit();
     }
 }

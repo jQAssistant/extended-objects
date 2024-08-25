@@ -1,9 +1,7 @@
 package com.buschmais.xo.neo4j.test.mapping;
 
 import static com.buschmais.xo.api.Query.Result;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -54,7 +52,7 @@ public class EntityResultOfIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<E.ByValue> byValue = e.getResultByValueUsingExplicitQuery("F1");
-        assertThat(byValue.getSingleResult().getF(), equalTo(f1));
+        assertThat(byValue.getSingleResult().getF()).isEqualTo(f1);
         xoManager.currentTransaction().commit();
     }
 
@@ -63,7 +61,7 @@ public class EntityResultOfIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<E.ByValue> byValue = e.getResultByValueUsingReturnType("F1");
-        assertThat(byValue.getSingleResult().getF(), equalTo(f1));
+        assertThat(byValue.getSingleResult().getF()).isEqualTo(f1);
         xoManager.currentTransaction().commit();
     }
 
@@ -72,7 +70,7 @@ public class EntityResultOfIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         E.ByValue byValue = e.getByValueUsingExplicitQuery("F1");
-        assertThat(byValue.getF(), equalTo(f1));
+        assertThat(byValue.getF()).isEqualTo(f1);
         xoManager.currentTransaction().commit();
     }
 
@@ -81,9 +79,9 @@ public class EntityResultOfIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         E.ByValue byValue = e.getByValueUsingReturnType("F1");
-        assertThat(byValue.getF(), equalTo(f1));
+        assertThat(byValue.getF()).isEqualTo(f1);
         byValue = e.getByValueUsingReturnType("unknownF");
-        assertThat(byValue, equalTo(null));
+        assertThat(byValue).isNull();
         xoManager.currentTransaction().commit();
     }
 
@@ -92,7 +90,7 @@ public class EntityResultOfIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         E.ByValueUsingImplicitThis byValue = e.getByValueUsingImplicitThis("F1");
-        assertThat(byValue.getF(), equalTo(f1));
+        assertThat(byValue.getF()).isEqualTo(f1);
         xoManager.currentTransaction().commit();
     }
 
@@ -101,9 +99,9 @@ public class EntityResultOfIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         Result<F> result = e.getResultUsingCypher("F1");
-        assertThat(result, hasItems(equalTo(f1)));
+        assertThat(result).containsExactly(f1);
         result = e.getResultUsingCypher("unknownF");
-        assertThat(result.iterator().hasNext(), equalTo(false));
+        assertThat(result.iterator().hasNext()).isFalse();
         xoManager.currentTransaction().commit();
     }
 
@@ -112,9 +110,9 @@ public class EntityResultOfIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         F result = e.getSingleResultUsingCypher("F1");
-        assertThat(result, equalTo(f1));
+        assertThat(result).isEqualTo(f1);
         result = e.getSingleResultUsingCypher("unknownF");
-        assertThat(result, equalTo(null));
+        assertThat(result).isNull();
         xoManager.currentTransaction().commit();
     }
 
@@ -123,7 +121,7 @@ public class EntityResultOfIT extends AbstractNeo4JXOManagerIT {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         e.voidResultUsingCypher("F1");
-        assertThat(xoManager.createQuery("match (e:E) return e", E.class).execute().getSingleResult(), equalTo(e));
+        assertThat(xoManager.createQuery("match (e:E) return e", E.class).execute().getSingleResult()).isEqualTo(e);
         xoManager.currentTransaction().commit();
     }
 }

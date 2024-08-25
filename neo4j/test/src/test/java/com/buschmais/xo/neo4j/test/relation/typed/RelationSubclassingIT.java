@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.relation.typed;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -40,12 +39,12 @@ public class RelationSubclassingIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().commit();
 
         xoManager.currentTransaction().begin();
-        assertThat(c.getTypeA().getVersion(), equalTo(relation1.getVersion()));
-        assertThat(c.getTypeB().getVersion(), equalTo(relation2.getVersion()));
-        assertThat(relation1.getC(), equalTo(c));
-        assertThat(relation1.getD(), equalTo(d1));
-        assertThat(relation2.getC(), equalTo(c));
-        assertThat(relation2.getD(), equalTo(d2));
+        assertThat(c.getTypeA().getVersion()).isEqualTo(relation1.getVersion());
+        assertThat(c.getTypeB().getVersion()).isEqualTo(relation2.getVersion());
+        assertThat(relation1.getC()).isEqualTo(c);
+        assertThat(relation1.getD()).isEqualTo(d1);
+        assertThat(relation2.getC()).isEqualTo(c);
+        assertThat(relation2.getD()).isEqualTo(d2);
         xoManager.currentTransaction().commit();
     }
 

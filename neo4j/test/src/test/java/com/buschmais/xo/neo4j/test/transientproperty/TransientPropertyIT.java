@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.transientproperty;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -36,15 +34,15 @@ public class TransientPropertyIT extends AbstractNeo4JXOManagerIT {
         a.setTransientValue("transient value");
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getValue(), equalTo("persistent value"));
-        assertThat(a.getTransientValue(), equalTo("transient value"));
+        assertThat(a.getValue()).isEqualTo("persistent value");
+        assertThat(a.getTransientValue()).isEqualTo("transient value");
         xoManager.currentTransaction().commit();
         closeXOmanager();
         xoManager = getXOManager();
         xoManager.currentTransaction().begin();
         A result = xoManager.find(A.class, "persistent value").getSingleResult();
-        assertThat(result.getValue(), equalTo("persistent value"));
-        assertThat(result.getTransientValue(), nullValue());
+        assertThat(result.getValue()).isEqualTo("persistent value");
+        assertThat(result.getTransientValue()).isNull();
         xoManager.currentTransaction().commit();
     }
 

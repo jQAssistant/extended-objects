@@ -1,8 +1,9 @@
 package com.buschmais.xo.trace;
 
 import static com.buschmais.xo.api.Transaction.TransactionAttribute.NONE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.typeCompatibleWith;
 
 import java.util.Set;
 
@@ -20,14 +21,14 @@ public class BootstrapTest {
     @Test
     public void traceProvider() {
         XOManagerFactory XOManagerFactory = XO.createXOManagerFactory("traceProvider");
-        assertThat(XOManagerFactory, not(equalTo(null)));
+        assertThat(XOManagerFactory).isNotNull();
         XOManagerFactoryImpl xoManagerFactoryImpl = (XOManagerFactoryImpl) XOManagerFactory;
         XOUnit xoUnit = xoManagerFactoryImpl.getXOUnit();
-        assertThat(xoUnit.getName(), equalTo("traceProvider"));
+        assertThat(xoUnit.getName()).isEqualTo("traceProvider");
         assertThat(xoUnit.getProvider(), typeCompatibleWith(TraceDatastoreProvider.class));
         Set<? extends Class<?>> types = xoUnit.getTypes();
-        assertThat(types.size(), equalTo(1));
-        assertThat(types.toArray(), hasItemInArray(A.class));
-        assertThat(xoUnit.getDefaultTransactionAttribute(), equalTo(NONE));
+        assertThat(types).hasSize(1);
+        assertThat(types.toArray()).contains(A.class);
+        assertThat(xoUnit.getDefaultTransactionAttribute()).isEqualTo(NONE);
     }
 }

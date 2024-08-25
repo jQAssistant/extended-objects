@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.id;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -40,12 +39,12 @@ public class EqualsHashcodeIT extends AbstractNeo4JXOManagerIT {
         int a2bHashCode = a2b.hashCode();
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.equals(a), equalTo(true));
-        assertThat(b.equals(b), equalTo(true));
-        assertThat(a2b.equals(a2b), equalTo(true));
-        assertThat(a.hashCode(), equalTo(aHashCode));
-        assertThat(b.hashCode(), equalTo(bHashCode));
-        assertThat(a2b.hashCode(), equalTo(a2bHashCode));
+        assertThat(a.equals(a)).isTrue();
+        assertThat(b.equals(b)).isTrue();
+        assertThat(a2b.equals(a2b)).isTrue();
+        assertThat(a.hashCode()).isEqualTo(aHashCode);
+        assertThat(b.hashCode()).isEqualTo(bHashCode);
+        assertThat(a2b.hashCode()).isEqualTo(a2bHashCode);
         xoManager.currentTransaction().commit();
     }
 }

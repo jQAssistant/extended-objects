@@ -9,9 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
@@ -47,9 +45,9 @@ public class XOTransactionImplTest {
     public void commit() {
         XOTransaction xoTransaction = new XOTransactionImpl(datastoreTransaction);
         xoTransaction.begin();
-        assertThat(xoTransaction.isActive(), equalTo(true));
+        assertThat(xoTransaction.isActive()).isTrue();
         xoTransaction.commit();
-        assertThat(xoTransaction.isActive(), equalTo(false));
+        assertThat(xoTransaction.isActive()).isFalse();
         verify(datastoreTransaction).begin();
         verify(datastoreTransaction).commit();
         verify(datastoreTransaction, never()).rollback();
@@ -59,9 +57,9 @@ public class XOTransactionImplTest {
     public void rollback() {
         XOTransaction xoTransaction = new XOTransactionImpl(datastoreTransaction);
         xoTransaction.begin();
-        assertThat(xoTransaction.isActive(), equalTo(true));
+        assertThat(xoTransaction.isActive()).isTrue();
         xoTransaction.rollback();
-        assertThat(xoTransaction.isActive(), equalTo(false));
+        assertThat(xoTransaction.isActive()).isFalse();
         verify(datastoreTransaction).begin();
         verify(datastoreTransaction, never()).commit();
         verify(datastoreTransaction).rollback();
@@ -72,15 +70,15 @@ public class XOTransactionImplTest {
     public void commitOnRollbackOnly() {
         XOTransaction xoTransaction = new XOTransactionImpl(datastoreTransaction);
         xoTransaction.begin();
-        assertThat(xoTransaction.isActive(), equalTo(true));
+        assertThat(xoTransaction.isActive()).isTrue();
         xoTransaction.setRollbackOnly();
         try {
             xoTransaction.commit();
             fail("Expecting an " + XOException.class.getName());
         } catch (XOException e) {
-            assertThat(e.getMessage(), containsString("rollback only"));
+            assertThat(e.getMessage()).contains("rollback only");
         }
-        assertThat(xoTransaction.isActive(), equalTo(true));
+        assertThat(xoTransaction.isActive()).isTrue();
         verify(datastoreTransaction).begin();
         verify(datastoreTransaction, never()).commit();
         verify(datastoreTransaction, never()).rollback();
@@ -91,12 +89,12 @@ public class XOTransactionImplTest {
     public void rollbackOnClose() {
         XOTransactionImpl xoTransaction = new XOTransactionImpl(datastoreTransaction);
         try (XOTransaction tx = xoTransaction.begin()) {
-            assertThat(xoTransaction.isActive(), equalTo(true));
+            assertThat(xoTransaction.isActive()).isTrue();
             tx.setRollbackOnly();
-            assertThat(tx.isRollbackOnly(), equalTo(true));
+            assertThat(tx.isRollbackOnly()).isTrue();
         }
-        assertThat(xoTransaction.isActive(), equalTo(false));
-        assertThat(xoTransaction.isRollbackOnly(), equalTo(false));
+        assertThat(xoTransaction.isActive()).isFalse();
+        assertThat(xoTransaction.isRollbackOnly()).isFalse();
         verify(datastoreTransaction).begin();
         verify(datastoreTransaction, never()).commit();
         verify(datastoreTransaction).rollback();
@@ -107,9 +105,9 @@ public class XOTransactionImplTest {
     public void commitOnClose() {
         XOTransactionImpl xoTransaction = new XOTransactionImpl(datastoreTransaction);
         try (XOTransaction tx = xoTransaction.begin()) {
-            assertThat(tx.isActive(), equalTo(true));
+            assertThat(tx.isActive()).isTrue();
         }
-        assertThat(xoTransaction.isActive(), equalTo(false));
+        assertThat(xoTransaction.isActive()).isFalse();
         verify(datastoreTransaction).begin();
         verify(datastoreTransaction).commit();
         verify(datastoreTransaction, never()).rollback();

@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.relation.typed;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -38,9 +36,9 @@ public class CombinedEntitiesIT extends AbstractNeo4JXOManagerIT {
         E2F e2F = xoManager.create(e, E2F.class, f);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(e2F, notNullValue());
-        assertThat(e2F.getE(), equalTo(e));
-        assertThat(e2F.getF(), equalTo(f));
+        assertThat(e2F).isNotNull();
+        assertThat(e2F.getE()).isEqualTo(e);
+        assertThat(e2F.getF()).isEqualTo(f);
         xoManager.currentTransaction().commit();
     }
 

@@ -2,8 +2,7 @@ package com.buschmais.xo.neo4j.test.delegate;
 
 import static com.buschmais.xo.api.Query.Result;
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.*;
 
@@ -18,7 +17,6 @@ import com.buschmais.xo.neo4j.test.delegate.composite.A;
 import com.buschmais.xo.neo4j.test.delegate.composite.A2B;
 import com.buschmais.xo.neo4j.test.delegate.composite.B;
 
-import org.hamcrest.collection.IsMapContaining;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -45,8 +43,7 @@ public class DelegateIT extends AbstractNeo4JXOManagerIT {
         for (Neo4jLabel label : labels) {
             labelsAsStrings.add(label.getName());
         }
-        assertThat(labelsAsStrings.size(), equalTo(1));
-        assertThat(labelsAsStrings.contains("A"), equalTo(true));
+        assertThat(labelsAsStrings).hasSize(1).contains("A");
         xoManager.currentTransaction().commit();
     }
 
@@ -58,9 +55,9 @@ public class DelegateIT extends AbstractNeo4JXOManagerIT {
         B b = xoManager.create(B.class);
         xoManager.create(a, A2B.class, b);
         List<A2B> r = executeQuery("MATCH (a:A)-[r]->(b:B) RETURN r").getColumn("r");
-        assertThat(r.size(), equalTo(1));
+        assertThat(r).hasSize(1);
         Neo4jRelationship relationship = ((CompositeObject) r.get(0)).getDelegate();
-        assertThat(relationship.getType().getName(), equalTo("RELATION"));
+        assertThat(relationship.getType().getName()).isEqualTo("RELATION");
         xoManager.currentTransaction().commit();
     }
 
@@ -71,7 +68,7 @@ public class DelegateIT extends AbstractNeo4JXOManagerIT {
         A a = xoManager.create(A.class);
         Result<CompositeRowObject> row = xoManager.createQuery("match (a:A) return a").execute();
         Map<String, Object> delegate = row.getSingleResult().getDelegate();
-        assertThat(delegate, IsMapContaining.<String, Object> hasEntry("a", a));
+        assertThat(delegate).containsEntry("a", a);
         xoManager.currentTransaction().commit();
     }
 }

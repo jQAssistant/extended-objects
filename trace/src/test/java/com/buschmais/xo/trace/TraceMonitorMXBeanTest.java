@@ -1,8 +1,6 @@
 package com.buschmais.xo.trace;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.management.ManagementFactory;
 import java.net.URI;
@@ -48,7 +46,7 @@ public class TraceMonitorMXBeanTest {
         XOUnit xoUnit = XOUnit.builder().uri(new URI("memory:///")).provider(TraceDatastoreProvider.class).types(ImmutableList.of(A.class))
                 .properties(properties).build();
         XOManagerFactory xoManagerFactory = XO.createXOManagerFactory(xoUnit);
-        assertThat(mbeanServer.getMBeanInfo(objectName), notNullValue());
+        assertThat(mbeanServer.getMBeanInfo(objectName)).isNotNull();
         XOManager xoManager = xoManagerFactory.createXOManager();
         xoManager.currentTransaction().begin();
         A a = xoManager.create(A.class);
@@ -57,11 +55,10 @@ public class TraceMonitorMXBeanTest {
         xoManager.close();
 
         CompositeData[] statistics = (CompositeData[]) mbeanServer.getAttribute(objectName, "MethodStatistics");
-        assertThat(statistics, notNullValue());
-        assertThat(statistics.length, greaterThan(0));
+        assertThat(statistics).isNotNull().isNotEmpty();
         CompositeData methodStatistic = statistics[0];
-        assertThat((Long) methodStatistic.get("totalTime"), greaterThan(0l));
-        assertThat((Long) methodStatistic.get("invocations"), greaterThan(0l));
+        assertThat((Long) methodStatistic.get("totalTime")).isPositive();
+        assertThat((Long) methodStatistic.get("invocations")).isPositive();
         xoManagerFactory.close();
     }
 }

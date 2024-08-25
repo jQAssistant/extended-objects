@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.inheritance;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,17 +46,17 @@ public class ValueHierarchyIT extends AbstractNeo4JXOManagerIT {
         TestResult result1 = executeQuery("MATCH (master:Object)-[:HAS_VALUE]->(:Object:Value)-[:IS]->(detail:Object) return master, detail");
         List<ObjectDescriptor> masters1 = result1.<ObjectDescriptor> getColumn("master");
         List<ObjectDescriptor> details1 = result1.<ObjectDescriptor> getColumn("detail");
-        assertThat(masters1.size(), equalTo(1));
-        assertThat(masters1.get(0), is(master));
-        assertThat(details1.size(), equalTo(1));
-        assertThat(details1.get(0), is(detail));
+        assertThat(masters1).hasSize(1);
+        assertThat(masters1.get(0)).isEqualTo(master);
+        assertThat(details1).hasSize(1);
+        assertThat(details1.get(0)).isEqualTo(detail);
         TestResult result2 = executeQuery("MATCH (master:Object)-[:HAS_VALUE]->(:Array:Value)-[:HAS_ELEMENT]->(detail:Object) return master, detail");
         List<ObjectDescriptor> masters2 = result2.<ObjectDescriptor> getColumn("master");
         List<ObjectDescriptor> details2 = result2.<ObjectDescriptor> getColumn("detail");
-        assertThat(masters2.size(), equalTo(1));
-        assertThat(masters2.get(0), is(master));
-        assertThat(details2.size(), equalTo(1));
-        assertThat(details2.get(0), is(element));
+        assertThat(masters2).hasSize(1);
+        assertThat(masters2.get(0)).isEqualTo(master);
+        assertThat(details2).hasSize(1);
+        assertThat(details2.get(0)).isEqualTo(element);
         xoManager.currentTransaction().commit();
     }
 

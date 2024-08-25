@@ -1,8 +1,6 @@
 package com.buschmais.xo.neo4j.test.mapping;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -36,17 +34,17 @@ public class EnumPropertyMappingIT extends AbstractNeo4JXOManagerIT {
         a.setEnumeration(Enumeration.FIRST);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getEnumeration(), equalTo(Enumeration.FIRST));
-        assertThat(executeQuery("MATCH (a:A) WHERE a.enumeration='FIRST' RETURN a").getColumn("a"), hasItem(a));
+        assertThat(a.getEnumeration()).isEqualTo(Enumeration.FIRST);
+        assertThat(executeQuery("MATCH (a:A) WHERE a.enumeration='FIRST' RETURN a").getColumn("a")).contains(a);
         a.setEnumeration(Enumeration.SECOND);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getEnumeration(), equalTo(Enumeration.SECOND));
-        assertThat(executeQuery("MATCH (a:A) WHERE a.enumeration='SECOND' RETURN a").getColumn("a"), hasItem(a));
+        assertThat(a.getEnumeration()).isEqualTo(Enumeration.SECOND);
+        assertThat(executeQuery("MATCH (a:A) WHERE a.enumeration='SECOND' RETURN a").getColumn("a")).contains(a);
         a.setEnumeration(null);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getEnumeration(), equalTo(null));
+        assertThat(a.getEnumeration()).isNull();
         xoManager.currentTransaction().commit();
     }
 
@@ -58,17 +56,17 @@ public class EnumPropertyMappingIT extends AbstractNeo4JXOManagerIT {
         a.setMappedEnumeration(Enumeration.FIRST);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getMappedEnumeration(), equalTo(Enumeration.FIRST));
-        assertThat(executeQuery("MATCH (a:A) WHERE a.MAPPED_ENUMERATION='FIRST' RETURN a").getColumn("a"), hasItem(a));
+        assertThat(a.getMappedEnumeration()).isEqualTo(Enumeration.FIRST);
+        assertThat(executeQuery("MATCH (a:A) WHERE a.MAPPED_ENUMERATION='FIRST' RETURN a").getColumn("a")).contains(a);
         a.setMappedEnumeration(Enumeration.SECOND);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getMappedEnumeration(), equalTo(Enumeration.SECOND));
-        assertThat(executeQuery("MATCH (a:A) WHERE a.MAPPED_ENUMERATION='SECOND' RETURN a").getColumn("a"), hasItem(a));
+        assertThat(a.getMappedEnumeration()).isEqualTo(Enumeration.SECOND);
+        assertThat(executeQuery("MATCH (a:A) WHERE a.MAPPED_ENUMERATION='SECOND' RETURN a").getColumn("a")).contains(a);
         a.setMappedEnumeration(null);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.getMappedEnumeration(), equalTo(null));
+        assertThat(a.getMappedEnumeration()).isNull();
         xoManager.currentTransaction().commit();
     }
 }

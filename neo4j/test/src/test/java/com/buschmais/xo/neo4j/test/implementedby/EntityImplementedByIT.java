@@ -1,6 +1,6 @@
 package com.buschmais.xo.neo4j.test.implementedby;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assume.assumeThat;
 
@@ -37,7 +37,7 @@ public class EntityImplementedByIT extends AbstractNeo4JXOManagerIT {
         A a = xoManager.create(A.class);
         a.setValue(1);
         int i = a.incrementValue();
-        assertThat(i, equalTo(2));
+        assertThat(i).isEqualTo(2);
         xoManager.currentTransaction().commit();
         xoManager.close();
     }
@@ -50,7 +50,7 @@ public class EntityImplementedByIT extends AbstractNeo4JXOManagerIT {
         A a = xoManager.create(A.class);
         a.setCustomValue("VALUE");
         String value = a.getCustomValue();
-        assertThat(value, equalTo("set_VALUE_get"));
+        assertThat(value).isEqualTo("set_VALUE_get");
         xoManager.currentTransaction().commit();
         xoManager.close();
     }
@@ -65,7 +65,7 @@ public class EntityImplementedByIT extends AbstractNeo4JXOManagerIT {
         a2.setValue(200);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a1.compareTo(a2), equalTo(-100));
+        assertThat(a1.compareTo(a2)).isEqualTo(-100);
         xoManager.currentTransaction().commit();
         xoManager.close();
     }

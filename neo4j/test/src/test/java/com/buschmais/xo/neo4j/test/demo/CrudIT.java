@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.demo;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Collection;
@@ -13,7 +12,6 @@ import com.buschmais.xo.neo4j.api.annotation.Indexed;
 import com.buschmais.xo.neo4j.api.annotation.Label;
 import com.buschmais.xo.neo4j.test.AbstractNeo4JXOManagerIT;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -39,7 +37,7 @@ public class CrudIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
         a = xoManager.find(A.class, "Foo").getSingleResult();
-        assertThat(a.getName(), equalTo("Foo"));
+        assertThat(a.getName()).isEqualTo("Foo");
         a.setName("Bar");
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();

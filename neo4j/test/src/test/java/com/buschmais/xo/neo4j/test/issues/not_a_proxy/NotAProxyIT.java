@@ -1,7 +1,6 @@
 package com.buschmais.xo.neo4j.test.issues.not_a_proxy;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 
@@ -40,7 +39,7 @@ public class NotAProxyIT extends AbstractNeo4JXOManagerIT {
         a.getB().add(c);
         xoManager.currentTransaction().commit();
         xoManager.currentTransaction().begin();
-        assertThat(a.equals(a.getB()), is(false));
+        assertThat(a).isNotEqualTo(a.getB());
         xoManager.currentTransaction().commit();
     }
 
