@@ -61,7 +61,7 @@
         <org.asciidoctor.maven_version>3.0.0</org.asciidoctor.maven_version>
         <org.neo4j_version/>
         <org.slf4j_version>2.0.16</org.slf4j_version>
-        <org.neo4jv4_version>4.4.36</org.neo4jv4_version>
+        <org.neo4jv4_version>5.24.1</org.neo4jv4_version>
         <org.neo4jv5_version>5.23.0</org.neo4jv5_version>
         <org.neo4j_version>${org.neo4jv4_version}</org.neo4j_version>
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
