@@ -31,6 +31,8 @@ import static org.neo4j.configuration.GraphDatabaseSettings.DEFAULT_DATABASE_NAM
 public class EmbeddedNeo4jXOProvider
     implements XODatastoreProvider<NodeMetadata<EmbeddedLabel>, EmbeddedLabel, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType> {
 
+    public static final String PROPERTY_XO_NEO4J_EMBEDDED_PLUGINS = "xo.neo4j.embedded.plugins";
+
     private static final String NEO4J_PROPERTY_PREFIX = "neo4j.";
 
     private static final Pattern NEO4J_PROPERTY_PATTERN = Pattern.compile("neo4j\\.(.*)");
@@ -41,12 +43,13 @@ public class EmbeddedNeo4jXOProvider
     public Datastore<?, NodeMetadata<EmbeddedLabel>, EmbeddedLabel, RelationshipMetadata<EmbeddedRelationshipType>, EmbeddedRelationshipType> createDatastore(
         XOUnit xoUnit) {
         URI uri = xoUnit.getUri();
-        Map<String, String> neo4jProperties = getNeo4jProperties(xoUnit.getProperties());
+        Properties properties = xoUnit.getProperties();
+        Map<String, String> neo4jProperties = getNeo4jProperties(properties);
         Config config = Config.newBuilder()
             .setRaw(neo4jProperties)
             .build();
         DatabaseManagementServiceFactory databaseManagementServiceFactory = lookupFactory(uri);
-        DatabaseManagementService databaseManagementService = databaseManagementServiceFactory.createDatabaseManagementService(uri, config);
+        DatabaseManagementService databaseManagementService = databaseManagementServiceFactory.createDatabaseManagementService(uri, config, properties);
         return new EmbeddedDatastore(databaseManagementService, databaseManagementService.database(DEFAULT_DATABASE_NAME));
     }
 

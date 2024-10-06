@@ -13,6 +13,10 @@ Please refer to the http://buschmais.github.io/extended-objects/doc/0.8.0/neo4j/
 
 == Changelog
 
+=== 2.3.0
+
+- Added property `xo.neo4j.embedded.plugins` for specifying a comma separated list of JAR file to be used as Neo4j plugins for the embedded file store
+
 === 2.2.2
 
 - Enabled binary compatibility with embedded Neo4j 5.x

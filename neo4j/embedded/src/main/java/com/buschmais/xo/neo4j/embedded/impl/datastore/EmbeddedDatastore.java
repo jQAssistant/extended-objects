@@ -17,7 +17,4 @@ public class EmbeddedDatastore extends AbstractEmbeddedDatastore {
         managementService.shutdown();
     }
 
-    public DatabaseManagementService getManagementService() {
-        return managementService;
-    }
 }
