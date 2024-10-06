@@ -60,10 +60,13 @@
         <org.jacoco_version>0.8.12</org.jacoco_version>
         <org.asciidoctor.maven_version>3.0.0</org.asciidoctor.maven_version>
         <org.neo4j_version/>
-        <org.slf4j_version>2.0.16</org.slf4j_version>
-        <org.neo4jv4_version>4.4.37</org.neo4jv4_version>
-        <org.neo4jv5_version>5.23.0</org.neo4jv5_version>
-        <org.neo4j_version>${org.neo4jv4_version}</org.neo4j_version>
+        <org.slf4j.version>2.0.16</org.slf4j.version>
+        <org.neo4jv4.version>4.4.37</org.neo4jv4.version>
+        <org.neo4jv5.version>5.23.0</org.neo4jv5.version>
+        <org.neo4j.version>${org.neo4jv4.version}</org.neo4j.version>
+        <org.mockito.version>5.14.1</org.mockito.version>
+        <org.assertj.version>3.26.3</org.assertj.version>
+        <org.glassfish.jaxb.version>2.4.0-b180830.0359</org.glassfish.jaxb.version>
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
         <jqassistant.version>2.4.0</jqassistant.version>
         <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
@@ -76,7 +79,7 @@
                 <jdk>11</jdk>
             </activation>
             <properties>
-                <org.neo4j_version>${org.neo4jv4_version}</org.neo4j_version>
+                <org.neo4j_version>${org.neo4jv4.version}</org.neo4j_version>
             </properties>
         </profile>
         <profile>
@@ -85,7 +88,7 @@
             </activation>
             <id>neo4jv5</id>
             <properties>
-                <org.neo4j_version>${org.neo4jv5_version}</org.neo4j_version>
+                <org.neo4j_version>${org.neo4jv5.version}</org.neo4j_version>
             </properties>
         </profile>
         <profile>
@@ -542,7 +545,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>${org.slf4j_version}</version>
+                <version>${org.slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -557,7 +560,7 @@
             <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
-                <version>2.4.0-b180830.0359</version>
+                <version>${org.glassfish.jaxb.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
@@ -585,7 +588,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
-                <version>${org.slf4j_version}</version>
+                <version>${org.slf4j.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -597,13 +600,19 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>5.13.0</version>
+                <version>${org.mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>${org.mockito.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.26.3</version>
+                <version>${org.assertj.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

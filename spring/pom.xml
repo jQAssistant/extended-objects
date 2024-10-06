@@ -11,7 +11,7 @@
     <name>eXtended Objects - Spring Framework Integration</name>
 
     <properties>
-        <spring.boot.version>2.7.18</spring.boot.version>
+        <spring.boot.version>3.3.4</spring.boot.version>
     </properties>
 
     <dependencyManagement>
@@ -69,10 +69,6 @@
             <groupId>com.buschmais.xo</groupId>
             <artifactId>xo.neo4j.embedded</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
         </dependency>
     </dependencies>
 
