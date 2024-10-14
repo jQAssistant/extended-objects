@@ -67,7 +67,7 @@
         <org.assertj.version>3.26.3</org.assertj.version>
         <org.glassfish.jaxb.version>2.4.0-b180830.0359</org.glassfish.jaxb.version>
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
-        <jqassistant.version>2.4.0</jqassistant.version>
+        <jqassistant.version>2.5.0</jqassistant.version>
         <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
     </properties>
 
