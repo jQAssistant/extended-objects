@@ -63,7 +63,7 @@
         <org.neo4jv4.version>4.4.37</org.neo4jv4.version>
         <org.neo4jv5.version>5.23.0</org.neo4jv5.version>
         <org.neo4j.version>${org.neo4jv4.version}</org.neo4j.version>
-        <org.mockito.version>5.14.1</org.mockito.version>
+        <org.mockito.version>5.14.2</org.mockito.version>
         <org.assertj.version>3.26.3</org.assertj.version>
         <org.glassfish.jaxb.version>2.4.0-b180830.0359</org.glassfish.jaxb.version>
         <maven.build.timestamp.format>'v'yyyyMMdd-HHmm</maven.build.timestamp.format>
