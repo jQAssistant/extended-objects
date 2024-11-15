@@ -35,7 +35,7 @@ public abstract class AbstractEmbeddedDatabaseManagementServiceFactory implement
 
     @Override
     public final DatabaseManagementService createDatabaseManagementService(URI uri, Config config, Properties properties) {
-        File directory = new File(URLDecoder.decode(uri.getPath(), UTF_8)).getAbsoluteFile();
+        File directory = new File(URLDecoder.decode(uri.getSchemeSpecificPart(), UTF_8)).getAbsoluteFile();
         File pluginDirectory = initializePlugins(directory, properties);
 
         Neo4jDatabaseManagementServiceBuilder databaseManagementServiceBuilder = getDatabaseManagementServiceBuilder(directory.toPath());
