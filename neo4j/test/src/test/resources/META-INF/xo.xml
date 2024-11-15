@@ -1,7 +1,7 @@
 <v1:xo version="1.0" xmlns:v1="http://buschmais.com/xo/schema/v1.0">
     <xo-unit name="Neo4jEmbedded">
         <description>This is a test unit for Neo4j embedded.</description>
-        <url>memory:///</url>
+        <url>memory:/</url>
         <provider>com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider</provider>
         <types>
             <type>com.buschmais.xo.neo4j.test.bootstrap.composite.A</type>

@@ -36,10 +36,9 @@ public abstract class AbstractEmbeddedDatabaseManagementServiceFactory implement
     @Override
     public final DatabaseManagementService createDatabaseManagementService(URI uri, Config config, Properties properties) {
         File directory = new File(URLDecoder.decode(uri.getPath(), UTF_8)).getAbsoluteFile();
-        log.debug("Creating directory for embedded Neo4j database: '{}'.", directory.getAbsolutePath());
-        directory.mkdirs();
-        Neo4jDatabaseManagementServiceBuilder databaseManagementServiceBuilder = getDatabaseManagementServiceBuilder(directory.toPath());
         File pluginDirectory = initializePlugins(directory, properties);
+
+        Neo4jDatabaseManagementServiceBuilder databaseManagementServiceBuilder = getDatabaseManagementServiceBuilder(directory.toPath());
         databaseManagementServiceBuilder.setConfig(GraphDatabaseSettings.plugin_dir, pluginDirectory.toPath());
         databaseManagementServiceBuilder.setConfig(toSettings(config));
         databaseManagementServiceBuilder.setConfig(GraphDatabaseInternalSettings.track_cursor_close, false);
@@ -51,7 +50,6 @@ public abstract class AbstractEmbeddedDatabaseManagementServiceFactory implement
 
     private static File initializePlugins(File storeDir, Properties properties) {
         File pluginDirectory = new File(storeDir, PLUGIN_DIRECTORY);
-        pluginDirectory.mkdirs();
         copyPlugins(pluginDirectory, properties);
         Set<Path> pluginPaths = listPlugins(pluginDirectory);
         getClasspathAppender().accept(pluginPaths);
@@ -64,6 +62,9 @@ public abstract class AbstractEmbeddedDatabaseManagementServiceFactory implement
     private static void copyPlugins(File pluginDirectory, Properties properties) {
         String plugins = properties.getProperty(PROPERTY_XO_NEO4J_EMBEDDED_PLUGINS);
         if (isNotEmpty(plugins)) {
+            if (!pluginDirectory.exists() && !pluginDirectory.mkdirs()) {
+                log.warn("Cannot create embedded Neo4j database plugin directory '{}'.", pluginDirectory.getAbsolutePath());
+            }
             for (String plugin : Splitter.on(",")
                     .trimResults()
                     .splitToList(plugins)) {
@@ -85,14 +86,16 @@ public abstract class AbstractEmbeddedDatabaseManagementServiceFactory implement
      */
     private static Set<Path> listPlugins(File pluginDirectory) {
         Set<Path> fileSet = new HashSet<>();
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(pluginDirectory.toPath())) {
-            for (Path path : stream) {
-                if (!Files.isDirectory(path)) {
-                    fileSet.add(path);
+        if (pluginDirectory.exists()) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(pluginDirectory.toPath())) {
+                for (Path path : stream) {
+                    if (!Files.isDirectory(path)) {
+                        fileSet.add(path);
+                    }
                 }
+            } catch (IOException e) {
+                throw new XOException("Cannot list plugin directory " + pluginDirectory, e);
             }
-        } catch (IOException e) {
-            throw new XOException("Cannot list plugin directory " + pluginDirectory, e);
         }
         return fileSet;
     }

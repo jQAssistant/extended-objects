@@ -1,5 +1,6 @@
 package com.buschmais.xo.neo4j.embedded.api;
 
+import java.io.File;
 import java.net.URI;
 import java.util.List;
 
@@ -18,15 +19,19 @@ public class EmbeddedNeo4jXOProviderTest {
 
     @Test
     public void lookupTests() throws Exception {
-        assertEquals(FileDatabaseManagementServiceFactory.class, provider.lookupFactory(new URI("file://foo/"))
+        assertEquals(FileDatabaseManagementServiceFactory.class, provider.lookupFactory(new File("target/foo").getAbsoluteFile()
+                .toURI())
             .getClass());
-        assertEquals(MemoryDatabaseManagementServiceFactory.class, provider.lookupFactory(new URI("memory:///"))
+        assertEquals(MemoryDatabaseManagementServiceFactory.class, provider.lookupFactory(new URI("memory:/foo"))
             .getClass());
     }
 
     @Test
     public void createDsTests() throws Exception {
-        assertEquals(EmbeddedDatastore.class, provider.createDatastore(unit("memory:///"))
+        String uri = "memory:" + new File("target/foo").getAbsolutePath();
+        assertEquals(EmbeddedDatastore.class, provider.createDatastore(XOUnit.builder()
+                .uri(new URI(uri))
+                .build())
             .getClass());
     }
 
@@ -43,9 +48,4 @@ public class EmbeddedNeo4jXOProviderTest {
             .build()).containsEntry("neo4j.dbms.security.procedures.unrestricted", "graph.*,apoc.*");
     }
 
-    private XOUnit unit(String uri) throws Exception {
-        return XOUnit.builder()
-            .uri(new URI(uri))
-            .build();
-    }
 }

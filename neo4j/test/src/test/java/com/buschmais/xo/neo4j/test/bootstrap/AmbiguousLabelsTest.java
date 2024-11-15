@@ -1,5 +1,6 @@
 package com.buschmais.xo.neo4j.test.bootstrap;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -53,7 +54,7 @@ public class AmbiguousLabelsTest {
     private XOManagerFactory createFactory(XOUnit.MappingConfiguration mappingConfiguration) throws URISyntaxException {
         XOUnit.XOUnitBuilder builder = XOUnit.builder()
             .provider(EmbeddedNeo4jXOProvider.class)
-            .uri(new URI("memory:///"))
+            .uri(new URI("memory:" + new File("target/test").getAbsolutePath()))
             .type(A.class)
             .type(AmbiguousA.class);
         if (mappingConfiguration != null) {
