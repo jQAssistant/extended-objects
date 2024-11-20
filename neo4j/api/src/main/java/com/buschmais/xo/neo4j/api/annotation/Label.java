@@ -28,4 +28,9 @@ public @interface Label {
      * </p>
      */
     Class<?> usingIndexedPropertyOf() default Object.class;
+
+    /**
+     * @return The optional description of the label.
+     */
+    String description() default "";
 }

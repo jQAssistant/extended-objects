@@ -34,6 +34,10 @@ public @interface Relation {
     String value() default DEFAULT_VALUE;
 
     /**
+     * @return The optional description of the relation.
+     */
+    String description() default "";
+    /**
      * Marks a property as outgoing relationship.
      */
     @FromDefinition
