@@ -7,9 +7,7 @@ import java.net.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.jar.JarFile;
 
@@ -21,7 +19,8 @@ import org.neo4j.configuration.Config;
 import org.neo4j.configuration.GraphDatabaseInternalSettings;
 import org.neo4j.configuration.GraphDatabaseSettings;
 import org.neo4j.dbms.api.DatabaseManagementService;
-import org.neo4j.dbms.api.Neo4jDatabaseManagementServiceBuilder;
+import org.neo4j.graphdb.config.Setting;
+import org.neo4j.logging.LogProvider;
 
 import static com.buschmais.xo.neo4j.embedded.api.EmbeddedNeo4jXOProvider.PROPERTY_XO_NEO4J_EMBEDDED_PLUGINS;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -38,15 +37,25 @@ public abstract class AbstractEmbeddedDatabaseManagementServiceFactory implement
         File directory = new File(URLDecoder.decode(uri.getSchemeSpecificPart(), UTF_8)).getAbsoluteFile();
         File pluginDirectory = initializePlugins(directory, properties);
 
-        Neo4jDatabaseManagementServiceBuilder databaseManagementServiceBuilder = getDatabaseManagementServiceBuilder(directory.toPath());
-        databaseManagementServiceBuilder.setConfig(GraphDatabaseSettings.plugin_dir, pluginDirectory.toPath());
-        databaseManagementServiceBuilder.setConfig(toSettings(config));
-        databaseManagementServiceBuilder.setConfig(GraphDatabaseInternalSettings.track_cursor_close, false);
-        databaseManagementServiceBuilder.setUserLogProvider(Slf4jLogProvider.INSTANCE);
-        return databaseManagementServiceBuilder.build();
+        Map<Setting<?>, Object> settings = toSettings(config);
+        settings.put(GraphDatabaseSettings.plugin_dir, pluginDirectory.toPath());
+        settings.put(GraphDatabaseInternalSettings.track_cursor_close, false);
+
+        return getDatabaseManagementService(directory.toPath(), settings, Slf4jLogProvider.INSTANCE);
     }
 
-    protected abstract Neo4jDatabaseManagementServiceBuilder getDatabaseManagementServiceBuilder(Path directory);
+    private Map<Setting<?>, Object> toSettings(Config config) {
+        Map<Setting<?>, Object> settings = new HashMap<>();
+        for (Setting<?> setting : config.getDeclaredSettings()
+            .values()) {
+            if (config.isExplicitlySet(setting)) {
+                settings.put(setting, config.get(setting));
+            }
+        }
+        return settings;
+    }
+
+    protected abstract DatabaseManagementService getDatabaseManagementService(Path directory, Map<Setting<?>, Object> settings, LogProvider userLogProvider);
 
     private static File initializePlugins(File storeDir, Properties properties) {
         File pluginDirectory = new File(storeDir, PLUGIN_DIRECTORY);
@@ -66,8 +75,8 @@ public abstract class AbstractEmbeddedDatabaseManagementServiceFactory implement
                 log.warn("Cannot create embedded Neo4j database plugin directory '{}'.", pluginDirectory.getAbsolutePath());
             }
             for (String plugin : Splitter.on(",")
-                    .trimResults()
-                    .splitToList(plugins)) {
+                .trimResults()
+                .splitToList(plugins)) {
                 File sourceFile = new File(plugin);
                 File destinationFile = new File(pluginDirectory, sourceFile.getName());
                 if (!destinationFile.exists()) {
@@ -120,7 +129,7 @@ public abstract class AbstractEmbeddedDatabaseManagementServiceFactory implement
         Method method;
         try {
             method = classLoader.getClass()
-                    .getDeclaredMethod("addURL", URL.class);
+                .getDeclaredMethod("addURL", URL.class);
         } catch (NoSuchMethodException e) {
             throw new XOException("Cannot use URLClassLoader to extend classpath.", e);
         }
@@ -131,7 +140,7 @@ public abstract class AbstractEmbeddedDatabaseManagementServiceFactory implement
                 URL url;
                 try {
                     url = path.toUri()
-                            .toURL();
+                        .toURL();
                 } catch (MalformedURLException e) {
                     throw new IllegalStateException(e);
                 }
@@ -151,18 +160,18 @@ public abstract class AbstractEmbeddedDatabaseManagementServiceFactory implement
      */
     private static Consumer<Set<Path>> getInstrumentationAppender() {
         return paths -> InstrumentationProvider.INSTANCE.getInstrumentation()
-                .ifPresentOrElse(instrumentation -> {
-                    for (Path path : paths) {
-                        JarFile jarFile;
-                        try {
-                            jarFile = new JarFile(path.toFile());
-                        } catch (IOException e) {
-                            throw new XOException("Cannot create JAR from file " + path.toAbsolutePath(), e);
-                        }
-                        instrumentation.appendToSystemClassLoaderSearch(jarFile);
-
+            .ifPresentOrElse(instrumentation -> {
+                for (Path path : paths) {
+                    JarFile jarFile;
+                    try {
+                        jarFile = new JarFile(path.toFile());
+                    } catch (IOException e) {
+                        throw new XOException("Cannot create JAR from file " + path.toAbsolutePath(), e);
                     }
-                }, () -> log.warn("Runtime instrumentation is not available, Neo4j plugins might not work."));
+                    instrumentation.appendToSystemClassLoaderSearch(jarFile);
+
+                }
+            }, () -> log.warn("Runtime instrumentation is not available, Neo4j plugins might not work."));
     }
 
 }
