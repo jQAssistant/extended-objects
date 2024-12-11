@@ -29,10 +29,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.buschmais.xo.api.Query.Result;
-import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
 import static com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction;
 import static com.buschmais.xo.spi.annotation.RelationDefinition.FromDefinition;
 import static com.buschmais.xo.spi.annotation.RelationDefinition.ToDefinition;
+import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 /**
  * Implementation of the {@link MetadataProvider}.
@@ -90,8 +93,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         }
         entityTypeMetadataResolver = new EntityTypeMetadataResolver<>(metadataByType, mappingConfiguration);
         relationTypeMetadataResolver = new RelationTypeMetadataResolver<>(metadataByType, entityTypeMetadataResolver);
-        metadataByType.put(CompositeObject.class, new SimpleTypeMetadata(new AnnotatedType(CompositeObject.class), Collections.<TypeMetadata>emptyList(),
-            Collections.<MethodMetadata<?, ?>>emptyList(), null));
+        metadataByType.put(CompositeObject.class, new SimpleTypeMetadata(new AnnotatedType(CompositeObject.class), emptyList(), emptyList(), null));
     }
 
     @Override
@@ -553,8 +555,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             return propertyMethod;
         }
         Annotation[] declaredAnnotations = propertyMethod.getAnnotations();
-        for (int i = 0; i < declaredAnnotations.length; i++) {
-            com.buschmais.xo.api.metadata.reflection.AnnotatedElement<?> annotationTypeElement = new AnnotatedType(declaredAnnotations[i].annotationType());
+        for (Annotation declaredAnnotation : declaredAnnotations) {
+            com.buschmais.xo.api.metadata.reflection.AnnotatedElement<?> annotationTypeElement = new AnnotatedType(declaredAnnotation.annotationType());
             if (annotationTypeElement.getByMetaAnnotation(RelationDefinition.class) != null) {
                 return annotationTypeElement;
             }
@@ -595,21 +597,22 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             }
         }
         // Determine parameter bindings
-        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        List<Parameter> parameters = new ArrayList<>();
-        for (Annotation[] parameterAnnotation : parameterAnnotations) {
-            Parameter parameter = null;
-            for (Annotation annotation : parameterAnnotation) {
-                if (Parameter.class.equals(annotation.annotationType())) {
-                    parameter = (Parameter) annotation;
-                }
-            }
-            if (parameter == null) {
+        List<ResultOfMethodMetadata.QueryParameter> parameters = new ArrayList<>();
+
+        for (Parameter parameter : method.getParameters()) {
+            Optional<String> parameterName = stream(parameter.getAnnotations()).filter(a -> ResultOf.Parameter.class.equals(a.annotationType()))
+                .map(a -> ((ResultOf.Parameter) a).value())
+                .findFirst()
+                .or(() -> parameter.isNamePresent() ? of(parameter.getName()) : empty());
+
+            if (parameterName.isEmpty()) {
                 throw new XOException(
                     "Cannot determine parameter names for '" + method.getName() + "', all parameters must be annotated with '" + Parameter.class.getName()
                         + "'.");
             }
-            parameters.add(parameter);
+            parameters.add(ResultOfMethodMetadata.QueryParameter.builder()
+                .name(parameterName.get())
+                .build());
         }
         boolean singleResult = !Iterable.class.isAssignableFrom(methodReturnType);
         return new ResultOfMethodMetadata<>(annotatedMethod, query, returnType, resultOf.usingThisAs(), parameters, singleResult);
@@ -641,7 +644,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             Annotation annotation = element.getByMetaAnnotation(QueryDefinition.class);
             return Optional.ofNullable(annotation);
         });
-        return cachedOptional.isPresent() ? (QL) cachedOptional.get() : null;
+        return (QL) cachedOptional.orElse(null);
     }
 
     /**

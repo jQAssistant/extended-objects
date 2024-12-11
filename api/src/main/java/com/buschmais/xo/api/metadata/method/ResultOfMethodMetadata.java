@@ -3,8 +3,10 @@ package com.buschmais.xo.api.metadata.method;
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
-import com.buschmais.xo.api.annotation.ResultOf;
 import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
+
+import lombok.Builder;
+import lombok.Getter;
 
 public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMetadata<AnnotatedMethod, DatastoreMetadata> {
 
@@ -14,12 +16,12 @@ public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMet
 
     private final String usingThisAs;
 
-    private final List<ResultOf.Parameter> parameters;
+    private final List<QueryParameter> parameters;
 
     private final boolean singleResult;
 
     public ResultOfMethodMetadata(AnnotatedMethod annotatedMethod, AnnotatedElement query, Class<?> returnType, String usingThisAs,
-        List<ResultOf.Parameter> parameters, boolean singleResult) {
+        List<QueryParameter> parameters, boolean singleResult) {
         super(annotatedMethod, null);
         this.query = query;
         this.returnType = returnType;
@@ -40,11 +42,17 @@ public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMet
         return usingThisAs;
     }
 
-    public List<ResultOf.Parameter> getParameters() {
+    public List<QueryParameter> getParameters() {
         return parameters;
     }
 
     public boolean isSingleResult() {
         return singleResult;
+    }
+
+    @Builder
+    @Getter
+    public static class QueryParameter {
+        private String name;
     }
 }

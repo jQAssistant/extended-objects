@@ -9,6 +9,19 @@
 
     <name>eXtended Objects - Neo4j Binding Integration Tests</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- required to resolve parameter names in @ResultOf queries -->
+                    <parameters>true</parameters>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>com.buschmais.xo</groupId>

@@ -29,7 +29,7 @@ public @interface ResultOf {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.PARAMETER)
-    public @interface Parameter {
+    @interface Parameter {
         /**
          * @return The name of the parameter to be passed to the query.
          */
