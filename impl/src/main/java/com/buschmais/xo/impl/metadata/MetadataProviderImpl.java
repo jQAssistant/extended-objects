@@ -606,9 +606,8 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 .or(() -> parameter.isNamePresent() ? of(parameter.getName()) : empty());
 
             if (parameterName.isEmpty()) {
-                throw new XOException(
-                    "Cannot determine parameter names for '" + method.getName() + "', all parameters must be annotated with '" + Parameter.class.getName()
-                        + "'.");
+                throw new XOException("Cannot determine parameter names for '" + method.getName()
+                    + "'. Please enable parameter info in Java compiler or annotate parameters with @'" + Parameter.class.getName() + "'.");
             }
             parameters.add(ResultOfMethodMetadata.QueryParameter.builder()
                 .name(parameterName.get())
