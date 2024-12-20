@@ -10,7 +10,7 @@
     <name>eXtended Objects - Spring Framework Integration</name>
 
     <properties>
-        <spring.boot.version>3.4.0</spring.boot.version>
+        <spring.boot.version>3.4.1</spring.boot.version>
     </properties>
 
     <dependencyManagement>
