@@ -17,31 +17,35 @@ public interface E {
     List<F> getRelatedTo();
 
     @ResultOf(query = ByValue.class, usingThisAs = "e")
-    Result<ByValue> getResultByValueUsingExplicitQuery(@Parameter("value") String value);
+    Result<ByValue> getResultByValueUsingExplicitQuery(String value);
 
     @ResultOf(usingThisAs = "e")
-    Result<ByValue> getResultByValueUsingReturnType(@Parameter("value") String value);
+    Result<ByValue> getResultByValueUsingReturnType(String value);
 
     @ResultOf(query = ByValue.class, usingThisAs = "e")
-    ByValue getByValueUsingExplicitQuery(@Parameter("value") String value);
+    ByValue getByValueUsingExplicitQuery(String value);
 
     @ResultOf(usingThisAs = "e")
-    ByValue getByValueUsingReturnType(@Parameter("value") String value);
+    ByValue getByValueUsingReturnType(String value);
 
     @ResultOf
-    ByValueUsingImplicitThis getByValueUsingImplicitThis(@Parameter("value") String value);
-
-    @ResultOf
-    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where f.value=$value return f")
-    Result<F> getResultUsingCypher(@Parameter("value") String value);
+    ByValueUsingImplicitThis getByValueUsingImplicitThis(String value);
 
     @ResultOf
     @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where f.value=$value return f")
-    F getSingleResultUsingCypher(@Parameter("value") String value);
+    Result<F> getResultUsingCypher(String value);
+
+    @ResultOf
+    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where f.value=$value return f")
+    F getSingleResultUsingCypher(String value);
 
     @ResultOf
     @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where f.value=$value set e:Result")
-    void voidResultUsingCypher(@Parameter("value") String value);
+    void voidResultUsingCypher(String value);
+
+    @ResultOf
+    @Cypher("match (e:E)-[:RELATED_TO]-(f:F) where f.value=$value return f")
+    F overrideParameterName(@Parameter("value") String v);
 
     List<E2F> getE2F();
 

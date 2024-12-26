@@ -149,4 +149,14 @@ public class EntityResultOfIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction()
             .commit();
     }
+
+    @Test
+    public void overrideParameterName() {
+        XOManager xoManager = getXOManager();
+        xoManager.currentTransaction()
+            .begin();
+        F result = e.overrideParameterName("F1");
+        assertThat(result).isEqualTo(f1);
+    }
+
 }

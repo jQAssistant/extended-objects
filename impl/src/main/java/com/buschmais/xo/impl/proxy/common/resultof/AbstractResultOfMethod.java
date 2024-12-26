@@ -4,7 +4,6 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
 import com.buschmais.xo.api.Query;
-import com.buschmais.xo.api.annotation.ResultOf;
 import com.buschmais.xo.api.metadata.method.ResultOfMethodMetadata;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.impl.SessionContext;
@@ -40,10 +39,10 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
             String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
             query.withParameter(usingThisAs, thisInstance);
         }
-        List<ResultOf.Parameter> parameters = resultOfMethodMetadata.getParameters();
+        List<ResultOfMethodMetadata.QueryParameter> parameters = resultOfMethodMetadata.getParameters();
         for (int i = 0; i < parameters.size(); i++) {
             query.withParameter(parameters.get(i)
-                .value(), args[i]);
+                .getName(), args[i]);
         }
         Query.Result<?> result = query.execute();
         if (void.class.equals(returnType)) {
