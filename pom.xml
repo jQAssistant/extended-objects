@@ -52,7 +52,7 @@
         <org.neo4jv5.version>5.24.2</org.neo4jv5.version>
         <org.neo4j.version>${org.neo4jv4.version}</org.neo4j.version>
         <org.mockito.version>5.15.2</org.mockito.version>
-        <org.assertj.version>3.27.1</org.assertj.version>
+        <org.assertj.version>3.27.2</org.assertj.version>
         <org.glassfish.jaxb.version>2.4.0-b180830.0359</org.glassfish.jaxb.version>
         <!-- SonarQube -->
         <sonar.organization>jqassistant</sonar.organization>
