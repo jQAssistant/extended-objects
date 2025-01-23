@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.test.repository;
 
-import java.util.Collection;
-
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.api.Neo4jRepository;
@@ -11,10 +9,11 @@ import com.buschmais.xo.neo4j.test.repository.composite.A;
 import com.buschmais.xo.neo4j.test.repository.composite.CustomNeo4jRepository;
 import com.buschmais.xo.neo4j.test.repository.composite.CustomRepository;
 import com.buschmais.xo.neo4j.test.repository.composite.CustomTypedNeo4jRepository;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,6 +48,28 @@ public class RepositoryIT extends AbstractNeo4JXOManagerIT {
         xoManager.currentTransaction()
             .commit();
     }
+
+    /**
+     * Test the {@link Neo4jRepository}.
+     */
+    @Test
+    public void projection() {
+        XOManager xoManager = getXOManager();
+        xoManager.currentTransaction()
+            .begin();
+        A a = xoManager.create(A.class);
+        a.setName("A1");
+        CustomRepository repository = xoManager.getRepository(CustomRepository.class);
+        CustomRepository.Projection projection = repository.projection("A1");
+        assertThat(projection).isNotNull();
+        assertThat(projection.getA()).isEqualTo(a);
+        CustomRepository.NestedProjection nestedProjection = projection.getNestedProjection();
+        assertThat(nestedProjection).isNotNull();
+        assertThat(nestedProjection.getName()).isEqualTo("A1");
+        xoManager.currentTransaction()
+            .commit();
+    }
+
 
     /**
      * Test a custom repository which extends {@link Neo4jRepository}.

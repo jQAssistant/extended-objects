@@ -23,6 +23,7 @@ public class EntityPropertyManager<Entity, Relation, PropertyMetadata> extends A
      *     The {@link SessionContext}.
      */
     public EntityPropertyManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, PropertyMetadata> sessionContext) {
+        super(sessionContext);
         this.sessionContext = sessionContext;
     }
 

@@ -26,7 +26,7 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
         this.returnTypes = returnTypes;
         if (returnTypes.isEmpty() || returnTypes.size() > 1 || sessionContext.getMetadataProvider()
             .getQuery(returnTypes.first()) != null) {
-            this.rowProxyMethodService = new RowProxyMethodService(returnTypes);
+            this.rowProxyMethodService = new RowProxyMethodService(returnTypes, sessionContext);
         } else {
             this.rowProxyMethodService = null;
         }
@@ -53,6 +53,7 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
                         row.put(column, decodedValue);
                     }
                     if (rowProxyMethodService != null) {
+                        // replace with ValueConverter
                         RowInvocationHandler invocationHandler = new RowInvocationHandler(row, rowProxyMethodService);
                         CompositeType compositeType = CompositeType.builder()
                             .type(CompositeRowObject.class)

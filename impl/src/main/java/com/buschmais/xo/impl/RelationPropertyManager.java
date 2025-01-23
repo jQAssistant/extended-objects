@@ -17,6 +17,7 @@ public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyM
      *     The {@link SessionContext}.
      */
     public RelationPropertyManager(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
+        super(sessionContext);
         this.sessionContext = sessionContext;
     }
 

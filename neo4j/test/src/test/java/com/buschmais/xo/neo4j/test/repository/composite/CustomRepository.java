@@ -6,6 +6,7 @@ import com.buschmais.xo.api.annotation.Repository;
 import com.buschmais.xo.api.annotation.ResultOf;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
+import org.neo4j.cypher.internal.logical.plans.InequalitySeekRange;
 
 import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
 
@@ -27,5 +28,23 @@ public interface CustomRepository {
             return xoManager.find(A.class, arg)
                 .getSingleResult();
         }
+    }
+
+    @ResultOf
+    @Cypher("match (a) where a.name=$name return { a: a, nestedProjection: { name: a.name }  } as projection")
+    Projection projection(String name);
+
+    interface Projection {
+
+        A getA();
+
+        NestedProjection getNestedProjection();
+
+    }
+
+    interface NestedProjection {
+
+        String getName();
+
     }
 }

@@ -50,7 +50,7 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
             return null;
         } else if (resultOfMethodMetadata.isSingleResult()) {
             if (result.hasResult()) {
-                return ValueConverter.convert(result.getSingleResult(), returnType);
+                return ValueConverter.convert(result.getSingleResult(), returnType, sessionContext);
             }
             return null;
         }

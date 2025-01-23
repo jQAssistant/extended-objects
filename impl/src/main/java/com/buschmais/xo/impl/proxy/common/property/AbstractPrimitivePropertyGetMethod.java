@@ -18,7 +18,7 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Property
         Class<?> propertyType = metadata.getAnnotatedMethod()
             .getType();
         return ValueConverter.convert(propertyManager.hasProperty(datastoreType, metadata) ? propertyManager.getProperty(datastoreType, metadata) : null,
-            propertyType);
+            propertyType, propertyManager.getSessionContext());
     }
 
 }

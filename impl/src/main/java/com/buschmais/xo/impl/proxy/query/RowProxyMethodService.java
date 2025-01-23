@@ -1,14 +1,11 @@
 package com.buschmais.xo.impl.proxy.query;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.SortedSet;
-
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
 import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
 import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
+import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.AbstractProxyMethodService;
 import com.buschmais.xo.impl.proxy.common.composite.GetDelegateMethod;
 import com.buschmais.xo.impl.proxy.query.composite.AsMethod;
@@ -19,11 +16,32 @@ import com.buschmais.xo.impl.proxy.query.property.GetMethod;
 import com.buschmais.xo.impl.proxy.query.row.GetColumnsMethod;
 import com.buschmais.xo.spi.reflection.BeanMethodProvider;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
+import static java.util.Comparator.comparing;
+
 
 public class RowProxyMethodService extends AbstractProxyMethodService<Map<String, Object>> {
 
-    public RowProxyMethodService(SortedSet<Class<?>> types) {
+    private final SessionContext<?, ?, ?, ?, ?, ?, ?, ?, ?> sessionContext;
+
+    public RowProxyMethodService(Class<?> type, SessionContext<?, ?, ?, ?, ?, ?, ?, ?, ?> sessionContext) {
+        this.sessionContext = sessionContext;
+        TreeSet<Class<?>> types = new TreeSet<>(comparing(Class::getName));
+        types.add(type);
+        init(types);
+    }
+
+    public RowProxyMethodService(SortedSet<Class<?>> types, SessionContext<?, ?, ?, ?, ?, ?, ?, ?, ?> sessionContext) {
+        this.sessionContext = sessionContext;
+        init(types);
+    }
+
+    private void init(SortedSet<Class<?>> types) {
         for (Class<?> type : types) {
             BeanMethodProvider beanMethodProvider = BeanMethodProvider.newInstance(type);
             Collection<AnnotatedMethod> typeMethodsOfType = beanMethodProvider.getMethods();
@@ -33,7 +51,7 @@ public class RowProxyMethodService extends AbstractProxyMethodService<Map<String
                         .getName() + "'.");
                 }
                 PropertyMethod propertyMethod = (PropertyMethod) typeMethod;
-                GetMethod proxyMethod = new GetMethod(propertyMethod.getName(), propertyMethod.getType());
+                GetMethod proxyMethod = new GetMethod(propertyMethod.getName(), propertyMethod.getType(), sessionContext);
                 addProxyMethod(proxyMethod, propertyMethod.getAnnotatedElement());
             }
         }

@@ -7,8 +7,15 @@ import java.util.Map;
 import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.api.metadata.method.TransientPropertyMethodMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
+import static lombok.AccessLevel.PROTECTED;
+
+@RequiredArgsConstructor(access = PROTECTED)
 public abstract class AbstractPropertyManager<DatastoreType> {
+
+    private final SessionContext<?, ?, ?, ?, ?, ?, ?, ?, ?> sessionContext;
 
     private Map<DatastoreType, Map<String, Object>> transientInstances = null;
 
@@ -51,4 +58,7 @@ public abstract class AbstractPropertyManager<DatastoreType> {
         return this.transientInstances.computeIfAbsent(datastoreType, k -> new HashMap<>());
     }
 
+    public SessionContext<?, ?, ?, ?, ?, ?, ?, ?, ?> getSessionContext() {
+        return sessionContext;
+    }
 }
