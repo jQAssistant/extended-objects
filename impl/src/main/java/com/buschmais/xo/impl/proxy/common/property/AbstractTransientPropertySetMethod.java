@@ -3,10 +3,10 @@ package com.buschmais.xo.impl.proxy.common.property;
 import com.buschmais.xo.api.metadata.method.TransientPropertyMethodMetadata;
 import com.buschmais.xo.impl.AbstractPropertyManager;
 
-public abstract class AbstractTransientPropertySetMethod<DatastoreType, PropertyManager extends AbstractPropertyManager<DatastoreType>>
-    extends AbstractPropertyMethod<DatastoreType, PropertyManager, TransientPropertyMethodMetadata> {
+public abstract class AbstractTransientPropertySetMethod<Entity, Relation, DatastoreType, PropertyManager extends AbstractPropertyManager<Entity, Relation, DatastoreType>>
+    extends AbstractPropertyMethod<Entity, Relation, DatastoreType, PropertyManager, TransientPropertyMethodMetadata> {
 
-    public AbstractTransientPropertySetMethod(PropertyManager propertyManager, TransientPropertyMethodMetadata metadata) {
+    protected AbstractTransientPropertySetMethod(PropertyManager propertyManager, TransientPropertyMethodMetadata metadata) {
         super(propertyManager, metadata);
     }
 

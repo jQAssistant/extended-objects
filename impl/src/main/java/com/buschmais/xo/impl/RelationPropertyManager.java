@@ -6,7 +6,7 @@ import com.buschmais.xo.api.metadata.type.RelationTypeMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 
-public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyManager<Relation> {
+public class RelationPropertyManager<Entity, Relation> extends AbstractPropertyManager<Entity, Relation, Relation> {
 
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
 

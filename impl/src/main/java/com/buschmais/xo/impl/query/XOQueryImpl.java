@@ -19,8 +19,6 @@ import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.plugin.QueryLanguagePlugin;
 import com.buschmais.xo.spi.session.InstanceManager;
 
-import static java.util.Comparator.comparing;
-
 /**
  * Implementation of a {@link com.buschmais.xo.api.Query}.
  *
@@ -43,13 +41,11 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
     private final QueryLanguagePluginRepository queryLanguagePluginManager;
     private final Class<?> returnType;
-    private final Collection<? extends Class<?>> returnTypes;
     private final InstanceManager<?, Entity> entityInstanceManager;
     private final InstanceManager<?, Relation> relationInstanceManager;
     private Map<String, Object> parameters = null;
 
-    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression, Class<?> returnType,
-        Collection<? extends Class<?>> returnTypes) {
+    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression, Class<?> returnType) {
         this.sessionContext = sessionContext;
         this.entityInstanceManager = sessionContext.getEntityInstanceManager();
         this.relationInstanceManager = sessionContext.getRelationInstanceManager();
@@ -57,15 +53,10 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
             .getPluginManager(QueryLanguagePlugin.class);
         this.expression = expression;
         this.returnType = returnType;
-        this.returnTypes = returnTypes;
     }
 
     public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression) {
-        this(sessionContext, expression, null, Collections.emptyList());
-    }
-
-    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression, Class<?> returnType) {
-        this(sessionContext, expression, returnType, Collections.emptyList());
+        this(sessionContext, expression, null);
     }
 
     @Override
@@ -145,12 +136,11 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         } else {
             throw new XOException("Expression type is not supported: " + expression);
         }
-        SortedSet<Class<?>> resultTypes = getResultTypes();
         XOTransaction xoTransaction = sessionContext.getXOTransaction();
         return sessionContext.getInterceptorFactory()
             .addInterceptor(
                 new QueryResultIterableImpl(sessionContext, xoTransaction != null ? new TransactionalResultIterator<>(iterator, xoTransaction) : iterator,
-                    resultTypes), Result.class);
+                    returnType), Result.class);
     }
 
     private void flush(AnnotatedElement annotatedElement) {
@@ -189,15 +179,6 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
             return values;
         }
         return value;
-    }
-
-    private SortedSet<Class<?>> getResultTypes() {
-        SortedSet<Class<?>> resultTypes = new TreeSet<>(comparing(Class::getName));
-        if (returnType != null) {
-            resultTypes.add(returnType);
-        }
-        resultTypes.addAll(returnTypes);
-        return resultTypes;
     }
 
 }

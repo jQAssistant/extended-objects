@@ -23,10 +23,12 @@ import com.buschmais.xo.impl.query.XOQueryImpl;
 public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> implements ProxyMethod<DatastoreType> {
 
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
+    private final ValueConverter<Entity, Relation> valueConverter;
     private final ResultOfMethodMetadata<?> resultOfMethodMetadata;
 
     public AbstractResultOfMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, ResultOfMethodMetadata<?> resultOfMethodMetadata) {
         this.sessionContext = sessionContext;
+        this.valueConverter = new ValueConverter<>(sessionContext);
         this.resultOfMethodMetadata = resultOfMethodMetadata;
     }
 
@@ -50,7 +52,7 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
             return null;
         } else if (resultOfMethodMetadata.isSingleResult()) {
             if (result.hasResult()) {
-                return ValueConverter.convert(result.getSingleResult(), returnType, sessionContext);
+                return valueConverter.convert(result.getSingleResult(), returnType);
             }
             return null;
         }

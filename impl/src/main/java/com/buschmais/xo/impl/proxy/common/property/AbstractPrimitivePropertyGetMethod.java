@@ -4,11 +4,14 @@ import com.buschmais.xo.api.metadata.method.PrimitivePropertyMethodMetadata;
 import com.buschmais.xo.impl.AbstractPropertyManager;
 import com.buschmais.xo.impl.converter.ValueConverter;
 
-public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, PropertyManager extends AbstractPropertyManager<DatastoreType>>
-    extends AbstractPropertyMethod<DatastoreType, PropertyManager, PrimitivePropertyMethodMetadata> {
+public abstract class AbstractPrimitivePropertyGetMethod<Entity, Relation, DatastoreType, PropertyManager extends AbstractPropertyManager<Entity, Relation, DatastoreType>>
+    extends AbstractPropertyMethod<Entity, Relation, DatastoreType, PropertyManager, PrimitivePropertyMethodMetadata> {
 
-    public AbstractPrimitivePropertyGetMethod(PropertyManager propertyManager, PrimitivePropertyMethodMetadata metadata) {
+    private final ValueConverter<Entity, Relation> valueConverter;
+
+    protected AbstractPrimitivePropertyGetMethod(PropertyManager propertyManager, PrimitivePropertyMethodMetadata metadata) {
         super(propertyManager, metadata);
+        this.valueConverter = new ValueConverter<>(propertyManager.getSessionContext());
     }
 
     @Override
@@ -17,8 +20,8 @@ public abstract class AbstractPrimitivePropertyGetMethod<DatastoreType, Property
         PropertyManager propertyManager = getPropertyManager();
         Class<?> propertyType = metadata.getAnnotatedMethod()
             .getType();
-        return ValueConverter.convert(propertyManager.hasProperty(datastoreType, metadata) ? propertyManager.getProperty(datastoreType, metadata) : null,
-            propertyType, propertyManager.getSessionContext());
+        return valueConverter.convert(propertyManager.hasProperty(datastoreType, metadata) ? propertyManager.getProperty(datastoreType, metadata) : null,
+            propertyType);
     }
 
 }

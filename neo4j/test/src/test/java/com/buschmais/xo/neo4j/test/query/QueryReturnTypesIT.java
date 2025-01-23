@@ -79,6 +79,37 @@ public class QueryReturnTypesIT extends AbstractNeo4JXOManagerIT {
     }
 
     @Test
+    public void cypherWithProjectionReturnType() {
+        XOManager xoManager = getXOManager();
+        xoManager.currentTransaction()
+            .begin();
+        Projection projection = xoManager.createQuery("match (a:A) return a, { a: a, value: a.value } as nestedProjection", Projection.class)
+            .execute()
+            .getSingleResult();
+        assertThat(projection).isNotNull();
+        assertThat(projection.getA()).isEqualTo(a);
+        Projection.NestedProjection nestedProjection = projection.getNestedProjection();
+        assertThat(nestedProjection).isNotNull();
+        assertThat(nestedProjection.getA()).isEqualTo(a);
+        assertThat(nestedProjection.getValue()).isEqualTo("A");
+        xoManager.currentTransaction()
+            .commit();
+    }
+
+    public interface Projection {
+        A getA();
+
+        NestedProjection getNestedProjection();
+
+        interface NestedProjection {
+
+            A getA();
+
+            String getValue();
+        }
+    }
+
+    @Test
     public void typedQuery() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction()

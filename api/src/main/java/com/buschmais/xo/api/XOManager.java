@@ -234,19 +234,6 @@ public interface XOManager extends AutoCloseable, CloseSupport {
     /**
      * Creates a typed {@link Query}.
      *
-     * @param query
-     *     The query expression.
-     * @param type
-     *     The type to be returned.
-     * @param types
-     *     The types to be returned.
-     * @return The {@link Query}.
-     */
-    Query<CompositeRowObject> createQuery(String query, Class<?> type, Class<?>... types);
-
-    /**
-     * Creates a typed {@link Query}.
-     *
      * @param <T>
      *     The type to be returned.
      * @param query
@@ -254,17 +241,6 @@ public interface XOManager extends AutoCloseable, CloseSupport {
      * @return The {@link Query}.
      */
     <T> Query<T> createQuery(Class<T> query);
-
-    /**
-     * Creates a typed {@link Query}.
-     *
-     * @param query
-     *     The query type.
-     * @param types
-     *     The additional types to be returned.
-     * @return The {@link Query}.
-     */
-    <Q> Query<CompositeRowObject> createQuery(Class<Q> query, Class<?>... types);
 
     /**
      * Close the {@link com.buschmais.xo.api.XOManager}.
