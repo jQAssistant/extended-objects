@@ -77,7 +77,7 @@ public class DelegateIT extends AbstractNeo4JXOManagerIT {
             .execute();
         Map<String, Object> delegate = row.getSingleResult()
             .getDelegate();
-        assertThat(delegate).containsEntry("a", a);
+        assertThat(delegate).containsEntry("a", ((CompositeObject) a).getDelegate());
         xoManager.currentTransaction()
             .commit();
     }

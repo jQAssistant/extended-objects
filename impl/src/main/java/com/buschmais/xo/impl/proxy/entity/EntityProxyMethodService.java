@@ -3,6 +3,12 @@ package com.buschmais.xo.impl.proxy.entity;
 import java.lang.reflect.Method;
 
 import com.buschmais.xo.api.CompositeObject;
+import com.buschmais.xo.api.metadata.method.*;
+import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
+import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
+import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
+import com.buschmais.xo.api.metadata.reflection.SetPropertyMethod;
+import com.buschmais.xo.api.metadata.type.TypeMetadata;
 import com.buschmais.xo.impl.EntityPropertyManager;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.proxy.AbstractProxyMethodService;
@@ -14,12 +20,6 @@ import com.buschmais.xo.impl.proxy.entity.object.HashCodeMethod;
 import com.buschmais.xo.impl.proxy.entity.object.ToStringMethod;
 import com.buschmais.xo.impl.proxy.entity.property.*;
 import com.buschmais.xo.impl.proxy.entity.resultof.ResultOfMethod;
-import com.buschmais.xo.api.metadata.method.*;
-import com.buschmais.xo.api.metadata.type.TypeMetadata;
-import com.buschmais.xo.api.metadata.reflection.AnnotatedMethod;
-import com.buschmais.xo.api.metadata.reflection.GetPropertyMethod;
-import com.buschmais.xo.api.metadata.reflection.PropertyMethod;
-import com.buschmais.xo.api.metadata.reflection.SetPropertyMethod;
 
 public class EntityProxyMethodService<Entity, Relation> extends AbstractProxyMethodService<Entity> {
 
@@ -83,7 +83,7 @@ public class EntityProxyMethodService<Entity, Relation> extends AbstractProxyMet
         }
         addMethod(new AsMethod<>(sessionContext), CompositeObject.class, "as", Class.class);
         addMethod(new GetIdMethod<>(sessionContext), CompositeObject.class, "getId");
-        addMethod(new GetDelegateMethod<>(), CompositeObject.class, "getDelegate");
+        addMethod(new GetDelegateMethod<>(sessionContext), CompositeObject.class, "getDelegate");
         addMethod(new HashCodeMethod<>(), Object.class, "hashCode");
         addMethod(new EqualsMethod<>(sessionContext), Object.class, "equals", Object.class);
         addMethod(new ToStringMethod<>(sessionContext), Object.class, "toString");

@@ -7,7 +7,7 @@ import com.buschmais.xo.impl.EntityPropertyManager;
 import com.buschmais.xo.impl.proxy.common.property.AbstractPropertyMethod;
 
 public class EntityCollectionPropertySetMethod<Entity, Relation>
-    extends AbstractPropertyMethod<Entity, EntityPropertyManager<Entity, Relation, ?>, EntityCollectionPropertyMethodMetadata> {
+    extends AbstractPropertyMethod<Entity, Relation, Entity, EntityPropertyManager<Entity, Relation, ?>, EntityCollectionPropertyMethodMetadata> {
 
     public EntityCollectionPropertySetMethod(EntityPropertyManager<Entity, Relation, ?> propertyManager, EntityCollectionPropertyMethodMetadata metadata) {
         super(propertyManager, metadata);

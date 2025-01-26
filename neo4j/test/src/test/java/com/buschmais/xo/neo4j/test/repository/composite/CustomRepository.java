@@ -6,7 +6,6 @@ import com.buschmais.xo.api.annotation.Repository;
 import com.buschmais.xo.api.annotation.ResultOf;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.neo4j.api.annotation.Cypher;
-import org.neo4j.cypher.internal.logical.plans.InequalitySeekRange;
 
 import static com.buschmais.xo.api.annotation.ResultOf.Parameter;
 
@@ -31,7 +30,7 @@ public interface CustomRepository {
     }
 
     @ResultOf
-    @Cypher("match (a) where a.name=$name return { a: a, nestedProjection: { name: a.name }  } as projection")
+    @Cypher("match (a) where a.name=$name return a, { a: a, name: a.name } as nestedProjection")
     Projection projection(String name);
 
     interface Projection {
@@ -43,6 +42,8 @@ public interface CustomRepository {
     }
 
     interface NestedProjection {
+
+        A getA();
 
         String getName();
 

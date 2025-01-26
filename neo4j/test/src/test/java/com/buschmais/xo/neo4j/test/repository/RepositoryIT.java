@@ -1,5 +1,7 @@
 package com.buschmais.xo.neo4j.test.repository;
 
+import java.util.Collection;
+
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.api.Neo4jRepository;
@@ -9,11 +11,10 @@ import com.buschmais.xo.neo4j.test.repository.composite.A;
 import com.buschmais.xo.neo4j.test.repository.composite.CustomNeo4jRepository;
 import com.buschmais.xo.neo4j.test.repository.composite.CustomRepository;
 import com.buschmais.xo.neo4j.test.repository.composite.CustomTypedNeo4jRepository;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,11 +66,11 @@ public class RepositoryIT extends AbstractNeo4JXOManagerIT {
         assertThat(projection.getA()).isEqualTo(a);
         CustomRepository.NestedProjection nestedProjection = projection.getNestedProjection();
         assertThat(nestedProjection).isNotNull();
+        assertThat(nestedProjection.getA()).isEqualTo(a);
         assertThat(nestedProjection.getName()).isEqualTo("A1");
         xoManager.currentTransaction()
             .commit();
     }
-
 
     /**
      * Test a custom repository which extends {@link Neo4jRepository}.

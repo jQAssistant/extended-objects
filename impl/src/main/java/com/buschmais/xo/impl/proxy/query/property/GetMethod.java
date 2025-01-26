@@ -6,19 +6,17 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.impl.SessionContext;
 import com.buschmais.xo.impl.converter.ValueConverter;
 import com.buschmais.xo.impl.proxy.query.RowProxyMethod;
-import lombok.RequiredArgsConstructor;
 
-public class GetMethod implements RowProxyMethod {
-
-    private final SessionContext<?, ?, ?, ?, ?, ?, ?, ?, ?> sessionContext;
+public class GetMethod<Entity, Relation> implements RowProxyMethod {
 
     private final String name;
     private final Class<?> type;
+    private final ValueConverter<Entity, Relation> valueConverter;
 
-    public GetMethod(String name, Class<?> type, SessionContext<?, ?, ?, ?, ?, ?, ?, ?, ?> sessionContext) {
+    public GetMethod(String name, Class<?> type, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         this.name = name;
         this.type = type;
-        this.sessionContext = sessionContext;
+        this.valueConverter = new ValueConverter<>(sessionContext);
     }
 
     @Override
@@ -27,6 +25,6 @@ public class GetMethod implements RowProxyMethod {
             throw new XOException("Query result does not contain column '" + name + "'");
         }
         Object value = entity.get(name);
-        return ValueConverter.convert(value, type, sessionContext);
+        return valueConverter.convert(value, type);
     }
 }

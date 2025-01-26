@@ -60,7 +60,7 @@ public class RelationProxyMethodService<Entity, Relation> extends AbstractProxyM
         }
         addMethod(new AsMethod<>(sessionContext), CompositeObject.class, "as", Class.class);
         addMethod(new GetIdMethod<>(sessionContext), CompositeObject.class, "getId");
-        addMethod(new GetDelegateMethod<>(), CompositeObject.class, "getDelegate");
+        addMethod(new GetDelegateMethod<>(sessionContext), CompositeObject.class, "getDelegate");
         addMethod(new HashCodeMethod<>(), Object.class, "hashCode");
         addMethod(new EqualsMethod<>(sessionContext), Object.class, "equals", Object.class);
         addMethod(new ToStringMethod<>(sessionContext), Object.class, "toString");

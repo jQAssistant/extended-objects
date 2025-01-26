@@ -25,6 +25,7 @@ import com.buschmais.xo.spi.session.XOSession;
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 import static com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction.FROM;
 import static com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction.TO;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 
 /**
@@ -165,7 +166,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         InstanceInvocationHandler invocationHandler = new InstanceInvocationHandler(exampleEntity, proxyMethodService);
         List<Class<?>> effectiveTypes = new ArrayList<>(types.length + 1);
         effectiveTypes.add(type);
-        effectiveTypes.addAll(Arrays.asList(types));
+        effectiveTypes.addAll(asList(types));
         CompositeType compositeType = CompositeType.builder()
             .type(CompositeObject.class)
             .type(type)
@@ -399,22 +400,8 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
     }
 
     @Override
-    public Query<CompositeRowObject> createQuery(String query, Class<?> type, Class<?>... types) {
-        XOQueryImpl<CompositeRowObject, ?, String, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, type, Arrays.asList(types));
-        return sessionContext.getInterceptorFactory()
-            .addInterceptor(xoQuery, Query.class);
-    }
-
-    @Override
     public <T> Query<T> createQuery(Class<T> query) {
         XOQueryImpl<T, ?, Class<T>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query);
-        return sessionContext.getInterceptorFactory()
-            .addInterceptor(xoQuery, Query.class);
-    }
-
-    @Override
-    public <Q> Query<CompositeRowObject> createQuery(Class<Q> query, Class<?>... types) {
-        XOQueryImpl<CompositeRowObject, ?, Class<Q>, Entity, Relation> xoQuery = new XOQueryImpl<>(sessionContext, query, query, Arrays.asList(types));
         return sessionContext.getInterceptorFactory()
             .addInterceptor(xoQuery, Query.class);
     }
