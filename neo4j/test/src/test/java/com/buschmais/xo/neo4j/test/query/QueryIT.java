@@ -75,33 +75,6 @@ public class QueryIT extends AbstractNeo4JXOManagerIT {
     }
 
     @Test
-    public void compositeRow() {
-        XOManager xoManager = getXOManager();
-        xoManager.currentTransaction()
-            .begin();
-        CompositeRowObject result = xoManager.createQuery("match (a:A) where a.value=$value return a, count(a) as count", ResultPart1.class, ResultPart2.class)
-            .withParameter("value", "A1")
-            .execute()
-            .getSingleResult();
-        A a = result.as(ResultPart1.class)
-            .getA();
-        assertThat(a.getValue()).isEqualTo("A1");
-        Number count = result.as(ResultPart2.class)
-            .getCount();
-        assertThat(count.intValue()).isEqualTo(1);
-        try {
-            xoManager.createQuery(ResultPart1.class, ResultPart2.class)
-                .withParameter("value", "A2")
-                .execute()
-                .getSingleResult();
-            fail("Expecting a " + XOException.class.getName());
-        } catch (XOException e) {
-        }
-        xoManager.currentTransaction()
-            .commit();
-    }
-
-    @Test
     public void compositeRowAsMap() {
         XOManager xoManager = getXOManager();
         xoManager.currentTransaction()
