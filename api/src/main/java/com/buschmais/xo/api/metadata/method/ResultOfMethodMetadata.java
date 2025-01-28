@@ -12,7 +12,7 @@ public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMet
 
     private final AnnotatedElement query;
 
-    private final Class<?> returnType;
+    private final Class<?> rowType;
 
     private final String usingThisAs;
 
@@ -20,18 +20,18 @@ public class ResultOfMethodMetadata<DatastoreMetadata> extends AbstractMethodMet
 
     private final boolean singleResult;
 
-    public ResultOfMethodMetadata(AnnotatedMethod annotatedMethod, AnnotatedElement query, Class<?> returnType, String usingThisAs,
+    public ResultOfMethodMetadata(AnnotatedMethod annotatedMethod, AnnotatedElement query, Class<?> rowType, String usingThisAs,
         List<QueryParameter> parameters, boolean singleResult) {
         super(annotatedMethod, null);
         this.query = query;
-        this.returnType = returnType;
+        this.rowType = rowType;
         this.usingThisAs = usingThisAs;
         this.parameters = parameters;
         this.singleResult = singleResult;
     }
 
-    public Class<?> getReturnType() {
-        return returnType;
+    public Class<?> getRowType() {
+        return rowType;
     }
 
     public AnnotatedElement getQuery() {

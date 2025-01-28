@@ -1,5 +1,8 @@
 package com.buschmais.xo.neo4j.test.repository.composite;
 
+import java.util.List;
+
+import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.annotation.ImplementedBy;
 import com.buschmais.xo.api.annotation.Repository;
@@ -30,22 +33,24 @@ public interface CustomRepository {
     }
 
     @ResultOf
-    @Cypher("match (a) where a.name=$name return a, { a: a, name: a.name } as nestedProjection")
+    @Cypher("match (a) where a.name=$name return a, { a: a, name: a.name } as nestedProjection, [ { a: a, name: a.name } ] as nestedProjections")
     Projection projection(String name);
 
     interface Projection {
-
         A getA();
 
         NestedProjection getNestedProjection();
 
+        List<NestedProjection> getNestedProjections();
     }
 
     interface NestedProjection {
-
         A getA();
-
         String getName();
-
     }
+
+    @ResultOf
+    @Cypher("match (a) where a.name=$name return a, { a: a, name: a.name } as nestedProjection")
+    ResultIterable<Projection> iterableProjection(String name);
+
 }

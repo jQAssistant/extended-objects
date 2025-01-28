@@ -14,19 +14,18 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
 
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
     private final ResultIterator<Map<String, Object>> iterator;
-    private final Class<T> returnType;
+    private final Class<T> rowType;
     private final ValueConverter<Entity, Relation> valueConverter;
-    private final RowProxyMethodService rowProxyMethodService;
+    private final RowProxyMethodService<Entity, Relation> rowProxyMethodService;
 
     QueryResultIterableImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, ResultIterator<Map<String, Object>> iterator,
-        Class<T> returnType) {
+        Class<T> rowType) {
         this.sessionContext = sessionContext;
         this.iterator = iterator;
         // can be null if execute() is called without consuming the result
-        this.returnType = returnType;
+        this.rowType = rowType;
         this.valueConverter = new ValueConverter<>(sessionContext);
-        this.rowProxyMethodService =
-            returnType == null || valueConverter.isTypedQuery(returnType) ? new RowProxyMethodService(returnType, sessionContext) : null;
+        this.rowProxyMethodService = rowType == null || valueConverter.isTypedQuery(rowType) ? new RowProxyMethodService<>(rowType, sessionContext) : null;
     }
 
     @Override
@@ -44,15 +43,15 @@ class QueryResultIterableImpl<Entity, Relation, T> extends AbstractResultIterabl
                     Map<String, Object> row = iterator.next();
                     if (rowProxyMethodService != null) {
                         return valueConverter.convert(row, rowProxyMethodService);
-                    } else if (row.size() > 1 && valueConverter.isProjection(returnType)) {
-                        RowProxyMethodService rowProxyMethodService = new RowProxyMethodService(returnType, sessionContext);
+                    } else if (row.size() > 1 && valueConverter.isProjection(rowType)) {
+                        RowProxyMethodService<Entity, Relation> rowProxyMethodService = new RowProxyMethodService<>(rowType, sessionContext);
                         return valueConverter.convert(row, rowProxyMethodService);
                     }
                     Object singleValue = row.values()
                         .stream()
                         .findFirst()
                         .orElseThrow(() -> new XOException("Only single columns per row can be returned."));
-                    return valueConverter.convert(singleValue, returnType);
+                    return valueConverter.convert(singleValue, rowType);
                 }
 
                 @Override
