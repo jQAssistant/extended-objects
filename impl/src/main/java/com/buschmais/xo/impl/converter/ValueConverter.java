@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Function;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.impl.SessionContext;
@@ -12,6 +13,9 @@ import com.buschmais.xo.impl.proxy.query.RowProxyMethodService;
 
 import com.google.common.primitives.Primitives;
 import lombok.RequiredArgsConstructor;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 @RequiredArgsConstructor
 public final class ValueConverter<Entity, Relation> {
@@ -39,7 +43,7 @@ public final class ValueConverter<Entity, Relation> {
 
     private Object doConvert(Object value, Type targetType) {
         if (value == null) {
-            return convertNullValue(targetType);
+            return toNullValue(targetType);
         } else {
             if (sessionContext.getDatastoreSession()
                 .getDatastoreEntityManager()
@@ -66,28 +70,37 @@ public final class ValueConverter<Entity, Relation> {
                 } else if (Enum.class.isAssignableFrom(targetClass)) {
                     return Enum.valueOf((Class<Enum>) targetType, (String) value);
                 } else if (targetClass.isPrimitive()) {
-                    return convertPrimitive(value, targetClass);
+                    return toPrimitive(value, targetClass);
                 } else if (Primitives.isWrapperType(targetClass)) {
-                    return convertPrimitive(value, Primitives.unwrap(targetClass));
-                } else if (targetClass.isAssignableFrom(value.getClass())) {
+                    return toPrimitive(value, Primitives.unwrap(targetClass));
+                }
+                Optional<Object> convertedCollection = toCollection(value, index -> Object.class);
+                if (convertedCollection.isPresent())
+                    return convertedCollection.get();
+                if (targetClass.isAssignableFrom(value.getClass())) {
                     return value;
                 }
             } else if (targetType instanceof ParameterizedType) {
                 ParameterizedType parameterizedType = (ParameterizedType) targetType;
-                if (value instanceof Set<?>) {
-                    Type elementType = parameterizedType.getActualTypeArguments()[0];
-                    return convertIterable((Iterable<?>) value, new LinkedHashSet<>(), elementType);
-                } else if (value instanceof Iterable<?>) {
-                    Type elementType = parameterizedType.getActualTypeArguments()[0];
-                    return convertIterable((Iterable<?>) value, new ArrayList<>(), elementType);
-                } else if (value instanceof Map<?, ?>) {
-                    Type keyType = parameterizedType.getActualTypeArguments()[0];
-                    Type valueType = parameterizedType.getActualTypeArguments()[1];
-                    return convertMap((Map<?, ?>) value, new LinkedHashMap<>(), keyType, valueType);
-                }
+                Optional<Object> convertedCollection = toCollection(value, index -> parameterizedType.getActualTypeArguments()[index]);
+                if (convertedCollection.isPresent())
+                    return convertedCollection.get();
             }
             throw new XOException("Cannot convert value '" + value + "' of type " + value.getClass() + " to " + targetType);
         }
+    }
+
+    private Optional<Object> toCollection(Object value, Function<Integer, Type> parameterSupplier) {
+        if (value instanceof Set<?>) {
+            return of(toIterable((Iterable<?>) value, new LinkedHashSet<>(), parameterSupplier.apply(0)));
+        } else if (value instanceof Iterable<?>) {
+            return of(toIterable((Iterable<?>) value, new ArrayList<>(), parameterSupplier.apply(0)));
+        } else if (value instanceof Map<?, ?>) {
+            Type keyType = parameterSupplier.apply(0);
+            Type valueType = parameterSupplier.apply(1);
+            return of(toMap((Map<?, ?>) value, new LinkedHashMap<>(), keyType, valueType));
+        }
+        return empty();
     }
 
     private Object toArray(Object values, Class<?> returnType) {
@@ -109,7 +122,7 @@ public final class ValueConverter<Entity, Relation> {
         return array;
     }
 
-    private Object convertNullValue(Type propertyType) {
+    private Object toNullValue(Type propertyType) {
         if (boolean.class.equals(propertyType)) {
             return false;
         } else if (short.class.equals(propertyType)) {
@@ -130,7 +143,7 @@ public final class ValueConverter<Entity, Relation> {
         return null;
     }
 
-    private Object convertPrimitive(Object value, Class<?> propertyType) {
+    private Object toPrimitive(Object value, Class<?> propertyType) {
         if (Number.class.isAssignableFrom(value.getClass())) {
             Number number = (Number) value;
             if (byte.class.equals(propertyType)) {
@@ -154,14 +167,14 @@ public final class ValueConverter<Entity, Relation> {
         return value;
     }
 
-    private Collection<Object> convertIterable(Iterable<?> iterable, Collection<Object> decodedCollection, Type elementType) {
+    private Iterable<Object> toIterable(Iterable<?> iterable, Collection<Object> decodedCollection, Type elementType) {
         for (Object o : iterable) {
             decodedCollection.add(doConvert(o, elementType));
         }
         return decodedCollection;
     }
 
-    private Map<Object, Object> convertMap(Map<?, ?> map, Map<Object, Object> decodedMap, Type keyType, Type valueType) {
+    private Map<Object, Object> toMap(Map<?, ?> map, Map<Object, Object> decodedMap, Type keyType, Type valueType) {
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             decodedMap.put(doConvert(entry.getKey(), keyType), doConvert(entry.getValue(), valueType));
         }
