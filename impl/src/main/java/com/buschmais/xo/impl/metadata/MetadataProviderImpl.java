@@ -6,6 +6,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import com.buschmais.xo.api.CompositeObject;
+import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.annotation.*;
 import com.buschmais.xo.api.bootstrap.XOUnit;
@@ -28,7 +29,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.buschmais.xo.api.Query.Result;
 import static com.buschmais.xo.api.metadata.type.RelationTypeMetadata.Direction;
 import static com.buschmais.xo.spi.annotation.RelationDefinition.FromDefinition;
 import static com.buschmais.xo.spi.annotation.RelationDefinition.ToDefinition;
@@ -578,13 +578,13 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
 
         // Determine query type
         Class<?> methodReturnType = method.getReturnType();
-        Class<?> returnType;
-        if (Result.class.isAssignableFrom(methodReturnType)) {
+        Class<?> rowType;
+        if (ResultIterable.class.isAssignableFrom(methodReturnType)) {
             Type genericReturnType = method.getGenericReturnType();
             ParameterizedType parameterizedType = (ParameterizedType) genericReturnType;
-            returnType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+            rowType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
         } else {
-            returnType = methodReturnType;
+            rowType = methodReturnType;
         }
 
         // Determine query type
@@ -593,7 +593,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
             if (annotatedMethod.getByMetaAnnotation(QueryDefinition.class) != null) {
                 query = annotatedMethod.getAnnotatedElement();
             } else {
-                query = returnType;
+                query = rowType;
             }
         }
         // Determine parameter bindings
@@ -614,7 +614,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 .build());
         }
         boolean singleResult = !Iterable.class.isAssignableFrom(methodReturnType);
-        return new ResultOfMethodMetadata<>(annotatedMethod, query, returnType, resultOf.usingThisAs(), parameters, singleResult);
+        return new ResultOfMethodMetadata<>(annotatedMethod, query, rowType, resultOf.usingThisAs(), parameters, singleResult);
     }
 
     /**

@@ -34,8 +34,8 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
 
     @Override
     public Object invoke(DatastoreType datastoreType, Object instance, Object[] args) {
-        Class<?> returnType = resultOfMethodMetadata.getReturnType();
-        XOQueryImpl<?, ?, AnnotatedElement, ?, ?> query = new XOQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(), returnType);
+        Class<?> rowType = resultOfMethodMetadata.getRowType();
+        XOQueryImpl<?, ?, AnnotatedElement, ?, ?> query = new XOQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(), rowType);
         Object thisInstance = getThisInstance(datastoreType, sessionContext);
         if (thisInstance != null) {
             String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
@@ -47,12 +47,12 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
                 .getName(), args[i]);
         }
         Query.Result<?> result = query.execute();
-        if (void.class.equals(returnType)) {
+        if (void.class.equals(rowType)) {
             result.close();
             return null;
         } else if (resultOfMethodMetadata.isSingleResult()) {
             if (result.hasResult()) {
-                return valueConverter.convert(result.getSingleResult(), returnType);
+                return valueConverter.convert(result.getSingleResult(), rowType);
             }
             return null;
         }

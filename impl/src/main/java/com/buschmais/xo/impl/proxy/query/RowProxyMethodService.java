@@ -43,7 +43,7 @@ public class RowProxyMethodService<Entity, Relation> extends AbstractProxyMethod
                         .getName() + "'.");
                 }
                 PropertyMethod propertyMethod = (PropertyMethod) typeMethod;
-                GetMethod proxyMethod = new GetMethod(propertyMethod.getName(), propertyMethod.getType(), sessionContext);
+                GetMethod<Entity, Relation> proxyMethod = new GetMethod<>(propertyMethod.getName(), propertyMethod.getGenericType(), sessionContext);
                 addProxyMethod(proxyMethod, propertyMethod.getAnnotatedElement());
             }
         }
@@ -54,7 +54,7 @@ public class RowProxyMethodService<Entity, Relation> extends AbstractProxyMethod
     private void init() {
         addMethod(new AsMethod(), CompositeObject.class, "as", Class.class);
         addMethod(new GetDelegateMethod<>(sessionContext), CompositeObject.class, "getDelegate");
-        addMethod(new com.buschmais.xo.impl.proxy.query.row.GetMethod(sessionContext), CompositeRowObject.class, "get", String.class, Class.class);
+        addMethod(new com.buschmais.xo.impl.proxy.query.row.GetMethod<>(sessionContext), CompositeRowObject.class, "get", String.class, Class.class);
         addMethod(new GetColumnsMethod(), CompositeRowObject.class, "getColumns");
         addMethod(new HashCodeMethod(), Object.class, "hashCode");
         addMethod(new EqualsMethod(), Object.class, "equals", Object.class);

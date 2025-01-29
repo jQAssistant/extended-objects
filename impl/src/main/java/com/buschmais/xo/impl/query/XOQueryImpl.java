@@ -40,19 +40,19 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
     private final QE expression;
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
     private final QueryLanguagePluginRepository queryLanguagePluginManager;
-    private final Class<?> returnType;
+    private final Class<?> rowType;
     private final InstanceManager<?, Entity> entityInstanceManager;
     private final InstanceManager<?, Relation> relationInstanceManager;
     private Map<String, Object> parameters = null;
 
-    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression, Class<?> returnType) {
+    public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression, Class<?> rowType) {
         this.sessionContext = sessionContext;
         this.entityInstanceManager = sessionContext.getEntityInstanceManager();
         this.relationInstanceManager = sessionContext.getRelationInstanceManager();
         this.queryLanguagePluginManager = sessionContext.getPluginRepositoryManager()
             .getPluginManager(QueryLanguagePlugin.class);
         this.expression = expression;
-        this.returnType = returnType;
+        this.rowType = rowType;
     }
 
     public XOQueryImpl(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, QE expression) {
@@ -129,7 +129,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
             QL queryAnnotation = sessionContext.getMetadataProvider()
                 .getQuery(annotatedElement);
             if (queryAnnotation == null) {
-                throw new XOException("Cannot find query annotation on element " + expression.toString());
+                throw new XOException("Cannot find query annotation on element " + expression);
             }
             flush(annotatedElement);
             iterator = query.execute(queryAnnotation, effectiveParameters);
@@ -140,7 +140,7 @@ public class XOQueryImpl<T, QL extends Annotation, QE, Entity, Relation> impleme
         return sessionContext.getInterceptorFactory()
             .addInterceptor(
                 new QueryResultIterableImpl(sessionContext, xoTransaction != null ? new TransactionalResultIterator<>(iterator, xoTransaction) : iterator,
-                    returnType), Result.class);
+                    rowType), Result.class);
     }
 
     private void flush(AnnotatedElement annotatedElement) {

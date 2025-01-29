@@ -1,5 +1,6 @@
 package com.buschmais.xo.impl.proxy.query.property;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import com.buschmais.xo.api.XOException;
@@ -10,10 +11,10 @@ import com.buschmais.xo.impl.proxy.query.RowProxyMethod;
 public class GetMethod<Entity, Relation> implements RowProxyMethod {
 
     private final String name;
-    private final Class<?> type;
+    private final Type type;
     private final ValueConverter<Entity, Relation> valueConverter;
 
-    public GetMethod(String name, Class<?> type, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
+    public GetMethod(String name, Type type, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext) {
         this.name = name;
         this.type = type;
         this.valueConverter = new ValueConverter<>(sessionContext);
