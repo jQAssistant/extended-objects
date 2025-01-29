@@ -14,6 +14,7 @@ import com.buschmais.xo.neo4j.spi.helper.Converter;
 import lombok.extern.slf4j.Slf4j;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
+import org.neo4j.driver.summary.InputPosition;
 import org.neo4j.driver.summary.ResultSummary;
 import org.slf4j.Logger;
 
@@ -59,8 +60,8 @@ public class RemoteCypherQuery implements CypherQuery {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                Record record = result.next();
-                Map<String, Object> row = record.asMap();
+                Map<String, Object> row = result.next()
+                    .asMap();
                 Map<String, Object> result = new LinkedHashMap<>(row.size(), 1);
                 for (Map.Entry<String, Object> entry : row.entrySet()) {
                     String column = entry.getKey();
@@ -75,18 +76,20 @@ public class RemoteCypherQuery implements CypherQuery {
                 ResultSummary resultSummary = result.consume();
                 return resultSummary.notifications()
                     .stream()
-                    .map(n -> Notification.builder()
-                        .title(n.title())
-                        .description(n.description())
-                        .code(n.code())
-                        .severity(Notification.Severity.from(n.severity()))
-                        .offset(n.position()
-                            .offset())
-                        .line(n.position()
-                            .line())
-                        .column(n.position()
-                            .column())
-                        .build())
+                    .map(n -> {
+                        Notification.NotificationBuilder notificationBuilder = Notification.builder()
+                            .title(n.title())
+                            .description(n.description())
+                            .code(n.code())
+                            .severity(Notification.Severity.from(n.severity()));
+                        InputPosition position = n.position();
+                        if (position != null) {
+                            notificationBuilder.offset(position.offset())
+                                .line(position.line())
+                                .column(position.column());
+                        }
+                        return notificationBuilder.build();
+                    })
                     .collect(toList());
             }
         };

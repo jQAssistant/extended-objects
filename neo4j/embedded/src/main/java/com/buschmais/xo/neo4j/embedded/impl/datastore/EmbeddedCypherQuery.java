@@ -13,6 +13,7 @@ import com.buschmais.xo.neo4j.spi.CypherQueryResultIterator;
 import com.buschmais.xo.neo4j.spi.Notification;
 
 import lombok.extern.slf4j.Slf4j;
+import org.neo4j.graphdb.InputPosition;
 import org.neo4j.graphdb.Result;
 import org.slf4j.Logger;
 
@@ -106,19 +107,21 @@ public class EmbeddedCypherQuery implements CypherQuery {
                     @Override
                     public List<Notification> dispose() {
                         return stream(result.getNotifications()
-                            .spliterator(), false).map(n -> Notification.builder()
-                                .title(n.getTitle())
-                                .description(n.getDescription())
-                                .code(n.getCode())
-                                .severity(Notification.Severity.from(n.getSeverity()
-                                    .name()))
-                                .offset(n.getPosition()
-                                    .getOffset())
-                                .line(n.getPosition()
-                                    .getLine())
-                                .column(n.getPosition()
-                                    .getColumn())
-                                .build())
+                            .spliterator(), false).map(n -> {
+                                Notification.NotificationBuilder notificationBuilder = Notification.builder()
+                                    .title(n.getTitle())
+                                    .description(n.getDescription())
+                                    .code(n.getCode())
+                                    .severity(Notification.Severity.from(n.getSeverity()
+                                        .name()));
+                                InputPosition position = n.getPosition();
+                                if (position != null) {
+                                    notificationBuilder.offset(position.getOffset())
+                                        .line(position.getLine())
+                                        .column(position.getColumn());
+                                }
+                                return notificationBuilder.build();
+                            })
                             .collect(toList());
                     }
                 };
