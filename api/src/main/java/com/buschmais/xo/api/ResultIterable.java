@@ -1,5 +1,9 @@
 package com.buschmais.xo.api;
 
+import java.util.stream.Stream;
+
+import static java.util.stream.StreamSupport.stream;
+
 /**
  * An {@link Iterable} which allows retrieving a single result.
  *
@@ -27,10 +31,19 @@ public interface ResultIterable<T> extends Iterable<T> {
     boolean hasResult();
 
     /**
-     * Return an result iterator.
+     * Return a result iterator.
      *
      * @return The result iterator.
      */
     ResultIterator<T> iterator();
+
+    /**
+     * Returns a {@link Stream}.
+     *
+     * @return The {@link Stream}.
+     */
+    default Stream<T> asStream() {
+        return stream(spliterator(), false).onClose(iterator()::close);
+    }
 
 }

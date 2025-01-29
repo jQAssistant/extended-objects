@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.buschmais.xo.api.CompositeObject;
 import com.buschmais.xo.api.XOException;
@@ -55,6 +56,23 @@ public class QueryIT extends AbstractNeo4JXOManagerIT {
         a2_1.setValue("A2");
         a2_2 = xoManager.create(A.class);
         a2_2.setValue("A2");
+        xoManager.currentTransaction()
+            .commit();
+    }
+
+    @Test
+    public void resultAsStream() {
+        XOManager xoManager = getXOManager();
+        xoManager.currentTransaction()
+            .begin();
+        Stream<InstanceByValue> result = xoManager.createQuery(InstanceByValue.class)
+            .withParameter("value", "A1")
+            .execute()
+            .asStream();
+        assertThat(result.findFirst()).isPresent()
+            .get()
+            .satisfies(instanceByValue -> assertThat(instanceByValue.getA()
+                .getValue()).isEqualTo("A1"));
         xoManager.currentTransaction()
             .commit();
     }
