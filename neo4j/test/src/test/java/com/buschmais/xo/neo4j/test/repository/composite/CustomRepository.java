@@ -1,8 +1,9 @@
 package com.buschmais.xo.neo4j.test.repository.composite;
 
 import java.util.List;
+import java.util.stream.Stream;
 
-import com.buschmais.xo.api.ResultIterable;
+import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.annotation.ImplementedBy;
 import com.buschmais.xo.api.annotation.Repository;
@@ -51,6 +52,18 @@ public interface CustomRepository {
 
     @ResultOf
     @Cypher("match (a) where a.name=$name return a, { a: a, name: a.name } as nestedProjection")
-    ResultIterable<Projection> iterableProjection(String name);
+    Query.Result<Projection> iterableProjection(String name);
+
+    @ResultOf
+    @Cypher("match (a) return a")
+    Stream<A> stream(String name);
+
+    @ResultOf
+    @Cypher("match (a) return a")
+    List<A> list(String name);
+
+    @ResultOf
+    @Cypher("match (a) return a")
+    List<A> set(String name);
 
 }

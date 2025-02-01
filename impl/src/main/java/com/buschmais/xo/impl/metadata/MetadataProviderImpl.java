@@ -613,8 +613,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
                 .name(parameterName.get())
                 .build());
         }
-        boolean singleResult = !Iterable.class.isAssignableFrom(methodReturnType);
-        return new ResultOfMethodMetadata<>(annotatedMethod, query, rowType, resultOf.usingThisAs(), parameters, singleResult);
+        return new ResultOfMethodMetadata<>(annotatedMethod, query, method.getReturnType(), rowType, resultOf.usingThisAs(), parameters);
     }
 
     /**

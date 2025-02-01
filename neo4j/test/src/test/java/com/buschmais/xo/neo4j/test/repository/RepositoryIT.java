@@ -52,9 +52,6 @@ public class RepositoryIT extends AbstractNeo4JXOManagerIT {
             .commit();
     }
 
-    /**
-     * Test the {@link Neo4jRepository}.
-     */
     @Test
     public void projection() {
         XOManager xoManager = getXOManager();
@@ -86,6 +83,26 @@ public class RepositoryIT extends AbstractNeo4JXOManagerIT {
         assertThat(nestedProjection).isNotNull();
         assertThat(nestedProjection.getA()).isEqualTo(a);
         assertThat(nestedProjection.getName()).isEqualTo("A1");
+    }
+
+    @Test
+    public void resultTypes() {
+        XOManager xoManager = getXOManager();
+        xoManager.currentTransaction()
+            .begin();
+        A a = xoManager.create(A.class);
+        a.setName("A1");
+        assertThat(xoManager.getRepository(CustomRepository.class)
+            .stream("A1")).hasSize(1)
+            .containsExactly(a);
+        assertThat(xoManager.getRepository(CustomRepository.class)
+            .list("A1")).hasSize(1)
+            .containsExactly(a);
+        assertThat(xoManager.getRepository(CustomRepository.class)
+            .set("A1")).hasSize(1)
+            .containsExactly(a);
+        xoManager.currentTransaction()
+            .commit();
     }
 
     /**

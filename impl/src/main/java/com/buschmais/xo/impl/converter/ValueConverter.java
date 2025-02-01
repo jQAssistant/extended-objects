@@ -4,7 +4,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.IntFunction;
 
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.impl.SessionContext;
@@ -90,7 +90,7 @@ public final class ValueConverter<Entity, Relation> {
         }
     }
 
-    private Optional<Object> toCollection(Object value, Function<Integer, Type> parameterSupplier) {
+    private Optional<Object> toCollection(Object value, IntFunction<Type> parameterSupplier) {
         if (value instanceof Set<?>) {
             return of(toIterable((Iterable<?>) value, new LinkedHashSet<>(), parameterSupplier.apply(0)));
         } else if (value instanceof Iterable<?>) {
@@ -167,17 +167,17 @@ public final class ValueConverter<Entity, Relation> {
         return value;
     }
 
-    private Iterable<Object> toIterable(Iterable<?> iterable, Collection<Object> decodedCollection, Type elementType) {
+    private Iterable<Object> toIterable(Iterable<?> iterable, Collection<Object> target, Type elementType) {
         for (Object o : iterable) {
-            decodedCollection.add(doConvert(o, elementType));
+            target.add(doConvert(o, elementType));
         }
-        return decodedCollection;
+        return target;
     }
 
-    private Map<Object, Object> toMap(Map<?, ?> map, Map<Object, Object> decodedMap, Type keyType, Type valueType) {
-        for (Map.Entry<?, ?> entry : map.entrySet()) {
-            decodedMap.put(doConvert(entry.getKey(), keyType), doConvert(entry.getValue(), valueType));
+    private Map<Object, Object> toMap(Map<?, ?> value, Map<Object, Object> target, Type keyType, Type valueType) {
+        for (Map.Entry<?, ?> entry : value.entrySet()) {
+            target.put(doConvert(entry.getKey(), keyType), doConvert(entry.getValue(), valueType));
         }
-        return decodedMap;
+        return target;
     }
 }

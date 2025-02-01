@@ -2,13 +2,17 @@ package com.buschmais.xo.impl.proxy.common.resultof;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import com.buschmais.xo.api.Query;
 import com.buschmais.xo.api.metadata.method.ResultOfMethodMetadata;
 import com.buschmais.xo.api.proxy.ProxyMethod;
 import com.buschmais.xo.impl.SessionContext;
-import com.buschmais.xo.impl.converter.ValueConverter;
 import com.buschmais.xo.impl.query.XOQueryImpl;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Abstract base implementation for ResultOf methods.
@@ -23,19 +27,17 @@ import com.buschmais.xo.impl.query.XOQueryImpl;
 public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> implements ProxyMethod<DatastoreType> {
 
     private final SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext;
-    private final ValueConverter<Entity, Relation> valueConverter;
     private final ResultOfMethodMetadata<?> resultOfMethodMetadata;
 
     public AbstractResultOfMethod(SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext, ResultOfMethodMetadata<?> resultOfMethodMetadata) {
         this.sessionContext = sessionContext;
-        this.valueConverter = new ValueConverter<>(sessionContext);
         this.resultOfMethodMetadata = resultOfMethodMetadata;
     }
 
     @Override
     public Object invoke(DatastoreType datastoreType, Object instance, Object[] args) {
-        Class<?> rowType = resultOfMethodMetadata.getRowType();
-        XOQueryImpl<?, ?, AnnotatedElement, ?, ?> query = new XOQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(), rowType);
+        XOQueryImpl<?, ?, AnnotatedElement, ?, ?> query = new XOQueryImpl<>(sessionContext, resultOfMethodMetadata.getQuery(),
+            resultOfMethodMetadata.getRowType());
         Object thisInstance = getThisInstance(datastoreType, sessionContext);
         if (thisInstance != null) {
             String usingThisAs = resultOfMethodMetadata.getUsingThisAs();
@@ -47,16 +49,25 @@ public abstract class AbstractResultOfMethod<DatastoreType, Entity, Relation> im
                 .getName(), args[i]);
         }
         Query.Result<?> result = query.execute();
-        if (void.class.equals(rowType)) {
+        Class<?> returnType = resultOfMethodMetadata.getReturnType();
+        if (void.class.equals(returnType)) {
             result.close();
-            return null;
-        } else if (resultOfMethodMetadata.isSingleResult()) {
-            if (result.hasResult()) {
-                return valueConverter.convert(result.getSingleResult(), rowType);
+        } else if (Stream.class.isAssignableFrom(returnType)) {
+            return result.asStream();
+        } else if (Iterable.class.isAssignableFrom(returnType)) {
+            if (Query.Result.class.isAssignableFrom(returnType)) {
+                return result;
+            } else if (List.class.equals(returnType)) {
+                return result.asStream()
+                    .collect(toList());
+            } else if (Set.class.equals(returnType)) {
+                return result.asStream()
+                    .collect(toSet());
             }
-            return null;
+        } else {
+            return result.hasResult() ? result.getSingleResult() : null;
         }
-        return result;
+        return null;
     }
 
     protected abstract Object getThisInstance(DatastoreType datastoreType, SessionContext<?, Entity, ?, ?, ?, Relation, ?, ?, ?> sessionContext);
