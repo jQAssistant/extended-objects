@@ -3,7 +3,6 @@ package com.buschmais.xo.neo4j.test.repository;
 import java.util.Collection;
 import java.util.List;
 
-import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.api.Neo4jRepository;
@@ -62,8 +61,9 @@ public class RepositoryIT extends AbstractNeo4JXOManagerIT {
         CustomRepository repository = xoManager.getRepository(CustomRepository.class);
         CustomRepository.Projection projection = repository.projection("A1");
         verifyProjection(projection, a);
-        ResultIterable<CustomRepository.Projection> iterableProjection = repository.iterableProjection("A1");
-        verifyProjection(iterableProjection.getSingleResult(), a);
+        List<CustomRepository.Projection> iterableProjection = repository.iterableProjection("A1");
+        assertThat(iterableProjection).hasSize(1);
+        verifyProjection(iterableProjection.get(0), a);
         List<CustomRepository.NestedProjection> nestedProjections = projection.getNestedProjections();
         assertThat(nestedProjections).hasSize(1);
         CustomRepository.NestedProjection nestedProjection = nestedProjections.get(0);
@@ -94,7 +94,9 @@ public class RepositoryIT extends AbstractNeo4JXOManagerIT {
         a.setName("A1");
         assertThat(xoManager.getRepository(CustomRepository.class)
             .stream("A1")).hasSize(1)
-            .containsExactly(a);
+            .containsExactly(a)
+            .first()
+            .satisfies(x -> assertThat(x.getName()).isEqualTo("A1"));
         assertThat(xoManager.getRepository(CustomRepository.class)
             .list("A1")).hasSize(1)
             .containsExactly(a);

@@ -4,9 +4,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.stream.Stream;
 
 import com.buschmais.xo.api.CompositeObject;
-import com.buschmais.xo.api.ResultIterable;
 import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.annotation.*;
 import com.buschmais.xo.api.bootstrap.XOUnit;
@@ -579,7 +579,7 @@ public class MetadataProviderImpl<EntityMetadata extends DatastoreEntityMetadata
         // Determine query type
         Class<?> methodReturnType = method.getReturnType();
         Class<?> rowType;
-        if (ResultIterable.class.isAssignableFrom(methodReturnType)) {
+        if (Iterable.class.isAssignableFrom(methodReturnType) || Stream.class.isAssignableFrom(methodReturnType)) {
             Type genericReturnType = method.getGenericReturnType();
             ParameterizedType parameterizedType = (ParameterizedType) genericReturnType;
             rowType = (Class<?>) parameterizedType.getActualTypeArguments()[0];
