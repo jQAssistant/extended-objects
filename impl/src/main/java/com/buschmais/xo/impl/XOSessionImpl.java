@@ -73,7 +73,7 @@ public class XOSessionImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <D, T> ResultIterable<T> toResult(ResultIterator<D> iterator) {
-        ResultIterator<T> resultIterator = new ResultIterator<T>() {
+        ResultIterator<T> resultIterator = new ResultIterator<>() {
 
             @Override
             public boolean hasNext() {

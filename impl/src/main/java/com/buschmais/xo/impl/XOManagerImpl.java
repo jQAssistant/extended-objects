@@ -16,7 +16,6 @@ import com.buschmais.xo.impl.proxy.example.ExampleProxyMethodService;
 import com.buschmais.xo.impl.proxy.repository.RepositoryInvocationHandler;
 import com.buschmais.xo.impl.proxy.repository.RepositoryProxyMethodService;
 import com.buschmais.xo.impl.query.XOQueryImpl;
-import com.buschmais.xo.impl.transaction.TransactionalResultIterator;
 import com.buschmais.xo.spi.datastore.DatastoreRelationManager;
 import com.buschmais.xo.spi.datastore.DatastoreSession;
 import com.buschmais.xo.spi.session.InstanceManager;
@@ -202,40 +201,7 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
         ResultIterator<Entity> iterator = sessionContext.getDatastoreSession()
             .getDatastoreEntityManager()
             .findEntity(entityTypeMetadata, entityDiscriminator, entity);
-        AbstractInstanceManager<EntityId, Entity> entityInstanceManager = sessionContext.getEntityInstanceManager();
-        ResultIterator<T> resultIterator = new ResultIterator<T>() {
-
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public T next() {
-                Entity entity = iterator.next();
-                return entityInstanceManager.readInstance(entity);
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("Cannot remove instance.");
-            }
-
-            @Override
-            public void close() {
-                iterator.close();
-            }
-        };
-        XOTransaction xoTransaction = sessionContext.getXOTransaction();
-        final ResultIterator<T> transactionalIterator =
-            xoTransaction != null ? new TransactionalResultIterator<>(resultIterator, xoTransaction) : resultIterator;
-        return sessionContext.getInterceptorFactory()
-            .addInterceptor(new AbstractResultIterable<T>() {
-                @Override
-                public ResultIterator<T> iterator() {
-                    return transactionalIterator;
-                }
-            }, ResultIterable.class);
+        return session.toResult(iterator);
     }
 
     @Override
@@ -305,28 +271,27 @@ public class XOManagerImpl<EntityId, Entity, EntityMetadata extends DatastoreEnt
 
     @Override
     public <T> T getRepository(Class<T> repositoryType) {
-        T repository = (T) repositories.get(repositoryType);
-        if (repository == null) {
-            T datastoreRepository = sessionContext.getDatastoreSession()
-                .createRepository(session, repositoryType);
-            RepositoryProxyMethodService<T, Entity, Relation> proxyMethodService;
-            if (repositoryType.isAssignableFrom(datastoreRepository.getClass())) {
-                proxyMethodService = new RepositoryProxyMethodService<>(datastoreRepository, repositoryType);
-            } else {
-                RepositoryTypeMetadata repositoryMetadata = sessionContext.getMetadataProvider()
-                    .getRepositoryMetadata(repositoryType);
-                proxyMethodService = new RepositoryProxyMethodService<>(datastoreRepository, repositoryMetadata, sessionContext);
-            }
-            RepositoryInvocationHandler invocationHandler = new RepositoryInvocationHandler(proxyMethodService, this);
-            T instance = sessionContext.getProxyFactory()
-                .createInstance(invocationHandler, CompositeType.builder()
-                    .type(repositoryType)
-                    .build());
-            repository = sessionContext.getInterceptorFactory()
-                .addInterceptor(instance, repositoryType);
-            repositories.put(repositoryType, repository);
+        return (T) repositories.computeIfAbsent(repositoryType, this::createRepository);
+    }
+
+    private <T> T createRepository(Class<T> repositoryType) {
+        T datastoreRepository = sessionContext.getDatastoreSession()
+            .createRepository(session, repositoryType);
+        RepositoryProxyMethodService<T, Entity, Relation> proxyMethodService;
+        if (repositoryType.isAssignableFrom(datastoreRepository.getClass())) {
+            proxyMethodService = new RepositoryProxyMethodService<>(datastoreRepository, repositoryType);
+        } else {
+            RepositoryTypeMetadata repositoryMetadata = sessionContext.getMetadataProvider()
+                .getRepositoryMetadata(repositoryType);
+            proxyMethodService = new RepositoryProxyMethodService<>(datastoreRepository, repositoryMetadata, sessionContext);
         }
-        return repository;
+        RepositoryInvocationHandler invocationHandler = new RepositoryInvocationHandler(proxyMethodService, this);
+        T instance = sessionContext.getProxyFactory()
+            .createInstance(invocationHandler, CompositeType.builder()
+                .type(repositoryType)
+                .build());
+        return sessionContext.getInterceptorFactory()
+            .addInterceptor(instance, repositoryType);
     }
 
     @Override
