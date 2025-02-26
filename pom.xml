@@ -47,7 +47,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.neo4j_version />
-        <org.slf4j.version>2.0.16</org.slf4j.version>
+        <org.slf4j.version>2.0.17</org.slf4j.version>
         <org.neo4jv4.version>4.4.38</org.neo4jv4.version>
         <org.neo4jv5.version>5.26.1</org.neo4jv5.version>
         <org.neo4j.version>${org.neo4jv4.version}</org.neo4j.version>
