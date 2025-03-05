@@ -339,6 +339,7 @@
         <module>neo4j</module>
         <module>doc</module>
         <module>spring</module>
+        <module>bom</module>
     </modules>
 
 </project>
