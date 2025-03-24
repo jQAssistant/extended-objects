@@ -1,6 +1,7 @@
 package com.buschmais.xo.neo4j.test.relation.typed;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.bootstrap.XOUnit;
@@ -26,6 +27,26 @@ public class TypedRelationIT extends AbstractNeo4JXOManagerIT {
     @Parameterized.Parameters
     public static Collection<Object[]> getXOUnits() {
         return xoUnits(A.class, B.class, TypedOneToOneRelation.class, TypedOneToManyRelation.class, TypedManyToManyRelation.class);
+    }
+
+    @Test
+    public void oneToOneWithLazyNodes() {
+        XOManager xoManager = getXOManager();
+        xoManager.currentTransaction()
+            .begin();
+        List<TypedOneToOneRelation> relations = executeQuery("MERGE (:A)-[r:OneToOne{version:1}]->(:B) RETURN r").getColumn("r");
+        TypedOneToOneRelation relation = assertThat(relations).hasSize(1)
+            .first()
+            .isNotNull()
+            .isInstanceOf(TypedOneToOneRelation.class)
+            .actual();
+        assertThat(relation.getVersion()).isEqualTo(1);
+        assertThat(relation.getA()).isNotNull()
+            .isInstanceOf(A.class);
+        assertThat(relation.getB()).isNotNull()
+            .isInstanceOf(B.class);
+        xoManager.currentTransaction()
+            .commit();
     }
 
     @Test

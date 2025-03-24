@@ -41,6 +41,7 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
 
     @Override
     public RemoteRelationshipType getRelationDiscriminator(RemoteRelationship remoteRelationship) {
+        ensureLoaded(remoteRelationship);
         return remoteRelationship.getType();
     }
 
@@ -169,14 +170,10 @@ public class RemoteDatastoreRelationManager extends AbstractRemoteDatastorePrope
     }
 
     @Override
-    protected Relationship load(RemoteRelationship entity) {
-        return fetch(entity.getId());
-    }
-
-    private Relationship fetch(Long id) {
-        Record record = statementExecutor.getSingleResult("MATCH ()-[r]->() WHERE id(r)=$id RETURN r", parameters("id", id));
-        return record.get("r")
-            .asRelationship();
+    protected void load(RemoteRelationship propertyContainer) {
+        Record record = statementExecutor.getSingleResult("MATCH ()-[r]->() WHERE id(r)=$id RETURN r", parameters("id", propertyContainer.getId()));
+        datastoreSessionCache.getRelationship(record.get("r")
+            .asRelationship());
     }
 
     private Set<RemoteRelationship> getSingleRelationship(RemoteNode source, RelationTypeMetadata<RelationshipMetadata<RemoteRelationshipType>> metadata,

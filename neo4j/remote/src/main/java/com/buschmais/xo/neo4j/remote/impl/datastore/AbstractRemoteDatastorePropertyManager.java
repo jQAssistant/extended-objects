@@ -9,47 +9,44 @@ import com.buschmais.xo.neo4j.remote.impl.model.state.AbstractPropertyContainerS
 import com.buschmais.xo.neo4j.spi.metadata.PropertyMetadata;
 import com.buschmais.xo.spi.datastore.DatastorePropertyManager;
 
-import org.neo4j.driver.types.Entity;
-
 import static org.neo4j.driver.Values.parameters;
 
-public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractRemotePropertyContainer>
-    implements DatastorePropertyManager<T, PropertyMetadata> {
+abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractRemotePropertyContainer> implements DatastorePropertyManager<T, PropertyMetadata> {
 
-    protected StatementExecutor statementExecutor;
+    protected final StatementExecutor statementExecutor;
 
-    protected RemoteDatastoreSessionCache datastoreSessionCache;
+    protected final RemoteDatastoreSessionCache datastoreSessionCache;
 
-    public AbstractRemoteDatastorePropertyManager(StatementExecutor statementExecutor, RemoteDatastoreSessionCache datastoreSessionCache) {
+    AbstractRemoteDatastorePropertyManager(StatementExecutor statementExecutor, RemoteDatastoreSessionCache datastoreSessionCache) {
         this.statementExecutor = statementExecutor;
         this.datastoreSessionCache = datastoreSessionCache;
     }
 
     @Override
-    public void setProperty(T entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata, Object value) {
-        ensureLoaded(entity);
-        entity.setProperty(metadata.getDatastoreMetadata()
+    public void setProperty(T propertyContainer, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata, Object value) {
+        ensureLoaded(propertyContainer);
+        propertyContainer.setProperty(metadata.getDatastoreMetadata()
             .getName(), value);
     }
 
     @Override
-    public boolean hasProperty(T entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
-        ensureLoaded(entity);
-        return entity.hasProperty(metadata.getDatastoreMetadata()
+    public boolean hasProperty(T propertyContainer, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
+        ensureLoaded(propertyContainer);
+        return propertyContainer.hasProperty(metadata.getDatastoreMetadata()
             .getName());
     }
 
     @Override
-    public void removeProperty(T entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
-        ensureLoaded(entity);
-        entity.removeProperty(metadata.getDatastoreMetadata()
+    public void removeProperty(T propertyContainer, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
+        ensureLoaded(propertyContainer);
+        propertyContainer.removeProperty(metadata.getDatastoreMetadata()
             .getName());
     }
 
     @Override
-    public Object getProperty(T entity, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
-        ensureLoaded(entity);
-        return entity.getProperty(metadata.getDatastoreMetadata()
+    public Object getProperty(T propertyContainer, PrimitivePropertyMethodMetadata<PropertyMetadata> metadata) {
+        ensureLoaded(propertyContainer);
+        return propertyContainer.getProperty(metadata.getDatastoreMetadata()
             .getName());
     }
 
@@ -65,17 +62,15 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
     }
 
     @Override
-    public final void afterCompletion(T entity, boolean clear) {
-        entity.getState()
+    public final void afterCompletion(T propertyContainer, boolean clear) {
+        propertyContainer.getState()
             .afterCompletion(clear);
     }
 
-    protected final void ensureLoaded(T entity) {
-        if (!entity.getState()
+    protected final void ensureLoaded(T propertyContainer) {
+        if (!propertyContainer.getState()
             .isLoaded()) {
-            Entity state = load(entity);
-            entity.getState()
-                .load(state.asMap());
+            load(propertyContainer);
         }
     }
 
@@ -89,6 +84,6 @@ public abstract class AbstractRemoteDatastorePropertyManager<T extends AbstractR
         return properties;
     }
 
-    protected abstract Entity load(T entity);
+    protected abstract void load(T propertyContainer);
 
 }

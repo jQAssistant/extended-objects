@@ -1,7 +1,5 @@
 package com.buschmais.xo.neo4j.doc.relation.typed;
 
-import java.net.URISyntaxException;
-
 import com.buschmais.xo.api.bootstrap.XOUnit;
 import com.buschmais.xo.neo4j.doc.AbstractDocumentationTest;
 import com.buschmais.xo.neo4j.doc.relation.Person;
@@ -19,7 +17,7 @@ public class TypedRelationTest extends AbstractDocumentationTest {
     }
 
     @Test
-    public void typedRelation() throws URISyntaxException {
+    public void typedRelation() {
         // tag::Create[]
         xoManager.currentTransaction()
             .begin();

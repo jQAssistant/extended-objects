@@ -151,8 +151,7 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
 
     @Override
     public RemoteNode findEntityById(EntityTypeMetadata<NodeMetadata<RemoteLabel>> metadata, RemoteLabel remoteLabel, Long id) {
-        Node node = fetch(id);
-        return datastoreSessionCache.getNode(node);
+        return datastoreSessionCache.getNode(fetch(id));
     }
 
     @Override
@@ -207,8 +206,9 @@ public class RemoteDatastoreEntityManager extends AbstractRemoteDatastorePropert
     }
 
     @Override
-    protected Node load(RemoteNode remoteNode) {
-        return fetch(remoteNode.getId());
+    protected void load(RemoteNode propertyContainer) {
+        Node node = fetch(propertyContainer.getId());
+        datastoreSessionCache.getNode(node);
     }
 
     private Node fetch(Long id) {
