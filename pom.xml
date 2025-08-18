@@ -51,7 +51,7 @@
         <org.neo4jv4.version>4.4.42</org.neo4jv4.version>
         <org.neo4jv5.version>5.26.3</org.neo4jv5.version>
         <org.neo4j.version>${org.neo4jv4.version}</org.neo4j.version>
-        <org.mockito.version>5.18.0</org.mockito.version>
+        <org.mockito.version>5.19.0</org.mockito.version>
         <org.assertj.version>3.27.4</org.assertj.version>
         <org.glassfish.jaxb.version>2.4.0-b180830.0359</org.glassfish.jaxb.version>
         <!-- SonarQube -->
