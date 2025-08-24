@@ -64,7 +64,7 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
         XOTransactionObject txObject = new XOTransactionObject();
         XOManagerHolder xoManagerHolder = (XOManagerHolder) TransactionSynchronizationManager.getResource(getXOManagerFactory());
         if (xoManagerHolder != null) {
-            logger.debug("Found thread-bound XOManager ", xoManagerHolder.getXOManager());
+            logger.debug("Found thread-bound XOManager {}.", xoManagerHolder.getXOManager());
             txObject.setXOManagerHolder(xoManagerHolder, false);
         }
         return txObject;
@@ -126,9 +126,8 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
 
     private void closeAfterFailedBegin(XOTransactionObject txObject) {
         if (txObject.isNewXOManagerHolder()) {
-            XOManager xoManager = txObject.getXOManagerHolder()
-                .getXOManager();
-            try {
+            try (XOManager xoManager = txObject.getXOManagerHolder()
+                .getXOManager()) {
                 if (xoManager.currentTransaction()
                     .isActive()) {
                     xoManager.currentTransaction()
@@ -137,7 +136,6 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
             } catch (Throwable ex) {
                 logger.debug("Could not rollback XOTransaction after failed transaction begin", ex);
             } finally {
-                xoManager.close();
                 txObject.setXOManagerHolder(null, false);
             }
         }
@@ -174,8 +172,8 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
         XOTransactionObject txObject = (XOTransactionObject) status.getTransaction();
         XOManager xoManager = txObject.getXOManagerHolder()
             .getXOManager();
-        XOTransaction xoTransaction = xoManager.currentTransaction();
-        try {
+        try (xoManager) {
+            XOTransaction xoTransaction = xoManager.currentTransaction();
             if (xoTransaction.isActive()) {
                 if (commit) {
                     logger.debug("Committing XO transaction {} on XOManager {}", xoTransaction, xoManager);
@@ -187,16 +185,16 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
             }
         } catch (XOException ex) {
             throw new InvalidDataAccessApiUsageException("Cannot complete XOTransaction (commit: " + commit + ")", ex);
-        } finally {
-            xoManager.close();
         }
     }
 
     @Override
     protected void doSetRollbackOnly(DefaultTransactionStatus status) {
         XOTransactionObject txObject = (XOTransactionObject) status.getTransaction();
-        txObject.getXOTransaction()
-            .setRollbackOnly();
+        XOTransaction xoTransaction = txObject.getXOTransaction();
+        if (xoTransaction != null && xoTransaction.isActive()) {
+            xoTransaction.setRollbackOnly();
+        }
         status.setRollbackOnly();
     }
 
