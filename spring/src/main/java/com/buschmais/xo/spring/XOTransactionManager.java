@@ -128,9 +128,10 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
         if (txObject.isNewXOManagerHolder()) {
             try (XOManager xoManager = txObject.getXOManagerHolder()
                 .getXOManager()) {
-                if (xoManager.currentTransaction()
+                XOTransaction xoTransaction = xoManager.currentTransaction();
+                if (xoTransaction
                     .isActive()) {
-                    xoManager.currentTransaction()
+                    xoTransaction
                         .rollback();
                 }
             } catch (Throwable ex) {
@@ -170,9 +171,8 @@ public class XOTransactionManager extends AbstractPlatformTransactionManager imp
 
     private void doComplete(DefaultTransactionStatus status, boolean commit) {
         XOTransactionObject txObject = (XOTransactionObject) status.getTransaction();
-        XOManager xoManager = txObject.getXOManagerHolder()
-            .getXOManager();
-        try (xoManager) {
+        try (XOManager xoManager = txObject.getXOManagerHolder()
+            .getXOManager()) {
             XOTransaction xoTransaction = xoManager.currentTransaction();
             if (xoTransaction.isActive()) {
                 if (commit) {
