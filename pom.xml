@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.buschmais.jqassistant.build</groupId>
         <artifactId>parent</artifactId>
-        <version>2.6.2</version>
+        <version>2.7.1</version>
     </parent>
 
     <groupId>com.buschmais.xo</groupId>
@@ -51,8 +51,8 @@
         <org.neo4jv4.version>4.4.42</org.neo4jv4.version>
         <org.neo4jv5.version>5.26.3</org.neo4jv5.version>
         <org.neo4j.version>${org.neo4jv4.version}</org.neo4j.version>
-        <org.mockito.version>5.16.1</org.mockito.version>
-        <org.assertj.version>3.27.3</org.assertj.version>
+        <org.mockito.version>5.19.0</org.mockito.version>
+        <org.assertj.version>3.27.4</org.assertj.version>
         <org.glassfish.jaxb.version>2.4.0-b180830.0359</org.glassfish.jaxb.version>
         <!-- SonarQube -->
         <sonar.organization>jqassistant</sonar.organization>
@@ -262,12 +262,12 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>33.4.5-jre</version>
+                <version>33.4.8-jre</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
                 <artifactId>caffeine</artifactId>
-                <version>3.2.0</version>
+                <version>3.2.2</version>
             </dependency>
             <dependency>
                 <groupId>javax.xml.bind</groupId>
@@ -282,7 +282,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.36</version>
+                <version>1.18.38</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
