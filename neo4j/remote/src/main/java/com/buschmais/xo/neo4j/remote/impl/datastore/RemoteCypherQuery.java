@@ -12,7 +12,6 @@ import com.buschmais.xo.neo4j.spi.Notification;
 import com.buschmais.xo.neo4j.spi.helper.Converter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.summary.InputPosition;
 import org.neo4j.driver.summary.ResultSummary;
@@ -81,7 +80,8 @@ public class RemoteCypherQuery implements CypherQuery {
                             .title(n.title())
                             .description(n.description())
                             .code(n.code())
-                            .severity(Notification.Severity.from(n.severity()));
+                            .severity(Notification.Severity.from(n.rawSeverityLevel()
+                                .orElse(null)));
                         InputPosition position = n.position();
                         if (position != null) {
                             notificationBuilder.offset(position.offset())

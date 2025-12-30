@@ -11,10 +11,8 @@ import com.buschmais.xo.api.XOException;
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.XOManagerFactory;
 
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -28,11 +26,8 @@ public class XOAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(PlatformTransactionManager.class)
-    public XOTransactionManager transactionManager(XOManagerFactory<?, ?, ?, ?> xoManagerFactory,
-        ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
-        XOTransactionManager transactionManager = new XOTransactionManager(xoManagerFactory);
-        transactionManagerCustomizers.ifAvailable((customizers) -> customizers.customize(transactionManager));
-        return transactionManager;
+    public XOTransactionManager transactionManager(XOManagerFactory<?, ?, ?, ?> xoManagerFactory) {
+        return new XOTransactionManager(xoManagerFactory);
     }
 
     @Bean
@@ -45,7 +40,7 @@ public class XOAutoConfiguration {
 
         private final XOManagerFactory<?, ?, ?, ?> xoManagerFactory;
 
-        private Map<Method, Function<Object[], Object>> methodInvovationHandlers = new HashMap<>();
+        private final Map<Method, Function<Object[], Object>> methodInvovationHandlers = new HashMap<>();
 
         private XOInvocationHandler(XOManagerFactory<?, ?, ?, ?> xoManagerFactory) {
             this.xoManagerFactory = xoManagerFactory;
@@ -69,8 +64,6 @@ public class XOAutoConfiguration {
                 XOManager xoManager = xoManagerHolder.getXOManager();
                 try {
                     return method.invoke(xoManager, args);
-                } catch (XOException e) {
-                    throw e;
                 } catch (ReflectiveOperationException e) {
                     throw new XOException("Cannot invoke method " + method + " on transactional XOManager instance " + xoManager, e);
                 }
