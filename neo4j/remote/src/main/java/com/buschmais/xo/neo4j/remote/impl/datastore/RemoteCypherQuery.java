@@ -80,8 +80,7 @@ public class RemoteCypherQuery implements CypherQuery {
                             .title(n.title())
                             .description(n.description())
                             .code(n.code())
-                            .severity(Notification.Severity.from(n.rawSeverityLevel()
-                                .orElse(null)));
+                            .severity(Notification.Severity.from(n.severity()));
                         InputPosition position = n.position();
                         if (position != null) {
                             notificationBuilder.offset(position.offset())
