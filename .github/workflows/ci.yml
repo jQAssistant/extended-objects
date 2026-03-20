@@ -23,7 +23,7 @@ jobs:
       java_test_versions: '[17, 21]' # use versions supported by last Spring version
       publish_snapshots: true
       sonar_organization: 'jqassistant'
-      sonar_projectKey: 'jqassistant_extended-objects'
+      sonar_project_key: 'jqassistant_extended-objects'
     secrets:
       ossrh_username: ${{ secrets.OSSRH_USERNAME }}
       ossrh_password: ${{ secrets.OSSRH_PASSWORD }}
