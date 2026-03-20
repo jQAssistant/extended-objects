@@ -54,9 +54,6 @@
         <org.mockito.version>5.23.0</org.mockito.version>
         <org.assertj.version>3.27.7</org.assertj.version>
         <org.glassfish.jaxb.version>2.4.0-b180830.0359</org.glassfish.jaxb.version>
-        <!-- SonarQube -->
-        <sonar.organization>jqassistant</sonar.organization>
-        <sonar.projectKey>jqassistant_extended-objects</sonar.projectKey>
     </properties>
 
     <profiles>
