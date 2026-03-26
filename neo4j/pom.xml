@@ -13,6 +13,13 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.buschmais.xo</groupId>
+                <artifactId>xo.bom</artifactId>
+                <type>pom</type>
+                <version>${project.version}</version>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.neo4j.app</groupId>
                 <artifactId>neo4j-server</artifactId>
                 <version>${org.neo4j_version}</version>

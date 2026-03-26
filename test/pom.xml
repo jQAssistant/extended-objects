@@ -9,6 +9,18 @@
 
     <name>eXtended Objects - Common Test Artifacts</name>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.buschmais.xo</groupId>
+                <artifactId>xo.bom</artifactId>
+                <type>pom</type>
+                <version>${project.version}</version>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.buschmais.xo</groupId>

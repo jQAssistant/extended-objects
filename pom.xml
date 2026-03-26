@@ -188,53 +188,6 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.buschmais.xo</groupId>
-                <artifactId>xo.spi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.buschmais.xo</groupId>
-                <artifactId>xo.api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.buschmais.xo</groupId>
-                <artifactId>xo.impl</artifactId>
-                <version>${project.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.buschmais.xo</groupId>
-                <artifactId>xo.neo4j.api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.buschmais.xo</groupId>
-                <artifactId>xo.neo4j.spi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.buschmais.xo</groupId>
-                <artifactId>xo.neo4j.embedded</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.buschmais.xo</groupId>
-                <artifactId>xo.neo4j.remote</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.buschmais.xo</groupId>
-                <artifactId>xo.trace</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.buschmais.xo</groupId>
-                <artifactId>xo.test</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>jakarta.validation</groupId>
                 <artifactId>jakarta.validation-api</artifactId>
                 <version>3.1.1</version>

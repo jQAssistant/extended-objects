@@ -34,6 +34,11 @@
             </dependency>
             <dependency>
                 <groupId>com.buschmais.xo</groupId>
+                <artifactId>xo.neo4j.spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.buschmais.xo</groupId>
                 <artifactId>xo.neo4j.embedded</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -46,6 +51,12 @@
                 <groupId>com.buschmais.xo</groupId>
                 <artifactId>xo.spring</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.buschmais.xo</groupId>
+                <artifactId>xo.test</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.buschmais.xo</groupId>

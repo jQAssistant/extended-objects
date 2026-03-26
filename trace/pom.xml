@@ -9,8 +9,15 @@
 
     <name>eXtended Objects - Trace Datastore</name>
 
-    <dependencyManagement>
+   <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.buschmais.xo</groupId>
+                <artifactId>xo.bom</artifactId>
+                <type>pom</type>
+                <version>${project.version}</version>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.neo4j.community</groupId>
                 <artifactId>it-test-support</artifactId>
