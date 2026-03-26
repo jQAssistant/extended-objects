@@ -1,8 +1,8 @@
 package com.buschmais.xo.impl;
 
-import javax.validation.Validation;
-import javax.validation.ValidationException;
-import javax.validation.ValidatorFactory;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidationException;
+import jakarta.validation.ValidatorFactory;
 
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.api.bootstrap.XOUnit;
@@ -63,9 +63,9 @@ public class XOManagerFactoryImpl<EntityId, Entity, EntityMetadata extends Datas
     }
 
     /**
-     * Return the {@link javax.validation.ValidatorFactory}.
+     * Return the {@link jakarta.validation.ValidatorFactory}.
      *
-     * @return The {@link javax.validation.ValidatorFactory}.
+     * @return The {@link jakarta.validation.ValidatorFactory}.
      */
     private ValidatorFactory getValidatorFactory() {
         if (!ValidationMode.NONE.equals(xoUnit.getValidationMode())) {

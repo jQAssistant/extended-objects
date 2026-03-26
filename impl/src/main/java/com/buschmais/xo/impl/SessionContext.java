@@ -3,7 +3,7 @@ package com.buschmais.xo.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.ValidatorFactory;
+import jakarta.validation.ValidatorFactory;
 
 import com.buschmais.xo.api.XOTransaction;
 import com.buschmais.xo.api.bootstrap.XOUnit;

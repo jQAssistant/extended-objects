@@ -2,7 +2,7 @@ package com.buschmais.xo.impl;
 
 import java.util.*;
 
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
 
 import com.buschmais.xo.api.*;
 import com.buschmais.xo.api.metadata.MetadataProvider;

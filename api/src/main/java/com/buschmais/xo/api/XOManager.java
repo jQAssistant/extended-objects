@@ -2,7 +2,7 @@ package com.buschmais.xo.api;
 
 import java.util.Set;
 
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
 
 import static com.buschmais.xo.api.Query.Result.CompositeRowObject;
 import static com.buschmais.xo.api.Transaction.TransactionAttribute.NOT_SUPPORTED;

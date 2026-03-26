@@ -3,8 +3,8 @@ package com.buschmais.xo.neo4j.test.validation;
 import java.util.Collection;
 import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 
 import com.buschmais.xo.api.XOManager;
 import com.buschmais.xo.api.annotation.PreUpdate;

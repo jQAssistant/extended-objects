@@ -246,9 +246,9 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>javax.validation</groupId>
-                <artifactId>validation-api</artifactId>
-                <version>2.0.1.Final</version>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>3.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -282,15 +282,15 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>6.2.5.Final</version>
+                <version>9.1.0.Final</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.glassfish</groupId>
-                <artifactId>javax.el</artifactId>
-                <version>3.0.1-b12</version>
+                <artifactId>jakarta.el</artifactId>
+                <version>4.0.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
