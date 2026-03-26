@@ -3,8 +3,8 @@ package com.buschmais.xo.impl.bootstrap;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
+import jakarta.xml.bind.ValidationEvent;
+import jakarta.xml.bind.ValidationEventHandler;
 
 public class XOUnitValidationHandler implements ValidationEventHandler {
 
