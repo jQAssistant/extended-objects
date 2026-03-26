@@ -11,6 +11,8 @@ import jakarta.validation.ValidatorFactory;
 
 import com.buschmais.xo.impl.cache.TransactionalCache;
 
+import static java.util.Collections.emptySet;
+
 public class InstanceValidationService {
 
     private final ValidatorFactory validatorFactory;
@@ -25,7 +27,7 @@ public class InstanceValidationService {
     public Set<ConstraintViolation<Object>> validate() {
         Validator validator = getValidator();
         if (validator == null) {
-            return Collections.emptySet();
+            return emptySet();
         }
         Set<ConstraintViolation<Object>> violations = new HashSet<>();
         for (TransactionalCache<?> cache : caches) {
@@ -38,7 +40,7 @@ public class InstanceValidationService {
 
     public Set<ConstraintViolation<Object>> validate(Object instance) {
         Validator validator = getValidator();
-        return validator != null ? validator.validate(instance) : Collections.<ConstraintViolation<Object>>emptySet();
+        return validator != null ? validator.validate(instance) : emptySet();
     }
 
     private Validator getValidator() {

@@ -77,5 +77,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- required to start Neo4j server -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -46,11 +46,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.neo4j_version />
         <org.slf4j.version>2.0.17</org.slf4j.version>
-        <org.neo4jv4.version>4.4.42</org.neo4jv4.version>
+        <org.neo4j_version/>
         <org.neo4jv5.version>5.26.16</org.neo4jv5.version>
-        <org.neo4j.version>${org.neo4jv4.version}</org.neo4j.version>
         <org.mockito.version>5.23.0</org.mockito.version>
         <org.assertj.version>3.27.7</org.assertj.version>
         <org.glassfish.jaxb.version>4.0.5</org.glassfish.jaxb.version>
@@ -58,15 +56,6 @@
     </properties>
 
     <profiles>
-        <profile>
-            <id>neo4jv4</id>
-            <activation>
-                <jdk>11</jdk>
-            </activation>
-            <properties>
-                <org.neo4j_version>${org.neo4jv4.version}</org.neo4j_version>
-            </properties>
-        </profile>
         <profile>
             <activation>
                 <jdk>[17,)</jdk>
@@ -145,10 +134,10 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.6</version>
+                                    <version>3.9</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
-                                    <version>11</version>
+                                    <version>17</version>
                                 </requireJavaVersion>
                                 <banDuplicatePomDependencyVersions />
                                 <reactorModuleConvergence />
@@ -249,6 +238,11 @@
                 <groupId>jakarta.validation</groupId>
                 <artifactId>jakarta.validation-api</artifactId>
                 <version>3.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>2.0.1.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
