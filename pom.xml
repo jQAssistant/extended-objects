@@ -52,7 +52,7 @@
         <org.mockito.version>5.23.0</org.mockito.version>
         <org.assertj.version>3.27.7</org.assertj.version>
         <org.glassfish.jaxb.version>4.0.5</org.glassfish.jaxb.version>
-        <jaxb-maven-plugin.version>4.0.12</jaxb-maven-plugin.version>
+        <jaxb-maven-plugin.version>4.0.13</jaxb-maven-plugin.version>
     </properties>
 
     <profiles>
