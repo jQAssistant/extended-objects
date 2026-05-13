@@ -46,7 +46,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.slf4j.version>2.0.17</org.slf4j.version>
+        <org.slf4j.version>2.0.18</org.slf4j.version>
         <org.neo4j_version/>
         <org.neo4jv5.version>5.26.16</org.neo4jv5.version>
         <org.mockito.version>5.23.0</org.mockito.version>
