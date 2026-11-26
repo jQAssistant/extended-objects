@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build:
-    uses: jqassistant-tooling/jqassistant-github-actions/.github/workflows/ci.yml@main
+    uses: jqassistant/jqassistant-github-actions/.github/workflows/ci.yml@main
     with:
       java_test_versions: '[17, 25]' # use versions supported by last Spring version
       sonar_organization: 'jqassistant'
